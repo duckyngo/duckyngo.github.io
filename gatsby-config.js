@@ -8,7 +8,7 @@ module.exports = {
     // You can overwrite values here that are used for the SEO component
     // You can also add new values here to query them like usual
     // See all options: https://github.com/LekoArts/gatsby-themes/blob/master/themes/gatsby-theme-minimal-blog/gatsby-config.js
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    siteTitleAlt: `Kyndev Blog`,
   },
   plugins: [
     {
@@ -17,7 +17,11 @@ module.exports = {
       options: {
         navigation: [
           {
-            title: `Blog`,
+            title: `Tiếng Việt`,
+            slug: `/blog`,
+          },
+          {
+            title: `Engish`,
             slug: `/blog`,
           },
           {
@@ -27,12 +31,12 @@ module.exports = {
         ],
         externalLinks: [
           {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
+            name: `Github`,
+            url: `https://github.com/duckyngo`,
           },
           {
             name: `Homepage`,
-            url: `https://www.lekoarts.de?utm_source=minimal-blog&utm_medium=Starter`,
+            url: `http://kyndev.com`,
           },
         ],
       },
