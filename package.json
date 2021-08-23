@@ -7,6 +7,7 @@
   "license": "0BSD",
   "starter-name": "gatsby-starter-minimal-blog",
   "scripts": {
+    "deploy": "gatsby build && gh-pages -d public -b main",
     "build": "gatsby build",
     "develop": "gatsby develop",
     "develop:cypress": "cross-env CYPRESS_SUPPORT=y yarn develop",
