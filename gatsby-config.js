@@ -24,12 +24,12 @@ module.exports = {
       options: {
         navigation: [
           {
-            title: `Tiếng Việt`,
+            title: `Blog`,
             slug: `/blog`,
           },
           {
             title: `Engish`,
-            slug: `/english`,
+            slug: `/tags/english`,
           },
           {
             title: `About`,
