@@ -25,12 +25,12 @@ const Footer = () => {
       </div>
       <div>
         <Link
-          aria-label="Link to the theme's GitHub repository"
-          href="https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-minimal-blog"
+          aria-label="Link to the privacy policy page"
+          href="https://github.com/"
         >
-          Theme
+          Privacy Policy
         </Link>
-        {` `}
+        {/* {` `}
         by
         {` `}
         <Link
@@ -38,7 +38,7 @@ const Footer = () => {
           href="https://www.lekoarts.de?utm_source=minimal-blog&utm_medium=Theme"
         >
           LekoArts
-        </Link>
+        </Link> */}
       </div>
     </footer>
   )

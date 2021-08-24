@@ -158,3 +158,4 @@ module.exports = {
     },
   ].filter(Boolean),
 }
+ // "deploy": "gatsby build && gh-pages -d public -r https://$GH_TOKEN@github.com/duckyngo/duckyngo.github.io.git",
