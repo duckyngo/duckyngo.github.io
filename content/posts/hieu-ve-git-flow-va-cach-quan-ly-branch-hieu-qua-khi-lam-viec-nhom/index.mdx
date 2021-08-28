@@ -1,0 +1,103 @@
+--- 
+slug: hieu-ve-git-flow-va-cach-quan-ly-branch-hieu-qua-khi-lam-viec-nhom
+title: Hiểu về git-flow và quản lý các nhánh hiệu quả khi làm việc nhóm
+
+date: 2021-08-26 
+
+tags: 
+
+  - Basic
+  - Git
+
+--- 
+
+## 1. Tóm lược
+Git là một công cụ rất mạnh mẽ và tiện lợi nhưng mình thấy một số team vẫn tạo branch một cách bừa bãi và quản lý không hiệu quả trong khi làm việc trong dự án hoặc làm nhóm dẫn đến xung đột có thể xảy ra và rất đau đầu khi merge các branch riêng lẻ.
+
+Vì vậy chúng ta cần có một bộ nguyên tắc chung để xử dụng trong khi làm việc nhóm với Git.  Git-flow là quy tắc chung của Git được tạo ra với mục đích quản lý các branch trong lúc làm việc nhóm hiệu quả hơn
+
+## Git
+
+Trước khi tìm hiểu về Git-flow thì chúng ta hãy cùng nhau tìm hiểu về Git là gì trước:
+* Git là một công cụ để quản lý phiên bản phân tán được sử dụng khi phát triển phần mềm
+* Git được phát triển vào năm 2005 bởi Linus Torvalds (Người phát triển Linux đầu tiên cùng với các nhà phát triển Linux khác)
+* Trong quá trình phát triển vần mềm, các lập trình viên phải lặp lại quá trình sửa đổi, thêm và xóa mã nguồn vô số lần. Git là công cụ giúp các developer có thể quản lý mã nguồn, phiên bản một cách hệ thông.
+* Bất kì ai cũng có thể tải xuống và sửa đổi mã nguồn Linux do người khác tạo, đồng thời theo dõi lịch sử sửa đổi,  mã nào đã được sửa hoặc thêm vào.
+* Trước khi Git ra đời, có một vài công cụ phát triển phần mềm tập trung khác nhưng Linus Torvalds cho rằng tất cả những công cụ trước đó đề thiếu khả năng mở rộng và không phù hợp để mọi người làm việc cùng lúc.
+* Git  được phát triển với mục tiêu tạo ra một hệ thống ổn định và có thể sử dụng bởi 1000 người cùng lúc.
+
+Để sử dụng git, bạn cần hiểu một số khái niệm cơ bản như:
+* commit
+* branch
+* merge
+* clone | pull | push | rebase
+
+Mọi người có thể tìm hiểu thêm về Git [tại đây](https://git-scm.com/docs)
+
+## 2. Git-flow 
+
+
+![Image by Vincent Driessen](./git-flow-model.png)
+
+**Có 5 loại branch trong Git-flow**
+* master
+* develop
+* feature
+* release
+* hotfix
+
+
+
+**Mục đích của mỗi nhánh được giải thích như sau:**
+
+
+### `master` Branch:
+Mục đích chính cua nhánh `master` trong Git-flow là để chứa source code có thể triển khai ngay lập tức.
+
+Trong Git-flow, nhánh chính được tạo khi bắt đầu môt dự án và được duy trì trong suốt quá trình phát triển dự án. Nhánh `master` có thể được gắn các tag để đánh dấu các version hoặc những dấu mốc release của source. Tất cả những nhánh khác sẽ được merge vào nhánh `master` sau khi phát triển xong, kiểm tra và thử nghiệm đầy đủ. 
+
+### `develop` Branch:
+Nhánh 'develop' cũng được tạo từ lúc bắt đầu dự án đến hết quá trình phát triển dự án. Nhánh `develop` chứa source code trước khi triển khai với những tính năng mới đã được phát triển và những tính năng này đang trong quá trình kiểm tra và thử nghiệm.
+
+Khi xây dựng một số tính năn mới, source code sẽ được tách ra từ nhánh `develop` để phát triển và được merge lại nhánh `develop` sau khi phát triển xong và sẵn sàng cho việc kiểm thử.
+
+### Các nhánh phụ trợ khác:
+Khi phát triển dự án với Git-flow, Chúng ta cần thêm 3 nhánh phụ trợ khác nữa là: `feature`, `release`, `hotfix`. Những nhánh này được sử dụng với mục đích như sau:
+
+
+### `feature` Branch:
+Nhánh `feature` là nhánh phổ biến nhất trong Git-flow. Khi cần xây dựng một tính năng mới, chúng ta tạo một nhóm với tên `feature-<TÊN-FEATURE>` từ nhánh `develop` và sau khi phát triển hoàn tất, kiểm thử và đánh giá kỹ càng, nhánh này sẽ được merge trở lại nhánh `develop`.
+
+### `release` Branch:
+Nhánh 'release' được khởi tạo khi chuẩn bị xuất bản một version mới, thường được đặt tên như `feature-<TÊN-PHIÊN-BẢN>`. Thông thường, trên nhánh `release` những lỗi lớn và vấn đề khó đã được giải quyết và chúng ta chỉ xử lý những lỗi nhỏ hoặc những cài đặt đặc biệt không thể thực hiện trên nhánh `develop`.
+
+Sau khi triển khai phiên bản mới trên nhánh `release` này, chúng ta merge nhánh `release` và vào **cả nhánh `master` và `develop`** sau đó gán nhãn (tag) phiên bản release vào nhánh `master`.
+
+### `hotfix` Branch:
+Nhánh `hotfix` được tạo để giải quyết một số lỗi nghiêm trọng trực tiếp từ nhánh `master`. Những lỗi này thường nghiêm trọng và đòi hỏi xử lý ngay lập tức.
+
+Nhánh `hotfix` được tách ra từ  nhánh `master` và được merge vào **cả nhánh `master` và `develop`** sau khi giải quyết xong. Việc merge nhánh `hotfix` và nhánh `develop` để chắc chắn răng lỗi đã được sửa trong những lần phát hành tới từ nhánh `master`.
+
+
+#### Tóm tắt luồng công việc với Git-flow:
+
+	1. Bắt đầu tạo nhánh `master`
+	2. Tạo nhánh `develop` từ `master` và các lập trình viên phát triển trong nhánh `develop`.
+	3. Nếu cần xây dựng một số chức năng như Đăng ký theo dõi hoặc thanh toán. Developer A tạo nhánh từ `develop` branch để phát triển tính năng đăng ký theo dõi, developer B cũng tạo nhánh từ nhánh develop branch để phát triển tính năng thanh toán.
+	4. Sau khi hoàn thành và kiểm thử sẵn sàng các chức năng đó, các nhánh `feature-*` sẽ được merge lại vào nhánh `develop` 
+	5. Khi những tính năng mới được kiểm tra kĩ càng và chuẩn bị cho xuất bản phiên bản mới, chúng ta tạo nhánh `relese` từ nhánh 'develop'
+	6. Sau khi phát hành phiên bản mới, nhánh `relese-*` được merge lại vào nhánh `develop` và nhánh `master`
+	8. Nếu có lỗi nghiêm trọng được phát hiện sau khi triển khai, hãy tạo nhánh `hotfix` để sửa lỗi 1 cách khẩn cấp và phân phối phiên bản sửa lỗi ngay lập tức. Nhán `hotfix-` được merge vào nhánh master và nhánh develop ngay sau khi sửa lỗi 
+
+
+## 3. Kết Luận
+Ngoài Git-flow, chúng tà còn có những bộ nguyên tắc khác đơn gản hơn như [Github flow](https://guides.github.com/introduction/flow/#:~:text=GitHub%20flow%20is%20a%20lightweight,where%20deployments%20are%20made%20regularly.), [Gitlab flow](https://docs.gitlab.com/ee/topics/gitlab_flow.html).
+
+Git-flow là một bộ nguyên tắc giúp chúng ta làm việc cùng nhau tốt hơn, đỡ những xung đột không đáng có. Nhưng ngay cả khi có những nguyên tắc nhưng không sử dụng nó thì những nguyên tắc này cũng trở nên vô nghĩa. 
+
+Như mọi người đều biết, nguyên tắc không tôn tại trong mọi trường hợp và sẽ luôn có những ngoại lệ. Mục tiêu cuối cùng là làm việc hiệu quả và một bộ quy tắc quản lý các nhánh phù hợp với nhóm sẽ được tìm ra sau những lần thử nghiệm và sửa sai.
+
+
+Tài liệu tham khảo: 
+https://www.gitkraken.com/learn/git/git-flow
+https://nvie.com/posts/a-successful-git-branching-model/
