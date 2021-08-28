@@ -1,0 +1,64 @@
+--- 
+slug: hieu-ve-git-flow-va-cach-quan-ly-branch-hieu-qua-khi-lam-viec-nhom
+title: Hiểu về git-flow và quản lý các nhánh hiệu quả khi làm việc nhóm
+
+date: 2021-08-26 
+
+tags: 
+
+  - Git
+
+--- 
+
+## 1. Tóm lược
+Git là một công cụ rất mạnh mẽ và tiện lợi nhưng mình thấy một số team vẫn tạo branch một cách bừa bãi và quản lý không hiệu quả trong khi làm việc trong dự án hoặc làm nhóm dẫn đến xung đột có thể xảy ra và rất đau đầu khi merge các branch riêng lẻ.
+
+Vì vậy chúng ta cần có một bộ nguyên tắc chung để xử dụng trong khi làm việc nhóm với Git.  Git-flow là quy tắc chung của Git được tạo ra với mục đích quản lý các branch trong lúc làm việc nhóm hiệu quả hơn
+
+## Git
+
+Trước khi tìm hiểu về Git-flow thì chúng ta hãy cùng nhau tìm hiểu về Git là gì trước:
+* Git là một công cụ để quản lý phiên bản phân tán được sử dụng khi phát triển phần mềm
+* Git được phát triển vào năm 2005 bởi Linus Torvalds (Người phát triển Linux đầu tiên cùng với các nhà phát triển Linux khác)
+* Trong quá trình phát triển vần mềm, các lập trình viên phải lặp lại quá trình sửa đổi, thêm và xóa mã nguồn vô số lần. Git là công cụ giúp các developer có thể quản lý mã nguồn, phiên bản một cách hệ thông.
+* Bất kì ai cũng có thể tải xuống và sửa đổi mã nguồn Linux do người khác tạo, đồng thời theo dõi lịch sử sửa đổi,  mã nào đã được sửa hoặc thêm vào.
+* Trước khi Git ra đời, có một vài công cụ phát triển phần mềm tập trung khác nhưng Linus Torvalds cho rằng tất cả những công cụ trước đó đề thiếu khả năng mở rộng và không phù hợp để mọi người làm việc cùng lúc.
+* Git  được phát triển với mục tiêu tạo ra một hệ thống ổn định và có thể sử dụng bởi 1000 người cùng lúc.
+
+Để sử dụng git, bạn cần hiểu một số khái niệm cơ bản như:
+* commit
+* branch
+* merge
+* clone | pull | push | rebase
+
+Mọi người có thể tìm hiểu thêm về Git [tại đây](https://git-scm.com/docs)
+
+## 2. Git-flow
+### Khái niệm cơ bản
+
+**Các loại branch trong Git-flow**
+* master:
+* develop:
+* feature:
+* release:
+* hotfix:
+
+#### Luồng công việc với Git-flow
+	1. Bắt đầu tạo nhánh master
+	2. Tạo nhánh develop từ master có nội dung giống như nhánh này. Các lập trình viên phát triển trong nhánh develop này
+	3. Nếu cần xây dựng một số chức năng như ....., developer A tạo nhánh từ develop branch để phát triển tính năng đăng ký theo dõi, developer B cũng tạo nhánh từ nhánh develop branch để phát triển tính năng thanh toán.
+	4. Sau khi hoàn thành chức năng đó, các nhánh chức năng sẽ được merge lại vào nhánh developer 
+	5. Sau khi hoàn thành nhánh master sẽ được tạo từ nhánh master và nhánh develop
+	6. Nhánh master 
+	7. Để thêm 1 phiên bản trong nhánh chính, hãy tạo 1 thẻ và triển khai nó trong môi trường thực
+	8. Nếu có lỗi được phát hiện sau khi triển khai, hãy tạo nhánh hotfix để sửa lỗi 1 cách khẩn cấp và phân phối phiên bản sửa lỗi ngay lập tức. Nhán hotfix- được merge vào nhánh master và nhánh develop ngay sau khi sửa lỗi 
+
+
+## 3. Kết Luận
+
+Ngay cả khi có nguyên tắc, sẽ vô nghĩa nếu không tuân thủ, 
+Nguyên tắc không tồn tại trong mọi trường hợp, luôn có ngoại lệ
+Mục tiêu cuối cùng là cùng nhau làm việc hiệu quả
+
+
+https://nvie.com/posts/a-successful-git-branching-model/
