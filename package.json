@@ -9,7 +9,7 @@
   "scripts": {
     "deploy": "gatsby build && bash script/add-comment.sh && gh-pages -d public -r https://$GH_TOKEN@github.com/duckyngo/duckyngo.github.io.git",
     "deploy-main": "gatsby build && bash script/add-comment.sh && gh-pages -d public -b main",
-    "build": "gatsby build",
+    "build": "gatsby build && bash script/add-comment.sh",
     "develop": "gatsby develop",
     "develop:cypress": "cross-env CYPRESS_SUPPORT=y yarn develop",
     "build:cypress": "cross-env CYPRESS_SUPPORT=y yarn build",
