@@ -2,7 +2,7 @@
 slug: hieu-ve-git-flow-va-cach-quan-ly-branch-hieu-qua-khi-lam-viec-nhom
 title: Hiểu về git-flow và quản lý các nhánh hiệu quả khi làm việc nhóm
 
-date: 2021-08-26 
+date: 2021-08-28
 
 tags: 
 
@@ -81,13 +81,13 @@ Nhánh `hotfix` được tách ra từ  nhánh `master` và được merge vào 
 
 #### Tóm tắt luồng công việc với Git-flow:
 
-	1. Bắt đầu tạo nhánh `master`
-	2. Tạo nhánh `develop` từ `master` và các lập trình viên phát triển trong nhánh `develop`.
-	3. Nếu cần xây dựng một số chức năng như Đăng ký theo dõi hoặc thanh toán. Developer A tạo nhánh từ `develop` branch để phát triển tính năng đăng ký theo dõi, developer B cũng tạo nhánh từ nhánh develop branch để phát triển tính năng thanh toán.
-	4. Sau khi hoàn thành và kiểm thử sẵn sàng các chức năng đó, các nhánh `feature-*` sẽ được merge lại vào nhánh `develop` 
-	5. Khi những tính năng mới được kiểm tra kĩ càng và chuẩn bị cho xuất bản phiên bản mới, chúng ta tạo nhánh `relese` từ nhánh 'develop'
-	6. Sau khi phát hành phiên bản mới, nhánh `relese-*` được merge lại vào nhánh `develop` và nhánh `master`
-	8. Nếu có lỗi nghiêm trọng được phát hiện sau khi triển khai, hãy tạo nhánh `hotfix` để sửa lỗi 1 cách khẩn cấp và phân phối phiên bản sửa lỗi ngay lập tức. Nhán `hotfix-` được merge vào nhánh master và nhánh develop ngay sau khi sửa lỗi 
+1. Bắt đầu tạo nhánh `master`
+2. Tạo nhánh `develop` từ `master` và các lập trình viên phát triển trong nhánh `develop`.
+3. Nếu cần xây dựng một số chức năng như Đăng ký theo dõi hoặc thanh toán. Developer A tạo nhánh từ `develop` branch để phát triển tính năng đăng ký theo dõi, developer B cũng tạo nhánh từ nhánh develop branch để phát triển tính năng thanh toán.
+4. Sau khi hoàn thành và kiểm thử sẵn sàng các chức năng đó, các nhánh `feature-*` sẽ được merge lại vào nhánh `develop` 
+5. Khi những tính năng mới được kiểm tra kĩ càng và chuẩn bị cho xuất bản phiên bản mới, chúng ta tạo nhánh `relese` từ nhánh 'develop'
+6. Sau khi phát hành phiên bản mới, nhánh `relese-*` được merge lại vào nhánh `develop` và nhánh `master`
+7. Nếu có lỗi nghiêm trọng được phát hiện sau khi triển khai, hãy tạo nhánh `hotfix` để sửa lỗi 1 cách khẩn cấp và phân phối phiên bản sửa lỗi ngay lập tức. Nhán `hotfix-` được merge vào nhánh master và nhánh develop ngay sau khi sửa lỗi 
 
 
 ## 3. Kết Luận
