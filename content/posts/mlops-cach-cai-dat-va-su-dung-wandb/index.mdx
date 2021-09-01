@@ -1,8 +1,8 @@
 --- 
 slug: cach-cai-dat-va-su-dung-wandb-de-experiment-tracking-ml
-title: MLOps-Cách cài đặt và sử dụng Wandb để theo dõi thử nghiệm(experiment tracking) trong Machine Learning 
+title: (MLOps) Cách cài đặt và sử dụng Weight & Biases để theo dõi thử nghiệm, experiment tracking trong Machine Learning 
 
-date: 2021-09-01 
+date: 2021-08-31 
 
 tags: 
 
@@ -23,6 +23,7 @@ Giải thích các từ ngữ (terminology) trong wandb:
 * `Note`: Một ghi chú ngắn gọn như ghi chú lúc bạn commit gì đó trong Git.
 * `Tags`: Để gán nhãn và thử nghiệm (ví dụ: baseline..). Có thể sửa trên dashboard.
 
+
 ## 2. Cài đặt
 Để cài đặt, các bạn vào trang chủ của Wandb [tại đây](https://wandb.ai/site) để đăng ký bằng thành viên. Có thể đăng ký bằng tài khoản Github hoặc Google một cách dễ dàng.
 
@@ -42,7 +43,7 @@ wandb: Paste an API key from your profile and hit enter:
 
 Bấm vào liên kết trên  `https://wandb.ai/authorize`, sao chép chuỗi token, và dán vào terminal và nhấn **Enter**. 
 
-## 2. Sử dụng Weight and Bias để theo dõi các thử nghiệm
+## 2. Sử dụng Weight and Biases để theo dõi các thử nghiệm
 
 Wandb có thể tích hợp vào rất nhiều nền tảng như PyTorch, Keras, Hugging Face... Trong bài viết này, mình sẽ hưỡng dẫn cách tích hợp vào Pytorch, những nền tảng khác cũng được tích hợp một cách tương tự.
 
@@ -155,6 +156,8 @@ for batch_idx, (data, target) in enumerate(train_loader):
     # 4. Log metrics to visualize performance
     wandb.log({"loss": loss})
 ```
+
+Ngoài ra Wandb còn có một tính năng rất hay nữa đó là gửi tin nhắn về Slack channels để thông báo cho cả team biết lúc một thử nghiệm hoàn thành hoặc thất bại. Rất tiện lợi phải không nào.
 
 
 ## 4. Kết luận
