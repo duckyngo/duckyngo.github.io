@@ -23,8 +23,6 @@ Giải thích các từ ngữ (terminology) trong wandb:
 * `Note`: Một ghi chú ngắn gọn như ghi chú lúc bạn commit gì đó trong Git.
 * `Tags`: Để gán nhãn và thử nghiệm (ví dụ: baseline..). Có thể sửa trên dashboard.
 
-![Wandb Project](./wandb_1.png)
-
 ## 2. Cài đặt
 Để cài đặt, các bạn vào trang chủ của Wandb [tại đây](https://wandb.ai/site) để đăng ký bằng thành viên. Có thể đăng ký bằng tài khoản Github hoặc Google một cách dễ dàng.
 
@@ -72,6 +70,7 @@ for batch_idx, (data, target) in enumerate(train_loader):
 ```
 
 **Đặt tên cho  `Run`:**
+
 Nếu không đặt tên cho `Run`, wandb sẽ tự động đặt tên cho các `Run` như: `splendid-elevator-2, misunderstood-frost-1, stellar-dragon-14...`. Chúng ta có thể đặt tên lại bao gồm những cài đặt của mình như sau:
 
 ```
@@ -110,6 +109,7 @@ wandb.config.architecture = "unet"
 
 
 **Lưu vào nhật ký các kết quả**
+
 Chúng ta có thể lưu lại những hình ảnh, accuracy, loss vào Wandb bằng cách chạy hàm `wandb.log()`
 
 ```
@@ -119,6 +119,7 @@ wandb.log({
 ```
 
 Sau khi cài đặt và chạy, những thông số và kể quả của thử nghiệm sẽ được lưu lại và theo dõi trên tài khoản wandb.ai của bạn nhử thế này: 
+
 ![Wandb Runs](./wandb_2.png)
 
 
@@ -129,10 +130,36 @@ Ngoài những tham số và kết quả của mô hình thì Wandb còn tự d�
 
 Mọi người có thể tham khảm thêm nhiều ví dụ khác [tại đây](https://github.com/wandb/examples).
 
-## 3. Cách làm việc với team member dùng Weight and Bias
+## 3. Cách làm việc với team member dùng Weight and Biases
+Wandb cho phép chúng ta làm việc nhóm 1 cách hiệu quả, giúp tránh việc những thành viên trong nhóm chạy lại cũng một config trùng lặp. Thững thành viên trong nhóm hoặc team lead có thể có cái nhìn toàn cảnh về những thử nhiệm đang được chạy ở trong nhóm.
+
+Để tạo 1 team trên wandb, chúng ta bấm vào hình profile ở góc phải trên trang chủ wandb sau khi đăng nhập. Nhập team name và tạo team cho mình sau đó mời các thành viên khác vào team. 
+
+Sau khi tạo team, các thành viên phải thay đổi tham số `entity` thành tên của team ở bước khởi tạo `Run` như sau: 
+
+```{4}
+import wandb
+
+# 1. Start a new run
+wandb.init(project='gpt-3', entity='kynd-team')
+
+# 2. Save model inputs and hyperparameters
+config = wandb.config
+config.learning_rate = 0.01
+
+# 3. Log gradients and model parameters
+wandb.watch(model)
+for batch_idx, (data, target) in enumerate(train_loader):
+  ...
+  if batch_idx % args.log_interval == 0:
+    # 4. Log metrics to visualize performance
+    wandb.log({"loss": loss})
+```
+
 
 ## 4. Kết luận
 
+Mình đã hưỡng dẫn cách sử dụng Wandb để lưu lại và theo dõi những thử nghiệm trong lúc tạo mô hình machine learning. Việc theo dõi thử nghiệm (experiment tracking) là rất quan trọng bởi vì sau này, nếu bạn cố gắng nhìn lại hay nhớ lại cách bạn đã tạo ra một mô hình nào đó, có những thông tin này sẽ thực sự hữu ích để giúp bạn mở rộng hoặc cải thiện kết quả của mình.
 
 
 Tài liệu đọc thêm: 
