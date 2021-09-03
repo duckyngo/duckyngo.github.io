@@ -1,6 +1,6 @@
 --- 
 slug: vong-doi-phat-trien-va-trien-khai-mo-hinh-hoc-may-ml-lifecycle-deployment
-title: (MLOps) Vòng đời phát triển và triển khai mô hình học máy (ML Lifecycle & Deployment)
+title: Vòng đời phát triển và triển khai mô hình học máy (ML Lifecycle & Deployment)
 
 date: 2021-09-03 
 
@@ -47,9 +47,11 @@ Biết được vòng đời của mộ dự and Machine Learning là rất quan
 
 ## 3. Triển khai mô hình học máy
 ### Những khó khăn chính trong lúc triển khai
+
 Trong lúc triển khai mô hình học máy, có 2 khó khăn lớn nhất mà chúng ta thường gặp phải đó là những vấn đề về **Mô hình Học máy** và vấn đề về **Kỹ thuật phần mềm**.
 
 **Mô hình học máy, thống kê:** 
+
 Một trong những khó khăn phổ biến nhất trong mô hình học máy đó là sự _lệch pha khái niệm_ và _lệch pha dữ liệu_. Đơn giản hơn đó là sự  _thay đổi của dữ liệu đầu vào sau khi triển khai hệ thống_. Đó có thể do điều kiện môi trường như ánh sáng, tiếng ồn hoặc một số nhiễu nào đó.
 
 Sự thay đổi, lệch pha của dữ liệu có thể xảy ra một cách từ từ như từ điển Tiếng Anh được thêm vào một số từ mới tốc độ rất chậm. Trong mô hình dự đoán mẫu xe ô tô dựa vào hình ảnh mà khách hàng tải lên của một hàng sản xuất xe ô tô, mỗi năm một lượng xe mới được đưa ra thì trường. Đôi khi dữ liệu bị thay đổi một cách đột ngột như việc Covid-19 làm cho những hệ thống dự đoán của tài chính hoặc ngân hàng xảy ra lỗi.
@@ -57,6 +59,7 @@ Một ví dụ cho sự lệch pha khái niệm đó là: Khi bạn xây dựng 
 
 
 **Kỹ thuật phần mềm:**
+
 Một khó khăn nữa trong khi xây dựng hệ thống học máy đó là kỹ thuật phần mềm. Có một danh sách những điều chúng ta cần kiểm tra cho ứng dụng của mình đó là:
 * **Realtime** or **Batch**: Liệu có cần thiết kế một hệ thống thời gian thực hay chỉ cần chạy một gói dữ liệu đầu vào và nhận kết quả sau một khoảng thời gian.
 * **Cloud** or **Edge/ Web Browser** or **On-device**: Hầu hết các hệ thống học máy được triển khai trên Cloud những cũng có một số hệ thống được triển khai trên máy chủ của công ty hoặc ngay trên thiết bị như điện thoại di động hoặc hệ thống nhúng. 
@@ -67,6 +70,7 @@ Một khó khăn nữa trong khi xây dựng hệ thống học máy đó là k�
 Việc xác định trước những yếu tố trên giúp chúng ta lựa chọn một kiến trúc phù hợp khi triển khai hệ thống học máy.
 
 ### Những mô hình triển khai mẫu
+
 Trong khi triển khai những mô hình học máy, có một vãi những mô hình mẫu (Design Patterns) thường được sử dụng trong nhiều ứng dụng và nhiều lĩnh vực khác nhau. Sau đây là một số những mô hình mẫu, use-case:
 1. **Dịch vụ, sản phẩm mới:** Một dịch vụ mới chưa từng được triển khai trước đây. Với loại này, chúng ta nên bắt đầu với một lượng nhỏ dữ liệu / traffic và mở rộng nó một cách đều đặn.
 2. **Tự động hoá/ Hỗ trợ công việc thủ công:**  Những công việc này trước đây đã được thực hiện bởi con người. Chúng ta muốn dùng ML hỗ trợ hoặc tự động hoá công việc đó. Chúng ta có một số các options để triển khai dựa vào độ thay thế con người (**shadow mode**).
@@ -74,6 +78,7 @@ Trong khi triển khai những mô hình học máy, có một vãi những mô 
 
 
 ### Theo dõi mô hình
+
 Sau khi triển khai mô hình học máy, chúng ta cần phải theo dõi liệu hệ thống có đạt được độ chính xác cần thiết hay không. Một trong những cách phổ biến nhất đó là sử dụng **bảng theo dõi (Dashboard)**. Dựa vào việc theo dõi thệ thống này chúng ta có thể phát hiện được một số lỗi trong quá trình vận hành, việc thiếu hụt dư liệu đầu vào hoặc những vấn đề khác. Để quyết định những thông số nào cần theo dõi chúng ta căn cứ vào những lỗi có thể xảy ra của hệ thống. Hoặc chúng ta có thể bắt đầu với nhiều thống số cùng lúc và sau đó loại bỏ những thông số không hữu ích. 
 
 Một số thông số thường được theo dõi:
@@ -86,6 +91,7 @@ Một số thông số thường được theo dõi:
 Image from Coursera, Introduction to Machine Learning in Production.
 
 **Huấn luyện và triển khai mô hình là quá trình lặp đi lặp lại:** 
+
 Trong lúc huấn luyện mô hình, chúng ta bắt đầu với dữ liệu, làm thí nghiệm để huấn luyện mô hình, sau khi xây dựng mô hình chúng ta cần phân tích lỗi (error analysis). Dựa vào kết quả phân tích đo, chúng ta quay lại và suy nghĩ cách để cải thiên mô hình hoặc dữ liệu. Đây là một vòng lặp cho đến lúc chúng ta đạt được kết quả đủ tốt.
 
 Việc triển khai mô hình cũng được coi như một vòng lặp. Đầu tiên chúng ta triển khai mô hình và thiết lập hệ thống theo dõi. Tiếp theo là chạy thử nghiệm với một lượng dữ liệu thực tế, điều đó giúp chúng ta có thể phân tích hiệu năng, cập nhật và tiếp tục theo dõi hệ thống.  
