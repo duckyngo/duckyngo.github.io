@@ -1,0 +1,74 @@
+--- 
+slug: rules-of-ml
+title: "Nguyên tắc làm việc với Machine Learning và best practices"
+
+date: 2021-09-08
+
+tags: 
+
+  - AI & ML
+
+---
+
+Mình thấy đây là một bài viết hay 
+
+Một số thuật ngữ:
+* Thực thể (Instance): Những thứ mà chúng ta muốn dự đoán. Ví dụ: Một trang web mà chúng ta đang muốn dự đoán nó là jav hay bình thường..
+* Nhãn (Label): Một nhãn, câu trả lời của một công việc dự đoán. Nó có thể là kết quả được tạo bởi mô hình hoặc nó là một nhã được cung cấp bởi tập huấn luyện.
+* Đặc tính (Feature): Một đặc tính (property) của một thực thể được sử dụng trong công việc dự đoán. Ví dụ: một trang web có thể có một đặc tính "có hình ảnh khiêu dâm hoặc hoặc không..."
+* Cột đặc tính (Feature Column): Một tập hợp các đặc tính có liên quan, ví dụ như tập hợp những quốc gia mà người dùng có thể sinh sống. Một ví dụ mẫu có thể có một hoặc nhiều đặc tính nằm trong cột đặc tính. "Feature column" là một thuật ngữ được Google tự đặt ra.
+* Ví dụ mẫu (Example): Là một instance cùng với đặc tính và nhãnh của nó.
+* Mô hình (Model): Một công việc dự đoán được thể hiện dưới dạng thống kê. Chúng ta huấn luyện mô hình trên những ví dụ mẫu và dùng mô hình đó để dự đoán.
+* Objective: Một cách đánh giá, tính toán (metrics) mà mô hình đang tối ưu
+* Pipeline: Cơ sở hạ tầng xung quanh một thuật toán học máy. Bao gồm thu thập dữ liệu từ front-end, xắp xếp vào file dữ liệu, huấn luyện một hoặc nhiều mô hình, triển khai mô hình vào thực tiễn.
+* CLick-through Rate: Tỉ lệ người dùng của một trang web click vào quảng cáo
+
+# Mở đầu:
+
+Hãy thực hiện học máy máy như bạn là một kỹ sư tuyệt vời, chứ không phải là một chuyên gia học máy mà bạn không phải.
+
+Hầu hết những vấn đề mà bạn đang giải quyết là vấn đề về kĩ thuật. Thậm chí nếu bạn có tất cả những kỹ năng học máy tuyệt vời nhất, hầu hết những kết quả mà bạn đạt được là từ những đặc tính (features) tốt nhất chứ không phải từ những thuật toán học máy tốt nhất.
+
+1. Đảm bảo hệ thống, pipeline chắc chắn, có tính liên kết từ đầu đến cuối.
+2. Bắt đầu với những mục tiêu hợp lý.
+3. Thêm những tính năng thông thường (common-sense features) một cách tự nhiên.
+4. Đảm bảo hệ thống, pipeline vẫn duy trì sự liên kết.
+
+Phương pháp tiếp cận này được sử dụng tốt trong một thời gian dài. Chuyển hướng tiếp cận khi không còn thủ thuật đơn giản nào giúp cản thiện hơn nữa. Việc phức tạp hệ thống sẽ làm chậm phát hành trong tương lai.
+Nếu sau khi đã sử dụng hết những thủ thuật đơn giản, các phương pháp học máy tiên tiến hơn sẽ cần thiết và được nói đến ở phần Phase III.
+
+Bài viết này được phân loại như sau:
+1. Phần đầu tiên giúp chúng ta hiểu được thời gian nào là hợp lý để xây dựng một mô hình học máy.
+2. Phần thứ hai nói về triển khai một hệ thống đầu tiên
+3. Phần thứ ba nói về vệ khởi chạy và lặp lại trong lúc thêm những tính năng mới và hệ thống, cách đánh giá mô hình và sự lệch pha giữa huấn luyện và phục vụ thực tế.
+4. Phần thứ tư nói về những điều bạn có thể làm sau khi đạt đến một kết quả nhất định
+
+
+## Before Machine Learning
+### Rule #1: Don't be afraid to launch a product without machine learning. (Đừng ngại việc khởi chạy một sản phẩm mà không áp dụng học máy)
+
+Mô hình học máy là tuyệt nhưng nó đòi hỏi dữ liệu. Theo lý thuyết, bạn có thể lấy dữ liệu từ những vấn đề khác và thử xây dựng một mô hình cho sản phẩm mới, nhưng nó có thể kém hiệu quả hơn một mô hình truyền thống cơ bản (heuristics). Nếu bạn nghĩ rằng học máy sẽ tăng 100% hiệu năng thì mô hình truyền thống sẽ giúp chúng ta 50% trong đó.
+Ví dụ, nếu chúng ta đang xếp hạng ứng dụng trên chợ ứng dụng, chúng ta có thể sử dụng tỉ lệ hoặc số lượng cài đặt như một mô hình truyền thống. Nếu bạn muốn phát hiện span, hãy lọc những nhà xuất bản đã spam trước đó. Đừng ngại việc sử dụng sự chỉnh sửa từ con người. Nếu bạn cần xếp hạng những liên lạc, hãy xếp hạng những liên lạc được sử dụng thường xuyên (hoặc thập chí là theo thứ tự chữ cái).
+Nếu học máy không hoàn toàn cần thiết cho sản phẩm, hãy đừng dùng nó cho đến khi chúng ta có dữ liệu.
+
+### Rule #2: First, design and implement metrics. ( Đầu tiên hãy thiết kế và thực hành với những phép đánh giá, metrics)
+
+Trước khi chính thức hóa những gì một hệ thống học máy sẽ làm, hãy theo dõi hệ thống hiện tại nhiều nhất có thể. Bởi vì:
+1. Sẽ dễ hơn để nhận được sự đồng ý từ người dùng của hệ thống ngay từ đầu.
+2. Nếu bạn nghĩ rằng điều gì đó sẽ trở thành một vấn đề trong tương lại, sẽ tốt hơn nếu bây giờ bạn lấy và lưu lại những dữ liệu về lịch sử
+3. Nếu bạn thiết kế một phép đánh giá cho hệ thống của mình trong đầu trước, điều đó sẽ tốt hơn nhiều trong tương lai.
+4. Bạn sẽ nhận biết được những điều gì thay đổi hoặc đứng yên. Ví dụ: Bạn muốn tối ưu số lượng người dùng trong một ngày. Tuy nhiên trong giai đoạn đầu của hệ thống, bạn có thể thấy rằng sự thay đổi đáng kể của trải nghiệm người dùng không thay đổi kết quả của phép đo này. 
+
+### Rule #3: Choose machine learning over a complex heuristic ( Chọn học máy thay vì một phương pháp truyền thống phức tạp)
+Một mô hình truyền thống đơn giản sẽ giúp bạn giải quyết một vấn đề trong sản phẩm. Một mô hình truyền thống phức tạp là không thể bảo trì. Một khi bạn có dữ liệu và ý tưởng cơ bản về những gì bạn muốn đạt được, hãy chuyển qua sử dụng mô hình học máy. 
+Giống như những nhiệm vụ kỹ thuật phần mềm khác, bạn sẽ muốn cập nhật ngay lập tức 
+
+
+### Tài liệu tham khảo:
+
+[Introducing the Inclusive Images Competition](https://developers.google.com/machine-learning/guides/rules-of-ml)
+
+
+
+
+
