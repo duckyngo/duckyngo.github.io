@@ -57,16 +57,17 @@ Một số bước có thể áp dụng để giảm bớt lỗi xảy ra ở c�
 	* Cân nhắc việc rollouts (phát hành)  từ từ: chúng ta phát hành một lượng người dùng nhỏ trước, theo dõi và đảm bảo ứng dụng hoạt động như mong đợi và sau đó tăng lượng phát hành lên.
 	* Cưỡng chế cập nhật là một giải pháp hữu hiệu
 
+
 ### 3. The Long Tail of Old App Versions:
 ![](7Y2HqRL9Q2ub5sTGitub_versions-by-app-ver.png)
 
 
 Những phiên bản cũ sẽ vẫn tồn tại trong một thời gian dài và có thể đến một vài năm. Khoảng thời gian dẽ được rút ngắn nếu chúng ta áp dụng cập nhật cưỡng chế một cách đều đặn. Hầu hết người dùng sẽ cập nhật phiên bản mới trong một vài ngày nhưng **sẽ tồn tại một cái đuôi dài với người dùng bị trễ một vài phiên bản phía sau** . Những phiên bản cũ thường không được kiểm tra đều đặn bởi vì nó tốn rất nhiều công sức và không mang lại nhiều lợi ích.
  
+
 ### 4. Deeplinks
 ![](1*YwmqEKXCDKgpp2XtnmLFfQ.png)
 Image from [2]
-
 
 Deeplinks cung cấp một đường dẫn có thể mở một màn hình cụ thể trong ứng dụng. 
 Một vài thứ làm cho việc triển khai deeplinks gặp khó khăn:
@@ -82,13 +83,17 @@ Một vài thứ làm cho việc triển khai deeplinks gặp khó khăn:
 Push notification thường được sử dụng để thông báo hoặc như một công cụ marketing. Việc cài đặt và vận hành push notification là phức tạp. Đối với cả Android và iOS chúng ta cần phải nhận token từ server (FCM cho Android và APNs cho iOS) và lưu token này trên backend. Chúng ta cần thống nhất với backend về những loại thông báo nào và lúc nào thì sẽ được gửi. 
 Một số khó khăn với push notification cũng giống như deeplinks, chúng ta cần xử lý tương thích ngược, vấn đề về state trong ứng dụng, lên kế hoạch trước… Ngoài ra người dùng có thể lựa chọn việc nhận thông báo hoặc không, việc đẩy thông báo cũng không được đảm bảo bởi chúng ta phụ thuộc vào việc xử lý của Apple và Google.
 
+
 ### 6. App Crashed 
 
 ![](Screen-Shot-2017-09-25-at-8.49.26-PM.png)
 
 App crashed là một trong những lỗi được chú ý trong tất cả Mobile app và thường gây ảnh hưởng lớn đến việc kinh doanh. Người dùng sẽ cảm thấy ứng dụng không ổn định và ngừng sử dụng ứng dụng hoặc để lại review xấu. Việc đầu tiên chúng ta cần làm là theo dõi lúc nào crashed xảy ra và có đầy đủ thông tin gỡ lỗi. Chúng ta có thể tự xây dựng một hệ thống báo cáo crash hoặc sử dụng một số giải pháp theo dõi như Crashlytics…
 
+
 ### 7. Offline Support
+![](B27CAEED-B027-41E5-9F09-98E7F06E9D9C.png)
+
 Người dùng thường mong đợi ứng dụng sẽ chạy ổn định ngay cả khi bị mất kết nối. Việc xây dựng chế độ offline cần thêm những phức tạp như sau:
 	* Phát hiện việc thiết bị đang ở chế độ offline: OS có thể cho chúng ta biết khi người dùng online những nhiều lúc nó không thể sử dụng. Cụ thể như khi thiết bị kết nối với Wi-fi nhưng không thể truyền dữ liệu.
 	* Phát hiện tốc độ và độ trễ của mạng và thay đổi cách xử lý của ứng dụng là cần thiết. Ứng dụng streaming có thể thay đổi, tối ưu stream để phù hợp với băng thông hiện có. Một số ứng dụng khác có thể cảnh báo người dùng về tốc độ mạng kém.
@@ -98,14 +103,20 @@ Chúng ta cần phải quyết định phần nào của ứng dụng sẽ có t
 
 
 ### 8. Accessibility 
+![](MobileAccessibility-Header.png)
+
 Accessibility thường là một vấn đề lớn đối với những ứng dụng có một lượng lớn, nhiều trong số họ cần những tính năng hỗ trợ và không thể sử dụng ứng dụng của bạn mà không có sự hỗ trợ đầy đủ. Ngoài ra có thể sẽ xảy ra một số vấn đề pháp lý nếu ứng dụng không cung cấp đủ accessibility. 
 Đảm bảo rằng ứng dụng có thể sử dụng được với những người có khả năng nhìn kém thông qua VoiceOver(iOS) hoặc TalkBack (Android) và đảm bảo những màu sắc và thành phần chính có đủ độ tương phải là những yêu cầu cơ bản nhất.
 
+
 ### 9. CI/CD
+
+![](5F0DC657-4620-4657-A262-AC51046C22D0.png)
+Steps for staged rollout for Uber app from [3]
 
 Việc CI/CD với một ứng dụng giống như backend service hoặc web apps là điều không thể bởi vì ứng dụng của chúng ta được review một cách thủ công bởi App Store và Play Store. Chúng ta có thể sử dụng một số công cụ (vd: Fastlane,  Bitrise…) để tự động hoá một vài bước trong khi triển khai ứng dụng như upload ứng dụng lên Apple Store, PlayStore, release ứng dụng với phần trăm rollouts trên PlayStore
 
-Một số bước release phổ biến bao gồn:
+Một số bước release phổ biến bao gồm:
 	* Dev/ nightly build: Một phiên bản được build bởi hệ thống CI/CD. Chỉ những kỹ sư hoặc nhân viên trong công ty được truy cập phiên bản này.
 	* Beta/dogfood release: Thường phát hành cho toàn thể nhân viên công ty và beta testers trước khi phát hành chính thức.
 	* General, staged rollout: phát hành vào thực tế. Thường được phát hành vào một số phần trăm nhất định người dùng.
@@ -137,10 +148,9 @@ Một vài khó khăn khi triển khai IAP:
 * Rigid pricing: Với Apple chúng ta chỉ có thể chọn những mức giá được định sẵn. Nó sẽ trở nên phức tạp nếu chúng ta thiết lập mức giá khác nhau ở mỗi nước, chúng ta sẽ phải hardcode ở binary.
 * Tài liệu tham khảo kém chất lượng.
 
-
-
-
+### References:
 [1]: [State management | Building Mobile Apps at Scale](https://www.mobileatscale.com/content/posts/01-state-management/)
 [2]: [Context is What Makes Deeplinks Matter | by Austin Hay | Medium](https://medium.com/@AustinHay/context-is-what-makes-deeplinks-matter-94214a37f178)
+[3]: [Uber mobility - Build & Release](https://www.slideshare.net/dhaval2025/uber-mobility-build-amp-release-74577549)
 
  
