@@ -28,8 +28,12 @@ module.exports = {
             slug: `/blog`,
           },
           {
-            title: `Engish`,
-            slug: `/tags/english`,
+            title: `Papers`,
+            slug: `/tags/papers`,
+          },
+          {
+            title: `Books`,
+            slug: `/tags/books`,
           },
           {
             title: `About`,
