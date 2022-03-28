@@ -1,0 +1,75 @@
+--- 
+slug: what-why-and-how-of-linux-screen
+title: What, Why and How of Linux Screen
+
+date: 2022-03-28
+
+tags: 
+
+  - Linux
+  - Tools
+
+--- 
+
+
+## What is screen?
+Screen is a terminal multiplexer which helps you to start a screen session and open any number of windows inside the session.
+
+
+## Why do we need screen?
+Sometimes, when we perform a **long-running task on a remote machine** and suddenly the connection lost or your client machine have problem, the SSH session will be terminated and all of your work is GONE. 
+
+It happend many times especially in training a Machine Learning/ Deep Learning models because sessions are dependent on your client machine. Fortunately, we can eliminate the problem by using a utility called **screen**
+
+## How to use screen?
+
+#### 1. Install screen for Ubuntu
+`sudo apt-get install screen`
+
+#### 2. Run Screen for the first time
+`screen`
+
+Now, you can run a long-running task like training a Deep Learning models, download very heavy files without worrying about the connection lost . 
+
+To detach an attached screen :
+`screen -d`
+
+Press **CTR-A** then press **d** to detach but preserve the screen, you can re-attach later.
+
+#### 3. Re-attach the Terminal session
+`screen -r`
+This command will re-attach to your current running session if you just have 1 screen session.
+In case of you have more than 1 screen session, you can use the command below to see all sessions:
+`screen -ls`
+
+The results will be like:
+```
+(base) medic01@u20:/data1/kynd$ screen -ls
+There is a screen on:
+        3350892.pts-9.u20       (2022년 03월 28일 20시 42분 19초)       (Attached)
+1 Socket in /run/screen/S-medic01.
+```
+
+Now you can get the screen id and re-attach by that id by typing:
+`screen -r your_screen_id `
+
+
+#### 4. To create screen session with a name
+`screen -S session_name   # Note: use a capital S`
+
+You will see  your session with name like below:
+```
+(base) medic01@u20:/data1/kynd$ screen -ls
+There are screens on:
+        3351224.session_name    (2022년 03월 28일 20시 46분 01초)       (Attached)
+        3350892.pts-9.u20       (2022년 03월 28일 20시 42분 19초)       (Attached)
+2 Sockets in /run/screen/S-medic01.
+```
+
+Re-attach to your screen session by:
+`screen -r session_name`
+
+#### 5. Exit from screen
+To exit from screen, simply type `exit` in your screen session. It will terminate your current screen session and back to normal ssh session
+
+
