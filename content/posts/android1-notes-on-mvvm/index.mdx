@@ -1,0 +1,65 @@
+--- 
+slug: note-on-kotlin-coroutines-live-data
+title: Notes on Kotlin Coroutines with Live Data in Android
+
+date: 2022-03-03
+
+tags: 
+
+  - Android
+  - Mobile
+
+--- 
+
+
+```
+// The DataSource is just an interface which define which function
+interface DataSource {
+    fun getCurrentTime(): LiveData<Long>
+    fun fetchWeather(): LiveData<String>
+    val cachedData: LiveData<String>
+    suspend fun fetchNewData()
+}
+
+// DefaultDataSource is the default implementation of DataSource
+```
+
+
+CoroutineLiveData: Allow controlling a `LiveData` from a coroutine block.
+
+### LiveData builder that emits values:
+```
+    // When observed, it generates a new value every second.
+    fun getCurrentTime(): LiveData<Long> =
+        liveData {
+            while (true) {
+                emit(System.currentTimeMillis())
+                delay(1000)
+            }
+        }
+```
+
+### Transformation
+Transformation, like `map` and `switchMap` are running in the UI thread.
+However, Combining of `switchMap` with `liveData` builder can help us **call suspend functions or move the transformation to different thread.**
+```
+val currentTimeTransformed = currentTime.switchMap {
+  liveData(defaultDispatcher) { emit(timeStampToTime(it)) }
+}
+```
+
+
+### Using emit and emitSource
+We can update one `liveData` from another LiveData using `emitSource`:
+
+```
+    val currentWeather: Live<String> = liveData{
+      emit("Loading...")
+      emitSource(dataSource.fetchWeather())       // this will emit value from other source
+    }
+```
+
+
+
+### Reference
+[Kotlin Coroutines with Architecture Component Live Data ViewMOdel Lifecycle](https://github.com/android/architecture-components-samples/tree/master/LiveDataSample)
