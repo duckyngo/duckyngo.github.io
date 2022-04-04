@@ -1,0 +1,37 @@
+--- 
+slug: android-architecture-mvc-mpv-mvvm
+title: "Android Architecture: MVC, MVP and MVVM"
+
+date: 2022-01-22
+
+tags: 
+
+  - Android
+  - Mobile
+
+--- 
+
+
+# Android Architecture: MVC, MVP and MVVM
+
+###  Android architecture là gì?
+Android Architecture là cách chúng ta sắp xếp, cấu trúc một dự án Android giúp cho việc scale và maintain trở nên dễ dàng hơn. Lập trình viên thường sử dụng **nhiều thời gian để maintain hơn là xây dựng dự án**. Do đó, việc áp dụng một Architecture Pattern đúng đắn rất có ý nghĩa và hữu ích sau này.
+
+### Khác biệt giữa MVC với MVVM?
+Trong Android, MVC được coi như một design pattern mặc định. Trong đó, Activity được coi như một Controller (C) và XML files là View (V). Ngược lại MVVM gom hết Activity và XML thành View và thêm một thành phần mới gọi là **ViewModel chịu trách nhiệm quản lý business logic**. Điều này giúp phân tách lớp UI và logic một cách rõ ràng.
+ 
+### Sự khác biệt giữa MVP với MVVM?
+Trong MVP, Presenter và View biết về sự tồn tại của lẫn nhau. Chúng tương tác với nhau thông qua một interface. Trong MVVM, chỉ View biết về sự tồn tại của View-Model. Ngược lại, View-Model không hề biết gì về sự tồn tại của View.
+ 
+### Đâu là yếu tố quan trọng nhất trong Android Architecture?
+Đầu tiên là sự phân chia mối quan tâm (**separation of concerns**), như business logic, UI và data model nên được phân tách riêng biệt nhau. Tiếp theo là sự tách rời, không ràng buộc (**decoupling**) của code: Mỗi đoạn code nên hoạt động như một black box do đó việc thay đổi đoạn code ở một class sẽ không ảnh hưởng những phần khác của codebase.
+ 
+### Clean Architecture là gì?
+Thuật ngữ “Clean Architecture” được giới thiệu bởi Robert C.Martin và ông có xuất bản 1 cuốn sách về nó. Ý tưởng chính của Clean Architecture là nó tách rời sự tương tác của chung ta với data thành những thực thể nhỏ hơn được gọi là “**use cases**”. Nó là cách tốt nhất để viết một đoạn code không bị ràng buộc (decoupled code).
+ 
+### Android Repositories là gì?
+Hầu hết mọi ứng dụng đều lưu trữ và truy vấn data từ một local storage hoặc từ remote server. Android repository sẽ quyết định việc sử dụng dữ liệu được lưu ở local hay remote server. Nó giúp bóc **tách logic ở storage với những class bên ngoài**.
+
+References:
+
+ [*Better Android Apps Using MVVM with Clean Architecture*](https://www.toptal.com/android/android-apps-mvvm-with-clean-architecture) 
