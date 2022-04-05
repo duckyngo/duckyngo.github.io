@@ -1,0 +1,101 @@
+--- 
+slug: nginx-cheat-sheet
+title: "Nginx Cheat Sheet"
+
+date: 2022-04-05
+
+tags: 
+
+  - DevOps
+  - Server
+
+--- 
+
+
+
+### Monitoring access log
+```
+tail -f /var/log/nginx/access.log
+```
+
+By default, the access log is located at `/var/log/nginx/access.log`. We can change the access log location at Nginx configuration file  (at `/etc/nginx/nginx.conf`
+
+```
+server {
+		access_log /path/to/file.log;
+
+		access_log on;
+}
+```
+
+
+
+### Enable ssl certificate:
+```
+server {
+	    listen              443 ssl;
+		server_name         www.app.example.com;
+		ssl_certificate {CERTIFICATE_PATH};  # example:/etc/nginx/app.example.com.crt
+		ssl_certificate_key {CERTIFICATE_KEY_PATH};  # example:/etc/nginx/app.example.com.key
+
+		#...
+}
+```
+
+
+### Miscellaneous: Set max body size and gzip
+
+```
+server {
+		gzip on;  # Turn on, off gzip compression
+		client_max_body_size 100M;  # Limit client body size to 100M
+}
+```
+
+
+### Static assets
+```
+server {
+		server_name static.example.com;
+		location / {
+				root /path/to/website;
+		}
+
+}
+```
+
+
+### Redirect error pages
+
+```
+        error_page  404              /404.html;
+
+        location = /404.html {
+
+            root   /usr/share/nginx/foo;
+
+        }
+
+
+
+        # redirect server error pages to the static page /50x.html
+
+        #
+
+        error_page   500 502 503 504  /50x.html;
+
+        location = /50x.html {
+
+            root   /usr/share/nginx/foo;
+
+        }
+
+```
+
+
+### Additional Reading:
+
+
+[NGINX Access Logs and Error Logs - JournalDev](https://www.journaldev.com/26756/nginx-access-logs-error-logs)
+[NGINX SSL Termination | NGINX Plus](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/#:~:text=To%20set%20up%20an%20HTTPS,example.com.)
+[How To Configure Nginx to Use Custom Error Pages on Ubuntu 14.04  | DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-to-use-custom-error-pages-on-ubuntu-14-04)
