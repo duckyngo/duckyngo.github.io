@@ -14,7 +14,7 @@ tags:
 
 ### Computed Properties
 When we want to calculate the value of property base on other properties. The value of this property will auto update when other properties updated
-```
+```swift
 let basicSalary = 1000
 var monthyAllowance = 300
 var totalSalary: Int {
@@ -29,7 +29,7 @@ var totalSalary: Int {
 ### Observed Properties
 When we don’t need to calculate the value of property but just monitor when the value is change
 
-```
+```swift
 let totalSalary: Int = 1000 {
 	// Right before the property get change => willSet function will trigger
 	willSet{
