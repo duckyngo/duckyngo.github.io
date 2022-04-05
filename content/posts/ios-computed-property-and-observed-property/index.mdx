@@ -1,0 +1,50 @@
+--- 
+slug: ios-computed-property-and-observed-property
+title: "Advanced Swift: Computed Properties and  Observed Properties"
+
+date: 2022-02-16
+
+tags: 
+
+  - iOS
+  - Mobile
+
+--- 
+
+
+# Advanced Swift: Computed Properties and  Observed Properties
+
+### Computed Properties
+When we want to calculate the value of property base on other properties. The value of this property will auto update when other properties updated
+```
+let basicSalary = 1000
+var monthyAllowance = 300
+var totalSalary: Int {
+		get {
+				return basicSalary + monthyAllowance
+		}
+}
+
+```
+
+
+### Observed Properties
+When we don’t need to calculate the value of property but just monitor when the value is change
+
+```
+let totalSalary: Int = 1000 {
+	// Right before the property get change => willSet function will trigger
+	willSet{
+		print(newValue)   // newValue: The value will be set to
+	}
+	// Right after the property get change => didSet function will trigger
+	didSet{
+		// We can check whether property value is valid or not
+		print(oldValue)		// oldValue: The value that this property used to be
+		if totalSalary <= MIN_SALARY:
+			totalSalary = MIN_SALARY
+	}
+}
+```
+
+
