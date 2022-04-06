@@ -11,7 +11,7 @@ module.exports = {
     siteTitle: `KYNDEV`,
     siteTitleAlt: `KYNDEV - Building useful things`,
     siteHeadline: `KYNDEV - Building useful things`,
-    siteUrl: `http://kyndev.com`,
+    siteUrl: `http://kynd.dev`,
     siteDescription: `KYNDEV - A personal blog for sharing ideas.`,
     siteLanguage: `en`,
     siteImage: `/banner.jpg`,
@@ -47,7 +47,7 @@ module.exports = {
           },
           {
             name: `Homepage`,
-            url: `http://kyndev.com`,
+            url: `http://kynd.dev`,
           },
         ],
       },
