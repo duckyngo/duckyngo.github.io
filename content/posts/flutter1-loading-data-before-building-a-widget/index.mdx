@@ -1,0 +1,83 @@
+--- 
+slug: flutter-load-data-before-building-a-widget
+title: "Flutter load data before building a Widget"
+
+date: 2022-04-22
+
+tags: 
+
+  - Android
+  - Mobile
+  - Flutter
+  - Firebase
+
+--- 
+
+Sometimes while making a new screen, we need to have the data first and then show it on the widget. It can be getting data from the Internet, reading data from Firebase, or loading from a file. Here are some ways to help us prepare the data before showing it on the widget
+
+### 1. Using `FutureBuilder `:
+
+```
+FutureBuilder<VOAAudio?>(
+    future: FirestoreProvider.getFirestoreAudioObject(ObjectId), // Load your data here
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        _pageManager.init(snapshot.data!.audio!);
+        return SafeArea(
+            child: Column(children: <Widget>[
+          Expanded(
+            child: Stack(
+              children: [...]
+		} else if (snapshot.hasError) {
+        return Text('${snapshot.error}');
+      }
+      // By default, show a loading spinner.
+		return new Center(child: const CircularProgressIndicator());
+```
+
+With this solution, our application gets new data whenever the Widget gets updated by calling the `build` function. Sometimes, It can be a problem. We can just load the data once in `initState()` function by the next solution
+
+### 2. Using *async* function and *then*  inside `initState()`:
+
+```
+// First define your async loading function
+Future<VOAAudio?> loadFirestoreAudioObject() async {
+  VOAAudio? voaAudio = await FirestoreProvider.getFirestoreAudioObject(ObjectId);
+  return voaAudio;
+}
+
+// Then call the async function in initState with then
+@override
+void initState() {
+  super.initState();
+  _pageManager = PageManager();
+  loadFirestoreAudioObject().then((value) {
+    voaLoaded = true;
+    if(value != null) {
+      _voaAudio = value;
+    } else {
+      voaLoadingError = false;
+    }
+    setState(() {});
+  });
+}
+
+@override
+Widget build(BuildContext context) {
+return MaterialApp(
+    home: Scaffold(
+    body: LayoutBuilder(builder: (context, constraints) {
+
+        // Update your View after loading data
+        if(voaLoadingError){
+            return const Text(“Connection error!”);
+        } else if(voaLoading){
+            return SafeArea(…)
+        }
+
+        // By default, show a loading spinner.
+        return const Center(child: CircularProgressIndicator());
+    }),)
+);
+}
+```
