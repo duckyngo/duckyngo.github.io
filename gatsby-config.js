@@ -8,11 +8,11 @@ module.exports = {
     // You can overwrite values here that are used for the SEO component
     // You can also add new values here to query them like usual
     // See all options: https://github.com/LekoArts/gatsby-themes/blob/master/themes/gatsby-theme-minimal-blog/gatsby-config.js
-    siteTitle: `KYNDEV`,
-    siteTitleAlt: `KYNDEV - Building useful things`,
-    siteHeadline: `KYNDEV - Building useful things`,
+    siteTitle: `KYND Dev`,
+    siteTitleAlt: `KYND Dev - Building useful things`,
+    siteHeadline: `KYND Dev - Building useful things`,
     siteUrl: `http://kynd.dev`,
-    siteDescription: `KYNDEV - A personal blog for sharing ideas.`,
+    siteDescription: `KYND Dev - A personal blog for sharing ideas.`,
     siteLanguage: `en`,
     siteImage: `/banner.jpg`,
     author: `@kynd`,
@@ -79,8 +79,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `KYNDEV - Building useful things`,
-        short_name: `kyndev`,
+        name: `KYND Dev - Building useful things`,
+        short_name: `kynd dev`,
         description: `Here is my personal blog, where I organize the pieces of knowledge that I have learned and also share it with everyone.`,
         start_url: `/`,
         background_color: `#fff`,
@@ -147,7 +147,7 @@ module.exports = {
               }
             `,
             output: `rss.xml`,
-            title: `KYNDEV Blog`,
+            title: `KYND Dev Blog`,
           },
         ],
       },
