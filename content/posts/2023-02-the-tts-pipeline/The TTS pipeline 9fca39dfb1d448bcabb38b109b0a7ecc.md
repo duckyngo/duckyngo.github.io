@@ -15,7 +15,7 @@ tags:
 
 A Text-to-Speech(TTS) or Speech synthesis is a technology that enables a computer to read text out loud. The resulting audio often sounds like a human voice. Typically, TTS systems generate speech that sounds like the speaker whose audio they were trained on and the quality of generated audio depends on the TTS model used and training dataset.
 
-![The inference pipeline for TTS audio models ([https://techcommunity.microsoft.com/t5/ai-cognitive-services-blog/neural-text-to-speech-previews-five-new-languages-with/ba-p/1907604](https://techcommunity.microsoft.com/t5/ai-cognitive-services-blog/neural-text-to-speech-previews-five-new-languages-with/ba-p/1907604))](The%20TTS%20pipeline%209fca39dfb1d448bcabb38b109b0a7ecc/Untitled.png)
+![The inference pipeline for TTS audio models ([https://techcommunity.microsoft.com/t5/ai-cognitive-services-blog/neural-text-to-speech-previews-five-new-languages-with/ba-p/1907604](https://techcommunity.microsoft.com/t5/ai-cognitive-services-blog/neural-text-to-speech-previews-five-new-languages-with/ba-p/1907604))](images/Untitled.png)
 
 The inference pipeline for TTS audio models ([https://techcommunity.microsoft.com/t5/ai-cognitive-services-blog/neural-text-to-speech-previews-five-new-languages-with/ba-p/1907604](https://techcommunity.microsoft.com/t5/ai-cognitive-services-blog/neural-text-to-speech-previews-five-new-languages-with/ba-p/1907604))
 

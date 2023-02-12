@@ -19,19 +19,19 @@ Spectrogram synthesis is one of step in TTS pipeline which transform text/phonem
 
 Audio is typically represented by a **long sequence of numbers** which indicate the audio amplitude at each point in time. One of the important factor in audio is sampling rate which representing how often the audio are recorded. Common sampling rates are 16kHz, 22.05 kHz, 44.1 kHz and 8kHz often use in telephony system.
 
-![Number of sample per second defines the sampling rate. ([https://wiki.hydrogenaud.io/index.php?title=File:Digital_wave.png](https://wiki.hydrogenaud.io/index.php?title=File:Digital_wave.png))](Spectrogram%20Synthesis%207281adec2a4249e4baee5e0f92a18efa/Untitled.png)
+![Number of sample per second defines the sampling rate. ([https://wiki.hydrogenaud.io/index.php?title=File:Digital_wave.png](https://wiki.hydrogenaud.io/index.php?title=File:Digital_wave.png))](images/Untitled.png)
 
 Number of sample per second defines the sampling rate. ([https://wiki.hydrogenaud.io/index.php?title=File:Digital_wave.png](https://wiki.hydrogenaud.io/index.php?title=File:Digital_wave.png))
 
 ### Spectrograms
 
-![Mel Spectrogram example](Spectrogram%20Synthesis%207281adec2a4249e4baee5e0f92a18efa/Untitled%201.png)
+![Mel Spectrogram example](images/Untitled%201.png)
 
 Mel Spectrogram example
 
 Raw audio stores **amplitude over time** and useful for recording and listening. When it comes to processing we usually present the audio as a spectrogram which represents **frequency over time**
 
-![Untitled](Spectrogram%20Synthesis%207281adec2a4249e4baee5e0f92a18efa/Untitled%202.png)
+![Untitled](images/Untitled%202.png)
 
 Above image indicate the process of converting a audio signal to mel spectrogram.
 
