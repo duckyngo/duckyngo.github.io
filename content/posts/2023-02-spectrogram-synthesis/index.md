@@ -1,6 +1,6 @@
 --- 
 slug: spectrogram-synthesis
-title: Spectrogram Synthesis
+title: "What is Spectrogram Synthesis in a TTS System?"
 
 date: 2023-02-12
 

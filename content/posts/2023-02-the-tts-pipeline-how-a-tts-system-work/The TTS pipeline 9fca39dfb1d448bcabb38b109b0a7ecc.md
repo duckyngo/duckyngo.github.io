@@ -1,6 +1,6 @@
 --- 
-slug: the-tts-pipeline
-title: The TTS pipeline
+slug: the-tts-pipeline-how-a-tts-system-work
+title: "TTS pipeline: How a TTS system work?"
 date: 2023-02-12
 
 tags: 
