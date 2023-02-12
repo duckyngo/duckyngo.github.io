@@ -6,7 +6,7 @@ date: 2022-01-30
 
 tags: 
 
-  - Book
+  - Books
   - Book-Takeaways
 
 --- 
