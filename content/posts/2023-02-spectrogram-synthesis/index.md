@@ -25,13 +25,13 @@ Number of sample per second defines the sampling rate. ([https://wiki.hydrogenau
 
 ### Spectrograms
 
-![Mel Spectrogram example](images/Untitled%201.png)
+![Mel Spectrogram example](images/Untitled1.png)
 
 Mel Spectrogram example
 
 Raw audio stores **amplitude over time** and useful for recording and listening. When it comes to processing we usually present the audio as a spectrogram which represents **frequency over time**
 
-![Untitled](images/Untitled%202.png)
+![Untitled](images/Untitled2.png)
 
 Above image indicate the process of converting a audio signal to mel spectrogram.
 
