@@ -11,7 +11,6 @@ tags:
 
 --- 
 
-# The TTS pipeline
 
 A Text-to-Speech(TTS) or Speech synthesis is a technology that enables a computer to read text out loud. The resulting audio often sounds like a human voice. Typically, TTS systems generate speech that sounds like the speaker whose audio they were trained on and the quality of generated audio depends on the TTS model used and training dataset.
 

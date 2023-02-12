@@ -2,7 +2,7 @@
 slug: book-takeaways-ivy-lee-method
 title: (Book-Takeaways) IVY Lee Method for prioritizing tasks
 
-date: 2022-01-30
+date: 2023-01-30
 
 tags: 
 

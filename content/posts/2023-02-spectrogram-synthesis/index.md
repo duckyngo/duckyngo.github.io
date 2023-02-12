@@ -4,14 +4,13 @@ title: Spectrogram Synthesis
 
 date: 2023-02-12
 
-tags: 
+tags:
 
   - NLP
   - TTS
 
 --- 
 
-# Spectrogram Synthesis
 
 Spectrogram synthesis is one of step in TTS pipeline which transform text/phonemes into spectrogram presentation of audio.
 
