@@ -19,6 +19,11 @@ Auto-regressive models are types of statistical models used in both Text-to-Spee
 
 In TTS, an auto-regressive model generates speech by predicting the next audio sample based on the previous samples in a sequence. This is achieved by training the model on a large corpus of speech data, where the target is to predict the audio sample at each time step given the previous samples. The models is trained to learn the statistical relationships between the speech signal and the corresponding text representation, allowing it to generate speech that sounds natural.
 
+The **output at each time step is conditioned on the previous outputs**, hence the name "auto-regressive.” An auto-regressive TTS model typically consists of two parts: an encoder that converts the input text into a continuous representation, and a decoder that generates the speech signal one step at a time based on the continuous representation. The decoder uses an autoregressive architecture, where the output at each time step is conditioned on the previous outputs and the continuous representation.
+
+Auto-regressive TTS models have been widely used for TTS tasks and have achieved high-quality results. However, they can be **slower and more computationally intensive compared to parallel TTS models**, as the decoder must generate speech one step at a time. Nevertheless, recent advances in deep learning techniques have enabled faster auto-regressive TTS models, making them more **suitable for real-time applications**.
+
+
 In TTS, an auto-regressive model transcribes speech into text by predicting the next word in a sentence given the previous words. The model is trained on large datasets of speech and text to learn the statistical relationships between speech and text, allowing it to transcribe speech accurately
 
 Auto-regressive models are widely used in TTS and STT due to their **ability to capture long-term dependencies** in the data and generate high-quality outputs. These models are also highly scalable and can be trained on large datasets in parallel, making them an attractive option for building TTS and STT system
