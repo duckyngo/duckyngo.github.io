@@ -99,4 +99,4 @@ When working with HTTP to build a server, I can't ignore status codes. These cod
 
 ### References:
 
-https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+(Mozilla Resources)[https://developer.mozilla.org/en-US/docs/Web/HTTP/Status]
