@@ -1,37 +1,33 @@
-name: Gatsby Publish
+name: CI
 
 on:
   push:
     branches:
-      - master
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
     steps:
-      # Step 1: Checkout the repository
-      - uses: actions/checkout@v3
-
-      # Step 2: Setup Node.js (using version 16 for compatibility)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          node-version: 16
-
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: yarn install
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
-
-      # Step 4: Build the Gatsby site
-      - name: Build Gatsby site
-        run: yarn run build
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
-
-      # Step 5: Deploy using Gatsby GitHub Pages action
-      - uses: enriikke/gatsby-gh-pages-action@v2
-        with:
-          access-token: ${{ secrets.ACCESS_TOKEN }}
-          deploy-branch: main
+          node-version: ${{ matrix.node-version }}
+      - name: Dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm run test
+      - name: Build
+        run: npm run build
