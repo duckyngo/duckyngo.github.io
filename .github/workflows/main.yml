@@ -13,25 +13,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js
+      # Step 2: Setup Node.js (use a compatible version)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      # Step 3: Install Dependencies
+      # Step 3: Remove package-lock.json to avoid conflicts
+      - name: Remove package-lock.json
+        run: rm -f package-lock.json
+
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: yarn install
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
 
-      # Step 4: Build the Gatsby site
+      # Step 5: Build the Gatsby site
       - name: Build Gatsby site
         run: yarn run build
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
 
-      # Step 5: Deploy to GitHub Pages
+      # Step 6: Deploy to GitHub Pages
       - name: Deploy Gatsby to GitHub Pages
         uses: enriikke/gatsby-gh-pages-action@v2
         with:
