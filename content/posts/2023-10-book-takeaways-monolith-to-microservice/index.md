@@ -12,11 +12,12 @@ tags:
 --- 
 
 
-### Book Takeaway Post: *Monolith to Microservices* by Sam Newman
+
 
 Recently, while reading Monolith to Microservices by Sam Newman, I found myself drawn to its practical insights on transforming monolithic systems into scalable, independent microservices. The book offers a treasure trove of strategies and principles that not only address technical challenges but also highlight the importance of aligning architecture with real business needs
 
-I highly recommend watching [Sam Newman’s talk on this topic](https://www.youtube.com/watch?v=GBTdnfD6s5Q&ab_channel=GOTOConferences), which complements the book beautifully."**
+I highly recommend watching [Sam Newman’s talk on this topic](https://www.youtube.com/watch?v=GBTdnfD6s5Q&ab_channel=GOTOConferences), which complements the book beautifully.
+
 ---
 
 In *Monolith to Microservices*, Sam Newman masterfully guides readers through the process of transitioning from monolithic systems to microservice architectures. This transition is not a simple goal but a thoughtful journey that requires addressing real-world constraints and business needs.
