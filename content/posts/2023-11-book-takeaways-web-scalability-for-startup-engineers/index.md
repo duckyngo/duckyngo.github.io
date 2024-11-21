@@ -1,6 +1,6 @@
 --- 
 slug: book-takeaways-web-scalability-for-startup-engineers
-title: (Book-Takeaways) Scaling Startups with "Web Scalability for Startup Engineers by Artur Ejsmont
+title: Web Scalability for Startup Engineers by Artur Ejsmont
 
 date: 2023-11-20
 

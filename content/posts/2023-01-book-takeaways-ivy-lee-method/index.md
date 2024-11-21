@@ -1,6 +1,6 @@
 --- 
 slug: book-takeaways-ivy-lee-method
-title: (Book-Takeaways) IVY Lee Method for prioritizing tasks
+title: IVY Lee Method for prioritizing tasks (Book-Takeaways)
 
 date: 2023-01-30
 

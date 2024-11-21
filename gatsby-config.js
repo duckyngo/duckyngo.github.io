@@ -36,6 +36,10 @@ module.exports = {
             slug: `/tags/books`,
           },
           {
+            name: `Photos`,
+            slug: `/tags/photos`,
+          },
+          {
             title: `About`,
             slug: `/about`,
           },
@@ -45,10 +49,10 @@ module.exports = {
             name: `Github`,
             url: `https://github.com/duckyngo`,
           },
-          {
-            name: `Homepage`,
-            url: `http://kynd.dev`,
-          },
+          // {
+          //   name: `Homepage`,
+          //   url: `http://kynd.dev`,
+          // },
         ],
       },
     },

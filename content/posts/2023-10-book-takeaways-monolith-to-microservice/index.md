@@ -1,6 +1,6 @@
 --- 
 slug: book-takeaways-monolith-to-microservice
-title: (Book-Takeaways) Monolith to Microservices by Sam Newman
+title: Monolith to Microservices by Sam Newman
 
 date: 2023-10-24
 
