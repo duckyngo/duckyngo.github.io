@@ -2,7 +2,7 @@
 slug: how-to-boost-gpu-performance-with-nvlink
 title: How to Boosting GPU Performance with NVLink
 
-date: 2024-6-1
+date: 2024-06-01
 
 tags: 
 
