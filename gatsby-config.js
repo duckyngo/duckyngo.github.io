@@ -40,6 +40,10 @@ module.exports = {
             slug: `/tags/photos`,
           },
           {
+            title: `Homelab`,
+            slug: `/tags/homelab`,
+          },
+          {
             title: `About`,
             slug: `/about`,
           },
