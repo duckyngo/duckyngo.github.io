@@ -1,5 +1,5 @@
 --- 
-slug: book-takeaways-web-scalability-for-startup-engineers
+slug: book-takeaways-posing-lindsay-adler
 title: "Book Takeaways: The Photographer's Guide to Posing: Techniques to Flatter Everyone By Lindsay Adler"
 
 date: 2024-10-02
