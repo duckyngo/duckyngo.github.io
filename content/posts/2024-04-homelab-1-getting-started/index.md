@@ -1,18 +1,17 @@
 --- 
 slug: homelab-the-birth-of-my-homelab
-title: "Homelab: The Birth of My Homelab"
+title: "The Birth of My Homelab"
 
 date: 2024-04-01
 
 tags: 
-
-  - homelab
+  - Homelab
 
 --- 
 
 
 
-#### My Homelab Journey: Why I Built a Homelab
+#### Why I Built a Homelab
 
 It all started with a simple realization: cloud services like AWS are fantastic but costly, especially when stability isn’t a top priority for my work. As someone who loves experimenting with servers and infrastructure, I stumbled upon the concept of **homelabs** while exploring alternatives. A homelab is essentially your personal server setup at home, and for me, it was a perfect playground to learn, create, and save costs.
 

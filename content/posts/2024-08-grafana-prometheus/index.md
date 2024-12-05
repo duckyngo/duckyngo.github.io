@@ -1,6 +1,6 @@
 --- 
 slug: prometheus-grafana-for-monitoring-mlops
-title: "Setting Up Prometheus + Grafana for Monitoring Machine Learning Systems"
+title: "Technical Notes: Setting Up Prometheus + Grafana for Monitoring ML Systems"
 
 date: 2024-07-29
 
