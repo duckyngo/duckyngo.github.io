@@ -1,6 +1,6 @@
 --- 
 slug: book-takeaways-posing-lindsay-adler
-title: "Book Takeaways: The Photographer's Guide to Posing: Techniques to Flatter Everyone By Lindsay Adler"
+title: "Book Takeaways: The Photographer's Guide to Posing By Lindsay Adler"
 
 date: 2024-10-02
 

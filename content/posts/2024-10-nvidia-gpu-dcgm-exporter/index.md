@@ -1,14 +1,12 @@
 --- 
 slug: advanced-gpu-metrics-using-dcgm-exporter
-title: "Techinal Note: Monitoring Advanced GPU Metrics Using DCGM Exporter"
+title: "Techinal Notes: Monitoring Advanced GPU Metrics Using DCGM Exporter"
 
 date: 2024-10-10
 
 tags: 
-  - Photos
-  - Books
-  - Book-Takeaways
-
+  - AI
+  - MLOps
 ---
 
 ## Overview
