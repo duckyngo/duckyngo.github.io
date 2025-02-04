@@ -113,6 +113,11 @@ Color and contrast significantly impact the emotional tone of an image. Masterin
 - **Complementary Colors** – Colors that neutralize each other (e.g., red cancels out cyan, blue cancels out yellow).  
 - **Hue, Saturation, and Brightness (HSB)** – Key attributes of color in digital editing.  
 
+   ### RGB vs. CMYK Color Systems
+   - RGB (Red, Green, Blue) is used for screen-based images.
+   - CMYK (Cyan, Magenta, Yellow, Black) is used for print.
+   - Opposing Colors: Red ↔ Cyan, Green ↔ Magenta, Blue ↔ Yellow. Adjusting these color relationships in editing helps correct color imbalances.
+
 ### **🔹 Bit Depth and Image Quality**  
 - **8-bit Images** – Suitable for minimal post-processing but limited in color depth.  
 - **16-bit Images** – Ideal for heavy post-production work, retaining more color data and flexibility.  
@@ -155,5 +160,160 @@ Chris Knight emphasizes that while gear is important, it is not the defining fac
 
 ---
 
-## **📷 Conclusion**  
-Mastering dramatic portrait photography involves a deep understanding of lighting, color, and post-production. Chris Knight's *The Dramatic Portrait* offers valuable insights into creating powerful images that resonate with emotion and depth. By focusing on technique rather than just equipment, photographers can elevate their work and develop a unique artistic voice.  
+
+# **The Dramatic Portrait – Extended Summary**  
+### *By Chris Knight*  
+
+## **📖 Introduction**  
+*The Dramatic Portrait* by Chris Knight is a deep dive into portrait photography, focusing on lighting techniques, post-processing, and artistic decision-making. It explores how light shapes a subject, the technical aspects of color management, and the nuances of retouching to create compelling, dramatic images. The book also touches on the psychology of human perception, guiding photographers to use contrast, composition, and retouching choices to direct the viewer’s eye.  
+
+---
+
+# **🎭 Understanding Light in Portraiture**  
+
+## **The Role of Light in Shaping the Subject**  
+The foundation of portrait photography lies in controlling light to create mood and depth. The key light is the primary source that determines the subject’s exposure, while additional lights—fill, rim, and background—help balance shadows and add dimension.  
+
+- **Key Light**: The dominant light that shapes the subject’s face.  
+- **Fill Light**: Softens shadows and reduces contrast.  
+- **Rim Light**: Helps separate the subject from the background.  
+- **Background Light**: Adds illumination or color to the environment.  
+
+### **Lighting Modifiers and Techniques**  
+- **Soft Light vs. Hard Light**: Soft light (diffused sources) creates gentle shadows, whereas hard light (small, direct sources) creates sharper contrasts.  
+- **Feathering Light**: Using the edge of a light source to achieve more even lighting.  
+- **Inverse Square Law**: The intensity of light decreases exponentially with distance, impacting contrast and brightness.  
+
+### **Lighting Ratios & Their Impact**  
+- **1:1 Ratio** – Balanced exposure between key and fill lights.  
+- **-1 Stop Fill** – The fill light is one stop darker, creating more depth.  
+- **-2 Stop Fill** – The key light dominates, producing dramatic contrast.  
+
+---
+
+# **🎨 Color Theory & Post-Processing**  
+
+## **RGB vs. CMYK Color Systems**  
+- **RGB (Red, Green, Blue)** is used for screen-based images.  
+- **CMYK (Cyan, Magenta, Yellow, Black)** is used for print.  
+- **Opposing Colors**: Red ↔ Cyan, Green ↔ Magenta, Blue ↔ Yellow. Adjusting these color relationships in editing helps correct color imbalances.  
+
+## **Understanding Bit Depth in Editing**  
+Bit depth determines how many colors an image can store:  
+- **8-bit** images have 16.8 million possible colors.  
+- **16-bit** images have trillions of colors and offer greater flexibility for post-processing.  
+- High-bit-depth images prevent banding in gradients (e.g., skies).  
+
+## **White Balance & Exposure Adjustments**  
+- White balance ensures color accuracy by correcting warm or cool tones.  
+- **Exposure Tweaks**: Raising exposure brightens an image, while reducing it darkens it.  
+- **Histogram Interpretation**: Helps balance blacks, shadows, midtones, highlights, and whites.  
+
+## **Retouching Best Practices**  
+- The goal of retouching is **subtlety**—preserve texture while enhancing features.  
+- **Common Adjustments**: Skin smoothing, color grading, sharpening, and dodging & burning.  
+- **Photoshop vs. Lightroom**:  
+  - Lightroom is useful for broad adjustments.  
+  - Photoshop allows for detailed corrections, like blemish removal.  
+
+---
+
+# **🖼️ Composition & Psychological Perception**  
+
+## **Gestalt Principles in Photography**  
+Developed in the 1920s, Gestalt principles explain how the brain perceives images:  
+1. **Figure/Ground** – Distinguishing the subject from the background.  
+2. **Proximity & Grouping** – Elements close together appear related.  
+3. **Similarity** – Repeating colors or shapes create visual harmony.  
+4. **Continuity** – The eye follows leading lines.  
+5. **Closure** – The brain fills in missing details.  
+6. **Symmetry** – Balanced images are naturally pleasing.  
+
+## **High-Key vs. Low-Key Photography**  
+- **High-Key**: Bright, soft, and low contrast (often used for beauty portraits).  
+- **Low-Key**: Dark, moody, and high contrast (common in dramatic portraits).  
+
+## **The Role of Shadows**  
+- Shadows create depth and mood.  
+- Contrast influences how light and shadow shape the subject.  
+- Without shadows, images lose dimension and look flat.  
+
+---
+
+# **🖌️ Workflow & Image Selection**  
+
+## **Editing Workflow (Start to Finish)**  
+1. **Develop RAW File in Lightroom**  
+   - Adjust exposure, contrast, highlights, and shadows.  
+   - Fine-tune white balance and color grading.  
+   - Reduce noise and sharpen details.  
+2. **Retouching in Photoshop**  
+   - Use **healing brushes** for blemish removal.  
+   - Apply **dodge & burn** to sculpt light and shadows.  
+   - Adjust **color curves** for refinement.  
+3. **Final Adjustments & Exporting**  
+   - Resize, sharpen, and apply output color space.  
+   - Export for web (sRGB) or print (Adobe RGB or CMYK).  
+
+## **Culling & Image Selection**  
+- First pass: Flag potential selects.  
+- Second pass: Rate images with stars (0-5).  
+- Final pass: Organize into categories with color tags.  
+
+---
+
+# **📷 Equipment vs. Skill: The Ongoing Debate**  
+
+## **Does Gear Matter?**  
+- Great photographers create stunning images with any camera.  
+- **Skill & Vision > Expensive Gear**.  
+- However, better gear **does** improve flexibility (e.g., dynamic range, resolution).  
+
+## **Common Misconceptions**  
+- Buying a high-end camera doesn’t replace **understanding light and composition**.  
+- A smartphone or older DSLR can produce amazing images with proper technique.  
+
+---
+
+# **📝 Final Thoughts & Takeaways**  
+1. **Light is Everything** – Understanding light’s behavior is key to great portraits.  
+2. **Retouching Should Be Subtle** – Remove distractions but keep authenticity.  
+3. **Color Theory Matters** – Adjusting curves and white balance is crucial for accurate skin tones.  
+4. **Master Exposure & Histograms** – A well-exposed image makes post-processing easier.  
+5. **Composition is Intentional** – Use Gestalt principles to guide the viewer’s eye.  
+6. **Know Your Workflow** – Lightroom for global edits, Photoshop for detailed refinements.  
+7. **Experiment with Lighting Ratios** – Play with contrast and mood in your portraits.  
+8. **Photography is About Storytelling** – What do you want your image to say?  
+9. **Gear is Secondary** – Creativity and practice are far more important than expensive equipment.  
+10. **Keep Shooting** – The more you practice, the more defined your personal style becomes.  
+
+--
+
+## **Table: Key Concepts from *The Dramatic Portrait***  
+
+| **Category**          | **Concept**                        | **Explanation** |
+|----------------------|--------------------------------|----------------|
+| **Lighting**         | Key Light                     | The main light source shaping the subject. |
+|                      | Fill Light                    | Softens shadows and reduces contrast. |
+|                      | Rim Light                     | Creates separation from the background. |
+|                      | Background Light              | Adds depth or color to the scene. |
+|                      | Soft vs. Hard Light           | Soft light has gradual shadows, while hard light creates sharp contrasts. |
+| **Color Theory**     | RGB vs. CMYK                  | RGB is used for screens, CMYK for print. |
+|                      | Color Opposites               | Red ↔ Cyan, Green ↔ Magenta, Blue ↔ Yellow. |
+|                      | Bit Depth                     | 16-bit images have more color flexibility than 8-bit. |
+|                      | White Balance                | Adjusts color temperature to keep colors accurate. |
+| **Post-Processing**  | Lightroom vs. Photoshop      | Lightroom handles general edits; Photoshop is for detailed retouching. |
+|                      | Healing Tools                 | Used for blemish and distraction removal. |
+|                      | Dodge & Burn                  | Enhances highlights and shadows for depth. |
+|                      | Color Grading                 | Adjusting tones to set a specific mood. |
+| **Composition**      | Gestalt Principles            | Psychological rules that influence perception. |
+|                      | High-Key vs. Low-Key          | High-key is bright with low contrast; low-key is dark and moody. |
+|                      | Contrast & Shadows           | Helps define depth and direct the viewer’s attention. |
+| **Photography Mindset** | Gear Importance          | Skill is more important than expensive gear. |
+|                      | Practicing & Learning        | Experience and creativity matter more than tools. |
+
+
+
+## **Quiz: *The Dramatic Portrait***  
+
+[🎯 Take the Quiz](https://questions.widenex.com/0b34b725-77af-4679-bf9f-07af04aa4ed2)  
