@@ -1,6 +1,6 @@
 --- 
 slug: book-takeaways-1-On-Camera-Flash
-title: "Book Takeaways: "On-Camera Flash" by Neil van Niekerk"
+title: "Book Takeaways: On-Camera Flash by Neil van Niekerk"
 
 date: 2025-01-29
 
