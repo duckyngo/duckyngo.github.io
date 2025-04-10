@@ -14,6 +14,10 @@ tags:
 
 Once the hardware upgrades were complete, it was time to set up the heart of my homelab: a cluster of four mini PCs. At this point, I was a complete beginner in cluster setup and virtualization, so I relied heavily on online resources. The learning curve was steep, but the result was worth every effort. Let me walk you through the process.  
 
+
+![Current server](image.png)
+
+
 ---
 
 #### Starting from Scratch: Installing Debian  
@@ -42,7 +46,7 @@ With Debian in place, I installed **Proxmox Virtual Environment (Proxmox VE)** o
 
 After connecting all four nodes, I was thrilled to see them come together as a unified cluster.  
 
-![image of the Proxmox VE cluster management portal showing all four nodes](netgear.png)
+![image of the Proxmox VE cluster management portal showing all four nodes](3de3da26-759c-4ad2-bf69-ce928ada1d79-780x470.webp)
 ---
 
 #### Centralized Management with Proxmox VE  
@@ -92,4 +96,4 @@ In future posts, I’ll dive deeper into automating VM creation, exploring advan
 
 Stay tuned for more adventures in the world of homelabs! 🚀  
 
-![Proxmox dashboard showing active VMs and resource usage](netgear.png)
+![Proxmox dashboard showing active VMs and resource usage](888e0ecf-2403-4b32-baeb-fbedfb3d3d0a.webp)
