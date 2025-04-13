@@ -46,7 +46,7 @@ With Debian in place, I installed **Proxmox Virtual Environment (Proxmox VE)** o
 
 After connecting all four nodes, I was thrilled to see them come together as a unified cluster.  
 
-![image of the Proxmox VE cluster management portal showing all four nodes](3de3da26-759c-4ad2-bf69-ce928ada1d79-780x470.webp)
+![image of the Proxmox VE cluster management portal showing all four nodes](888e0ecf-2403-4b32-baeb-fbedfb3d3d0a.webp)
 ---
 
 #### Centralized Management with Proxmox VE  
@@ -96,4 +96,4 @@ In future posts, I’ll dive deeper into automating VM creation, exploring advan
 
 Stay tuned for more adventures in the world of homelabs! 🚀  
 
-![Proxmox dashboard showing active VMs and resource usage](888e0ecf-2403-4b32-baeb-fbedfb3d3d0a.webp)
+![Proxmox dashboard showing active VMs and resource usage](3de3da26-759c-4ad2-bf69-ce928ada1d79-780x470.webp)
