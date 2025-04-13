@@ -179,6 +179,8 @@ As a Technical Lead, being able to step in and debug SIP signaling directly from
 
 
 
-These are real-world experiences I’ve encountered while deploying and maintaining SIP infrastructure in production. I wrote this article with the help of my AI assistant to better organize and present the content clearly.
+---
+
+*These are real-world experiences I’ve encountered while deploying and maintaining SIP infrastructure in production. I wrote this article with the help of my AI assistant to better organize and present the content clearly.*
 
 I hope this guide helps other DevOps, VoIP engineers, or anyone who finds themselves deep in the weeds of SIP signaling debugging.
