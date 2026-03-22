@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minh "Chiến Hào" Trần — Cố Vấn Lãnh Đạo</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --agent-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+            --agent-primary: #4361ee;
+            --agent-dark: #3a0ca3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(246, 199, 68, 0.15);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.3s;
+        }
+
+        .nav-back:hover { opacity: 0.7; }
+
+        .nav-agents {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-agents a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .nav-agents a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .nav-agents a.active {
+            background: var(--agent-gradient);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* HERO */
+        .hero {
+            margin-top: 60px;
+            padding: 4rem 2rem 3rem;
+            background: var(--agent-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--dark));
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero .role {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0,0,0,0.3);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            max-width: 700px;
+            margin: 0 auto;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-quote::before { content: '\201C'; font-size: 3rem; color: var(--gold); position: absolute; left: -25px; top: -15px; }
+
+        /* MAIN CONTENT */
+        .content {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* EXPANDABLE SECTIONS */
+        .section {
+            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            padding: 1.3rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .section-header:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        .section-header .toggle {
+            font-size: 1.5rem;
+            color: var(--gold);
+            transition: transform 0.3s;
+        }
+
+        .section.open .toggle {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 3000px;
+        }
+
+        .section-inner {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        /* STORY BUBBLES */
+        .story-bubble {
+            border-left: 4px solid var(--agent-primary);
+            background: rgba(67, 97, 238, 0.08);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1rem 0;
+        }
+
+        .story-bubble.gold { border-left-color: var(--gold); background: rgba(246, 199, 68, 0.08); }
+        .story-bubble.rose { border-left-color: var(--rose); background: rgba(230, 57, 70, 0.08); }
+        .story-bubble.teal { border-left-color: var(--teal); background: rgba(0, 180, 216, 0.08); }
+        .story-bubble.sage { border-left-color: var(--sage); background: rgba(82, 183, 136, 0.08); }
+
+        .story-bubble .speaker {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .story-bubble p {
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+
+        /* TYPOGRAPHY */
+        .section-inner h3 {
+            color: var(--gold);
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.6rem;
+        }
+
+        .section-inner h3:first-child { margin-top: 0; }
+
+        .section-inner p {
+            color: #bbb;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .section-inner strong { color: #fff; }
+
+        .section-inner ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section-inner ul li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        .section-inner ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--agent-primary);
+            font-weight: bold;
+        }
+
+        .mistake-card {
+            background: rgba(230, 57, 70, 0.08);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .mistake-card .mistake-title {
+            color: var(--rose);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .mistake-card p { color: #bbb; font-size: 0.95rem; }
+
+        .highlight-box {
+            background: rgba(246, 199, 68, 0.08);
+            border: 1px solid rgba(246, 199, 68, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .highlight-box p { color: #ddd; }
+
+        /* VN-KR LENS */
+        .lens-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .lens-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .lens-card .flag {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lens-card h4 {
+            color: var(--teal);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lens-card p { color: #bbb; font-size: 0.9rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            .hero { padding: 3rem 1.2rem 2.5rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .hero-quote { font-size: 1rem; }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .section-header h2 { font-size: 1.1rem; }
+            .lens-grid { grid-template-columns: 1fr; }
+            .nav-agents a { font-size: 0.75rem; padding: 0.25rem 0.6rem; }
+            .top-nav { padding: 0.6rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-back">← Về Trang Chính</a>
+    <div class="nav-agents">
+        <a href="01-team-lead.html" class="active">Minh</a>
+        <a href="02-delivery-manager.html">Sarah</a>
+        <a href="03-department-head.html">James</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="avatar">👨‍💻</div>
+    <h1>Minh "Chiến Hào" Trần</h1>
+    <p class="role">Team Lead tuyến đầu · Quản lý nhóm 5 người · 6 năm trong chiến hào</p>
+    <div class="badge">🔥 Thẳng Thắn Không Kiêng Nể</div>
+    <p class="hero-quote">
+        Anh/chị giờ cao hơn tôi 2 bậc. Nhưng tôi sẽ nói thật — vì nếu tôi không nói, sẽ không ai nói. Nguy hiểm nhất không phải là anh/chị sai. Nguy hiểm nhất là anh/chị ngừng nghe chúng tôi.
+    </p>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- 1. BÀI HỌC XƯƠNG MÁU -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>💔 Bài Học Xương Máu</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Từ Dev Lên Lead: Cú Sốc Đầu Đời</h3>
+                <p>Tôi được promote từ developer lên lead. Hôm trước còn ngồi cạnh nhau review code, hôm sau tôi là "sếp". Mọi người vẫn gọi tôi bằng tên, vẫn rủ tôi đi cà phê. Tôi nghĩ mọi thứ không thay đổi.</p>
+                <p><strong>Tôi đã sai.</strong></p>
+
+                <div class="story-bubble gold">
+                    <div class="speaker">Minh kể:</div>
+                    <p>Hùng — bạn thân nhất của tôi trong team — bắt đầu đi muộn, code chất lượng giảm, deadline trễ. Tôi biết. Cả team biết. Nhưng tôi không nói gì. Vì Hùng là bạn tôi. Vì tôi sợ mất tình bạn đó.</p>
+                </div>
+
+                <p>Sau 3 tháng, team morale sụp đổ. Hai người giỏi nhất nộp đơn nghỉ. Một người nói thẳng với tôi: <em>"Anh để Hùng làm gì cũng được. Vậy tụi em chăm chỉ để làm gì?"</em></p>
+
+                <div class="story-bubble rose">
+                    <div class="speaker">Bài học đau nhất:</div>
+                    <p><strong>Tốt bụng ≠ Tránh né cuộc nói chuyện khó.</strong> Khi tôi cuối cùng nói chuyện với Hùng, anh ấy khóc — không phải vì giận. Mà vì anh ấy biết mình đang có vấn đề và chờ tôi giúp đỡ. Sự im lặng của tôi không phải là "tốt". Nó là sự bỏ rơi.</p>
+                </div>
+
+                <h3>Ủy Quyền Không Phải Là Giao Việc</h3>
+                <p>Tôi từng nghĩ delegation là: "Em làm cái này nha, deadline thứ 6." Sai. Delegation thật sự là <strong>chuyển giao quyền sở hữu</strong> — để người đó có quyền quyết định cách làm, quyền thất bại, và quyền tự hào khi thành công.</p>
+
+                <div class="story-bubble teal">
+                    <div class="speaker">Minh chia sẻ:</div>
+                    <p>Có lần tôi giao task cho Linh rồi 2 tiếng sau đi kiểm tra. Linh nói: "Anh giao em mà anh không tin em?" Từ đó tôi hiểu: giao việc mà kiểm soát từng bước thì không phải giao việc — đó là remote-control con người.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ĐIỀU BẠN CẦN NGHE NGAY -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Về Việc Sáp Nhập Hai Đội</h3>
+                <p>Anh/chị vừa nhận được quyền lãnh đạo cả hai division. Chúc mừng. Nhưng tôi — người ở tuyến đầu — sẽ nói cho anh/chị biết điều mà report trực tiếp sẽ không nói:</p>
+
+                <div class="highlight-box">
+                    <p><strong>Team của WICHO đang nhìn anh/chị và tự hỏi: "Người này có quan tâm đến mình không, hay mình chỉ là phần thêm vào?"</strong></p>
+                </div>
+
+                <p>Và team cũ của anh/chị đang nghĩ: <em>"Sếp giờ bận hơn. Liệu mình có bị bỏ quên?"</em></p>
+
+                <h3>Lời Khuyên Cụ Thể Từ Chiến Hào</h3>
+                <ul>
+                    <li><strong>Ngồi vào standup thật:</strong> Không phải quan sát từ xa. Ngồi vào, nghe họ nói, thấy cái nhíu mày khi ai đó nói "mọi thứ ổn" nhưng giọng run.</li>
+                    <li><strong>Che chắn cho tuyến đầu:</strong> Stakeholder Hàn Quốc gọi lúc 10 giờ tối? Đừng forward thẳng xuống team. Anh/chị là tấm khiên, không phải ống dẫn.</li>
+                    <li><strong>Hỏi câu hỏi đúng:</strong> Không hỏi "Có vấn đề gì không?" (câu trả lời luôn là "không"). Hỏi: "Điều gì đang làm em khó chịu nhất tuần này?"</li>
+                    <li><strong>Xây dựng văn hóa escalation an toàn:</strong> Dev Việt Nam sẽ không nói vấn đề cho đến khi cháy nhà. Tạo kênh để họ có thể nói sớm mà không sợ bị đánh giá.</li>
+                </ul>
+
+                <div class="story-bubble sage">
+                    <div class="speaker">Minh nhắn nhủ:</div>
+                    <p>Anh/chị càng lên cao, thông tin anh/chị nhận được càng bị lọc. Người ta sẽ nói những gì anh/chị muốn nghe. Hãy tạo lý do để họ nói những gì anh/chị cần nghe.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SAI LẦM CẦN TRÁNH -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>⚠️ Sai Lầm Cần Tránh</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #1: Tự Review Code</div>
+                    <p>Tôi biết anh/chị có background kỹ thuật mạnh. Nhưng nếu anh/chị vẫn ngồi review code, anh/chị đang gửi thông điệp: <em>"Tôi không tin team lead của mình."</em> Hơn nữa, mỗi giờ anh/chị review code là một giờ anh/chị không xây dựng chiến lược, không nói chuyện với stakeholder, không phát triển người kế nhiệm. <strong>Anh/chị không được trả lương để code nữa.</strong></p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #2: Chờ Quá Lâu Để Làm Rõ Sau Sáp Nhập</div>
+                    <p>Sau merger, mọi người sống trong sương mù. Ai report cho ai? Priority là gì? Mỗi ngày không có câu trả lời rõ ràng là một ngày team tự đoán — và khi họ đoán sai, anh/chị sẽ đổ lỗi cho họ. Nhưng thực ra lỗi là của anh/chị vì không nói rõ.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #3: Vô Tình Thiên Vị Team Cũ</div>
+                    <p>Anh/chị sẽ không cố ý. Nhưng khi cần giao việc quan trọng, anh/chị sẽ tự nhiên nghĩ đến người mình quen. Khi cần ý kiến, anh/chị sẽ hỏi người mình tin. Team của WICHO sẽ thấy điều đó — <strong>ngay cả khi anh/chị không thấy</strong>. Giải pháp: cố tình giao 1-2 việc quan trọng đầu tiên cho team bên kia. Chủ động. Có ý thức.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. CÂU CHUYỆN THỰC TẾ -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>📖 Câu Chuyện Thực Tế</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>"Đang Làm Ạ" — Câu Nói Nguy Hiểm Nhất</h3>
+
+                <p>Năm ngoái, team tôi nhận một dự án deploy cho client Hàn Quốc. Deadline: 4 tuần. Sprint planning xong, mọi người nói hiểu requirement, có vẻ tự tin.</p>
+
+                <div class="story-bubble">
+                    <div class="speaker">Tuần 1:</div>
+                    <p>Standup: "Đang làm ạ." — Tôi không hỏi thêm. Sai lầm đầu tiên.</p>
+                </div>
+
+                <div class="story-bubble gold">
+                    <div class="speaker">Tuần 2:</div>
+                    <p>Standup: "Đang làm ạ, gần xong." — Tôi tin. Sai lầm thứ hai. Tôi không yêu cầu demo, không yêu cầu xem code, không hỏi "gần xong là bao nhiêu phần trăm?"</p>
+                </div>
+
+                <div class="story-bubble rose">
+                    <div class="speaker">Ngày thứ 10:</div>
+                    <p>Tôi quyết định ngồi cạnh dev chính và xem code. <strong>Gần như chưa có gì.</strong> Anh ấy gặp blocker từ ngày thứ 2 nhưng không dám nói vì sợ bị đánh giá là "không giỏi". Anh ấy đã tự mày mò 8 ngày, càng ngày càng hoảng loạn, nhưng mỗi sáng standup vẫn nói: "Đang làm ạ."</p>
+                </div>
+
+                <p>Kết quả: deploy trễ 2 tuần. Client tức giận. PM phải bay sang Hàn Quốc xin lỗi.</p>
+
+                <div class="highlight-box">
+                    <p><strong>Bài học:</strong> "Đang làm ạ" trong văn hóa Việt Nam không có nghĩa là "mọi thứ ổn." Nó có nghĩa là "tôi đang cố gắng và tôi không muốn làm anh thất vọng." Đừng nghe câu trả lời — hãy nhìn vào output thực tế. Yêu cầu demo. Yêu cầu xem code. Tạo môi trường mà nói "tôi bị stuck" không phải là nhục — mà là chuyên nghiệp.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GÓC NHÌN VN-HQ -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🌏 Góc Nhìn Việt Nam - Hàn Quốc</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <div class="lens-grid">
+                    <div class="lens-card">
+                        <div class="flag">🇻🇳</div>
+                        <h4>Phía Việt Nam</h4>
+                        <p><strong>Dev Việt Nam sẽ không nói vấn đề cho đến khi cháy nhà.</strong> Đây không phải lười hay vô trách nhiệm. Đây là văn hóa — nói vấn đề cho sếp = thừa nhận mình không giỏi. Anh/chị cần phá vỡ điều đó bằng cách:</p>
+                        <ul style="margin-top: 0.5rem; padding-left: 1rem;">
+                            <li style="color: #bbb; font-size: 0.9rem;">Tự mình thừa nhận sai lầm trước — cho họ thấy nói "tôi sai" không chết</li>
+                            <li style="color: #bbb; font-size: 0.9rem;">Khen người escalate sớm, công khai</li>
+                            <li style="color: #bbb; font-size: 0.9rem;">Đừng bao giờ mắng ai vì báo vấn đề trễ — hãy mắng hệ thống không phát hiện sớm</li>
+                        </ul>
+                    </div>
+                    <div class="lens-card">
+                        <div class="flag">🇰🇷</div>
+                        <h4>Phía Hàn Quốc</h4>
+                        <p><strong>Stakeholder Hàn Quốc cần thấy sự kiểm soát.</strong> Họ không cần anh/chị nói "mọi thứ ổn." Họ cần thấy anh/chị biết chính xác điều gì đang xảy ra — kể cả điều xấu — và có kế hoạch.</p>
+                        <ul style="margin-top: 0.5rem; padding-left: 1rem;">
+                            <li style="color: #bbb; font-size: 0.9rem;">Báo cáo bằng số, không bằng cảm xúc</li>
+                            <li style="color: #bbb; font-size: 0.9rem;">Khi có vấn đề: nói vấn đề + nguyên nhân + giải pháp + timeline trong một câu</li>
+                            <li style="color: #bbb; font-size: 0.9rem;">Đừng nói "we'll try" — nói "we will" hoặc "we can't, here's the alternative"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="story-bubble sage">
+                    <div class="speaker">Minh gửi lời cuối:</div>
+                    <p>Tôi chỉ là team lead nhỏ. Nhưng tôi nhìn lên anh/chị mỗi ngày. Khi anh/chị im lặng, chúng tôi sợ. Khi anh/chị rõ ràng, chúng tôi an tâm. Khi anh/chị ngồi vào standup của chúng tôi — dù chỉ 15 phút — chúng tôi biết anh/chị quan tâm. Đừng quên điều đó khi anh/chị bận với chiến lược và họp hành cấp cao.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleSection(header) {
+        const section = header.parentElement;
+        section.classList.toggle('open');
+    }
+
+    // Scroll-triggered fade-in
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.section').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

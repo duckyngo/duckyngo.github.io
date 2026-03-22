@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James "Cầu Nối" Park — Cố Vấn Lãnh Đạo</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --agent-gradient: linear-gradient(135deg, #06d6a0, #118ab2);
+            --agent-primary: #06d6a0;
+            --agent-dark: #118ab2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(246, 199, 68, 0.15);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.3s;
+        }
+
+        .nav-back:hover { opacity: 0.7; }
+
+        .nav-agents {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-agents a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .nav-agents a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .nav-agents a.active {
+            background: var(--agent-gradient);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* HERO */
+        .hero {
+            margin-top: 60px;
+            padding: 4rem 2rem 3rem;
+            background: var(--agent-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--dark));
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero .role {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0,0,0,0.3);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            max-width: 700px;
+            margin: 0 auto;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-quote::before { content: '\201C'; font-size: 3rem; color: var(--gold); position: absolute; left: -25px; top: -15px; }
+
+        /* MAIN CONTENT */
+        .content {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* EXPANDABLE SECTIONS */
+        .section {
+            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            padding: 1.3rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .section-header:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        .section-header .toggle {
+            font-size: 1.5rem;
+            color: var(--gold);
+            transition: transform 0.3s;
+        }
+
+        .section.open .toggle {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 5000px;
+        }
+
+        .section-inner {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        /* STORY BUBBLES */
+        .story-bubble {
+            border-left: 4px solid var(--agent-primary);
+            background: rgba(6, 214, 160, 0.08);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1rem 0;
+        }
+
+        .story-bubble.gold { border-left-color: var(--gold); background: rgba(246, 199, 68, 0.08); }
+        .story-bubble.rose { border-left-color: var(--rose); background: rgba(230, 57, 70, 0.08); }
+        .story-bubble.teal { border-left-color: var(--teal); background: rgba(0, 180, 216, 0.08); }
+        .story-bubble.sage { border-left-color: var(--sage); background: rgba(82, 183, 136, 0.08); }
+
+        .story-bubble .speaker {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .story-bubble p {
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+
+        /* TYPOGRAPHY */
+        .section-inner h3 {
+            color: var(--gold);
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.6rem;
+        }
+
+        .section-inner h3:first-child { margin-top: 0; }
+
+        .section-inner p {
+            color: #bbb;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .section-inner strong { color: #fff; }
+
+        .section-inner ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section-inner ul li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        .section-inner ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--agent-primary);
+            font-weight: bold;
+        }
+
+        .mistake-card {
+            background: rgba(230, 57, 70, 0.08);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .mistake-card .mistake-title {
+            color: var(--rose);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .mistake-card p { color: #bbb; font-size: 0.95rem; }
+
+        .highlight-box {
+            background: rgba(246, 199, 68, 0.08);
+            border: 1px solid rgba(246, 199, 68, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .highlight-box p { color: #ddd; }
+
+        /* TIMELINE */
+        .timeline {
+            margin: 1.5rem 0;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(6, 214, 160, 0.3);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.65rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--agent-primary);
+            border: 2px solid var(--dark);
+        }
+
+        .timeline-item h4 {
+            color: var(--teal);
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-item p {
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        /* VN-KR LENS */
+        .lens-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .lens-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .lens-card .flag {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lens-card h4 {
+            color: var(--teal);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lens-card p { color: #bbb; font-size: 0.9rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            .hero { padding: 3rem 1.2rem 2.5rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .hero-quote { font-size: 1rem; }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .section-header h2 { font-size: 1.1rem; }
+            .lens-grid { grid-template-columns: 1fr; }
+            .nav-agents a { font-size: 0.75rem; padding: 0.25rem 0.6rem; }
+            .top-nav { padding: 0.6rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-back">← Về Trang Chính</a>
+    <div class="nav-agents">
+        <a href="01-team-lead.html">Minh</a>
+        <a href="02-delivery-manager.html">Sarah</a>
+        <a href="03-department-head.html" class="active">James</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="avatar">👨‍💼</div>
+    <h1>James "Cầu Nối" Park</h1>
+    <p class="role">Trưởng Phòng · 60 người · 14 năm, ex-Samsung SDS</p>
+    <div class="badge">🌉 Nhà Ngoại Giao Điềm Tĩnh</div>
+    <p class="hero-quote">
+        Tôi đã sống sót qua 3 lần tái cơ cấu. Mỗi lần tôi đều mất người, mất lòng tin, và mất ngủ. Nhưng tôi học được: sáp nhập không phải về org chart — mà về con người đang sợ hãi tìm lý do để tin.
+    </p>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- 1. BÀI HỌC XƯƠNG MÁU -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>💔 Bài Học Xương Máu</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Lần Sáp Nhập Đầu Tiên: Sai Ngay Từ Câu Đầu</h3>
+                <p>Năm 2014, Samsung SDS tái cơ cấu. Tôi được giao 60 người — nửa team cũ của tôi, nửa từ division khác. Nửa kia không chọn tôi. Họ có leader riêng, văn hóa riêng, cách làm việc riêng.</p>
+
+                <p>Tuần đầu, tôi tổ chức all-hands. Đứng trước 60 người. Slide đẹp. Tôi nói:</p>
+
+                <div class="story-bubble rose">
+                    <div class="speaker">James năm 2014:</div>
+                    <p><em>"Từ hôm nay, chúng ta là một đội. Quá khứ đã qua. Hãy cùng nhau xây dựng tương lai."</em></p>
+                </div>
+
+                <p>30 người bên tôi vỗ tay. 30 người bên kia im lặng. Tôi thấy ánh mắt họ — không phải tức giận. Mà là: <em>"Ông này không hiểu gì cả."</em></p>
+
+                <div class="story-bubble gold">
+                    <div class="speaker">James nhận ra:</div>
+                    <p><strong>"Chúng ta là một đội" là câu vô nghĩa nhất anh/chị có thể nói cho bên thua cuộc.</strong> Với team cũ của anh/chị, nó là câu chúc mừng. Với team của WICHO, nó là: "Hãy quên đi tất cả những gì các bạn đã xây dựng." Đừng nói câu đó. Đừng bao giờ.</p>
+                </div>
+
+                <h3>Lần Sáp Nhập Thứ Hai: Cách Tôi Sửa Sai</h3>
+                <p>Lần thứ hai, tôi không tổ chức all-hands. Thay vào đó, tôi dành 2 tuần gặp từng manager 1-on-1. Mỗi cuộc gặp, tôi hỏi một câu duy nhất:</p>
+
+                <div class="highlight-box">
+                    <p><strong>"Điều gì đang hoạt động tốt mà tôi nên cẩn thận không phá vỡ?"</strong></p>
+                </div>
+
+                <p>Câu hỏi này làm 3 điều:</p>
+                <ul>
+                    <li>Nó thừa nhận rằng team họ đã có những thứ tốt — không phải mọi thứ cần thay đổi</li>
+                    <li>Nó cho thấy tôi tôn trọng — tôi hỏi trước khi hành động</li>
+                    <li>Nó cho tôi bản đồ thật sự của tổ chức — không phải org chart, mà là bản đồ cảm xúc</li>
+                </ul>
+
+                <h3>Friday Code Review — Thứ Tưởng Nhỏ Nhưng Lớn</h3>
+                <p>Một manager từ team kia kể: team anh ấy có buổi code review mỗi thứ Sáu chiều. Không formal, không ghi chép. Chỉ ngồi xem code của nhau, học hỏi, cười đùa.</p>
+
+                <p>Tôi suýt cắt nó đi — vì nó không có trong process mới. Nhưng tôi dừng lại. Tôi giữ nó.</p>
+
+                <div class="story-bubble sage">
+                    <div class="speaker">Kết quả:</div>
+                    <p>Việc giữ buổi Friday code review đó <strong>không tốn gì — nhưng kiếm về mọi thứ</strong>. Team kia bắt đầu nói: "Sếp mới tôn trọng cách làm của mình." Một gesture nhỏ. Nhưng trong merger, gesture nhỏ là tất cả.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ĐIỀU BẠN CẦN NGHE NGAY -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>WICHO: Rủi Ro Lớn Nhất VÀ Cơ Hội Lớn Nhất</h3>
+
+                <p>WICHO led Seoul Technical Division. Giờ anh ấy chuyển sang consultant side. Anh/chị nghĩ điều đó có nghĩa là anh ấy "out of the picture"?</p>
+
+                <p><strong>Sai.</strong></p>
+
+                <div class="story-bubble rose">
+                    <div class="speaker">James cảnh báo:</div>
+                    <p>WICHO vẫn có relationship với team cũ. Họ vẫn nhắn anh ấy. Hỏi anh ấy ý kiến. Nếu anh/chị không chủ động xây quan hệ với WICHO, anh/chị sẽ có một "shadow leader" — người không có title nhưng có ảnh hưởng. Đó là reciepe cho disaster.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Hành động: Mời WICHO đi cà phê trong tuần đầu tiên.</strong> Nói thật lòng:</p>
+                    <p><em>"Tôi muốn hiểu những gì anh đã xây dựng và đảm bảo chúng ta tôn trọng nó. Anh biết team này rõ hơn tôi. Tôi cần perspective của anh."</em></p>
+                    <p>Đây không phải ngoại giao. Đây là chiến lược. WICHO có thể trở thành đồng minh mạnh nhất — hoặc kẻ phá hoại im lặng nhất. <strong>Anh/chị chọn.</strong></p>
+                </div>
+
+                <h3>Quy Tắc 30 Ngày: Organizational Clarity</h3>
+                <p>Trong vòng 30 ngày đầu sau sáp nhập, mỗi người trong tổ chức phải trả lời được 3 câu hỏi:</p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>Câu hỏi 1: "Tôi report cho ai?"</h4>
+                        <p>Không phải "hình như" hay "tạm thời." Rõ ràng. Chính thức. Mọi người cần biết ai là người đánh giá họ, ai là người họ escalate lên. Mù mờ = lo lắng = năng suất giảm.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Câu hỏi 2: "Priority của team tôi là gì?"</h4>
+                        <p>Sau merger, team nào cũng có backlog riêng, project riêng, cam kết riêng. Hãy nói rõ: project nào tiếp tục, project nào dừng, project nào merge. Đừng để ambiguity — nó sẽ tạo conflict.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Câu hỏi 3: "Khi có vấn đề, tôi escalate như thế nào?"</h4>
+                        <p>Escalation path phải rõ ràng ngay từ đầu. Không phải khi cháy mới tìm bình chữa cháy. Đặc biệt quan trọng khi có team Việt Nam — vì văn hóa im lặng sẽ giấu vấn đề cho đến khi quá muộn.</p>
+                    </div>
+                </div>
+
+                <h3>Nhóm "Im Lặng Nhưng Đang Quan Sát"</h3>
+                <p>Trong mỗi merger, có 3 nhóm người:</p>
+                <ul>
+                    <li><strong>Nhóm ủng hộ</strong> — team cũ, loyal, sẽ follow bạn</li>
+                    <li><strong>Nhóm phản đối</strong> — vocal, rõ ràng, dễ nhận ra</li>
+                    <li><strong>Nhóm im lặng</strong> — competent, đang chờ xem. <em>Đây là nhóm quan trọng nhất.</em></li>
+                </ul>
+
+                <div class="story-bubble teal">
+                    <div class="speaker">James giải thích:</div>
+                    <p>Nhóm im lặng chiếm 60% tổ chức. Họ giỏi, chuyên nghiệp, và đang đánh giá anh/chị. Nếu anh/chị chiếm được lòng tin của nhóm này — game over, anh/chị thắng. Nếu anh/chị mất họ — team cũ loyal cũng không cứu được. <strong>Chiến thắng nhóm im lặng bằng cách: hành động nhất quán, giữ lời hứa, và tôn trọng những gì đã có trước anh/chị.</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SAI LẦM CẦN TRÁNH -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>⚠️ Sai Lầm Cần Tránh</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #1: Thay Đổi Cấu Trúc Quá Nhanh</div>
+                    <p>Tôi biết anh/chị muốn "sắp xếp lại cho gọn." Tôi hiểu. Nhưng mỗi thay đổi cấu trúc trong 60 ngày đầu sẽ được diễn giải là: <em>"Anh ấy/chị ấy đang dọn bàn cho team mình."</em> Dù anh/chị không có ý đó. Hãy dành 30-60 ngày đầu chỉ để <strong>quan sát, lắng nghe, và hiểu</strong>. Thay đổi cấu trúc nên đến từ data và feedback, không phải tuần đầu tiên.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #2: Không Có Nhịp Giao Tiếp Cố Định</div>
+                    <p>Sau merger, thông tin là oxygen. Thiếu thông tin = hoảng loạn. Tôi từng mất 3 người giỏi chỉ vì họ không biết gì trong 3 tuần — và họ tự suy diễn: "Chắc team mình sẽ bị giải tán." <strong>Thiết lập communication rhythm ngay:</strong> weekly team update (email/Slack), bi-weekly 1-on-1 với direct reports, monthly all-hands. Kể cả khi không có gì mới — nói: "Chưa có thay đổi, đang tiếp tục thu thập feedback." Im lặng là kẻ thù lớn nhất.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #3: Tự Giải Quyết Vấn Đề</div>
+                    <p>Anh/chị từ technical background — khi thấy vấn đề, bản năng là nhảy vào fix. <strong>Nhưng mỗi lần anh/chị fix, anh/chị đang lấy cơ hội phát triển của người khác.</strong> Và tệ hơn — anh/chị đang gửi thông điệp: "Tôi không tin ai đủ giỏi." Vai trò mới của anh/chị không phải là giải quyết vấn đề — mà là xây dựng hệ thống và con người để vấn đề được giải quyết mà không cần anh/chị.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. CÂU CHUYỆN THỰC TẾ -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>📖 Câu Chuyện Thực Tế</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Anh Kang — Người Tránh Né Mọi Cuộc Họp</h3>
+
+                <p>Sau lần merger thứ hai ở Samsung SDS, tôi có anh Kang — senior Korean dev, 12 năm kinh nghiệm, technical expert hàng đầu. Trước merger, anh ấy là trụ cột. Sau merger, anh ấy biến mất khỏi mọi meeting.</p>
+
+                <div class="story-bubble">
+                    <div class="speaker">Biểu hiện:</div>
+                    <p>Không join architecture review. Không phát biểu trong planning. Camera tắt trong meeting online. Khi được hỏi, chỉ nói: "Tôi đồng ý với quyết định của team." Đồng nghiệp bắt đầu nói: "Anh Kang hết motivation rồi."</p>
+                </div>
+
+                <p>Tôi gần đánh dấu anh ấy là "disengaged." Nhưng thay vì đánh giá, tôi mời anh ấy đi ăn trưa.</p>
+
+                <div class="story-bubble gold">
+                    <div class="speaker">Anh Kang nói:</div>
+                    <p><em>"Trước đây tôi là người quyết định tech stack. Bây giờ team mới có kiến trúc riêng, tool riêng. Tôi không biết mình còn relevant không. Tôi không muốn phát biểu rồi bị coi là người cũ bám lấy cách cũ."</em></p>
+                </div>
+
+                <p><strong>Đó không phải disengagement. Đó là fear.</strong> Sợ trở nên irrelevant. Sợ bị coi là lỗi thời. Sợ mở miệng và thấy mình không còn giá trị.</p>
+
+                <div class="story-bubble sage">
+                    <div class="speaker">Cách James xử lý:</div>
+                    <p>Tôi giao anh Kang lead một technical audit — so sánh tech stack hai team và đề xuất integration plan. Anh ấy trở thành <strong>cầu nối kỹ thuật</strong> giữa hai bên. Expertise của anh ấy không bị thay thế — nó được reframe. 3 tháng sau, anh Kang là người active nhất trong architecture review.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Cho anh/chị:</strong> Sau merger, hãy tìm những "anh Kang" trong team — những người giỏi nhưng đang im lặng. Họ không cần motivation talk. Họ cần anh/chị nói: <em>"Expertise của anh/chị vẫn quan trọng. Đây là vai trò cụ thể mà chỉ anh/chị mới làm được."</em> Sự cụ thể đó — không phải lời chung chung — là thứ chữa lành nỗi sợ.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GÓC NHÌN VN-HQ -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🌏 Góc Nhìn Việt Nam - Hàn Quốc</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <div class="lens-grid">
+                    <div class="lens-card">
+                        <div class="flag">🇻🇳</div>
+                        <h4>Dẫn Dắt Team Việt Nam Sau Merger</h4>
+                        <p><strong>Team Việt Nam sẽ follow leader mà họ tin — không phải leader trên org chart.</strong></p>
+                        <p style="margin-top: 0.8rem;">Nếu team lead cũ của họ vẫn ở đó, hãy empower team lead đó. Đừng replace. Đừng bypass. Nếu anh/chị chiếm được lòng tin của team lead → anh/chị chiếm được team.</p>
+                        <p style="margin-top: 0.8rem;">Văn hóa Việt Nam coi trọng mối quan hệ cá nhân. Một bữa cơm, một cuộc gọi hỏi thăm sức khỏe, một lời khen đúng lúc — những thứ đó xây trust nhanh hơn mọi process.</p>
+                    </div>
+                    <div class="lens-card">
+                        <div class="flag">🇰🇷</div>
+                        <h4>Điều Hướng Stakeholder Hàn Quốc</h4>
+                        <p><strong>Người Hàn Quốc đánh giá leader qua "kiểm soát" — không phải control freak, mà là: anh có nắm được tình hình không?</strong></p>
+                        <p style="margin-top: 0.8rem;">Sau merger, stakeholder Hàn Quốc sẽ test anh/chị: hỏi chi tiết về team mới, hỏi về process, hỏi về risk. Nếu anh/chị trả lời "tôi đang tìm hiểu" quá nhiều lần — họ mất confidence.</p>
+                        <p style="margin-top: 0.8rem;">Giải pháp: dành tuần đầu thu thập đủ data để có "30-day situational report" — gửi cho stakeholder trước khi họ hỏi. Proactive = competent trong mắt người Hàn.</p>
+                    </div>
+                </div>
+
+                <h3>Khi Hai Văn Hóa Gặp Nhau</h3>
+                <p>Trong tổ chức merged, anh/chị sẽ có dev Việt Nam và stakeholder Hàn Quốc. Hai văn hóa có xung đột ngầm:</p>
+
+                <div class="story-bubble teal">
+                    <div class="speaker">Xung đột phổ biến:</div>
+                    <p><strong>Hàn Quốc muốn commitment cứng:</strong> "Khi nào xong?" → muốn nghe ngày cụ thể.<br>
+                    <strong>Việt Nam hay nói mềm:</strong> "Khoảng cuối tuần sau ạ" → flexible nhưng không chính xác.<br><br>
+                    Vai trò của anh/chị: <strong>dịch</strong> giữa hai bên. Với team VN: "Em cần cho anh ngày cụ thể, dù có buffer." Với stakeholder KR: "Team đang target thứ 5, tôi sẽ confirm lại thứ 3."</p>
+                </div>
+
+                <div class="story-bubble sage">
+                    <div class="speaker">James gửi lời cuối:</div>
+                    <p>Tôi đã sống qua 3 lần merger. Mỗi lần đều đau. Nhưng mỗi lần tôi đều học: <strong>con người không sợ thay đổi — họ sợ không biết.</strong> Khi anh/chị nói rõ, nói sớm, nói đúng — họ sẽ đi theo anh/chị qua bất kỳ cơn bão nào. Anh/chị đang ở vị trí mà tôi ước tôi có ở tuổi anh/chị. Đừng vội. Đừng sợ. Và đừng quên: mỗi quyết định anh/chị đưa ra hôm nay sẽ ảnh hưởng đến cuộc sống của hàng chục con người. Hãy quyết định xứng đáng với trách nhiệm đó.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleSection(header) {
+        const section = header.parentElement;
+        section.classList.toggle('open');
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.section').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

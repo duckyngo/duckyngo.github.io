@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hội Đồng Lãnh Đạo — Leadership Council</title>
+<style>
+:root {
+  --dark: #1a1a2e;
+  --gold: #f6c744;
+  --teal: #00b4d8;
+  --sage: #52b788;
+  --rose: #e63946;
+  --warm: #ff6b35;
+  --lavender: #7209b7;
+  --bg: #f8f9fa;
+  --text: #2b2d42;
+  --text-light: #8d99ae;
+  --card-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --card-radius: 16px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ========== HERO ========== */
+.hero {
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(246,199,68,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(0,180,216,0.06) 0%, transparent 50%);
+  animation: heroFloat 20s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(30px, -30px) rotate(1deg); }
+  66% { transform: translate(-20px, 20px) rotate(-1deg); }
+}
+.hero-content { position: relative; z-index: 2; padding: 60px 24px; }
+.hero-badge {
+  display: inline-block;
+  background: rgba(246,199,68,0.15);
+  border: 1px solid rgba(246,199,68,0.3);
+  color: var(--gold);
+  padding: 8px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+.hero h1 span { color: var(--gold); }
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: rgba(255,255,255,0.7);
+  max-width: 700px;
+  margin: 0 auto 40px;
+  line-height: 1.8;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  margin-top: 48px;
+}
+.hero-stat { text-align: center; }
+.hero-stat .num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--gold);
+  display: block;
+}
+.hero-stat .label {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.4);
+  font-size: 0.85rem;
+  animation: bounce 2s infinite;
+  cursor: pointer;
+}
+.scroll-hint::after {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 30px;
+  background: rgba(255,255,255,0.2);
+  margin: 8px auto 0;
+  animation: scrollLine 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-8px); }
+}
+@keyframes scrollLine {
+  0% { height: 0; opacity: 0; }
+  50% { height: 30px; opacity: 1; }
+  100% { height: 30px; opacity: 0; }
+}
+
+/* ========== STICKY NAV ========== */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(26,26,46,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(246,199,68,0.15);
+  padding: 0;
+  transition: box-shadow 0.3s;
+}
+.sticky-nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav-link {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+}
+.nav-link:hover {
+  color: var(--gold);
+  background: rgba(246,199,68,0.1);
+  border-color: rgba(246,199,68,0.2);
+}
+
+/* ========== SECTIONS ========== */
+section { padding: 80px 0; }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-tag {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.section-header h2 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+.section-header p {
+  font-size: 1.05rem;
+  color: var(--text-light);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ========== AGENT GRID ========== */
+#agents { background: var(--bg); }
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.agent-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.agent-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+}
+.agent-card-header {
+  padding: 28px 24px 20px;
+  position: relative;
+  color: #fff;
+}
+.agent-number {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.agent-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+.agent-card-header h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+.agent-card-header .nickname {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  font-style: italic;
+}
+.agent-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  margin-top: 12px;
+  backdrop-filter: blur(4px);
+}
+.agent-card-body {
+  padding: 20px 24px 24px;
+}
+.agent-card-body p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+.agent-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  transition: gap 0.3s;
+}
+.agent-card:hover .agent-card-link { gap: 12px; }
+
+/* ========== COMPARISON TABLE ========== */
+#comparison { background: #fff; }
+.comparison-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.comparison-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+}
+.comparison-table thead th {
+  background: var(--dark);
+  color: #fff;
+  padding: 16px 14px;
+  text-align: left;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+.comparison-table thead th:first-child { border-radius: 12px 0 0 0; }
+.comparison-table thead th:last-child { border-radius: 0 12px 0 0; }
+.comparison-table tbody td {
+  padding: 14px;
+  border-bottom: 1px solid #edf2f4;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.comparison-table tbody tr:hover td { background: rgba(246,199,68,0.05); }
+.comparison-table tbody td:first-child {
+  font-weight: 700;
+  color: var(--dark);
+  white-space: nowrap;
+  background: #f8f9fa;
+}
+.comparison-table tbody tr:last-child td:first-child { border-radius: 0 0 0 12px; }
+.comparison-table tbody tr:last-child td:last-child { border-radius: 0 0 12px 0; }
+
+/* ========== HARD TRUTHS ========== */
+#hard-truths {
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
+  color: #fff;
+}
+#hard-truths .section-tag { background: rgba(246,199,68,0.15); color: var(--gold); }
+#hard-truths .section-header h2 { color: #fff; }
+#hard-truths .section-header p { color: rgba(255,255,255,0.5); }
+.truths-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.truth-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(246,199,68,0.15);
+  border-radius: var(--card-radius);
+  padding: 28px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.truth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+.truth-card:hover {
+  border-color: rgba(246,199,68,0.35);
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-3px);
+}
+.truth-agent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.truth-agent-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fff;
+}
+.truth-agent-name {
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+.truth-agent-role {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+}
+.truth-text {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+  font-style: italic;
+}
+.truth-text::before { content: '\201C'; color: var(--gold); font-size: 1.5rem; margin-right: 4px; }
+
+/* ========== MINDSET UPGRADE ========== */
+#mindset { background: var(--bg); }
+.mindset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+.mindset-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: transform 0.3s;
+}
+.mindset-card:hover { transform: translateY(-3px); }
+.mindset-from {
+  background: #fff0f0;
+  color: var(--rose);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 130px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mindset-arrow {
+  color: var(--gold);
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+.mindset-to {
+  background: #f0fff4;
+  color: var(--sage);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 130px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ========== 30-60-90 ========== */
+#plan { background: #fff; }
+.plan-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.plan-tab {
+  padding: 12px 28px;
+  border: 2px solid #edf2f4;
+  border-radius: 50px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-light);
+  transition: all 0.3s;
+}
+.plan-tab.active {
+  background: var(--dark);
+  color: #fff;
+  border-color: var(--dark);
+}
+.plan-tab:hover:not(.active) {
+  border-color: var(--gold);
+  color: var(--text);
+}
+.plan-content { display: none; }
+.plan-content.active { display: block; }
+.plan-phase-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.plan-phase-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.plan-phase-header p { color: var(--text-light); font-size: 0.95rem; }
+.plan-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.plan-item {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 20px;
+  border-left: 4px solid var(--gold);
+  transition: transform 0.3s;
+}
+.plan-item:hover { transform: translateX(4px); }
+.plan-item h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--dark);
+}
+.plan-item p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+.plan-item .plan-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+/* ========== RED FLAGS ========== */
+#red-flags {
+  background: linear-gradient(135deg, #2b0a0a 0%, #1a1a2e 100%);
+  color: #fff;
+}
+#red-flags .section-tag { background: rgba(230,57,70,0.2); color: var(--rose); }
+#red-flags .section-header h2 { color: #fff; }
+#red-flags .section-header p { color: rgba(255,255,255,0.5); }
+.flags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.flag-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(230,57,70,0.25);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  transition: all 0.3s;
+}
+.flag-card:hover {
+  border-color: rgba(230,57,70,0.5);
+  transform: translateY(-3px);
+}
+.flag-icon { font-size: 1.5rem; margin-bottom: 12px; }
+.flag-card h4 { color: var(--rose); font-size: 0.95rem; margin-bottom: 8px; }
+.flag-card p { color: rgba(255,255,255,0.65); font-size: 0.85rem; line-height: 1.6; }
+
+/* ========== CLIENT MAP ========== */
+#client-map { background: var(--bg); }
+.maturity-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.maturity-level {
+  display: flex;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid #edf2f4;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.maturity-level:hover { background: rgba(246,199,68,0.04); }
+.maturity-level:last-child { border-bottom: none; }
+.maturity-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+.maturity-body { flex: 1; }
+.maturity-body h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+.maturity-body p { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; }
+.maturity-detail {
+  display: none;
+  margin-top: 12px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.maturity-detail.open { display: block; }
+.maturity-detail p { font-size: 0.85rem; margin-bottom: 8px; }
+
+/* ========== CULTURE SECTIONS ========== */
+#vietnam-leadership, #korea-leadership { padding: 80px 0; }
+#vietnam-leadership { background: #fff; }
+#korea-leadership { background: var(--bg); }
+.culture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.culture-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 28px;
+  border-top: 4px solid var(--teal);
+  transition: transform 0.3s;
+}
+.culture-card:hover { transform: translateY(-4px); }
+.culture-card.korea { border-top-color: var(--warm); }
+.culture-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.culture-card p { font-size: 0.88rem; color: var(--text-light); line-height: 1.7; }
+.culture-tip {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--sage);
+  font-weight: 600;
+}
+.culture-tip.korea-tip { background: #fff7ed; color: var(--warm); }
+
+/* ========== EXECUTIVE PRESENCE ========== */
+#executive-presence {
+  background: linear-gradient(135deg, #1a1a2e 0%, #302b63 100%);
+  color: #fff;
+}
+#executive-presence .section-tag { background: rgba(114,9,183,0.2); color: #c77dff; }
+#executive-presence .section-header h2 { color: #fff; }
+#executive-presence .section-header p { color: rgba(255,255,255,0.5); }
+.presence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.presence-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--card-radius);
+  padding: 28px;
+  transition: all 0.3s;
+}
+.presence-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(246,199,68,0.3);
+  transform: translateY(-3px);
+}
+.presence-card h4 { color: var(--gold); font-size: 1rem; margin-bottom: 12px; }
+.presence-card p { color: rgba(255,255,255,0.7); font-size: 0.88rem; line-height: 1.7; }
+
+/* ========== FINAL SYNTHESIS ========== */
+#synthesis {
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #0d1b2a 100%);
+  color: #fff;
+  padding: 100px 0;
+}
+#synthesis .section-header h2 { color: var(--gold); }
+#synthesis .section-header p { color: rgba(255,255,255,0.5); }
+.synthesis-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+  margin-bottom: 48px;
+}
+.synthesis-col {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(246,199,68,0.15);
+  border-radius: var(--card-radius);
+  padding: 32px;
+}
+.synthesis-col h3 {
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.synthesis-col h3 .icon { font-size: 1.3rem; }
+.synthesis-col.stop h3 { color: var(--rose); }
+.synthesis-col.start h3 { color: var(--sage); }
+.synthesis-col.philosophy h3 { color: var(--gold); }
+.synthesis-list { list-style: none; }
+.synthesis-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: flex;
+  gap: 10px;
+}
+.synthesis-list li:last-child { border-bottom: none; }
+.synthesis-list li .bullet { flex-shrink: 0; }
+.philosophy-quote {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  background: rgba(246,199,68,0.05);
+  border: 1px solid rgba(246,199,68,0.2);
+  border-radius: var(--card-radius);
+}
+.philosophy-quote blockquote {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: var(--gold);
+  font-style: italic;
+  line-height: 1.8;
+  font-weight: 500;
+}
+.philosophy-quote cite {
+  display: block;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.4);
+  font-style: normal;
+}
+
+/* ========== ANIMATIONS ========== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== FOOTER ========== */
+footer {
+  background: var(--dark);
+  color: rgba(255,255,255,0.3);
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 0.8rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  section { padding: 56px 0; }
+  .hero-stats { gap: 24px; }
+  .mindset-card { flex-direction: column; text-align: center; }
+  .mindset-arrow { transform: rotate(90deg); }
+  .maturity-level { flex-direction: column; gap: 12px; }
+  .agent-grid { grid-template-columns: 1fr; }
+  .truths-grid, .flags-grid, .culture-grid, .presence-grid { grid-template-columns: 1fr; }
+  .mindset-grid { grid-template-columns: 1fr; }
+  .plan-items { grid-template-columns: 1fr; }
+  .synthesis-columns { grid-template-columns: 1fr; }
+}
+
+/* ========== EXPANDABLE ========== */
+.expandable-header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+.expandable-header .chevron {
+  transition: transform 0.3s;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+.expandable-header.open .chevron { transform: rotate(180deg); }
+.expandable-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.expandable-body.open { max-height: 2000px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="top">
+  <div class="hero-content">
+    <div class="hero-badge">Leadership Council v1.0</div>
+    <h1>Hội Đồng <span>Lãnh Đạo</span></h1>
+    <p class="hero-subtitle">
+      8 cố vấn ảo chuyên biệt, mỗi người mang một góc nhìn khác nhau, cùng giúp bạn chuyển mình
+      từ người lãnh đạo kỹ thuật sang nhà lãnh đạo cấp cao — trong bối cảnh sáp nhập hai khối
+      Innovation và Seoul, làm việc với đối tác Hàn Quốc và đội ngũ Việt Nam.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="num">8</span>
+        <span class="label">Cố Vấn</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num">5</span>
+        <span class="label">Cấp Lãnh Đạo</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num">2</span>
+        <span class="label">Nền Văn Hóa</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num">1</span>
+        <span class="label">Mục Tiêu</span>
+      </div>
+    </div>
+  </div>
+  <a href="#agents" class="scroll-hint">Khám phá ngay</a>
+</section>
+
+<!-- ==================== STICKY NAV ==================== -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="nav-inner">
+    <a href="#agents" class="nav-link">Cố Vấn</a>
+    <a href="#comparison" class="nav-link">So Sánh Tư Duy</a>
+    <a href="#hard-truths" class="nav-link">Sự Thật Phũ Phàng</a>
+    <a href="#mindset" class="nav-link">Nâng Cấp Tư Duy</a>
+    <a href="#plan" class="nav-link">30-60-90 Ngày</a>
+    <a href="#red-flags" class="nav-link">Cờ Đỏ</a>
+    <a href="#client-map" class="nav-link">Bản Đồ Khách Hàng</a>
+    <a href="#vietnam-leadership" class="nav-link">Team Việt Nam</a>
+    <a href="#korea-leadership" class="nav-link">Bối Cảnh Hàn Quốc</a>
+    <a href="#executive-presence" class="nav-link">Phong Thái</a>
+    <a href="#synthesis" class="nav-link">Tổng Hợp</a>
+  </div>
+</nav>
+
+<!-- ==================== AGENT GRID ==================== -->
+<section id="agents">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(246,199,68,0.1);color:var(--gold);">8 Cố Vấn</div>
+      <h2>Hội Đồng Cố Vấn Của Bạn</h2>
+      <p>Mỗi cố vấn đại diện một góc nhìn, một tầng lãnh đạo. Hãy lắng nghe tất cả, nhưng quyết định là của bạn.</p>
+    </div>
+    <div class="agent-grid">
+
+      <!-- Agent 1: Minh -->
+      <a href="01-team-lead.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #4361ee, #3a0ca3);">
+          <span class="agent-number">01</span>
+          <div class="agent-avatar">MT</div>
+          <h3>Minh "Chiến Hào" Trần</h3>
+          <div class="nickname">Team Lead tuyến đầu</div>
+          <span class="agent-badge">🔥 Thẳng Thắn</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Người ở tuyến đầu, hiểu rõ nhất cảm giác của dev khi hai team sáp nhập. Nói thẳng, không vòng vo.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 2: Sarah -->
+      <a href="02-delivery-manager.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #f72585, #7209b7);">
+          <span class="agent-number">02</span>
+          <div class="agent-avatar">SK</div>
+          <h3>Sarah "Nhạc Trưởng" Kim</h3>
+          <div class="nickname">Quản lý Delivery</div>
+          <span class="agent-badge">🎯 Số Liệu</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Chuyên gia về quy trình, timeline, và KPI. Biến sự hỗn loạn sau sáp nhập thành nhịp điệu có thể đo lường.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 3: James -->
+      <a href="03-department-head.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #06d6a0, #118ab2);">
+          <span class="agent-number">03</span>
+          <div class="agent-avatar">JP</div>
+          <h3>James "Cầu Nối" Park</h3>
+          <div class="nickname">Trưởng Phòng</div>
+          <span class="agent-badge">🌉 Ngoại Giao</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Bậc thầy ngoại giao nội bộ. Biết cách quản lý lên, quản lý ngang, và bảo vệ team khỏi chính trị công ty.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 4: David -->
+      <a href="04-division-head.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #e63946, #d62828);">
+          <span class="agent-number">04</span>
+          <div class="agent-avatar">DN</div>
+          <h3>David "Kiến Trúc Sư" Nguyễn</h3>
+          <div class="nickname">Giám đốc Khối</div>
+          <span class="agent-badge">🏗️ Cấu Trúc</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Tư duy hệ thống, thiết kế tổ chức, và P&L. Đây là tầng bạn đang ở — hãy lắng nghe kỹ nhất.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 5: Richard -->
+      <a href="05-bod-leader.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #f77f00, #d62828);">
+          <span class="agent-number">05</span>
+          <div class="agent-avatar">RY</div>
+          <h3>Richard "Kỳ Thủ" Yoon</h3>
+          <div class="nickname">BOD / Lãnh đạo Quốc gia</div>
+          <span class="agent-badge">♟️ Chiến Lược</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Nghĩ bằng nước cờ, không phải bước đi. Nhìn thấy chính trị tổ chức mà bạn chưa nhận ra.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 6: Monica -->
+      <a href="06-ceo.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #2d00f7, #6a00f4);">
+          <span class="agent-number">06</span>
+          <div class="agent-avatar">MH</div>
+          <h3>Monica "Tầm Nhìn" Hà</h3>
+          <div class="nickname">CEO</div>
+          <span class="agent-badge">🔭 Tầm Nhìn</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Nhìn qua lăng kính của người sáng lập. Hỏi "đây có phải thị trường đúng không?" khi bạn còn đang hỏi "sprint này xong chưa?"</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 7: Choi -->
+      <a href="07-korean-specialist.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #003049, #457b9d);">
+          <span class="agent-number">07</span>
+          <div class="agent-avatar">SC</div>
+          <h3>GS Soo-jin "Phiên Dịch" Choi</h3>
+          <div class="nickname">Chuyên gia Lãnh đạo Hàn Quốc</div>
+          <span class="agent-badge">🎎 Văn Hóa</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Giải mã văn hóa doanh nghiệp Hàn Quốc: nunchi, chemyon, hoesik. Giúp bạn tồn tại và phát triển trong hệ thống Hàn.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+      <!-- Agent 8: Lan -->
+      <a href="08-vietnam-specialist.html" class="agent-card fade-in">
+        <div class="agent-card-header" style="background:linear-gradient(135deg, #2a9d8f, #264653);">
+          <span class="agent-number">08</span>
+          <div class="agent-avatar">LP</div>
+          <h3>TS Lan "Thấu Hiểu" Phạm</h3>
+          <div class="nickname">Chuyên gia Lãnh đạo Việt Nam</div>
+          <span class="agent-badge">🌱 Con Người</span>
+        </div>
+        <div class="agent-card-body">
+          <p>Hiểu sâu tâm lý lãnh đạo Việt Nam: tình cảm, thể diện, cam kết ngầm. Giúp bạn dẫn dắt team Việt bằng trái tim.</p>
+          <div class="agent-card-link">Trò chuyện <span>&rarr;</span></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COMPARISON TABLE ==================== -->
+<section id="comparison">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(0,180,216,0.1);color:var(--teal);">So Sánh</div>
+      <h2>Cách Lãnh Đạo Tư Duy Ở Từng Tầng</h2>
+      <p>Cùng một vấn đề, nhưng mỗi tầng lãnh đạo nhìn và phản ứng hoàn toàn khác nhau.</p>
+    </div>
+    <div class="comparison-wrapper fade-in">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Tình Huống</th>
+            <th>Team Lead</th>
+            <th>Trưởng Phòng</th>
+            <th>Giám đốc Khối</th>
+            <th>BOD</th>
+            <th>CEO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dự án có nguy cơ trễ deadline</td>
+            <td>Tăng ca, tự code cùng team, chạy sprint ngắn hơn. "Mình cày thêm là xong."</td>
+            <td>Đàm phán lại scope với khách, điều chuyển resource từ team khác. "Cần trade-off gì?"</td>
+            <td>Review lại portfolio, ưu tiên dự án nào mang lại doanh thu. "Dự án này có đáng cứu không?"</td>
+            <td>Gọi điện trực tiếp cho C-level bên khách, cam kết ở cấp chiến lược. "Mối quan hệ quan trọng hơn deadline."</td>
+            <td>Đánh giá lại model kinh doanh — có nên tiếp tục loại dự án này? "Đây có phải game mình muốn chơi?"</td>
+          </tr>
+          <tr>
+            <td>Cần tuyển người gấp</td>
+            <td>Xin HR mở req, viết JD, phỏng vấn kỹ thuật. "Cần thêm 2 senior Java."</td>
+            <td>Xây pipeline ứng viên, làm employer branding, tối ưu quy trình tuyển. "Cần hệ thống tuyển nhanh hơn."</td>
+            <td>Xây dựng chiến lược nhân sự 12 tháng, cân đối budget và headcount. "Tuyển hay outsource? Build hay buy?"</td>
+            <td>Đầu tư vào thương hiệu nhà tuyển dụng ở cấp quốc gia, partnership với đại học. "Tạo dòng chảy nhân tài tự nhiên."</td>
+            <td>Redesign mô hình tổ chức để ít phụ thuộc vào individual contributor. "Xây hệ thống không cần siêu nhân."</td>
+          </tr>
+          <tr>
+            <td>Nhân viên làm việc kém hiệu suất</td>
+            <td>1-on-1, code review chặt hơn, pair programming. "Mình sẽ coach bạn ấy."</td>
+            <td>Đặt PIP, theo dõi KPI, chuẩn bị backup plan. "Cho 30 ngày cải thiện."</td>
+            <td>Xem đây là triệu chứng: role misfit, culture fit, hay team design sai? "Vấn đề hệ thống hay cá nhân?"</td>
+            <td>Review lại cả talent framework — evaluation, incentive, career path. "Hệ thống có tạo điều kiện cho người giỏi không?"</td>
+            <td>Tự hỏi: culture có đang attract đúng người? "Liệu tổ chức có xứng đáng với người tài?"</td>
+          </tr>
+          <tr>
+            <td>Khách hàng không hài lòng</td>
+            <td>Sửa bug ngay, hotfix, xin lỗi và cam kết. "Sẽ fix trong 24h."</td>
+            <td>Root cause analysis, process improvement, tăng QA. "Không để lặp lại lần nữa."</td>
+            <td>Gặp counterpart bên khách, mở rộng relationship, re-negotiate SLA. "Biến khủng hoảng thành cơ hội."</td>
+            <td>Gặp CEO/CTO bên khách, nâng tầm partnership. "Chúng tôi không chỉ là vendor."</td>
+            <td>Đánh giá lại customer segment — đây có phải khách hàng lý tưởng? "Có nên thả khách này để focus?"</td>
+          </tr>
+          <tr>
+            <td>Công nghệ mới xuất hiện (AI, Cloud...)</td>
+            <td>Học, làm POC, share với team. "Để mình thử rồi demo."</td>
+            <td>Đánh giá impact lên delivery, lập training plan. "Năm tới team cần skill gì?"</td>
+            <td>Xây technology roadmap, đầu tư vào competency center. "Tạo competitive advantage từ tech."</td>
+            <td>Xem xét chiến lược đầu tư, M&A, partnership. "Nên mua, tự xây, hay hợp tác?"</td>
+            <td>Reshape lại vision và positioning. "Công nghệ này thay đổi game — mình cần đi trước."</td>
+          </tr>
+          <tr>
+            <td>Key person nghỉ việc</td>
+            <td>Hoảng, chia lại task, gánh thêm việc. "Ai sẽ làm phần của bạn ấy?"</td>
+            <td>Kích hoạt succession plan, knowledge transfer, retain team còn lại. "Bus factor = 1 là thảm họa."</td>
+            <td>Review lại org design — có single point of failure không? "Tổ chức phải chạy được khi ai cũng có thể đi."</td>
+            <td>Xem như tín hiệu: EVP có hấp dẫn? Culture có toxic? "Người giỏi ra đi vì lý do hệ thống."</td>
+            <td>Tự hỏi: tổ chức có đang tạo ra leaders, hay chỉ tạo ra followers? "Nếu phụ thuộc 1 người thì mô hình sai."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== HARD TRUTHS ==================== -->
+<section id="hard-truths">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Sự Thật</div>
+      <h2>Sự Thật Phũ Phàng</h2>
+      <p>8 sự thật mà không ai nói với bạn — nhưng bạn cần nghe, đặc biệt sau khi sáp nhập hai khối.</p>
+    </div>
+    <div class="truths-grid">
+
+      <div class="truth-card fade-in" style="--agent-color:#4361ee;">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#4361ee;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#4361ee;">MT</div>
+          <div>
+            <div class="truth-agent-name">Minh "Chiến Hào" Trần</div>
+            <div class="truth-agent-role">Team Lead</div>
+          </div>
+        </div>
+        <div class="truth-text">Team Seoul đang nhìn bạn với con mắt nghi ngờ. Họ không ghét bạn — họ đang tự hỏi liệu bạn có hiểu cách họ làm việc không. Đừng vội thay đổi quy trình của họ. Hãy ngồi xuống, hỏi họ 'Mọi thứ đang chạy thế nào?', rồi im lặng lắng nghe ít nhất 30 phút.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#7209b7;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#7209b7;">SK</div>
+          <div>
+            <div class="truth-agent-name">Sarah "Nhạc Trưởng" Kim</div>
+            <div class="truth-agent-role">Delivery Manager</div>
+          </div>
+        </div>
+        <div class="truth-text">Bạn đang quản lý bằng cảm xúc, không phải dữ liệu. Sau sáp nhập, bạn cần dashboard duy nhất cho cả hai khối — cùng metrics, cùng định nghĩa "done", cùng cách đo velocity. Không có số liệu chung thì không có ngôn ngữ chung.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#118ab2;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#118ab2;">JP</div>
+          <div>
+            <div class="truth-agent-name">James "Cầu Nối" Park</div>
+            <div class="truth-agent-role">Trưởng Phòng</div>
+          </div>
+        </div>
+        <div class="truth-text">WICHO chuyển sang consultant nhưng ảnh hưởng của anh ấy vẫn còn nguyên trong team Seoul. Đừng coi thường điều đó. Hãy biến WICHO thành đồng minh — gặp anh ấy, hỏi ý kiến, cho anh ấy credit công khai. Đối đầu ngầm là cách nhanh nhất để mất cả hai team.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#d62828;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#d62828;">DN</div>
+          <div>
+            <div class="truth-agent-name">David "Kiến Trúc Sư" Nguyễn</div>
+            <div class="truth-agent-role">Giám đốc Khối</div>
+          </div>
+        </div>
+        <div class="truth-text">Bạn đang ở tầng Division Head nhưng vẫn suy nghĩ như Team Lead. Mỗi lần bạn nhảy vào code review hay fix bug cho team, bạn đang gửi tín hiệu: 'Tôi không tin các bạn.' Division Head không giải quyết vấn đề — Division Head thiết kế hệ thống để vấn đề tự giải quyết.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#f77f00;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#f77f00;">RY</div>
+          <div>
+            <div class="truth-agent-name">Richard "Kỳ Thủ" Yoon</div>
+            <div class="truth-agent-role">BOD</div>
+          </div>
+        </div>
+        <div class="truth-text">BOD không cho bạn quyền lãnh đạo khối sáp nhập vì bạn giỏi kỹ thuật. Họ muốn biết bạn có thể chơi game chính trị, giữ stakeholder Hàn Quốc hài lòng, và deliver P&L. Kỹ thuật là vé vào cửa. Chính trị tổ chức mới là sân chơi chính.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#6a00f4;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#6a00f4;">MH</div>
+          <div>
+            <div class="truth-agent-name">Monica "Tầm Nhìn" Hà</div>
+            <div class="truth-agent-role">CEO</div>
+          </div>
+        </div>
+        <div class="truth-text">Bạn đang sáp nhập team, nhưng chưa sáp nhập vision. Không ai trong cả hai khối biết tại sao họ ngồi cùng nhau ngoài chuyện 'công ty quyết định'. Nếu bạn không tạo ra một câu chuyện chung hấp dẫn trong 60 ngày đầu, mọi người sẽ tự tạo câu chuyện riêng — và câu chuyện đó thường là bi quan.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#457b9d;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#457b9d;">SC</div>
+          <div>
+            <div class="truth-agent-name">GS Soo-jin Choi</div>
+            <div class="truth-agent-role">Chuyên gia Hàn Quốc</div>
+          </div>
+        </div>
+        <div class="truth-text">Stakeholder Hàn Quốc đánh giá bạn trong 3 phút đầu meeting. Không phải qua slide — qua phong thái, cách bạn chào, cách bạn ngồi, cách bạn nói câu đầu tiên bằng tiếng Hàn. Nếu bạn không đầu tư vào 'executive presence kiểu Hàn', bạn sẽ mãi bị coi là 'anh IT giỏi'.</div>
+      </div>
+
+      <div class="truth-card fade-in">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#2a9d8f;"></div>
+        <div class="truth-agent">
+          <div class="truth-agent-avatar" style="background:#2a9d8f;">LP</div>
+          <div>
+            <div class="truth-agent-name">TS Lan Phạm</div>
+            <div class="truth-agent-role">Chuyên gia Việt Nam</div>
+          </div>
+        </div>
+        <div class="truth-text">Team Việt Nam không nói thẳng khi họ bất mãn — họ im lặng rồi nghỉ việc. Sau sáp nhập, người Innovation lo sợ bị 'nuốt chửng', người Seoul lo sợ bị 'đồng hóa'. Bạn cần 1-on-1 với mọi senior member trong 30 ngày đầu. Không phải để nói — để nghe những gì họ không nói.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MINDSET UPGRADE ==================== -->
+<section id="mindset">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(82,183,136,0.1);color:var(--sage);">Chuyển Đổi</div>
+      <h2>Nâng Cấp Tư Duy</h2>
+      <p>Những chuyển đổi tư duy bạn cần thực hiện để bước lên tầng lãnh đạo cao hơn.</p>
+    </div>
+    <div class="mindset-grid">
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Tôi giải quyết vấn đề"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Tôi xây hệ thống giải quyết vấn đề"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Team tôi vs Team họ"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Đây là team của chúng ta"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Delivery đúng hạn"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Tạo ra giá trị kinh doanh"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Quản lý 30 người"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Phát triển 5 leaders"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Report số liệu lên trên"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Kể câu chuyện chiến lược"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Tránh xung đột"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Điều hướng xung đột có chủ đích"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"WICHO là đối thủ"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"WICHO là cố vấn chiến lược"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Làm mọi thứ hoàn hảo"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Chọn đúng thứ để tập trung"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Được yêu mến bởi team"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Được tôn trọng bởi tổ chức"</div>
+      </div>
+      <div class="mindset-card fade-in">
+        <div class="mindset-from">"Nói tiếng Việt trong meeting"</div>
+        <div class="mindset-arrow">&rarr;</div>
+        <div class="mindset-to">"Giao tiếp bằng ngôn ngữ của stakeholder"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 30-60-90 DAY PLAN ==================== -->
+<section id="plan">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(246,199,68,0.1);color:var(--gold);">Kế Hoạch</div>
+      <h2>Kế Hoạch 30-60-90 Ngày</h2>
+      <p>Lộ trình cụ thể sau sáp nhập — từ lắng nghe, đến hành động, đến chuyển đổi.</p>
+    </div>
+
+    <div class="plan-tabs fade-in">
+      <button class="plan-tab active" data-tab="30">30 Ngày Đầu</button>
+      <button class="plan-tab" data-tab="60">31-60 Ngày</button>
+      <button class="plan-tab" data-tab="90">61-90 Ngày</button>
+    </div>
+
+    <!-- 30 DAYS -->
+    <div class="plan-content active" id="plan-30">
+      <div class="plan-phase-header">
+        <h3>Giai Đoạn 1: Lắng Nghe & Xây Nền</h3>
+        <p>Chủ đề: "Tôi ở đây để hiểu, không phải để thay đổi"</p>
+      </div>
+      <div class="plan-items">
+        <div class="plan-item fade-in">
+          <h4>1-on-1 với toàn bộ senior member</h4>
+          <p>Gặp riêng từng người trong cả Innovation và Seoul. Hỏi: "Điều gì bạn muốn giữ nguyên? Điều gì bạn muốn thay đổi? Bạn lo lắng gì nhất?" Ghi chép cẩn thận.</p>
+          <span class="plan-tag" style="background:rgba(0,180,216,0.1);color:var(--teal);">Con Người</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Gặp WICHO — cà phê không agenda</h4>
+          <p>Không phải meeting chính thức. Hỏi WICHO về legacy team Seoul, những điều anh ấy tự hào, những người anh ấy tin tưởng. Cho anh ấy biết bạn tôn trọng những gì anh ấy xây dựng.</p>
+          <span class="plan-tag" style="background:rgba(246,199,68,0.1);color:var(--gold);">Chiến Lược</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Audit quy trình hai team</h4>
+          <p>Không phải để merge — để hiểu. Innovation dùng gì? Seoul dùng gì? Tại sao? Đừng vội kết luận bên nào tốt hơn. Ghi nhận sự khác biệt như data, không phải vấn đề.</p>
+          <span class="plan-tag" style="background:rgba(114,9,183,0.1);color:var(--lavender);">Quy Trình</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Thiết lập communication rhythm</h4>
+          <p>Weekly all-hands ngắn (30p) cho cả khối. Bi-weekly skip-level. Monthly business review. Quan trọng: consistency hơn content trong giai đoạn này.</p>
+          <span class="plan-tag" style="background:rgba(82,183,136,0.1);color:var(--sage);">Giao Tiếp</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Quick win: Giải quyết 1 pain point rõ ràng</h4>
+          <p>Tìm 1 vấn đề nhỏ nhưng gây khó chịu cho cả hai team (ví dụ: tool access, meeting overlap, timezone). Giải quyết nhanh để tạo credibility.</p>
+          <span class="plan-tag" style="background:rgba(255,107,53,0.1);color:var(--warm);">Quick Win</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Map stakeholder Hàn Quốc</h4>
+          <p>Liệt kê toàn bộ stakeholder Korean, hiểu ai có quyền quyết định gì, ai ảnh hưởng ai. Xếp hạng theo mức độ quan trọng và mức độ relationship hiện tại.</p>
+          <span class="plan-tag" style="background:rgba(246,199,68,0.1);color:var(--gold);">Stakeholder</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 60 DAYS -->
+    <div class="plan-content" id="plan-60">
+      <div class="plan-phase-header">
+        <h3>Giai Đoạn 2: Thiết Kế & Xây Dựng</h3>
+        <p>Chủ đề: "Tạo ra ngôn ngữ chung và hướng đi chung"</p>
+      </div>
+      <div class="plan-items">
+        <div class="plan-item fade-in">
+          <h4>Tuyên bố vision cho khối mới</h4>
+          <p>Không phải mission statement sáo rỗng. Một câu chuyện rõ ràng: tại sao hai team ngồi cùng nhau, sẽ đi đâu trong 12 tháng tới, mỗi người đóng vai trò gì. Trình bày tại all-hands.</p>
+          <span class="plan-tag" style="background:rgba(106,0,244,0.1);color:#6a00f4;">Vision</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Thống nhất metrics & dashboards</h4>
+          <p>Một bộ KPI cho cả khối. Không phải metrics Innovation + metrics Seoul. Cùng định nghĩa velocity, quality, utilization. Transparent cho toàn bộ team.</p>
+          <span class="plan-tag" style="background:rgba(114,9,183,0.1);color:var(--lavender);">Data</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Thiết kế org structure mới</h4>
+          <p>Dựa trên data từ 30 ngày đầu: ai nên lead team nào, structure theo function hay product? Đừng quá phức tạp. Đặt đúng người vào đúng chỗ quan trọng hơn vẽ org chart đẹp.</p>
+          <span class="plan-tag" style="background:rgba(214,40,40,0.1);color:var(--rose);">Tổ Chức</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Cross-team pairing</h4>
+          <p>Ghép đôi senior từ Innovation với senior từ Seoul trên 1-2 dự án thực. Không phải team building giả tạo — work together, build trust through delivery.</p>
+          <span class="plan-tag" style="background:rgba(0,180,216,0.1);color:var(--teal);">Integration</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Nâng cấp relationship với 3 stakeholder Hàn Quốc quan trọng nhất</h4>
+          <p>Ít nhất 1 bữa ăn/cà phê riêng với từng người. Không nói về project — nói về business, industry trends, vision. Cho họ thấy bạn nghĩ lớn hơn delivery.</p>
+          <span class="plan-tag" style="background:rgba(246,199,68,0.1);color:var(--gold);">Quan Hệ</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Talent review & succession planning</h4>
+          <p>Xác định top performers, flight risks, và leadership pipeline trong cả hai team. Ai sẽ là leaders thế hệ tiếp theo? Đầu tư vào phát triển họ ngay bây giờ.</p>
+          <span class="plan-tag" style="background:rgba(82,183,136,0.1);color:var(--sage);">Talent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 90 DAYS -->
+    <div class="plan-content" id="plan-90">
+      <div class="plan-phase-header">
+        <h3>Giai Đoạn 3: Tăng Tốc & Chuyển Đổi</h3>
+        <p>Chủ đề: "Từ hai team thành một tổ chức, từ manager thành leader"</p>
+      </div>
+      <div class="plan-items">
+        <div class="plan-item fade-in">
+          <h4>Business review với BOD</h4>
+          <p>Trình bày P&L, pipeline, org health, client satisfaction. Không phải để "report" — để "narrate". Kể câu chuyện: đây là đâu, đây là nơi mình sẽ đi, đây là cách mình sẽ đến.</p>
+          <span class="plan-tag" style="background:rgba(246,199,68,0.1);color:var(--gold);">Executive</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Tuyên bố "One Team" chính thức</h4>
+          <p>Sau 90 ngày, không còn "team Innovation" và "team Seoul". Chỉ có tên mới. Kèm theo: giá trị chung, cách làm việc chung, identity mới. Celebrate với cả khối.</p>
+          <span class="plan-tag" style="background:rgba(0,180,216,0.1);color:var(--teal);">Culture</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Đề xuất growth strategy cho 12 tháng tới</h4>
+          <p>Mở rộng service line nào? Client segment nào? Cần thêm bao nhiêu người? Budget dự kiến? Đưa lên BOD như một business proposal, không phải request.</p>
+          <span class="plan-tag" style="background:rgba(106,0,244,0.1);color:#6a00f4;">Chiến Lược</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Delegate & step back</h4>
+          <p>Đến ngày 90, bạn phải bỏ ít nhất 3 thứ bạn đang làm trực tiếp. Code review? Team lead thay. Sprint planning? DM thay. Technical escalation? Arch thay. Bạn cần calendar trống 40% cho strategic work.</p>
+          <span class="plan-tag" style="background:rgba(230,57,70,0.1);color:var(--rose);">Delegation</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Feedback loop chính thức</h4>
+          <p>Anonymous pulse survey cho cả khối: Team health, leadership trust, merger sentiment. So sánh với baseline từ ngày 1. Công bố kết quả — cả tốt lẫn xấu. Transparency builds trust.</p>
+          <span class="plan-tag" style="background:rgba(82,183,136,0.1);color:var(--sage);">Đo Lường</span>
+        </div>
+        <div class="plan-item fade-in">
+          <h4>Personal brand upgrade</h4>
+          <p>Nhờ mentor/coach đánh giá executive presence. Record bản thân trong meeting. Cải thiện cách trình bày, cách nói chuyện với C-level Hàn Quốc. Đây là đầu tư cho 3-5 năm tới.</p>
+          <span class="plan-tag" style="background:rgba(255,107,53,0.1);color:var(--warm);">Cá Nhân</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== RED FLAGS ==================== -->
+<section id="red-flags">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Cảnh Báo</div>
+      <h2>Cờ Đỏ Cảnh Báo</h2>
+      <p>Những dấu hiệu nguy hiểm sau sáp nhập mà bạn cần nhận ra sớm — trước khi quá muộn.</p>
+    </div>
+    <div class="flags-grid">
+      <div class="flag-card fade-in">
+        <div class="flag-icon">🔕</div>
+        <h4>Im lặng bất thường trong meeting</h4>
+        <p>Khi team Seoul hoặc Innovation ngừng phản đối, ngừng đặt câu hỏi — đó không phải hòa thuận. Đó là đã bỏ cuộc. Họ sẽ nói "vâng" trong meeting rồi làm theo cách cũ. Hỏi trực tiếp: "Ai không đồng ý điều gì?"</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">🚪</div>
+        <h4>Key person xin nghỉ trong 90 ngày đầu</h4>
+        <p>Một senior engineer từ team Seoul nghỉ = tín hiệu rằng team cũ của WICHO cảm thấy bị bỏ rơi. Ngay khi nghe tin, gặp riêng 3 người quan trọng nhất còn lại trong 48 giờ.</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">📊</div>
+        <h4>Hai hệ thống metrics song song</h4>
+        <p>Innovation đo bằng story points, Seoul đo bằng man-days. Nếu sau 60 ngày vẫn chưa thống nhất, bạn đang chạy hai tổ chức, không phải một. Đây là deadline cứng.</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">🍽️</div>
+        <h4>"Họ" vs "Chúng tôi" trong ngôn ngữ hàng ngày</h4>
+        <p>Khi nghe ai nói "bên Innovation" hoặc "bên Seoul" sau 90 ngày — merger chưa thành công. Language shapes culture. Sửa ngôn ngữ trước, mindset sẽ theo sau.</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">📱</div>
+        <h4>Stakeholder Hàn Quốc bypass bạn</h4>
+        <p>Nếu khách hàng Hàn bắt đầu liên hệ trực tiếp với sub-lead thay vì bạn — họ đã ngầm hạ cấp bạn. Cần lập tức sắp xếp meeting level-up, đi cùng sub-lead, tái thiết lập authority.</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">⏰</div>
+        <h4>Bạn vẫn là người bận nhất team</h4>
+        <p>90 ngày mà calendar vẫn kín meetings, vẫn review mọi PR, vẫn join mọi standup — bạn đã thất bại trong delegation. Đo lường: bạn có 40% thời gian cho strategic thinking chưa?</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">🎭</div>
+        <h4>WICHO bắt đầu "cố vấn ngầm"</h4>
+        <p>Nếu team Seoul vẫn hỏi ý kiến WICHO về quyết định kỹ thuật mà không qua bạn — governance chưa rõ ràng. Không phải lỗi WICHO, lỗi bạn chưa thiết lập ranh giới rõ ràng.</p>
+      </div>
+      <div class="flag-card fade-in">
+        <div class="flag-icon">💔</div>
+        <h4>Attrition rate tăng ở team Innovation gốc</h4>
+        <p>Team cũ của bạn cảm thấy bị bỏ rơi khi bạn dành quá nhiều thời gian "giành" team Seoul. Đừng quên những người đã tin tưởng bạn từ đầu. Cân bằng attention là nghệ thuật.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CLIENT MEETING MAP ==================== -->
+<section id="client-map">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(255,107,53,0.1);color:var(--warm);">Trưởng Thành</div>
+      <h2>Bản Đồ Trưởng Thành Gặp Khách Hàng</h2>
+      <p>5 cấp độ — từ người báo cáo đến cố vấn tin cậy. Bạn đang ở đâu?</p>
+    </div>
+    <div class="maturity-levels fade-in">
+
+      <div class="maturity-level" onclick="toggleMaturity(this)">
+        <div class="maturity-num" style="background:var(--text-light);">1</div>
+        <div class="maturity-body">
+          <h4>Cấp 1: Người Báo Cáo (Reporter)</h4>
+          <p>Đến meeting để update status, trả lời câu hỏi. Khách hàng hỏi, bạn trả lời. Bạn là source of information, không phải source of insight.</p>
+          <div class="maturity-detail">
+            <p><strong>Dấu hiệu bạn đang ở đây:</strong> Khách hàng chỉ gọi bạn khi cần số liệu. Meeting luôn bắt đầu bằng "Update cho tôi tình hình project." Bạn mở slide với Gantt chart.</p>
+            <p><strong>Cách lên cấp:</strong> Trước mỗi meeting, chuẩn bị 1 insight mà khách chưa biết. Đừng đợi họ hỏi — chủ động chia sẻ.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="maturity-level" onclick="toggleMaturity(this)">
+        <div class="maturity-num" style="background:var(--teal);">2</div>
+        <div class="maturity-body">
+          <h4>Cấp 2: Người Giải Quyết (Problem Solver)</h4>
+          <p>Khách hàng tin bạn giải quyết được vấn đề kỹ thuật. Khi có issue, họ gọi bạn đầu tiên. Bạn reactive nhưng đáng tin cậy.</p>
+          <div class="maturity-detail">
+            <p><strong>Dấu hiệu bạn đang ở đây:</strong> Khách nhắn Slack/KakaoTalk trực tiếp khi có bug. Họ nói: "Anh/chị handle được chứ?" với giọng tin tưởng.</p>
+            <p><strong>Cách lên cấp:</strong> Bắt đầu nói về root cause, không chỉ fix. Đề xuất prevention, không chỉ cure. "Đây là cách để điều này không bao giờ xảy ra nữa."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="maturity-level" onclick="toggleMaturity(this)">
+        <div class="maturity-num" style="background:var(--sage);">3</div>
+        <div class="maturity-body">
+          <h4>Cấp 3: Người Tư Vấn (Advisor)</h4>
+          <p>Khách hàng hỏi ý kiến bạn trước khi quyết định. Không chỉ về kỹ thuật — về approach, timeline, trade-off. Bạn có tiếng nói trong quyết định.</p>
+          <div class="maturity-detail">
+            <p><strong>Dấu hiệu bạn đang ở đây:</strong> Khách nói: "Anh/chị nghĩ sao nếu mình thay đổi scope?" Họ mời bạn vào meeting planning, không chỉ execution.</p>
+            <p><strong>Cách lên cấp:</strong> Bắt đầu hỏi về business context. "Tại sao feature này quan trọng với business?" Cho thấy bạn quan tâm đến outcome, không chỉ output.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="maturity-level" onclick="toggleMaturity(this)">
+        <div class="maturity-num" style="background:var(--warm);">4</div>
+        <div class="maturity-body">
+          <h4>Cấp 4: Đối Tác Chiến Lược (Strategic Partner)</h4>
+          <p>Khách hàng chia sẻ business strategy với bạn. Bạn được mời vào discussion về roadmap 6-12 tháng. Họ coi bạn là partner, không phải vendor.</p>
+          <div class="maturity-detail">
+            <p><strong>Dấu hiệu bạn đang ở đây:</strong> Được mời vào quarterly business review bên khách. CTO/VP bên họ biết tên bạn. Họ giới thiệu bạn: "Đây là partner của chúng tôi."</p>
+            <p><strong>Cách lên cấp:</strong> Proactively đề xuất initiative mới. "Tôi thấy industry đang chuyển hướng X, có lẽ chúng ta nên chuẩn bị Y." Nghĩ cho business của họ.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="maturity-level" onclick="toggleMaturity(this)">
+        <div class="maturity-num" style="background:var(--gold);">5</div>
+        <div class="maturity-body">
+          <h4>Cấp 5: Cố Vấn Tin Cậy (Trusted Confidant)</h4>
+          <p>Khách hàng gọi bạn để hỏi ý kiến về những thứ ngoài project — career, org changes, internal politics. Bạn là người họ tin tưởng ở mức cá nhân.</p>
+          <div class="maturity-detail">
+            <p><strong>Dấu hiệu bạn đang ở đây:</strong> Khách gọi điện cuối tuần để hỏi ý kiến riêng. Họ nói: "Đừng nói ai, nhưng công ty tôi đang..." Mối quan hệ vượt qua contract.</p>
+            <p><strong>Lưu ý đặc biệt trong bối cảnh Hàn Quốc:</strong> Cấp này đòi hỏi thời gian và sự kiên nhẫn. Ăn tối cùng, uống soju, chia sẻ câu chuyện cá nhân. Trong văn hóa Hàn, đây là jeong (정) — tình cảm sâu sắc được xây dựng qua thời gian.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VIETNAM LEADERSHIP ==================== -->
+<section id="vietnam-leadership">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(42,157,143,0.1);color:#2a9d8f;">Việt Nam</div>
+      <h2>Cách Lãnh Đạo Team Việt Nam</h2>
+      <p>Hiểu sâu tâm lý, văn hóa, và động lực của team Việt Nam để dẫn dắt hiệu quả.</p>
+    </div>
+    <div class="culture-grid">
+
+      <div class="culture-card fade-in" style="border-top-color:#2a9d8f;">
+        <h4>🤝 Xây Dựng Niềm Tin</h4>
+        <p>Developer Việt Nam tin tưởng leader qua hành động, không phải chức danh. Họ quan sát bạn 3-6 tháng trước khi thực sự mở lòng. Đừng vội. Sự nhất quán giữa lời nói và hành động quan trọng gấp 10 lần skill kỹ thuật.</p>
+        <div class="culture-tip">Mẹo: Khi hứa gì, hãy ghi ra và follow-up. Một lời hứa thất hứa = 10 lời hứa giữ lời mới bù lại.</div>
+      </div>
+
+      <div class="culture-card fade-in" style="border-top-color:#2a9d8f;">
+        <h4>💬 Giao Tiếp Ngầm</h4>
+        <p>Team Việt ít khi nói thẳng "tôi không đồng ý" — đặc biệt với sếp. Họ sẽ nói "em sẽ cố" (nghĩa là khó), "cũng được anh" (nghĩa là không thích), hoặc im lặng (nghĩa là hoàn toàn phản đối). Học đọc giữa dòng.</p>
+        <div class="culture-tip">Mẹo: Tạo anonymous channel. Nói rõ: "Anh muốn nghe ý kiến thật, kể cả tiêu cực." Rồi khi nhận feedback tiêu cực — đừng phản ứng, hãy cảm ơn.</div>
+      </div>
+
+      <div class="culture-card fade-in" style="border-top-color:#2a9d8f;">
+        <h4>🌱 Phát Triển Sự Nghiệp</h4>
+        <p>Developer Việt Nam trẻ (25-30) coi learning opportunity quan trọng hơn salary 10-15%. Họ sẽ ở lại nếu cảm thấy đang phát triển, sẽ đi nếu cảm thấy "đứng yên". Sau sáp nhập, team Innovation lo sợ: "Liệu mình có được học thêm không, hay chỉ maintain?"</p>
+        <div class="culture-tip">Mẹo: Công bố learning budget và career path rõ ràng cho khối mới trong 60 ngày. Mỗi người phải thấy "con đường" của mình.</div>
+      </div>
+
+      <div class="culture-card fade-in" style="border-top-color:#2a9d8f;">
+        <h4>👥 Động Lực Nhóm</h4>
+        <p>Team Việt rất gắn kết theo "nhóm nhỏ" — 4-5 người thân nhau. Khi sáp nhập, đừng phá vỡ những nhóm nhỏ này. Hãy giữ nguyên core team, chỉ thêm bridge connections. Phá nhóm = phá tinh thần.</p>
+        <div class="culture-tip">Mẹo: Tổ chức team outing nhỏ (5-8 người mix Innovation + Seoul) thay vì party lớn cả khối. Intimate builds bonds faster.</div>
+      </div>
+
+      <div class="culture-card fade-in" style="border-top-color:#2a9d8f;">
+        <h4>🎯 Thể Diện & Công Nhận</h4>
+        <p>Khen trước mặt team = motivation x10. Chê trước mặt team = mất người. Developer Việt rất nhạy cảm với thể diện (face). Sau sáp nhập, team Seoul nếu bị "so sánh" công khai với Innovation sẽ phản ứng rất mạnh — dù không nói ra.</p>
+        <div class="culture-tip">Mẹo: Feedback tiêu cực = riêng tư, 1-on-1, bắt đầu bằng "anh tin bạn có thể tốt hơn". Feedback tích cực = công khai, cụ thể, có ví dụ.</div>
+      </div>
+
+      <div class="culture-card fade-in" style="border-top-color:#2a9d8f;">
+        <h4>⚡ Tốc Độ Thay Đổi</h4>
+        <p>Team Việt Nam chấp nhận thay đổi nhanh hơn team nhiều nước — nhưng chỉ khi hiểu "tại sao". Nếu bạn ra quyết định mà không giải thích logic, họ sẽ tuân thủ nhưng không commit. Compliance khác commitment.</p>
+        <div class="culture-tip">Mẹo: Mỗi thay đổi lớn, dành 15 phút giải thích context và reasoning. "Anh quyết định vì A, B, C. Ai có góc nhìn khác?"</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== KOREA LEADERSHIP ==================== -->
+<section id="korea-leadership">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(255,107,53,0.1);color:var(--warm);">Hàn Quốc</div>
+      <h2>Cách Lãnh Đạo Trong Bối Cảnh Hàn Quốc</h2>
+      <p>Giải mã văn hóa doanh nghiệp Hàn Quốc — hierarchy, face, relationship, và cách tồn tại trong hệ thống.</p>
+    </div>
+    <div class="culture-grid">
+
+      <div class="culture-card korea fade-in">
+        <h4>🏛️ Hierarchy & Thể Diện (Chemyon)</h4>
+        <p>Trong meeting với stakeholder Hàn, đừng bao giờ phản bác trực tiếp người có cấp bậc cao hơn — kể cả khi họ sai. "Ý kiến rất hay, em muốn bổ sung thêm góc nhìn..." Chemyon (체면) là thể diện — mất thể diện trước mặt team = kẻ thù vĩnh viễn.</p>
+        <div class="culture-tip korea-tip">Mẹo: Nếu cần disagree, hãy nói riêng sau meeting hoặc gửi email kèm data. Không bao giờ đặt ai vào thế "sai" trước đám đông.</div>
+      </div>
+
+      <div class="culture-card korea fade-in">
+        <h4>🍻 Quan Hệ & Hoesik (회식)</h4>
+        <p>Business relationship ở Hàn được xây ở bàn nhậu, không phải phòng meeting. Hoesik (ăn uống sau giờ làm) là nơi quyết định thực sự được đưa ra. Nếu bạn từ chối hoesik liên tục, bạn tự loại mình khỏi vòng tròn quyền lực.</p>
+        <div class="culture-tip korea-tip">Mẹo: Tham gia ít nhất 2 hoesik/tháng với stakeholder quan trọng. Round 1 (ăn) + Round 2 (uống) là tối thiểu. Round 3 (karaoke) là bonus cho relationship.</div>
+      </div>
+
+      <div class="culture-card korea fade-in">
+        <h4>🗣️ Phong Cách Giao Tiếp</h4>
+        <p>Người Hàn nói "네" (ne/vâng) không có nghĩa là đồng ý — nghĩa là "tôi đang nghe". Đừng nhầm lẫn. Khi họ hít một hơi dài rồi nói "좀 어렵네요..." (hơi khó) — nghĩa là "không". Và "검토하겠습니다" (sẽ xem xét) thường nghĩa là "sẽ quên luôn".</p>
+        <div class="culture-tip korea-tip">Mẹo: Sau meeting, luôn gửi email tóm tắt: "Em hiểu là chúng ta đã đồng ý A, B, C." Để confirm real agreement, không phải politeness.</div>
+      </div>
+
+      <div class="culture-card korea fade-in">
+        <h4>⏱️ Nunchi (눈치) — Đọc Không Khí</h4>
+        <p>Nunchi là khả năng đọc bầu không khí, hiểu cảm xúc người khác mà không cần lời nói. Trong văn hóa Hàn, người có nunchi tốt được đánh giá cao. Khi 부장님 (bujangnim) đặt bút xuống và nhìn ra cửa sổ — meeting cần kết thúc.</p>
+        <div class="culture-tip korea-tip">Mẹo: Quan sát body language nhiều hơn lắng nghe lời nói. Ai ngồi đâu trong phòng? Ai nhìn ai trước khi trả lời? Power dynamics nằm trong chi tiết.</div>
+      </div>
+
+      <div class="culture-card korea fade-in">
+        <h4>📋 Bballi Bballi (빨리빨리) — Văn Hóa Nhanh</h4>
+        <p>Stakeholder Hàn Quốc mong đợi phản hồi nhanh — cực kỳ nhanh. Email sau 2 giờ không reply = bạn không quan tâm. Request cuối ngày = kỳ vọng sáng hôm sau có. Đây không phải micro-management, đây là văn hóa bballi bballi.</p>
+        <div class="culture-tip korea-tip">Mẹo: Dù chưa có answer, reply ngay với timeline: "Em nhận được rồi, sẽ gửi chi tiết trước 3PM." Acknowledgement nhanh quan trọng hơn answer đầy đủ.</div>
+      </div>
+
+      <div class="culture-card korea fade-in">
+        <h4>👔 Executive Presence Kiểu Hàn</h4>
+        <p>Leader trong corporate Hàn Quốc được kỳ vọng: ăn mặc chỉn chu (suit tối, ít pattern), nói chậm và chắc, không xin lỗi quá nhiều, biết uống rượu, có ý kiến rõ ràng. "Humble leader" kiểu Tây không work ở đây — họ muốn thấy confidence và decisiveness.</p>
+        <div class="culture-tip korea-tip">Mẹo: Trong meeting quan trọng: suit tối, cà vạt, đứng thẳng, bắt tay chắc, danh thiếp đưa hai tay. First impression ở Hàn = 70% quyết định mối quan hệ.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXECUTIVE PRESENCE ==================== -->
+<section id="executive-presence">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag">Phong Thái</div>
+      <h2>Phong Thái Lãnh Đạo Cấp Cao</h2>
+      <p>Executive Presence không phải bẩm sinh — đó là kỹ năng được rèn luyện có chủ đích.</p>
+    </div>
+    <div class="presence-grid">
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Bước Vào Phòng</h4>
+        <p>Leader cấp cao bước vào phòng meeting chậm, nhìn mọi người, gật đầu, ngồi xuống rồi mới nói. Không phải vội vàng mở laptop, xin lỗi vì trễ, rồi bắt đầu nói ngay. Mỗi giây im lặng có chủ đích tạo gravitas.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Nói</h4>
+        <p>Nói ít, nói chậm, nói có trọng lượng. Thay vì 10 câu chi tiết, nói 3 câu strategic. "Tôi thấy 3 rủi ro. Thứ nhất..." Pause giữa các ý. Không cần fill silence. Silence = confidence.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Quyết Định</h4>
+        <p>Thu thập input nhanh, quyết định dứt khoát, communicate rõ ràng. Không phải "để anh suy nghĩ thêm" rồi kéo dài 2 tuần. Quyết định sai có thể sửa, nhưng không quyết định = mất trust.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Handle Áp Lực</h4>
+        <p>Khi project cháy, team nhìn bạn. Nếu bạn hoảng — team hoảng x10. Leader cấp cao: bình tĩnh phân tích, phân công rõ ràng, rồi nói "Chúng ta sẽ ổn. Đây là plan." Giọng đều, mắt nhìn thẳng.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Dress</h4>
+        <p>Trong bối cảnh Hàn Quốc: đầu tư vào 3 bộ suit tốt, giày sạch, đồng hồ đàng hoàng. Không cần hàng hiệu — cần sạch sẽ, vừa vặn, professional. Mỗi khi gặp stakeholder Hàn, dress code = respect.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Viết Email</h4>
+        <p>Email cho C-level: 3-5 câu max. Executive summary đầu tiên, detail bên dưới. Subject line rõ ràng: "[Decision Needed] Q2 Headcount" thay vì "Về vấn đề nhân sự." Không bao giờ gửi email dài hơn 1 scroll.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Xây Network</h4>
+        <p>Executive không chỉ có downward relationship (với team). Cần: upward (BOD), lateral (peers ở các division khác), external (industry contacts, clients). Mỗi tuần, ít nhất 1 cuộc giao tiếp không liên quan đến project.</p>
+      </div>
+
+      <div class="presence-card fade-in">
+        <h4>Cách Bạn Kể Chuyện</h4>
+        <p>Data alone doesn't persuade — stories do. Thay vì "utilization tăng 15%", hãy nói "3 tháng trước, team còn hoang mang vì sáp nhập. Hôm nay, team Innovation và Seoul đã deliver dự án đầu tiên cùng nhau — on time, on budget. Đây là con số..."</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FINAL SYNTHESIS ==================== -->
+<section id="synthesis">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-tag" style="background:rgba(246,199,68,0.15);color:var(--gold);">Kết Luận</div>
+      <h2>Tổng Hợp Cuối Cùng</h2>
+      <p>Tất cả 8 cố vấn đã nói. Đây là bản tóm tắt — thẳng thắn, không vòng vo.</p>
+    </div>
+
+    <div class="synthesis-columns fade-in">
+      <!-- STOP -->
+      <div class="synthesis-col stop">
+        <h3><span class="icon">🛑</span> Ngừng Làm Ngay</h3>
+        <ul class="synthesis-list">
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng nhảy vào code review — bạn không phải tech lead nữa</li>
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng join mọi standup — delegate cho delivery managers</li>
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng gọi "team tôi" và "team Seoul" — chỉ có một khối</li>
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng tránh conflict — xung đột sau sáp nhập là tự nhiên, cần được giải quyết</li>
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng report bằng chi tiết kỹ thuật cho BOD — họ muốn nghe business impact</li>
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng cố được yêu mến — bạn cần được tôn trọng</li>
+          <li><span class="bullet" style="color:var(--rose);">✕</span> Ngừng nghĩ WICHO là mối đe dọa — anh ấy là tài sản</li>
+        </ul>
+      </div>
+
+      <!-- START -->
+      <div class="synthesis-col start">
+        <h3><span class="icon">🟢</span> Bắt Đầu Ngay</h3>
+        <ul class="synthesis-list">
+          <li><span class="bullet" style="color:var(--sage);">✓</span> Dành 40% thời gian cho strategic thinking và stakeholder management</li>
+          <li><span class="bullet" style="color:var(--sage);">✓</span> 1-on-1 với toàn bộ senior member trong 30 ngày — lắng nghe, không phải nói</li>
+          <li><span class="bullet" style="color:var(--sage);">✓</span> Xây vision chung cho khối mới — tại sao hai team ngồi cùng nhau</li>
+          <li><span class="bullet" style="color:var(--sage);">✓</span> Đầu tư vào executive presence — suit, cách nói, cách viết email</li>
+          <li><span class="bullet" style="color:var(--sage);">✓</span> Gặp WICHO — cà phê, không agenda, xây alliance</li>
+          <li><span class="bullet" style="color:var(--sage);">✓</span> Học đọc nunchi trong meeting với stakeholder Hàn Quốc</li>
+          <li><span class="bullet" style="color:var(--sage);">✓</span> Xây dashboard metrics chung cho cả khối — ngôn ngữ chung</li>
+        </ul>
+      </div>
+
+      <!-- PHILOSOPHY -->
+      <div class="synthesis-col philosophy">
+        <h3><span class="icon">💫</span> Triết Lý Vận Hành</h3>
+        <ul class="synthesis-list">
+          <li><span class="bullet" style="color:var(--gold);">◆</span> <strong>Sáp nhập team không khó. Sáp nhập văn hóa mới khó.</strong> Đừng vội merge process — merge hearts first.</li>
+          <li><span class="bullet" style="color:var(--gold);">◆</span> <strong>Division Head là kiến trúc sư, không phải thợ xây.</strong> Bạn thiết kế hệ thống, không phải xây từng viên gạch.</li>
+          <li><span class="bullet" style="color:var(--gold);">◆</span> <strong>Trong outsourcing Hàn-Việt, relationship > delivery.</strong> Delivery tốt giữ contract. Relationship tốt mở contract mới.</li>
+          <li><span class="bullet" style="color:var(--gold);">◆</span> <strong>Leader giỏi không có tất cả câu trả lời.</strong> Leader giỏi hỏi đúng câu hỏi và biết ai có câu trả lời.</li>
+          <li><span class="bullet" style="color:var(--gold);">◆</span> <strong>90 ngày đầu quyết định 3 năm tới.</strong> Invest disproportionately vào giai đoạn này.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="philosophy-quote fade-in">
+      <blockquote>
+        "Bạn không chỉ đang sáp nhập hai division. Bạn đang tạo ra một tổ chức mới, với văn hóa mới, identity mới.
+        Đừng cố biến Seoul thành Innovation, hay Innovation thành Seoul.
+        Hãy tạo ra thứ tốt hơn cả hai — và để mọi người thấy mình trong câu chuyện mới đó."
+      </blockquote>
+      <cite>— Hội Đồng 8 Cố Vấn, dành riêng cho hành trình của bạn</cite>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="container">
+    <p>Hội Đồng Lãnh Đạo &mdash; 8 Cố Vấn Cho Hành Trình Lãnh Đạo Cấp Cao</p>
+    <p style="margin-top:8px;opacity:0.6;">Nội dung được thiết kế riêng cho bối cảnh sáp nhập Innovation &amp; Seoul Division</p>
+  </div>
+</footer>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// ===== SCROLL FADE-IN =====
+const fadeEls = document.querySelectorAll('.fade-in');
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      fadeObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+fadeEls.forEach(el => fadeObserver.observe(el));
+
+// ===== STICKY NAV SHADOW =====
+const nav = document.getElementById('stickyNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 100);
+});
+
+// ===== TAB SWITCHING =====
+document.querySelectorAll('.plan-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.plan-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('plan-' + tab.dataset.tab).classList.add('active');
+    // re-observe fade-ins in newly visible tab
+    document.querySelectorAll('#plan-' + tab.dataset.tab + ' .fade-in').forEach(el => {
+      fadeObserver.observe(el);
+    });
+  });
+});
+
+// ===== MATURITY TOGGLE =====
+function toggleMaturity(el) {
+  const detail = el.querySelector('.maturity-detail');
+  if (detail) {
+    detail.classList.toggle('open');
+  }
+}
+
+// ===== SMOOTH SCROLL OFFSET =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      const offset = 60;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>

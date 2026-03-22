@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richard "Kỳ Thủ" Yoon — Thành viên BOD</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --agent-gradient: linear-gradient(135deg, #f77f00, #d62828);
+            --bg: #0f0f1a;
+            --card-bg: #16162a;
+            --text: #e0e0e0;
+            --text-muted: #a0a0b0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(246, 199, 68, 0.15);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-back:hover { opacity: 0.8; }
+
+        .nav-agents {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-agents a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+
+        .nav-agents a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .hero {
+            margin-top: 60px;
+            padding: 4rem 1.5rem 3rem;
+            background: var(--agent-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg));
+        }
+
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            margin: 0 auto 1.2rem;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero-role {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            border-color: #f77f00;
+            background: rgba(247, 127, 0, 0.05);
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .section-toggle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .section.open .section-toggle {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 5000px;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .section-content h3 {
+            color: var(--teal);
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        .section-content ul {
+            padding-left: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.6rem;
+            color: var(--text);
+        }
+
+        .story-bubble {
+            background: rgba(246, 199, 68, 0.04);
+            border-left: 4px solid var(--gold);
+            border-radius: 0 10px 10px 0;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            font-style: italic;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.8;
+        }
+
+        .story-bubble.rose {
+            background: rgba(230, 57, 70, 0.06);
+            border-left-color: var(--rose);
+        }
+
+        .story-bubble.teal {
+            background: rgba(0, 180, 216, 0.06);
+            border-left-color: var(--teal);
+        }
+
+        .story-bubble.sage {
+            background: rgba(82, 183, 136, 0.06);
+            border-left-color: var(--sage);
+        }
+
+        .story-bubble.orange {
+            background: rgba(247, 127, 0, 0.06);
+            border-left-color: #f77f00;
+        }
+
+        .story-bubble .attribution {
+            display: block;
+            margin-top: 0.6rem;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 0.85rem;
+        }
+
+        .mistake-card {
+            background: rgba(230, 57, 70, 0.06);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mistake-card h4 {
+            color: var(--rose);
+            margin-bottom: 0.5rem;
+        }
+
+        .mistake-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 3rem 1rem 2.5rem; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero-quote { font-size: 1rem; }
+            .content { padding: 1.5rem 1rem; }
+            .section-header h2 { font-size: 1.05rem; }
+            .nav-agents { gap: 0.5rem; }
+            .nav-agents a { font-size: 0.75rem; padding: 0.2rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-back">← Về Trang Chính</a>
+        <div class="nav-agents">
+            <a href="04-division-head.html">← Trước</a>
+            <a href="06-ceo.html">Tiếp →</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-avatar">♟️</div>
+        <h1>Richard "Kỳ Thủ" Yoon</h1>
+        <p class="hero-role">Thành viên BOD & Giám đốc Quốc gia · Hoạt động Hàn Quốc · 22 năm, ex-LG CNS</p>
+        <div class="hero-badge">♟️ Chiến Lược Gia Chính Trị</div>
+        <p class="hero-quote">"Chúng tôi không nghĩ về code quality hay sprint velocity. Chúng tôi nghĩ về margin, rủi ro danh mục khách hàng, và liệu tổ chức này sẽ là cost center hay growth engine."</p>
+    </section>
+
+    <div class="content">
+
+        <!-- SECTION 1: Bài Học Xương Máu -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>💔 Bài Học Xương Máu</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <p>Tôi dành 15 năm ở LG CNS — từ developer lên đến quản lý toàn bộ hoạt động outsourcing tại Việt Nam. Tôi tưởng mình hiểu business. Nhưng khi ngồi vào ghế BOD lần đầu, tôi nhận ra mình đã sống trong một bong bóng.</p>
+
+                    <div class="story-bubble rose">
+                        Năm 2016, chúng tôi mất khách hàng tài chính Hàn Quốc trị giá $2M/năm. Delivery hoàn hảo — on-time, on-budget, quality tốt. Tôi không hiểu tại sao.
+                        <br><br>
+                        Rồi tôi phát hiện: country head của đối thủ chơi golf với CTO của khách hàng MỖI THÁNG. Họ ăn tối cùng gia đình. Con họ học cùng trường quốc tế. Khi đến lúc ký hợp đồng mới, quyết định đã được đưa ra trên sân golf từ lâu trước khi RFP được gửi.
+                        <br><br>
+                        Tôi mất $2M vì nghĩ rằng delivery quality là đủ. Tôi học được: <strong>quan hệ không phải là chính trị — quan hệ là CƠ SỞ HẠ TẦNG</strong>.
+                        <span class="attribution">— Richard Yoon, bài học đắt giá nhất sự nghiệp</span>
+                    </div>
+
+                    <p>Bài học thứ hai cũng đau không kém:</p>
+
+                    <div class="story-bubble orange">
+                        Tôi promote một manager vì anh ta trung thành. 8 năm gắn bó, không bao giờ than phiền, luôn nói "yes". Nhưng anh ta không có khả năng lãnh đạo một team 40 người. Team rơi vào hỗn loạn, 5 người giỏi nghỉ trong 3 tháng.
+                        <br><br>
+                        Tôi phải demote anh ta — một trong những cuộc nói chuyện khó khăn nhất đời tôi. Anh ta khóc. Tôi cũng muốn khóc.
+                        <br><br>
+                        Từ đó tôi có nguyên tắc: <strong>"Hãy bao quanh mình bằng những người khiến bạn không thoải mái vì sự thật, không phải những người khiến bạn thoải mái vì đồng thuận."</strong>
+                        <span class="attribution">— Richard Yoon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Điều Bạn Cần Nghe Ngay -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <p>Tôi nói thẳng: BOD đánh giá bạn trên 3 tiêu chí. Không hơn, không kém.</p>
+
+                    <h3>Ba câu hỏi BOD đang tự hỏi về bạn</h3>
+                    <ul>
+                        <li><strong>Bạn có thể tăng trưởng doanh thu không?</strong> — Không phải "deliver tốt" mà là "mang thêm business vào".</li>
+                        <li><strong>Bạn có thể xây tổ chức tự vận hành không?</strong> — Nếu bạn đi nghỉ 2 tuần, mọi thứ có chạy không?</li>
+                        <li><strong>Bạn có thể đại diện chúng tôi trước khách hàng cấp cao Hàn Quốc không?</strong> — Executive presence, ngôn ngữ, và sự tự tin khi ngồi cùng bàn với CTO/CIO khách hàng.</li>
+                    </ul>
+
+                    <h3>90 ngày đầu: Quick wins cho BOD</h3>
+                    <p>Trong 90 ngày đầu tiên, bạn cần xác định 2-3 quick wins <strong>nhìn thấy được bởi BOD</strong>. Chú ý: đây KHÔNG phải technical wins.</p>
+                    <ul>
+                        <li><strong>Business win:</strong> Upsell service mới cho khách hàng hiện tại từ cả hai division — "Merger cho phép chúng tôi offer full-stack service mà trước đây không thể."</li>
+                        <li><strong>Cost efficiency:</strong> Tìm overlap, consolidate, và present con số: "Merger giúp tiết kiệm X% chi phí vận hành qua shared services."</li>
+                        <li><strong>Client retention:</strong> Gặp top 3 khách hàng, đảm bảo transition mượt, và report lại: "100% key accounts confirmed satisfaction với transition plan."</li>
+                    </ul>
+
+                    <h3>Về WICHO</h3>
+                    <div class="story-bubble teal">
+                        WICHO chuyển sang consultant side — điều này có thể mang nhiều ý nghĩa. Anh ta có thể là đồng minh chiến lược, có thể là người quan sát chờ bạn thất bại, hoặc có thể genuinely muốn hỗ trợ từ góc khác.
+                        <br><br>
+                        Đừng giả định. Hãy tìm hiểu: WICHO có ảnh hưởng thực sự gì? Ai lắng nghe anh ta? Anh ta có quan hệ khách hàng nào mà bạn cần? Trong cờ vua, bạn không phản ứng với quân mình NGHĨ đối thủ sẽ đi — bạn phân tích vị trí thực tế trên bàn cờ.
+                        <span class="attribution">— Richard Yoon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Sai Lầm Cần Tránh -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>⚠️ Sai Lầm Cần Tránh</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <div class="mistake-card">
+                        <h4>Sai lầm #1: Nghĩ rằng công việc của bạn là delivery</h4>
+                        <p>Delivery là TABLE STAKES — mức tối thiểu để tồn tại. Nếu bạn chỉ deliver tốt, bạn là một operations manager đắt tiền. Ở level này, công việc của bạn là: tăng trưởng business, xây dựng tổ chức tự vận hành, và đại diện công ty trước khách hàng cấp cao. Delivery phải chạy KHÔNG CẦN bạn can thiệp hàng ngày.</p>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h4>Sai lầm #2: Không học ngôn ngữ tài chính</h4>
+                        <p>Tôi từng ngồi trong meeting BOD, và một division head trình bày: "Team đã deliver 95% on-time, customer satisfaction 4.5/5." Board im lặng. Rồi người khác trình bày: "Division đạt margin 32%, utilization rate 78%, revenue per head tăng 15% YoY." Board gật đầu, hỏi thêm, engaged. Bạn PHẢI nói ngôn ngữ của họ: <strong>margin, utilization rate, revenue per head, cost per delivery unit, client concentration risk</strong>. Nếu bạn không biết những con số này cho tổ chức mình, bạn đang vô hình.</p>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h4>Sai lầm #3: Vô hình trước khách hàng</h4>
+                        <p>Một division head tôi biết — giỏi, team love anh ta, delivery perfect — nhưng anh ta KHÔNG BAO GIỜ gặp khách hàng. Mọi client relationship đều qua sales team. Khi sales person nghỉ việc, khách hàng hỏi: "Ai đang phụ trách chúng tôi?" — và không ai biết tên anh ta. Bạn PHẢI ở phía trước 3-5 khách hàng lớn nhất, mỗi quý ít nhất một lần, cho relationship building.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Câu Chuyện Thực Tế -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>📖 Câu Chuyện Thực Tế</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <h3>$500K và chiếc áo polo</h3>
+
+                    <p>Câu chuyện này tôi thề là thật, dù nghe như phim.</p>
+
+                    <div class="story-bubble rose">
+                        Năm 2019, chúng tôi sắp ký deal $500K với một tập đoàn tài chính Hàn Quốc. Final presentation trước VP của họ. Division head của tôi — người chuẩn bị proposal — đến meeting mặc áo polo và quần khaki.
+                        <br><br>
+                        VP khách hàng mặc vest ba mảnh. Đội ngũ của họ ai cũng formal. Division head của tôi trình bày xuất sắc — technical solution hoàn hảo, timeline realistic, pricing competitive.
+                        <br><br>
+                        Chúng tôi thua. Đối thủ thắng dù solution kém hơn.
+                    </div>
+
+                    <p>Sau này, qua kênh riêng, tôi biết VP đó nói với team: <em>"Họ giỏi, nhưng nếu họ không tôn trọng meeting với chúng ta đủ để mặc đồ phù hợp, liệu họ có tôn trọng dự án của chúng ta?"</em></p>
+
+                    <div class="story-bubble">
+                        Executive presence không phải là phù phiếm. Nó là SỰ TÔN TRỌNG dành cho mối quan hệ. Trong văn hóa doanh nghiệp Hàn Quốc, cách bạn xuất hiện nói lên mức độ nghiêm túc bạn dành cho đối phương.
+                        <br><br>
+                        Tôi không nói bạn phải mặc Gucci. Tôi nói: hiểu context, đọc phòng, và luôn match hoặc vượt level formal của đối tác.
+                        <span class="attribution">— Richard Yoon, bài học $500K</span>
+                    </div>
+
+                    <p>Division head đó sau này trở thành một trong những người giỏi nhất tôi biết về client management. Nhưng bài học $500K đó anh ta không bao giờ quên.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Góc Nhìn Việt Nam - Hàn Quốc -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>🌏 Góc Nhìn Việt Nam - Hàn Quốc</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <h3>🇰🇷 Bàn cờ chính trị Hàn Quốc</h3>
+
+                    <p>Trong doanh nghiệp Hàn Quốc, quyết định không được đưa ra trong meeting. Meeting là nơi <strong>công bố</strong> quyết định đã được đưa ra qua các cuộc trò chuyện riêng, bữa ăn tối, và quan hệ cá nhân.</p>
+
+                    <ul>
+                        <li><strong>Nemawashi kiểu Hàn:</strong> Trước mọi meeting quan trọng, hãy nói chuyện riêng với từng stakeholder chính. Đảm bảo không ai bị bất ngờ. Sự bất ngờ trong meeting = mất mặt = mất quan hệ.</li>
+                        <li><strong>Hierarchy matters:</strong> Biết ai là ai, ai có ảnh hưởng thực sự (không chỉ chức danh), ai đang lên và ai đang xuống trong tổ chức khách hàng.</li>
+                        <li><strong>Sau giờ làm:</strong> Quan hệ business Hàn Quốc được xây dựng ngoài giờ — dinner, golf, soju. Bạn không cần uống nhiều, nhưng bạn cần CÓ MẶT.</li>
+                    </ul>
+
+                    <h3>🇻🇳 Team Việt Nam nhìn lên bạn</h3>
+
+                    <p>Đội ngũ Việt Nam của bạn cần biết rằng leader mới hiểu họ — không chỉ kỹ năng mà cả <strong>nguyện vọng và lo lắng</strong>.</p>
+
+                    <div class="story-bubble sage">
+                        Khi tôi quản lý operation Việt Nam cho LG CNS, tôi phạm sai lầm lớn: giao tiếp toàn tiếng Hàn/Anh, qua manager layer, không bao giờ trực tiếp nói chuyện với developer. Tôi là "ông Hàn Quốc ở trên cao" trong mắt họ.
+                        <br><br>
+                        Khi tôi bắt đầu bay xuống HCMC mỗi tháng, ngồi ăn trưa với team, hỏi "Bạn đang học gì? Bạn muốn làm gì trong 2 năm tới?" — mọi thứ thay đổi. Retention tăng, productivity tăng, và quan trọng nhất: họ bắt đầu nói thật với tôi khi có vấn đề.
+                        <span class="attribution">— Richard Yoon</span>
+                    </div>
+
+                    <h3>🌉 Cầu nối chiến lược</h3>
+
+                    <p>Vị trí của bạn — người Việt làm việc tại Hàn Quốc, quản lý team Việt cho khách hàng Hàn — là <strong>vô cùng hiếm và giá trị</strong>. Đừng xem đó là điều bình thường. Đó là competitive moat mà rất ít người có.</p>
+
+                    <ul>
+                        <li>Bạn hiểu cả hai văn hóa business — dùng điều đó để DỊCH, không chỉ ngôn ngữ mà cả kỳ vọng, phong cách làm việc, và cách ra quyết định.</li>
+                        <li>Khi khách hàng Hàn frustrated với team Việt, bạn giải thích context. Khi team Việt confused bởi yêu cầu Hàn, bạn decode.</li>
+                        <li>Đây không phải soft skill — đây là <strong>strategic capability mà BOD cần bạn làm</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('open');
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

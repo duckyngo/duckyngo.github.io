@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GS. Soo-jin "Phiên Dịch" Choi — Chuyên gia Văn hóa Hàn Quốc</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --hero-gradient: linear-gradient(135deg, #003049, #457b9d);
+            --card-bg: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #555;
+            --border-light: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f7;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* NAV */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--dark);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+
+        .top-nav a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .top-nav a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-center {
+            font-weight: 600;
+            color: #ccc;
+            font-size: 0.85rem;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* HERO */
+        .hero {
+            margin-top: 52px;
+            background: var(--hero-gradient);
+            padding: 60px 24px 50px;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(246,199,68,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(0,180,216,0.06) 0%, transparent 50%);
+            animation: heroShimmer 15s ease-in-out infinite;
+        }
+
+        @keyframes heroShimmer {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-3%, 2%); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #e0a800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 4px solid rgba(255,255,255,0.2);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .hero .role {
+            font-size: 1rem;
+            opacity: 0.85;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(246,199,68,0.2);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-quote {
+            font-style: italic;
+            font-size: 1.1rem;
+            opacity: 0.92;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+            border-left: 3px solid var(--gold);
+            padding-left: 20px;
+            text-align: left;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+        }
+
+        /* EXPANDABLE SECTIONS */
+        .section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: #fafafa;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+            color: var(--teal);
+            transition: transform 0.3s;
+            font-weight: 700;
+        }
+
+        .section.open .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 8000px;
+        }
+
+        .section-inner {
+            padding: 0 24px 28px;
+        }
+
+        /* STORY BUBBLES */
+        .story-bubble {
+            border-left: 4px solid var(--teal);
+            background: #f0fafb;
+            padding: 18px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 18px 0;
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        .story-bubble.gold {
+            border-left-color: var(--gold);
+            background: #fffbeb;
+        }
+
+        .story-bubble.rose {
+            border-left-color: var(--rose);
+            background: #fff0f1;
+        }
+
+        .story-bubble.sage {
+            border-left-color: var(--sage);
+            background: #f0faf4;
+        }
+
+        .story-bubble .speaker {
+            font-weight: 700;
+            font-style: normal;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* TEXT ELEMENTS */
+        .section-inner p {
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .section-inner h3 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin: 24px 0 10px;
+            font-weight: 700;
+        }
+
+        .section-inner h4 {
+            font-size: 1rem;
+            color: #003049;
+            margin: 18px 0 8px;
+            font-weight: 600;
+        }
+
+        .section-inner ul, .section-inner ol {
+            padding-left: 22px;
+            margin-bottom: 14px;
+        }
+
+        .section-inner li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .korean-term {
+            display: inline-block;
+            background: #003049;
+            color: var(--gold);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 0 2px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #003049, #457b9d);
+            color: #fff;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin: 18px 0;
+        }
+
+        .highlight-box strong {
+            color: var(--gold);
+        }
+
+        .mistake-card {
+            background: #fff5f5;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin: 14px 0;
+        }
+
+        .mistake-card .mistake-title {
+            font-weight: 700;
+            color: var(--rose);
+            margin-bottom: 6px;
+        }
+
+        .phrase-box {
+            background: #f0fafb;
+            border: 1px solid #b8e6f0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+
+        .phrase-box .korean {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #003049;
+        }
+
+        .phrase-box .meaning {
+            color: var(--text-secondary);
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* FOOTER */
+        .page-footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .hero {
+                padding: 50px 18px 40px;
+            }
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            .hero-quote {
+                font-size: 1rem;
+            }
+            .section-header h2 {
+                font-size: 1.1rem;
+            }
+            .section-inner {
+                padding: 0 18px 22px;
+            }
+            .top-nav {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+    <a href="index.html">← Về Trang Chính</a>
+    <span class="nav-center">07 / 08</span>
+    <div class="nav-arrows">
+        <a href="06-previous.html">← Trước</a>
+        <a href="08-vietnam-specialist.html">Sau →</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="avatar">🎎</div>
+        <h1>GS. Soo-jin "Phiên Dịch" Choi</h1>
+        <p class="role">Chuyên gia Lãnh đạo & Văn hóa Hàn Quốc · 20 năm tư vấn lãnh đạo nước ngoài tại Hàn Quốc</p>
+        <div class="badge">🎎 Người Giải Mã Văn Hóa</div>
+        <blockquote class="hero-quote">
+            "Tôi đã coaching hơn 100 lãnh đạo nước ngoài tại Hàn Quốc. Pattern luôn giống nhau: họ hiểu kinh doanh Hàn Quốc bằng trí tuệ nhưng thất bại về mặt cảm xúc. Bạn không thể Google cách đọc không khí trong phòng họp Seoul."
+        </blockquote>
+    </div>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- SECTION 1: Bài Học Xương Máu -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>💔 Bài Học Xương Máu</h2>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <p>Sau 20 năm coaching lãnh đạo nước ngoài tại Seoul, Busan, và khắp Hàn Quốc, tôi có thể nói chắc một điều: <strong>những người thất bại tại Hàn Quốc không phải vì thiếu năng lực. Họ thất bại vì không đọc được những gì KHÔNG ĐƯỢC NÓI RA.</strong></p>
+
+                <h3>Ba trụ cột vô hình của kinh doanh Hàn Quốc</h3>
+
+                <p>Hàn Quốc vận hành trên ba hệ thống ngầm mà không sách giáo khoa nào dạy bạn:</p>
+
+                <div class="highlight-box">
+                    <p><strong>관계 (Gwangye — Quan hệ):</strong> Không phải "networking" kiểu phương Tây. Đây là mối quan hệ được xây dựng qua thời gian, qua bữa ăn, qua rượu, qua sự tin tưởng tích lũy từng ngày. Trong kinh doanh Hàn Quốc, hợp đồng ký trên giấy nhưng quyết định thật sự được đưa ra trên bàn nhậu.</p>
+                    <p style="margin-top:12px"><strong>눈치 (Nunchi — Đọc không khí):</strong> Khả năng cảm nhận bầu không khí trong phòng mà không cần ai nói gì. Ai đang bực? Ai chưa đồng ý nhưng im lặng? Đề xuất này có đang bị "đóng băng" ngầm không? Nunchi là siêu năng lực của người Hàn — và bạn PHẢI học nó.</p>
+                    <p style="margin-top:12px"><strong>체면 (Chemyeon — Thể diện):</strong> Không chỉ là "giữ mặt". Đây là cả một hệ sinh thái. Bạn giữ thể diện cho sếp, cho đối tác, cho cả người đã rời đi. Cách bạn nói về WICHO trước stakeholder Hàn Quốc sẽ nói về BẠN nhiều hơn là về WICHO.</p>
+                </div>
+
+                <div class="story-bubble gold">
+                    <span class="speaker">Câu chuyện của Raj — Giám đốc Kỹ thuật người Ấn Độ tại Samsung SDS:</span>
+                    Raj là một engineering director xuất sắc. Khi team mời anh đi ăn tối — bữa 회식 (hoesik/hội thực) hàng tháng — anh từ chối: "Tôi cần review code cho deadline ngày mai." Project hoàn thành đúng hạn. Chất lượng tuyệt vời. Nhưng hợp đồng không bao giờ được mở rộng. Raj không hiểu tại sao.<br><br>
+                    Lý do: Trong văn hóa Hàn Quốc, <strong>bữa tối CHÍNH LÀ công việc</strong>. 회식 không phải team building theo kiểu phương Tây. Đó là nơi quyết định thật sự được thảo luận, nơi lòng tin được kiểm chứng, nơi 관계 được vun đắp. Khi Raj từ chối, thông điệp mà đối tác Hàn nhận được là: "Anh ta không coi trọng mối quan hệ với chúng ta."
+                </div>
+
+                <h3>Giải mã "네, 알겠습니다" — Bẫy nguy hiểm nhất</h3>
+
+                <p>Câu phổ biến nhất bạn sẽ nghe từ đối tác Hàn Quốc: <span class="korean-term">네, 알겠습니다</span> (Ne, algessseumnida). Bạn dịch thành "Vâng, tôi hiểu rồi" hoặc "Tôi đồng ý". <strong>SAI.</strong></p>
+
+                <p>Câu này chỉ có nghĩa: <em>"Tôi đã nghe bạn nói."</em> Không hơn, không kém. Nó KHÔNG có nghĩa là đồng ý, KHÔNG có nghĩa là sẽ thực hiện, KHÔNG có nghĩa là ủng hộ.</p>
+
+                <h4>Cách phân biệt đồng ý thật vs. "tôi nghe rồi":</h4>
+                <ul>
+                    <li><strong>Quan sát 24 giờ sau:</strong> Nếu họ bắt đầu hành động (giao việc, gửi email follow-up, lên lịch họp tiếp theo) → đồng ý thật.</li>
+                    <li><strong>Im lặng kéo dài:</strong> Nếu sau 24-48 giờ không có động thái nào → họ KHÔNG đồng ý nhưng không muốn nói thẳng.</li>
+                    <li><strong>"Chúng tôi cần thảo luận thêm" (좀 더 검토해 보겠습니다):</strong> Thường là "không" lịch sự.</li>
+                    <li><strong>"Về nguyên tắc thì được" (원칙적으로는 괜찮습니다):</strong> Có rất nhiều "nhưng" ẩn phía sau.</li>
+                </ul>
+
+                <div class="story-bubble rose">
+                    <span class="speaker">Bài học đắt giá:</span>
+                    Một CTO người Mỹ trình bày kế hoạch tái cấu trúc team. Mọi người Hàn trong phòng gật đầu, nói "네, 알겠습니다." Anh ta bay về Mỹ tin rằng mọi thứ đã được chấp thuận. Hai tuần sau, không ai thực hiện. Khi hỏi, được trả lời: "Chúng tôi đang xem xét." Thực tế? Họ đã đưa đề xuất riêng lên VP cấp cao hơn ngay sau buổi họp. "Đồng ý" chỉ là để giữ 체면 cho anh ta trong cuộc họp.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: Điều Bạn Cần Nghe Ngay -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <p>Tình huống của bạn rất đặc biệt và tôi đã thấy pattern này nhiều lần: hai division sáp nhập, bạn lãnh đạo tổ chức hợp nhất, người từng đứng đầu division kia chuyển sang vai trò tư vấn. Đây là lãnh thổ đầy mìn trong văn hóa Hàn Quốc. Hãy để tôi giải mã.</p>
+
+                <h3>Ba hệ thống vô hình bạn PHẢI thành thạo</h3>
+
+                <h4>1. 서열 (Seoyeol — Thứ bậc)</h4>
+                <p>Trong văn hóa doanh nghiệp Hàn Quốc, cách người ta <em>nghe</em> bạn phụ thuộc vào:</p>
+                <ul>
+                    <li><strong>Chức danh:</strong> Bạn ở level nào? Ai bổ nhiệm bạn? Bạn report cho ai?</li>
+                    <li><strong>Tuổi tác:</strong> Nếu bạn trẻ hơn stakeholder Hàn, bạn cần bù bằng sự chuẩn bị kỹ lưỡng và phong thái điềm tĩnh.</li>
+                    <li><strong>Uy tín công ty:</strong> Công ty bạn đại diện có tiếng không? Track record thế nào?</li>
+                </ul>
+                <p><strong>Cách tín hiệu quyền lực trong 서열:</strong> Không phải nói to hay aggressive. Mà là: <em>chuẩn bị kỹ đến mức không ai có thể bắt lỗi bạn</em>, giữ phong thái điềm tĩnh khi bị challenge, và luôn cho thấy bạn đã "làm bài tập" trước cuộc họp. Người Hàn tôn trọng sự chuẩn bị hơn sự thông minh.</p>
+
+                <h4>2. 보고 (Bogo — Báo cáo)</h4>
+                <p>Người Hàn có format báo cáo cực kỳ chuẩn mực. Nếu bạn trình bày theo kiểu tự do, họ sẽ mất kiên nhẫn dù nội dung tốt.</p>
+
+                <div class="highlight-box">
+                    <p><strong>Format Bogo chuẩn — Học thuộc lòng:</strong></p>
+                    <p>① <strong>배경 (Bối cảnh)</strong> — Tại sao chúng ta đang nói về điều này?</p>
+                    <p>② <strong>현황 (Hiện trạng)</strong> — Tình hình hiện tại là gì? Số liệu cụ thể.</p>
+                    <p>③ <strong>문제점 (Vấn đề)</strong> — Vấn đề chính xác ở đâu?</p>
+                    <p>④ <strong>제안 (Đề xuất)</strong> — Giải pháp của bạn là gì? Đưa ra 2-3 phương án.</p>
+                    <p>⑤ <strong>요청사항 (Yêu cầu)</strong> — Bạn cần gì từ người nghe? Cụ thể.</p>
+                </div>
+
+                <p>Khi bạn cần trình bày tiến độ sáp nhập division cho stakeholder Hàn Quốc, hãy dùng format này. Họ sẽ ngay lập tức cảm thấy "người này hiểu cách chúng tôi làm việc."</p>
+
+                <h4>3. 인맥 (Inmak — Mạng lưới)</h4>
+                <p>Hàn Quốc vận hành trên các mạng lưới vô hình:</p>
+                <ul>
+                    <li><span class="korean-term">학연</span> (Hakyeon — Mạng đồng môn): Bạn học trường nào? SKY (Seoul National, Korea, Yonsei) vs. trường khác tạo ra những vòng tròn quyền lực khác nhau.</li>
+                    <li><span class="korean-term">지연</span> (Jiyeon — Mạng đồng hương): Quê bạn ở vùng nào? Gyeongsang vs. Jeolla có dynamic riêng.</li>
+                    <li><span class="korean-term">혈연</span> (Hyeoryeon — Mạng gia tộc): Gia đình bạn có kết nối gì?</li>
+                </ul>
+                <p><strong>Thực tế cho bạn:</strong> Bạn không thuộc bất kỳ mạng lưới nào ở trên. Nhưng một lời giới thiệu từ người trong mạng lưới có giá trị gấp 100 lần email lạnh. Hãy tìm người trong tổ chức có thể "mở cửa" cho bạn — có thể là ai đó từ team Seoul cũ của WICHO.</p>
+
+                <h3>Tìm một 선배 (Sunbae — Tiền bối)</h3>
+
+                <div class="story-bubble sage">
+                    <span class="speaker">Chiến thuật gia tốc vô hình:</span>
+                    Trong mọi tổ chức Hàn Quốc, có những "tiền bối" (선배) — người đi trước, có kinh nghiệm, sẵn sàng hướng dẫn. Họ không chính thức là mentor. Không ai bổ nhiệm họ. Nhưng khi một 선배 nói "Người này được đấy" (이 사람 괜찮아요), mọi cánh cửa mở ra.<br><br>
+                    <strong>Hành động cụ thể:</strong> Xác định 1-2 người Hàn senior trong tổ chức (ideally từ Seoul Technical Division cũ) và xây dựng quan hệ cá nhân. Mời họ ăn trưa/tối. Hỏi ý kiến họ — không phải vì bạn cần, mà vì việc <em>được hỏi ý kiến</em> là cách bạn thể hiện tôn trọng 서열. Khi họ cảm thấy được tôn trọng, họ sẽ tự nguyện trở thành 선배 của bạn.
+                </div>
+
+                <h3>Cách nói về WICHO — Cực kỳ quan trọng</h3>
+
+                <p>Trong văn hóa Hàn Quốc, cách bạn đối xử với người "đã mất quyền lực" nói lên TẤT CẢ về bạn. Stakeholder Hàn Quốc đang quan sát bạn rất kỹ.</p>
+
+                <ul>
+                    <li><strong>LUÔN:</strong> Ghi nhận công lao của WICHO và Seoul Division. Dùng cụm từ: "Nền tảng mà WICHO và team xây dựng rất vững chắc" (윌리엄 팀이 만든 기반이 매우 탄탄합니다).</li>
+                    <li><strong>LUÔN:</strong> Nhắc đến sự chuyển đổi như một bước tiến hợp lý, không phải thay thế. "Sáp nhập để tận dụng điểm mạnh của cả hai team."</li>
+                    <li><strong>KHÔNG BAO GIỜ:</strong> So sánh để mình trông tốt hơn. Ngay cả khi được hỏi thẳng về điểm yếu của division cũ, hãy chuyển hướng sang "cơ hội cải thiện chung."</li>
+                    <li><strong>KHÔNG BAO GIỜ:</strong> Quên mời WICHO vào các buổi họp quan trọng ban đầu (dù anh ấy đã chuyển sang tư vấn). Sự hiện diện ban đầu giữ 체면 cho anh ấy — và cho bạn.</li>
+                </ul>
+
+                <div class="phrase-box">
+                    <div class="korean">윌리엄과 서울팀의 경험과 노하우를 최대한 활용하면서, 두 조직의 강점을 결합하겠습니다.</div>
+                    <div class="meaning">"Chúng tôi sẽ tận dụng tối đa kinh nghiệm và know-how của WICHO cùng team Seoul, đồng thời kết hợp điểm mạnh của cả hai tổ chức."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Sai Lầm Cần Tránh -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>⚠️ Sai Lầm Cần Tránh</h2>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <p>Đây là những sai lầm tôi thấy lặp đi lặp lại ở các lãnh đạo nước ngoài tại Hàn Quốc. Mỗi sai lầm đều có thể phá hủy tháng trời xây dựng quan hệ.</p>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">❌ Sai lầm #1: Phản đối trực tiếp trong cuộc họp nhóm</div>
+                    <p>Trong văn hóa phương Tây, "healthy debate" được khuyến khích. Trong phòng họp Hàn Quốc? Phản đối công khai một stakeholder senior = bạn vừa phá hủy 체면 của họ trước đồng nghiệp. Họ sẽ không bao giờ quên.</p>
+                    <p><strong>Thay vào đó:</strong> Ghi nhận ý kiến trong cuộc họp. Sau đó gặp riêng (1-on-1). Nói: <em>"부장님, 아까 말씀하신 부분에 대해 좀 더 이야기 나누고 싶은데요"</em> (Anh/chị ơi, tôi muốn thảo luận thêm về điều anh/chị đề cập hồi nãy). Đây là cách "phản đối" được chấp nhận.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">❌ Sai lầm #2: Đánh giá thấp 체면 — đặc biệt về WICHO</div>
+                    <p>Bạn đang ở vị trí nhạy cảm: bạn lãnh đạo tổ chức hợp nhất, WICHO chuyển sang tư vấn. Stakeholder Hàn Quốc đang <em>theo dõi</em> cách bạn nói về WICHO. Không phải vì họ quan tâm đến WICHO — mà vì họ đang đánh giá: <strong>"Nếu một ngày TÔI ở vị trí của WICHO, người này sẽ đối xử với tôi thế nào?"</strong></p>
+                    <p><strong>Thay vào đó:</strong> Luôn nói về WICHO với sự tôn trọng. Ghi nhận công lao cụ thể. Nếu ai đó hỏi về những vấn đề của Seoul Division cũ, chuyển hướng: "Đó là cơ hội để chúng ta cùng cải thiện." Đừng bao giờ để lời nói của bạn có thể bị hiểu là hạ thấp WICHO.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">❌ Sai lầm #3: Giả định tốc độ = năng lực</div>
+                    <p>Bạn đến từ môi trường Innovation — tốc độ là tất cả. Nhưng Hàn Quốc vận hành trên <span class="korean-term">합의</span> (hap-ui — đồng thuận). Quyết định cần được "nấu chín" qua nhiều vòng thảo luận. Nếu bạn push quá nhanh, người Hàn sẽ nghĩ bạn thiếu 깊이 (chiều sâu) và 신중함 (sự thận trọng).</p>
+                    <p><strong>Thay vào đó:</strong> Chuẩn bị kỹ. Gửi tài liệu trước 2-3 ngày. Để mọi người có thời gian "tiêu hóa". Cuộc họp chính thức nên là nơi <em>xác nhận</em> điều đã được đồng ý ngầm, không phải nơi thuyết phục từ đầu.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">❌ Sai lầm #4: Bỏ qua 회식 (hoesik) và các hoạt động nhóm</div>
+                    <p>Bữa ăn tối nhóm, uống rượu, noraebang (karaoke)... có vẻ như "vui chơi" nhưng thực tế đây là <strong>phòng họp thứ hai</strong>. Những quyết định quan trọng nhất thường được "chốt" trên bàn nhậu ở Gangnam lúc 10 giờ tối, không phải trong phòng họp lúc 2 giờ chiều.</p>
+                    <p><strong>Thay vào đó:</strong> Luôn nói "có" khi được mời. Không cần uống nhiều rượu (nói "건강 때문에 조금만 마시겠습니다" — tôi uống ít vì sức khỏe — là OK). Nhưng sự hiện diện là bắt buộc. Đây là nơi bạn xây 관계.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">❌ Sai lầm #5: Email thay cho gặp mặt trong các vấn đề quan trọng</div>
+                    <p>Với vấn đề nhạy cảm (như thay đổi cơ cấu team, phản hồi tiêu cực, đề xuất thay đổi lớn), email là phương tiện NGUY HIỂM nhất. Giọng điệu bị mất, nuance bị mất, và nó để lại "bằng chứng" khiến người nhận cảm thấy bị áp lực.</p>
+                    <p><strong>Thay vào đó:</strong> Gặp trực tiếp hoặc call video. Email chỉ để confirm những gì đã được đồng ý miệng. Và luôn để cho phía Hàn Quốc cảm thấy họ là người "quyết định", không phải bị ép.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: Câu Chuyện Thực Tế -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>📖 Câu Chuyện Thực Tế</h2>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Minh — Giám đốc người Việt-Mỹ suýt mất tất cả vì "trình bày quá tốt"</h3>
+
+                <div class="story-bubble">
+                    <span class="speaker">Bối cảnh:</span>
+                    Minh là Vietnamese-American, làm IT director cho một công ty outsourcing tại Seoul. Tiếng Hàn lưu loát. Technical skill xuất sắc. Data luôn chuẩn xác. Mỗi bài trình bày đều impeccable. Nhưng sau 2 năm, anh liên tục bị "pass over" cho những vị trí senior hơn — trong khi đồng nghiệp Hàn Quốc kém năng lực hơn được thăng chức.
+                </div>
+
+                <p>Minh đến gặp tôi trong sự bức bối. "Tôi làm tốt hơn họ. Data chứng minh điều đó. Tại sao tôi cứ bị bỏ qua?"</p>
+
+                <p>Tôi ngồi quan sát Minh trong ba cuộc họp. Và tôi thấy vấn đề ngay lập tức.</p>
+
+                <h4>Vấn đề #1: Minh không đọc phòng</h4>
+                <p>Trong cuộc họp với Korean VP (부장님), Minh trình bày slide-by-slide, rất logic, rất chuyên nghiệp. Nhưng khi VP nhíu mày ở slide 5 — tín hiệu rõ ràng rằng ông ấy có lo ngại — Minh KHÔNG dừng lại. Anh tiếp tục trình bày. Trong đầu Minh: "Tôi sẽ giải đáp lo ngại ở slide 8." Trong đầu VP: "Người này không nhạy. Không đáng tin cậy cho vị trí cao hơn."</p>
+
+                <h4>Vấn đề #2: Minh quá "direct"</h4>
+                <p>Khi được hỏi ý kiến, Minh trả lời thẳng: "Phương án A tốt hơn vì X, Y, Z." Hiệu quả? Đúng. Nhưng trong văn hóa Hàn Quốc, câu trả lời "đúng" là: xin phép trước, acknowledge quan điểm người hỏi, rồi đưa ý kiến mềm mại hơn.</p>
+
+                <h4>Giải pháp tôi dạy Minh:</h4>
+
+                <div class="phrase-box">
+                    <div class="korean">부장님, 이 부분에 대해 어떻게 생각하시는지요?</div>
+                    <div class="meaning">"Anh/chị ơi, anh/chị nghĩ thế nào về phần này ạ?" — Câu thần chú mở cửa mọi cuộc đối thoại</div>
+                </div>
+
+                <p>Tôi dạy Minh:</p>
+                <ol>
+                    <li><strong>Dừng khi thấy tín hiệu:</strong> VP nhíu mày? Dừng slide. Hỏi: "부장님, 이 부분에 대해 어떻게 생각하시는지요?" Bạn vừa thể hiện nunchi, vừa tôn trọng 서열.</li>
+                    <li><strong>Pre-meeting trước mọi cuộc họp quan trọng:</strong> 30 phút gặp riêng VP trước cuộc họp chính. Trình bày ý chính. Hỏi ý kiến. Khi vào họp chính, VP đã "mua" rồi — cuộc họp chỉ là xác nhận.</li>
+                    <li><strong>Dùng "chúng ta" thay vì "tôi":</strong> Không phải "제가 분석한 바에 따르면" (theo phân tích của tôi) mà là "저희 팀에서 검토한 결과" (theo kết quả team chúng tôi đánh giá).</li>
+                </ol>
+
+                <div class="story-bubble gold">
+                    <span class="speaker">Kết quả:</span>
+                    Sau 3 tháng áp dụng, Minh được VP chủ động giới thiệu vào vòng phỏng vấn cho vị trí Head of Engineering. Không phải vì năng lực thay đổi — năng lực vẫn vậy. Mà vì VP bây giờ CẢM THẤY Minh hiểu họ, tôn trọng họ, và đáng tin cậy.<br><br>
+                    <strong>"Năng lực mở cánh cửa. Nunchi cho phép bạn bước qua."</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: Góc Nhìn Đặc Biệt -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🌏 Góc Nhìn Đặc Biệt — Văn Hóa Hàn Quốc Trong Bối Cảnh Sáp Nhập</h2>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <p>Bạn đang ở vị trí mà rất ít lãnh đạo nước ngoài từng đứng: dẫn dắt một tổ chức hợp nhất có cả nhân sự Hàn Quốc lẫn team Việt Nam, trong ngành IT outsourcing, với stakeholder Hàn Quốc. Đây là bản đồ văn hóa bạn cần.</p>
+
+                <h3>Vận hành "hai ngôn ngữ lãnh đạo" cùng lúc</h3>
+
+                <p>Với stakeholder Hàn Quốc, bạn cần:</p>
+                <ul>
+                    <li>Phong thái <span class="korean-term">차분함</span> (chabunham — điềm tĩnh): Không enthusiastic kiểu startup. Chín chắn, đo lường, data-driven.</li>
+                    <li>Chuẩn bị <span class="korean-term">철저함</span> (cheoljeoham — kỹ lưỡng): Trả lời được mọi câu hỏi. Có plan B. Có risk mitigation.</li>
+                    <li>Tôn trọng <span class="korean-term">위계</span> (wigye — thứ bậc): Report đúng người, đúng cách, đúng format.</li>
+                </ul>
+
+                <p>Với team Việt Nam, bạn cần hoàn toàn khác: gần gũi, empathetic, lắng nghe, tạo không gian an toàn. Đây là hai "bộ mặt lãnh đạo" — không phải giả tạo, mà là <strong>thích ứng văn hóa có chiến lược</strong>.</p>
+
+                <h3>Chuỗi thời gian quan trọng — 100 ngày đầu tiên</h3>
+
+                <div class="highlight-box">
+                    <p><strong>Tuần 1-2:</strong> Gặp riêng từng stakeholder Hàn Quốc senior. Không trình bày gì. CHỈ LẮNG NGHE. Hỏi: "이 조직에 대해 어떻게 보시는지 궁금합니다" (Tôi muốn biết anh/chị nhìn nhận tổ chức này thế nào). Ghi chú kỹ. Đây là bạn thu thập bản đồ quyền lực thật sự.</p>
+                    <p style="margin-top:10px"><strong>Tuần 3-4:</strong> Tổ chức bữa tối riêng (không chính thức) với các leader chủ chốt từ cả hai division cũ. Mục đích: xây 관계 và quan sát 서열 dynamics. Ai nể ai? Ai bất mãn? Ai là người có ảnh hưởng thật sự?</p>
+                    <p style="margin-top:10px"><strong>Tháng 2:</strong> Trình bày vision hợp nhất theo format 보고. Dùng ngôn ngữ "kế thừa và phát triển" chứ không phải "thay đổi và cải tổ." Mời WICHO tham dự và ghi nhận công lao.</p>
+                    <p style="margin-top:10px"><strong>Tháng 3:</strong> Đi Việt Nam thăm team. Nhưng TRƯỚC KHI ĐI, brief stakeholder Hàn Quốc: "Tôi đi để đảm bảo đội offshore deliver đúng chất lượng cam kết." Frame nó là <em>trách nhiệm</em>, không phải <em>du lịch</em>.</p>
+                </div>
+
+                <h3>Những cụm từ Hàn Quốc bạn nên thuộc lòng</h3>
+
+                <div class="phrase-box">
+                    <div class="korean">검토해 주시면 감사하겠습니다</div>
+                    <div class="meaning">"Tôi sẽ biết ơn nếu anh/chị xem xét giúp." — Khi cần approval nhưng không muốn ép.</div>
+                </div>
+
+                <div class="phrase-box">
+                    <div class="korean">선배님의 조언이 큰 도움이 됩니다</div>
+                    <div class="meaning">"Lời khuyên của tiền bối giúp ích rất nhiều." — Khi nói chuyện với mentor/선배.</div>
+                </div>
+
+                <div class="phrase-box">
+                    <div class="korean">양쪽 팀의 강점을 잘 살려 나가겠습니다</div>
+                    <div class="meaning">"Tôi sẽ phát huy điểm mạnh của cả hai team." — Khi nói về merger.</div>
+                </div>
+
+                <div class="phrase-box">
+                    <div class="korean">부족한 점이 있으면 말씀해 주십시오</div>
+                    <div class="meaning">"Nếu có điều gì chưa đủ, xin hãy cho tôi biết." — Thể hiện khiêm tốn mà không yếu đuối.</div>
+                </div>
+
+                <h3>Cảnh báo cuối cùng</h3>
+
+                <div class="story-bubble rose">
+                    <span class="speaker">Điều tôi muốn bạn nhớ nhất:</span>
+                    Hàn Quốc là đất nước của <strong>tốc độ trong thực thi, kiên nhẫn trong quan hệ</strong>. Họ có thể xây tòa nhà trong 3 tháng nhưng mất 3 năm để tin tưởng ai đó. Bạn đang chơi cuộc chơi dài. Đừng tối ưu hóa cho tuần này — hãy tối ưu hóa cho năm thứ ba.<br><br>
+                    Mỗi bữa tối bạn tham gia, mỗi lần bạn giữ 체면 cho người khác, mỗi lần bạn dừng lại để đọc phòng thay vì đẩy ý kiến — đó là bạn đang đầu tư vào tài khoản 관계. Và ở Hàn Quốc, tài khoản đó quyết định TẤT CẢ.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer class="page-footer">
+    Hội Đồng Cố Vấn Lãnh Đạo · GS. Soo-jin Choi · Chuyên gia Văn hóa Hàn Quốc
+</footer>
+
+<script>
+    // Toggle sections
+    function toggleSection(header) {
+        const section = header.parentElement;
+        section.classList.toggle('open');
+    }
+
+    // Scroll-triggered fade-in
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.section').forEach(section => {
+        observer.observe(section);
+    });
+
+    // Auto-open first section after a delay
+    setTimeout(() => {
+        const first = document.querySelector('.section');
+        if (first) first.classList.add('open');
+    }, 800);
+</script>
+
+</body>
+</html>

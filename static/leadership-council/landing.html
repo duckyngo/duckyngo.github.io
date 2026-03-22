@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Leadership Council — 8 Voices for Your Next Chapter</title>
+<style>
+:root {
+  --hero-bg: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  --gold: #f6c744;
+  --warm: #ff6b35;
+  --teal: #00b4d8;
+  --sage: #52b788;
+  --rose: #e63946;
+  --lavender: #7209b7;
+  --sky: #48cae4;
+  --cream: #fefae0;
+  --dark: #1a1a2e;
+  --card-bg: #ffffff;
+  --text: #2b2d42;
+  --text-light: #6c757d;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-hover: 0 16px 48px rgba(0,0,0,0.18);
+  --radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+  background: #f8f9fa;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--hero-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(246,199,68,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(0,180,216,0.06) 0%, transparent 50%);
+  animation: heroFloat 20s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(30px, -30px) rotate(1deg); }
+  66% { transform: translate(-20px, 20px) rotate(-1deg); }
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: white;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+}
+
+.hero h1 span { color: var(--gold); }
+
+.hero .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: rgba(255,255,255,0.75);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  font-weight: 300;
+}
+
+.hero .context-box {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  text-align: left;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero .context-box strong { color: var(--gold); }
+
+.scroll-hint {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  animation: bounce 2s infinite;
+}
+
+.scroll-hint svg { display: block; margin: 0.5rem auto 0; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ===== NAVIGATION ===== */
+.nav-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-sticky a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.nav-sticky a:hover {
+  background: var(--dark);
+  color: white;
+}
+
+/* ===== SECTION STYLES ===== */
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== AGENT CARDS ===== */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.agent-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.agent-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.agent-header {
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.agent-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.agent-meta h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.agent-meta .role {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  margin-bottom: 0.35rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  color: white;
+}
+
+.agent-body { padding: 0 1.5rem 1.5rem; }
+
+.agent-intro {
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  font-style: italic;
+  border-left: 3px solid;
+  padding-left: 1rem;
+}
+
+/* Expandable sections */
+.expand-section {
+  border-top: 1px solid #eee;
+  margin-top: 0.5rem;
+}
+
+.expand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  user-select: none;
+  transition: var(--transition);
+}
+
+.expand-header:hover { color: var(--teal); }
+
+.expand-icon {
+  transition: transform 0.3s;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+.expand-section.open .expand-icon { transform: rotate(45deg); }
+
+.expand-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.expand-section.open .expand-content {
+  max-height: 3000px;
+}
+
+.expand-content-inner {
+  padding: 0.5rem 0 1rem;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+.expand-content-inner p { margin-bottom: 0.8rem; }
+
+.story-bubble {
+  background: #f0f4ff;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin: 0.8rem 0;
+  position: relative;
+  font-style: italic;
+  border-left: 4px solid var(--teal);
+}
+
+.story-bubble.warning {
+  background: #fff5f5;
+  border-left-color: var(--rose);
+}
+
+.story-bubble.success {
+  background: #f0fff4;
+  border-left-color: var(--sage);
+}
+
+.story-bubble.gold {
+  background: #fffbeb;
+  border-left-color: var(--gold);
+}
+
+/* ===== COMPARISON TABLE ===== */
+.comparison-wrapper {
+  overflow-x: auto;
+  margin: 2rem 0;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+  min-width: 800px;
+}
+
+.comparison-table th {
+  background: var(--dark);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.comparison-table th:first-child { border-radius: 12px 0 0 0; }
+.comparison-table th:last-child { border-radius: 0 12px 0 0; }
+
+.comparison-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.comparison-table tr:nth-child(even) td { background: #f8f9fa; }
+.comparison-table tr:hover td { background: #e8f4f8; }
+
+/* ===== SPECIAL SECTIONS ===== */
+.hard-truths {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: white;
+  padding: 4rem 1.5rem;
+}
+
+.hard-truths .section-title { color: var(--gold); }
+.hard-truths .section-subtitle { color: rgba(255,255,255,0.6); }
+
+.truth-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  transition: var(--transition);
+}
+
+.truth-card:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(4px);
+}
+
+.truth-card .truth-num {
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.truth-card p { color: rgba(255,255,255,0.85); font-size: 0.95rem; }
+
+/* ===== TIMELINE ===== */
+.timeline {
+  position: relative;
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--teal), var(--sage), var(--gold));
+  border-radius: 2px;
+}
+
+.timeline-item {
+  padding-left: 56px;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 10px;
+  top: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.timeline-item h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.timeline-item p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* ===== RED FLAGS ===== */
+.red-flags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.red-flag-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border-top: 4px solid var(--rose);
+  transition: var(--transition);
+}
+
+.red-flag-card:hover { transform: translateY(-3px); }
+
+.red-flag-card h4 {
+  color: var(--rose);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.red-flag-card p { font-size: 0.88rem; color: #555; }
+
+/* ===== MATURITY MAP ===== */
+.maturity-levels {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.maturity-card {
+  min-width: 220px;
+  flex: 1;
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+}
+
+.maturity-card:hover { transform: translateY(-4px); }
+
+.maturity-card .level {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.maturity-card h4 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+.maturity-card p { font-size: 0.82rem; color: #666; }
+
+/* ===== CULTURE SECTIONS ===== */
+.culture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.culture-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.culture-card:hover { transform: translateY(-3px); }
+
+.culture-card h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid;
+}
+
+.culture-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.culture-card li {
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.culture-card li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+
+/* ===== EXECUTIVE PRESENCE ===== */
+.presence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.presence-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.presence-card:hover { transform: scale(1.02); }
+
+.presence-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+.presence-card h4 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+.presence-card p { font-size: 0.85rem; color: #666; }
+
+/* ===== FINAL SYNTHESIS ===== */
+.synthesis {
+  background: linear-gradient(135deg, #0f0c29, #302b63);
+  color: white;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.synthesis .section-title { color: var(--gold); }
+
+.synthesis-content {
+  max-width: 750px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.85);
+}
+
+.synthesis-content h3 {
+  color: var(--gold);
+  font-size: 1.4rem;
+  margin: 2rem 0 1rem;
+}
+
+.stop-list, .start-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.stop-list li, .start-list li {
+  padding: 0.6rem 0;
+  padding-left: 2rem;
+  position: relative;
+  font-size: 1rem;
+}
+
+.stop-list li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.start-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-weight: 800;
+}
+
+/* ===== TABS ===== */
+.tab-container { margin: 2rem 0; }
+
+.tab-nav {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.tab-btn:hover { color: var(--text); }
+
+.tab-btn.active {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+}
+
+.tab-panel { display: none; animation: fadeIn 0.4s ease; }
+.tab-panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== MINDSET UPGRADE ===== */
+.mindset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.mindset-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.mindset-card:hover { transform: translateY(-3px); }
+
+.mindset-card .from-to {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 1.2rem;
+  gap: 0.8rem;
+}
+
+.mindset-card .from {
+  background: #fff0f0;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.mindset-card .arrow { font-size: 1.5rem; color: var(--sage); }
+
+.mindset-card .to {
+  background: #f0fff4;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.mindset-card .insight {
+  padding: 0 1.2rem 1.2rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .agents-grid { grid-template-columns: 1fr; }
+  .nav-sticky { justify-content: flex-start; }
+  .section { padding: 3rem 1rem; }
+  .maturity-levels { flex-direction: column; }
+  .comparison-table { font-size: 0.75rem; }
+  .mindset-card .from-to { grid-template-columns: 1fr; }
+  .mindset-card .arrow { transform: rotate(90deg); justify-self: center; }
+}
+
+/* ===== UTILITY ===== */
+.text-center { text-align: center; }
+.mt-2 { margin-top: 2rem; }
+.mb-2 { margin-bottom: 2rem; }
+.divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #ddd, transparent);
+  margin: 3rem 0;
+}
+
+.highlight {
+  background: linear-gradient(to right, rgba(246,199,68,0.2), rgba(0,180,216,0.2));
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.quote-block {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: var(--radius);
+  padding: 2rem;
+  font-size: 1.15rem;
+  font-style: italic;
+  text-align: center;
+  margin: 2rem 0;
+  color: #333;
+  border-left: 4px solid var(--gold);
+}
+
+.quote-block cite {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>The Leadership <span>Council</span></h1>
+    <p class="subtitle">8 battle-scarred leaders sit down with you. No textbooks. No platitudes. Just the truth about what comes next.</p>
+    <div class="context-box">
+      <strong>Your situation:</strong> You led the Innovation Technical Division. WICHO led Seoul Technical. The two have merged — you're now leading the combined organization. WICHO moved to consulting. You're in Korea, managing Korean stakeholders and Vietnamese delivery teams. You're ready to grow from a strong technical/delivery leader into something much bigger.<br><br>
+      <strong>This council exists</strong> because the gap between "excellent delivery manager" and "true organizational leader" is where most talented people stall — not from lack of skill, but from lack of the right mirrors.
+    </div>
+    <div class="scroll-hint">
+      Scroll down to meet your council
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== NAVIGATION ==================== -->
+<nav class="nav-sticky" id="mainNav">
+  <a href="#agents">The 8 Agents</a>
+  <a href="#comparison">How Leaders Think</a>
+  <a href="#hard-truths">Hard Truths</a>
+  <a href="#mindset">Mindset Upgrade</a>
+  <a href="#plan">30-60-90 Plan</a>
+  <a href="#red-flags">Red Flags</a>
+  <a href="#clients">Client Maturity</a>
+  <a href="#vietnam">Vietnam Teams</a>
+  <a href="#korea">Korea Teams</a>
+  <a href="#presence">Executive Presence</a>
+  <a href="#synthesis">Final Synthesis</a>
+</nav>
+
+<!-- ==================== THE 8 AGENTS ==================== -->
+<section class="section" id="agents">
+  <h2 class="section-title">Meet Your Council</h2>
+  <p class="section-subtitle">Eight leaders, eight scars, eight different altitudes. They don't always agree — that's the point.</p>
+
+  <div class="agents-grid">
+
+    <!-- AGENT 1: Frontline Team Lead -->
+    <div class="agent-card" id="agent1">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">TL</div>
+        <div class="agent-meta">
+          <h3>Minh "The Foxhole" Tran</h3>
+          <p class="role">Frontline Team Lead · 5-person dev team · 6 years in the trenches</p>
+          <span class="badge" style="background: #4361ee;">🔥 The Blunt Realist</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #4361ee;">
+          "I've been in the room where the code doesn't compile, the sprint is burning, and the client demo is tomorrow. I don't know boardroom politics. But I know what happens when leaders forget what's actually happening on the ground."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>My first lead role: I took over a team of 5 in Ho Chi Minh City. Three of them were my former teammates. On day one I thought, "Nothing changes — I'm just the same guy who happens to approve leave requests now."</p>
+            <div class="story-bubble warning">
+              Week three: a developer — my close friend — started missing standups. I said nothing because I didn't want to be "that guy." By week six, two others started slacking too. My manager pulled me aside and said: "You're not their friend anymore. You're the person responsible for whether they succeed or fail. If you can't say the hard thing, you're failing them."
+            </div>
+            <p>That sentence broke something in me. And rebuilt it. <strong>Being kind and being honest are not opposites.</strong> The cruelest thing you can do as a lead is let someone fail silently because you want to be liked.</p>
+            <p>I also learned that delegation is not "assigning tasks." It's <strong>transferring ownership</strong>. When I delegated my first feature, I kept checking the PR every 30 minutes. The developer finally said: "Anh, if you're going to rewrite everything I do, just do it yourself." She was right. I had to learn to set the destination and let go of the steering wheel.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>You're now two levels above people like me. The biggest danger is that you stop hearing us.</strong></p>
+            <p>When the division merger happened, I guarantee the frontline teams are asking three questions:</p>
+            <p>1. "Am I going to lose my job?"<br>
+            2. "Is this new leader going to respect how we do things, or bulldoze us?"<br>
+            3. "Does this person even know what I actually do?"</p>
+            <div class="story-bubble gold">
+              My advice: in your first 30 days, do something most senior leaders never do — sit in on actual standups. Not to judge. Not to "add value." Just to <em>listen</em>. When my division head did this once, three years ago, he heard a junior mention a deployment bottleneck that had been costing us 2 hours per release for 8 months. Fixed in a week. That single act earned more trust than any all-hands speech.
+            </div>
+            <p>Also: <strong>protect your team leads from noise.</strong> The worst thing that happened to me after our last reorg was suddenly getting cc'd on 40 emails a day about strategic alignment, budget reviews, and cross-team synergies. I couldn't code. I couldn't lead. I was just drowning in context I couldn't act on. Shield us.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. "I'll just quickly review the code myself."</strong> No. You're not a reviewer anymore. You're the person who makes sure the review process works. The moment you start reading PRs again, you've shrunk back to my level — and nobody is doing your actual job.</p>
+            <p><strong>2. "Let's wait for things to settle before making changes."</strong> After a merger, ambiguity is poison. People don't need perfect answers — they need <em>any</em> clear signal. Even "I don't know yet, but here's how we'll decide" is better than silence.</p>
+            <p><strong>3. Treating WICHO's former team as "the other side."</strong> I've seen mergers where the leader unconsciously favored their original people. The other side notices in about 72 hours. Seat arrangement in meetings, who gets the interesting projects, whose Slack messages get faster replies — it's all tracked.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🌏 Vietnam vs Korea Lens</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>I'm Vietnamese. Let me be direct about something most leaders miss:</p>
+            <p><strong>Vietnamese devs often won't tell you there's a problem until it's a crisis.</strong> It's not dishonesty — it's cultural. We're trained to try harder, solve it ourselves, and not "bother" the leader. In Korea, I've noticed team leads will escalate faster because the reporting culture is more structured.</p>
+            <div class="story-bubble">
+              We had a deployment that was going to miss the deadline by two weeks. My Vietnamese team knew for 10 days but kept saying "We're working on it." They were — heroically — but the timeline was physically impossible. If I hadn't manually checked the burndown chart, we would have discovered the gap on demo day. Now I use a simple rule: <strong>"If something might slip by more than 2 days, tell me today. I will never punish early bad news."</strong> I say this in every standup. It took 3 months before they believed me.
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 2: Engineering / Delivery Manager -->
+    <div class="agent-card" id="agent2">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #f72585, #7209b7);">DM</div>
+        <div class="agent-meta">
+          <h3>Sarah "The Orchestrator" Kim</h3>
+          <p class="role">Engineering & Delivery Manager · 25-person org · 10 years across 3 countries</p>
+          <span class="badge" style="background: #7209b7;">🎯 The Numbers-Driven Strategist</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #7209b7;">
+          "I measure everything. Not because I'm cold — because I've seen too many 'gut feeling' leaders burn their teams while insisting things are fine. Data isn't the opposite of empathy. Data is how I keep my promises."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>I managed a 25-person delivery team spanning Seoul and Da Nang. Two projects, one Korean banking client, one American SaaS client. Different time zones, different quality expectations, different communication styles.</p>
+            <div class="story-bubble warning">
+              The Korean client's PM called me at 10pm on a Friday. "Sarah-ssi, the test report has 47 minor issues. We cannot present this Monday." I knew those 47 issues were cosmetic — border radius, font size mismatches, tooltip wording. But to this client, <strong>47 was a number, and numbers mean quality failure.</strong> I spent Saturday reframing: we fixed 30, deferred 17 with rationale, and presented a "quality trend dashboard" showing defects declining sprint over sprint. The client calmed down. The lesson: <strong>Korean stakeholders often respond to the shape of your data more than the data itself. Show trajectory, not snapshots.</strong>
+            </div>
+            <p>With my Vietnamese team, I learned a different lesson. I set up perfect Jira boards, velocity tracking, burndown charts. Beautiful dashboards. My Da Nang tech lead finally told me: "Chị Sarah, nobody looks at these. We track things in a shared Google Sheet because Jira is too slow." I was furious. Then I realized: <strong>the best system is the one people actually use.</strong> I rebuilt our tracking around their Google Sheet, added a few formulas, and suddenly I had better data than ever — because it was real.</p>
+            <p>The hardest lesson of all: <strong>I once fired someone too late.</strong> A senior developer was technically brilliant but poisoned every standup with sarcasm and resistance. I kept him for 8 months because "we need his skills." When he finally left, team velocity went UP by 20% within two sprints. The team had been self-censoring around him for months. I will never again confuse individual talent with team value.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>You need to build a "delivery system" not run delivery.</strong></p>
+            <p>At your level, the question isn't "is Project X on track?" The question is: "Do I have a reliable way to know which of my 5-10 projects is about to go off-track before it does?"</p>
+            <p>Here's my framework — I call it the <strong>3-Signal Dashboard</strong>:</p>
+            <p>🟢 <strong>Green Signal:</strong> Do team leads proactively flag risks? (If yes: your trust culture is working.)<br>
+            🟡 <strong>Yellow Signal:</strong> Are sprint commitments being met ±10%? (If not: estimation or scope creep.)<br>
+            🔴 <strong>Red Signal:</strong> Is any single person a bottleneck on more than one project? (If yes: your bus factor is dangerous.)</p>
+            <p>After the merger, you'll have teams with different reporting habits. WICHO's teams may track things differently than yours. <strong>Don't force uniformity on day one.</strong> Instead, agree on 3-5 metrics that both sides report weekly. Let each team collect them however they want. Consistency of output, not consistency of process.</p>
+            <div class="story-bubble success">
+              Delegation tip: I use "delegation levels." Level 1: "Do exactly this." Level 2: "Here's the problem — suggest solutions and I'll pick." Level 3: "Handle it, update me weekly." Level 4: "Handle it, tell me only if it breaks." For new team leads from the merged org, start at Level 2 and promote quickly. It shows respect while keeping your eyes open.
+            </div>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. "I'll just standardize everything."</strong> Mergers fail when the winning side imposes their processes. I watched a merged org mandate Jira when half the teams used Azure DevOps. Six months of friction, zero productivity gain. Standardize outcomes, not tools — at least for the first year.</p>
+            <p><strong>2. Confusing busyness with value.</strong> After my promotion I worked 14-hour days. My boss said: "Sarah, I see you working hard. I don't see you working on the right things." That sentence changed my career. <strong>At your level, the highest-value activity is often a 20-minute conversation, not an 8-hour deep dive.</strong></p>
+            <p><strong>3. Not building your "second brain."</strong> You need 2-3 people you trust implicitly across the merged org who will tell you the truth when others won't. Not formal reports — informal relationships. One should be from WICHO's old side.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🌏 Vietnam vs Korea Lens</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>In client meetings with Korean stakeholders:</strong> Always have numbers. They will respect a simple table more than an eloquent narrative. "Defect density decreased 18% MoM" hits harder than "the team is really improving." Structure your updates: status → risk → plan → ask. Korean business culture rewards prepared, structured communication.</p>
+            <p><strong>With Vietnamese delivery teams:</strong> Invest in the team lead relationship, not individual management. Vietnamese teams are often very cohesive internally — the team lead is the real culture owner. If you win the team lead, you win the team. If you bypass the team lead and go directly to developers, you'll accidentally undermine them and break the trust structure.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 3: Department Head -->
+    <div class="agent-card" id="agent3">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #06d6a0, #118ab2);">DH</div>
+        <div class="agent-meta">
+          <h3>James "The Bridge Builder" Park</h3>
+          <p class="role">Department Head · 60-person department · 14 years, ex-Samsung SDS</p>
+          <span class="badge" style="background: #118ab2;">🌉 The Calm Diplomat</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #118ab2;">
+          "I've survived three reorgs, two mergers, and one acquisition. I speak softly. I listen first. But don't mistake my calm for weakness — I've removed directors, rebuilt departments, and told CEOs they were wrong. I just do it in a way that lets everyone keep their face."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>When Samsung SDS reorganized my division, I inherited 60 people — half of whom had reported to a peer I'd competed against for the same role. He "resigned" (was asked to leave). His people resented me before I opened my mouth.</p>
+            <div class="story-bubble warning">
+              My first mistake: I held an all-hands and said "We're all one team now." It sounded great. It meant nothing. His people heard: "Your leader lost, and now the winner is telling you to forget it." Three of his best engineers quit within 6 weeks.
+            </div>
+            <p>What I should have done — and what I did in my second merger, which worked:</p>
+            <div class="story-bubble success">
+              I met every single manager from the other side 1-on-1. Not to talk about work. To ask: "What was working well for you that I should be careful not to break?" This question changed everything. It communicated respect. It gave me real intelligence. And it forced me to listen before acting. One manager told me his team had a Friday code review ritual that had been running for two years. It was their identity. I made sure it survived the merger. Cost me nothing. Earned me everything.
+            </div>
+            <p><strong>The lesson:</strong> After a merger, your job is not to build a new culture. It's to discover what's already valuable in both cultures and weave them together. Culture isn't something you announce. It's something you protect and shape over months.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>WICHO is your biggest hidden risk — and your biggest hidden opportunity.</strong></p>
+            <p>He moved to the consultant side. That means he still has relationships, opinions, and influence. His former people will talk to him. If WICHO feels respected, he becomes a bridge. If he feels discarded, he becomes a shadow resistance force — maybe not intentionally, but inevitably.</p>
+            <div class="story-bubble gold">
+              My advice: have coffee with WICHO within your first week. Not a formal meeting. Say something like: "I want to understand what you built and make sure we honor it as we move forward. What should I know that isn't in any document?" Then actually listen. Follow up on one thing he tells you within 48 hours. This small act signals: "I see your legacy as valuable."
+            </div>
+            <p><strong>On organizational clarity:</strong> Right now, I guarantee there are 15-20 people in the merged org who don't know who their real boss is, what their team's priority is, or whether their project is still happening. This ambiguity will rot your org from inside out. Within 30 days, every person should be able to answer: "Who do I report to? What is my team's #1 priority? How do I escalate a problem?"</p>
+            <p><strong>On leading former peers:</strong> If you had peers in the Innovation Division who are now your reports, the dynamic has shifted. Some will be genuinely happy for you. Some will be silently resentful. The ones who matter most are the "silently competent but watching" group. They're deciding whether to invest in your leadership or start looking elsewhere. Win them with competence and fairness, not charm.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. Moving too fast on structural changes.</strong> You feel pressure to "put your stamp" on the org. Resist it for 60 days. Observe first. I've seen new leaders reorganize teams in week 2 and spend months cleaning up the damage.</p>
+            <p><strong>2. Not having a communication rhythm.</strong> Set up a weekly 30-minute all-hands or written update from day one. Even if you have nothing new, the rhythm itself creates stability. In uncertain times, predictable communication is a form of leadership.</p>
+            <p><strong>3. Solving problems yourself instead of building problem-solvers.</strong> You're a strong technical leader. That's your superpower and your trap. Every time you solve a problem directly, you get a short-term win and a long-term dependency. Your job now is to ask: "Who should be solving this, and what do they need from me to succeed?"</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>📖 Story From the Field</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <div class="story-bubble">
+              After my second merger, I had a Korean senior developer — 15 years experience, technically brilliant — who refused to attend meetings with the new team. Not rudely. He just always had "conflicts." I discovered he was afraid. The merged team used different frameworks, and he felt his expertise was suddenly less relevant. I didn't confront him. I put him in charge of a cross-team architecture review. Suddenly he was the expert guiding both sides. His "meeting conflicts" disappeared overnight. <strong>Resistance is often fear wearing a mask.</strong> Before you address the behavior, look for the fear underneath.
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 4: Division Head -->
+    <div class="agent-card" id="agent4">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #e63946, #d62828);">VP</div>
+        <div class="agent-meta">
+          <h3>David "The Architect" Nguyen</h3>
+          <p class="role">Division Head · 150+ people across 4 offices · 18 years, ex-FPT & TMA</p>
+          <span class="badge" style="background: #d62828;">🏗️ The Structural Thinker</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #d62828;">
+          "I don't build teams. I build organizations. There's a huge difference. A team needs a good leader. An organization needs clear structure, the right incentives, and leaders who can develop other leaders. Most people never make that leap."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>At FPT, I grew from managing 30 people to 150 in three years. I nearly destroyed myself in the process because I didn't change how I operated.</p>
+            <div class="story-bubble warning">
+              At 30 people, I knew everyone's name, their project, their mood. At 80, I thought I still did. I didn't. A team in Da Nang was silently imploding — their lead had burned out, two seniors were in conflict, and the client was escalating to my boss. I found out from my boss. Not from my team. That was the day I realized: <strong>my "open door policy" was a lie I told myself.</strong> The door was open, but three layers of hierarchy stood between me and the truth.
+            </div>
+            <p>I rebuilt my information architecture. I created skip-level 1-on-1s — 30-minute meetings with people two levels below me, rotating monthly. Not to spy on their managers. To hear the unfiltered signal. I also created a simple anonymous pulse survey: 3 questions, every two weeks. "Are you clear on your priorities? Do you feel supported? Is anything blocking you?" The trends told me more than any status report.</p>
+            <p><strong>The structural lesson:</strong> When your org crosses ~50 people, you're no longer managing people — you're managing a system. Your job is to design the system so that good decisions happen without you. If every important decision requires you, your org has a single point of failure: you.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>Draw the org chart you need, not the one you inherited.</strong></p>
+            <p>Right now you probably have two org structures overlaid on top of each other — yours and WICHO's. Some roles overlap. Some gaps exist. Mapping this is your first strategic act.</p>
+            <p>But don't just move boxes. Ask: "What are the 3-4 capabilities this merged org must excel at?" Then design the structure to serve those capabilities. Maybe it's: (1) Korean client delivery excellence, (2) Vietnam team development & retention, (3) Technical innovation, (4) Cross-team knowledge sharing.</p>
+            <div class="story-bubble gold">
+              When I merged two divisions at TMA, I discovered both had their own QA process, their own DevOps setup, their own onboarding. Combined, we had 6 people doing DevOps in slightly different ways. I consolidated to a shared DevOps team of 4, freed up 2 people, and created a "Developer Experience" function that made both sides happier. The lesson: <strong>mergers are not about cutting — they're about finding the consolidation opportunities that make everyone stronger.</strong>
+            </div>
+            <p><strong>On senior stakeholders:</strong> At your level, you now need to manage UP as much as you manage down. Your boss, the BOD, key clients — they need to see you as a strategic partner, not just a delivery engine. Start framing your communications differently. Not "Project X is on track" but "Our merged capacity allows us to pursue the Type-Y client segment, which has 30% better margins." You're selling a vision, not a status report.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. "My best people will figure it out."</strong> They won't. Your best people will quietly optimize for themselves — taking the best projects, the best clients, the best team members. Without clear structure and fairness, a merger becomes a land grab. Set the rules early.</p>
+            <p><strong>2. Ignoring the "frozen middle."</strong> In every merger, there's a layer of mid-managers who are waiting to see which way the wind blows. If you don't activate them quickly — give them clear roles, clear mandates — they'll either become blockers or leave. And they're exactly the people you can least afford to lose.</p>
+            <p><strong>3. Not establishing your "leadership team."</strong> You need 4-5 direct reports who function as a real leadership team — not just individual managers reporting to you in parallel. They need to meet as a group, make decisions as a group, and hold each other accountable. Without this, you're a hub in a wheel, and every spoke goes through you.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🌏 Vietnam vs Korea Lens</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>For Vietnam teams at scale:</strong> The #1 structural challenge with Vietnamese offshore teams is the career path problem. Developers in Vietnam see two paths: become a manager (which many don't want) or leave for a company that pays more. If you want retention, build a <strong>technical leadership track</strong> — Senior Engineer → Staff Engineer → Principal Engineer — with clear criteria and real salary jumps. I did this at FPT and reduced attrition from 28% to 14% in one year.</p>
+            <p><strong>For Korean stakeholders:</strong> At the division level, Korean clients and partners expect you to have "structure." If they see a merged org that looks chaotic, they lose confidence — not because the work is bad, but because <strong>in Korean business culture, organizational clarity signals competence.</strong> Have a clean org chart. Have clear role definitions. When clients ask "Who is responsible for X?", the answer should never be "We're still figuring that out."</p>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 5: BOD / Country Leader -->
+    <div class="agent-card" id="agent5">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #f77f00, #d62828);">BD</div>
+        <div class="agent-meta">
+          <h3>Richard "The Chess Player" Yoon</h3>
+          <p class="role">BOD Member & Country Head · Korea Operations · 22 years, ex-LG CNS</p>
+          <span class="badge" style="background: #f77f00;">♟️ The Political Strategist</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #f77f00;">
+          "Let me be honest: at the BOD level, we're not thinking about your code quality or your sprint velocity. We're thinking about margin, client portfolio risk, talent pipeline, and whether this merged org is going to be a cost center or a growth engine. That might sound cold. It's not. It's the altitude you need to learn to breathe at."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>I ran Korea operations for a mid-size IT services company. Three divisions, 400+ people, 50+ clients. I reported to a CEO in Japan and a board with investors in Singapore.</p>
+            <div class="story-bubble warning">
+              My hardest lesson was about politics. I used to think politics was dirty. Something lesser people did while I focused on "real work." Then I lost a major account — a Korean financial client worth $2M annually — because a competitor's country head played golf with their CTO every month. I didn't even know they were evaluating alternatives. <strong>I learned that relationships are not politics. Relationships are the infrastructure of business.</strong> Ignoring them isn't principled — it's negligent.
+            </div>
+            <p>Another lesson: <strong>I once promoted the wrong person because they were loyal to me.</strong> He was a good manager but not ready for a director role. He struggled, his teams suffered, and I had to demote him — which destroyed our relationship and demoralized his department. I should have promoted the competent person, even though she'd challenged me publicly twice. Challenge is not disloyalty. <strong>Surround yourself with people who make you uncomfortable with truth, not people who make you comfortable with agreement.</strong></p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>Here's what the BOD is actually evaluating when they look at you:</strong></p>
+            <p>1. <strong>Can this person grow revenue?</strong> Not just deliver — but help us win new business, expand existing accounts, and enter new market segments?</p>
+            <p>2. <strong>Can this person build an org that runs without constant supervision?</strong> We want to worry about your division the least. If you're the person who never has crises because you prevent them, you'll rise faster than the firefighter hero.</p>
+            <p>3. <strong>Can this person represent us to clients and partners at a senior level?</strong> In Korea, this means: does this person have the presence, the language, the cultural fluency to sit across from a Korean chaebol executive and be taken seriously?</p>
+            <div class="story-bubble gold">
+              Strategic advice: within 90 days, identify 2-3 "quick wins" that are visible to the BOD. Not technical wins — business wins. Maybe you consolidate redundant vendor contracts from the merger and save 15%. Maybe you identify an upsell opportunity at an existing client. Maybe you create a talent retention plan that reduces attrition projections. <strong>The BOD needs to see that the merger is creating value, not just creating structure.</strong>
+            </div>
+            <p><strong>On WICHO:</strong> From a political perspective, WICHO moving to the consultant side could mean many things. Is he being groomed for something else? Is he being sidelined? Is he still influential with certain clients? Understand his actual political position, not just his title. In Korean business, the title and the power don't always match.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. Thinking your job is delivery.</strong> Delivery is table stakes. Your job is organizational development, client relationship management, and strategic positioning. Delivery is how you keep the lights on. Strategy is how you get promoted.</p>
+            <p><strong>2. Not learning the language of finance.</strong> You need to speak margin, utilization rate, revenue per head, bench cost, and client concentration risk. When you go to budget reviews, don't talk about sprints — talk about portfolio performance. I've seen brilliant technical leaders get dismissed by boards because they couldn't translate their work into business language.</p>
+            <p><strong>3. Being invisible to clients.</strong> At your level, you should be in front of your top 3-5 clients at least quarterly. Not for project updates — for relationship building. "How is your business evolving? How can we serve you better?" These conversations generate more revenue than any sales deck.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>📖 Story From the Field</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <div class="story-bubble">
+              I once lost a $500K deal because my division head — an outstanding technical leader — met the Korean client's VP in a polo shirt and sneakers. The work we proposed was perfect. The price was competitive. But the client's VP told me privately: "Richard-ssi, your technical person is very smart. But we need to feel that our partner takes this relationship as seriously as we do." It wasn't about the clothes. It was about what the clothes signaled: <strong>"I'm an engineer who got dragged to a meeting" vs. "I'm a leader who prepared to earn your trust."</strong> Executive presence is not vanity. It's respect for the relationship.
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 6: CEO -->
+    <div class="agent-card" id="agent6">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #2d00f7, #6a00f4);">CE</div>
+        <div class="agent-meta">
+          <h3>Monica "The Visionary" Ha</h3>
+          <p class="role">CEO · IT Services Company · 25 years, built from 5 to 800 people</p>
+          <span class="badge" style="background: #6a00f4;">🔭 The Big-Picture Thinker</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #6a00f4;">
+          "I started as a developer in Saigon, moved to Seoul, built a company from a bedroom, and now sit across from Fortune 500 procurement executives. Every scar on my leadership was earned by getting something terribly wrong and choosing to learn instead of blame. Let me tell you what most people at your stage cannot yet see."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>The biggest mistake I made at your stage was <strong>thinking leadership was about being the smartest person in the room.</strong></p>
+            <div class="story-bubble warning">
+              When my company hit 50 people, I was still reviewing architecture decisions, attending client demos, and debugging production issues on weekends. My CTO sat me down and said: "Monica, you're the best engineer in this company. And that's the problem. Every hour you spend coding is an hour you're not spending on the things only you can do: vision, client relationships, and building the next generation of leaders." I was offended. Then I realized I was using technical work as a <em>hiding place</em> — because it was comfortable, because I was good at it, and because the ambiguity of "real leadership" scared me.
+            </div>
+            <p>The transition from "doing" to "enabling" is the hardest psychological shift in any leader's career. You have to grieve the loss of your old identity. You used to be valuable because of what you produced. Now you're valuable because of what you <em>make possible for others</em>. That's a fundamentally different source of self-worth, and it takes years to internalize.</p>
+            <p>Another lesson: <strong>I learned that my company's culture was whatever I tolerated, not whatever I preached.</strong> I had a beautiful values slide deck. But I tolerated a top-billing manager who bullied his team because he brought in $3M a year. Everyone saw it. The values slide became a joke. The day I fired him was the most expensive day of my career — and the most important for my company's soul.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>You're at the most dangerous inflection point of your career.</strong></p>
+            <p>You've been promoted because you're excellent at delivery. The trap is that you'll keep doing what got you here. But what got you here — technical depth, hands-on problem solving, being the reliable executor — will <em>not</em> get you to the next level. It will actually prevent it.</p>
+            <p>Here's the shift I need you to make:</p>
+            <p>🔄 <strong>From "I solve problems" → "I build organizations that solve problems."</strong><br>
+            🔄 <strong>From "I deliver for clients" → "I develop relationships that generate opportunities."</strong><br>
+            🔄 <strong>From "I know the answer" → "I ask the questions that help others find the answer."</strong><br>
+            🔄 <strong>From "I manage my team" → "I develop leaders who manage their teams."</strong></p>
+            <div class="story-bubble success">
+              Practical test: Look at your calendar for last week. What percentage was spent on (a) doing actual work yourself, (b) helping others do their work, (c) thinking about the future of the organization? If (c) is less than 20%, you're still operating at the wrong altitude. A CEO spends 40-50% of their time on (c). You should be aiming for 25-30% right now.
+            </div>
+            <p><strong>On the merger:</strong> From a CEO's perspective, the merger was not about combining two divisions. It was about creating something worth more than the sum of parts. You need to articulate — clearly, simply, within 60 days — <strong>what the merged organization can do that neither division could do alone.</strong> That's your strategic narrative. That's what the board wants to hear. Not "we combined two teams" but "we created a capability."</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. Trying to be liked by everyone.</strong> You won't be. Some of WICHO's people will never fully accept you. Some of your own people will resent changes. Your job is to be <em>respected and fair</em>, not universally loved. Make decisions, explain them clearly, and stand behind them.</p>
+            <p><strong>2. Not developing your replacement.</strong> The best sign you're ready for the next level is that someone below you could take your job tomorrow. Start developing 2-3 people who could lead this org if you got promoted next year. If you can't name them, you're the bottleneck.</p>
+            <p><strong>3. Confusing strategy with planning.</strong> A plan is a list of actions. A strategy is a set of choices about where to play and how to win. "We'll deliver all projects on time" is a plan. "We'll become the #1 partner for Korean fintech companies by combining our Vietnam development capability with deep Seoul-based client relationships" is a strategy. Learn to think and speak in strategy.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🌏 Vietnam vs Korea Lens</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>Your biggest strategic asset is the Vietnam-Korea bridge.</strong> Very few leaders have genuine fluency in both contexts. Most Korean IT companies treat Vietnam as a cost center — cheap labor, offshore, transactional. If you can position your merged org as a <em>genuine partnership model</em> — where Vietnamese engineers are invested in, empowered, and treated as real colleagues — you will differentiate from every competitor.</p>
+            <p>I built my company on this insight. Korean companies are hungry for IT talent. Vietnam has it. But the "throw requirements over the wall" model produces mediocre results. The companies that win are the ones where Vietnamese teams feel ownership, where Korean clients feel partnership. You are uniquely positioned to create this. <strong>This is your strategic moat.</strong></p>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 7: Korean Leadership Specialist -->
+    <div class="agent-card" id="agent7">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #003049, #457b9d);">KR</div>
+        <div class="agent-meta">
+          <h3>Professor Soo-jin "The Interpreter" Choi</h3>
+          <p class="role">Korean Leadership & Cross-Cultural Consultant · 20 years advising foreign leaders in Korea</p>
+          <span class="badge" style="background: #457b9d;">🎎 The Cultural Decoder</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #457b9d;">
+          "I've coached over 100 foreign executives working in Korea. The pattern is always the same: they understand Korean business intellectually but fail emotionally. Korea doesn't run on org charts. It runs on 관계 (gwangye/relationships), 눈치 (nunchi/reading the room), and 체면 (chemyeon/face). If you don't feel these in your bones, you'll keep being surprised by decisions that seem 'irrational' but are perfectly logical — just in a different system."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>I watched a brilliant Indian engineering director fail spectacularly at a Korean company. Not because of his skills — because of dinner.</p>
+            <div class="story-bubble warning">
+              His Korean client team held a team dinner (회식/hoesik). It was the first one after the project kickoff. He declined because he wanted to review code. "I'll be more useful preparing than drinking," he told me. Logically, he was right. Relationally, he had just told 15 people: "Your social bond is less important than my work." The project was technically successful. But they never expanded the contract. The client PM told me privately: "He's very professional. But we don't feel he's one of us." <strong>In Korea, the dinner IS the work.</strong>
+            </div>
+            <p>Another pattern I see: foreign leaders often mistake Korean politeness for agreement. A Korean stakeholder says "네, 알겠습니다" (ne, algessseumnida — "Yes, I understand"). This does NOT mean "I agree." It means "I've heard you." The difference is enormous. I've seen leaders leave meetings thinking they have buy-in, only to discover weeks later that the Korean side quietly went in a different direction because they never actually agreed — they were just being polite.</p>
+            <p><strong>How to tell the difference:</strong> After a meeting, watch what happens in the next 24 hours. If the Korean side sends a follow-up email summarizing action items — they agreed. If silence — they're discussing internally whether to actually do it. If they request "another discussion" — they disagree but are giving you a face-saving way to modify your position.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>As someone leading in Korea, you need to master three invisible systems:</strong></p>
+            <p><strong>1. 서열 (Seoyeol) — Hierarchy.</strong> Korea is deeply hierarchical. Your title, your age, your company's reputation — these all determine how you're heard. After the merger, your Korean stakeholders will be evaluating: "Does this person have the authority and gravitas to lead this combined org?" Signal your authority clearly — not with arrogance, but with composure, preparation, and decisiveness. Indecisiveness reads as weakness in Korean context.</p>
+            <p><strong>2. 보고 (Bogo) — Reporting.</strong> Korean business culture has a very structured approach to reporting. When you update Korean stakeholders, use a structured format: Background → Current Status → Issue → Proposed Solution → Request. Don't be casual. Don't ramble. Don't start with problems without solutions. Korean leaders respect someone who comes with "I identified the problem, here are three options, I recommend option B because..." </p>
+            <p><strong>3. 인맥 (Inmak) — Networks.</strong> Business decisions in Korea are heavily influenced by personal networks — university alumni (학연), regional ties (지연), and corporate alumni (혈연). You may not have these networks naturally. But you can build them through: regular meals with key stakeholders, attending industry events, and — critically — getting introduced by someone who is already trusted. <strong>In Korea, a warm introduction is worth 100 cold emails.</strong></p>
+            <div class="story-bubble gold">
+              Practical tip: Find a Korean senior leader you respect — ideally someone who sees your potential — and ask them to be your informal mentor. Not a formal mentorship program. Just coffee once a month. In Korean culture, having a 선배 (sunbae/senior) who vouches for you is an invisible accelerator that no amount of performance can replace.
+            </div>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. Being too direct in group settings.</strong> If you need to disagree with a Korean stakeholder, do it privately. Public disagreement — especially with someone senior — causes face loss that can permanently damage the relationship. I'm not saying be dishonest. I'm saying choose your venue.</p>
+            <p><strong>2. Underestimating the power of 체면 (face).</strong> When the merger happened, WICHO moved to consulting. There is a face narrative around this. How you talk about WICHO publicly matters immensely. Even a hint of "I won, he lost" will be noticed and will damage you. Always speak of WICHO with respect and gratitude. The Korean audience is watching how you treat someone who is no longer in power. <strong>That tells them how you'll treat them if their power shifts.</strong></p>
+            <p><strong>3. Assuming speed equals competence.</strong> In Western/startup culture, moving fast is admired. In Korean business, moving fast without proper consultation (합의/hap-ui — consensus) is seen as reckless. Before making major decisions, consult key Korean stakeholders — even if you already know what you want to do. The act of consulting is as important as the content of the decision.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>📖 Story From the Field</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <div class="story-bubble">
+              I coached a Vietnamese-American director at a Korean IT firm. He was incredibly skilled but kept getting passed over for promotion. The feedback was always vague: "needs more experience." I sat in on his client meetings and saw the issue immediately: he presented data perfectly but never <em>read the room</em>. When the Korean client VP frowned slightly, he didn't pause — he kept presenting. When the VP asked a question that was actually a hidden objection, he answered literally instead of addressing the underlying concern. I taught him to pause after each major point and say: "부장님, 이 부분에 대해 어떻게 생각하시는지요?" (Director, what are your thoughts on this point?). This simple habit — inviting input — transformed his client relationships. Within a year, he was managing the company's largest Korean account. <strong>In Korea, competence opens the door. 눈치 (nunchi) lets you walk through it.</strong>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT 8: Vietnamese Leadership Specialist -->
+    <div class="agent-card" id="agent8">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background: linear-gradient(135deg, #2a9d8f, #264653);">VN</div>
+        <div class="agent-meta">
+          <h3>Dr. Lan "The People Whisperer" Pham</h3>
+          <p class="role">Vietnamese Talent & Culture Specialist · 17 years building offshore teams from 10 to 500+</p>
+          <span class="badge" style="background: #2a9d8f;">🌱 The Growth Cultivator</span>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="agent-intro" style="border-left-color: #2a9d8f;">
+          "I've built teams in Hanoi, Ho Chi Minh City, and Da Nang for Korean, Japanese, and American clients. I've watched hundreds of offshore relationships succeed and fail. The difference is never technical. It's always human. Let me tell you what most foreign leaders get wrong about Vietnamese teams — and what they get right when it works beautifully."
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>💔 What I Learned the Hard Way</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p>My worst failure was a team of 30 in Ho Chi Minh City that I built for a Korean financial client. Technically excellent. Attrition rate: 35% per year. I couldn't figure out why.</p>
+            <div class="story-bubble warning">
+              I finally did anonymous interviews with everyone who left. The #1 reason wasn't money. It was: <strong>"I don't feel like I matter. I'm just a resource."</strong> The Korean client sent requirements. We built them. They reviewed. We fixed. Repeat. Zero relationship. Zero context about why we were building what we were building. The developers felt like machines. And in Vietnam's competitive IT market, machines go wherever the price is higher.
+            </div>
+            <p>I rebuilt the engagement model. I insisted that the Korean client include Vietnamese developers in sprint planning — not just assign them tickets. I arranged quarterly video calls where the client's business owner explained <em>why</em> the product mattered, who the users were. I started a "Developer Spotlight" where each quarter, a Vietnamese dev presented something they'd built directly to the Korean CTO.</p>
+            <div class="story-bubble success">
+              Attrition dropped to 12% in one year. Not because of money — because of meaning. <strong>Vietnamese developers are not just looking for a salary. They're looking for growth, recognition, and the feeling that they're building something real — not just executing tickets from a distant master.</strong>
+            </div>
+            <p>My second hard lesson: <strong>Vietnamese team dynamics are deeply influenced by relationships outside of work.</strong> Team members who eat lunch together, who share rides home, who celebrate each other's birthdays — they perform better. This isn't unprofessional. It's how Vietnamese teams build the trust that makes them go the extra mile at 2 AM when the deployment is burning. Leaders who try to impose "professional boundaries" too strictly destroy this natural strength.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>🎯 What You Need to Hear Right Now</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>Your Vietnamese teams are probably your biggest competitive advantage — and most underdeveloped asset.</strong></p>
+            <p>Here's what I'd audit immediately after the merger:</p>
+            <p>🔍 <strong>Career paths:</strong> Do your Vietnamese team members see a future? Or is this "just a contract"?<br>
+            🔍 <strong>Knowledge flow:</strong> Are they getting context about the client's business, or just Jira tickets?<br>
+            🔍 <strong>Recognition:</strong> When was the last time a Vietnamese developer was publicly recognized by a Korean stakeholder?<br>
+            🔍 <strong>Team leads:</strong> Are your Vietnamese team leads empowered or just middle-men for your instructions?</p>
+            <div class="story-bubble gold">
+              <strong>The single highest-ROI action you can take:</strong> Visit your Vietnamese teams in person within 90 days. Not to inspect. To listen. Have dinner with them. Ask: "What would make this a place where you want to stay for 5 years?" Then actually act on what you hear. In my experience, the top 3 answers are always: (1) Clear career growth, (2) Feeling connected to the client and the mission, (3) Having a leader who sees them as people, not headcount.
+            </div>
+            <p><strong>On Vietnamese communication style:</strong> Vietnamese developers often use indirect communication, especially with senior leaders. "It's a bit difficult" might mean "It's impossible." "We'll try our best" might mean "We don't think the timeline is realistic but we don't want to say no." Learn to listen to what's NOT said. And create safe channels — anonymous surveys, trusted team leads, skip-levels — where the truth can surface without anyone losing face.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>⚠️ Mistakes to Avoid</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <p><strong>1. "They should just speak up."</strong> Saying this is like saying "the river should flow uphill." The communication style is cultural. It's your job to create the systems that surface truth, not demand that people change their deeply ingrained communication patterns.</p>
+            <p><strong>2. Treating the Vietnam team as "the offshore team."</strong> Language matters enormously. "Our Vietnam team" vs. "the offshore team." "Our colleagues in Ho Chi Minh" vs. "the resources." Every word choice signals whether you see them as partners or labor. Vietnamese teams are incredibly perceptive about this.</p>
+            <p><strong>3. Ignoring Vietnamese holidays and cultural events.</strong> Tet (Lunar New Year) is the most important holiday in Vietnam. If you schedule a major deadline during Tet season, you'll get compliance but lose goodwill for a year. Know the calendar. Respect it. Same with family: Vietnamese culture places enormous value on family obligations. A team member who needs to go home for a sick parent is not uncommitted — they're being human in a way their culture deeply expects.</p>
+          </div></div>
+        </div>
+
+        <div class="expand-section">
+          <div class="expand-header" onclick="toggleExpand(this)">
+            <span>📖 Story From the Field</span>
+            <span class="expand-icon">+</span>
+          </div>
+          <div class="expand-content"><div class="expand-content-inner">
+            <div class="story-bubble">
+              I had a Korean project manager who could not understand why his Vietnamese team's quality was declining. He was sending detailed review comments, being very thorough. I observed a few review sessions and saw the problem immediately: he was giving feedback in front of the whole team on a shared screen. Each comment felt like a public correction. Vietnamese developers — especially younger ones — were <em>mortified</em>. They weren't learning from the feedback; they were shutting down from the shame. I restructured reviews to be 1-on-1 written feedback with a kind tone, followed by optional group discussion of patterns (not individual mistakes). Quality improved within two sprints. <strong>The same feedback, delivered differently, produces opposite results.</strong>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /agents-grid -->
+</section>
+
+<!-- ==================== COMPARISON: HOW LEADERS THINK DIFFERENTLY ==================== -->
+<section class="section" id="comparison" style="background: #f1f3f5;">
+  <h2 class="section-title">How Leaders Think at Different Altitudes</h2>
+  <p class="section-subtitle">The same question, five completely different answers. Understanding this gap is how you grow.</p>
+
+  <div class="comparison-wrapper">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Team Lead</th>
+          <th>Dept Head</th>
+          <th>Division Head</th>
+          <th>BOD / Country</th>
+          <th>CEO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>"A project is at risk"</strong></td>
+          <td>"Let me jump in and help fix the code"</td>
+          <td>"Which team needs support? Let me reallocate resources"</td>
+          <td>"What's the client impact and who's communicating it?"</td>
+          <td>"What's the revenue/reputation risk and do we need escalation?"</td>
+          <td>"Is this a symptom of a systemic problem in our delivery model?"</td>
+        </tr>
+        <tr>
+          <td><strong>"We need to hire"</strong></td>
+          <td>"I need another developer for this sprint"</td>
+          <td>"I need a senior engineer who can mentor juniors"</td>
+          <td>"I need to build a hiring pipeline for the next 12 months"</td>
+          <td>"What's our talent strategy for Vietnam vs. Korea?"</td>
+          <td>"How does our talent model compare to competitors and what's our 3-year workforce plan?"</td>
+        </tr>
+        <tr>
+          <td><strong>"A team member is underperforming"</strong></td>
+          <td>"I'll pair with them and coach them"</td>
+          <td>"Is this a skill gap, motivation gap, or wrong-role gap?"</td>
+          <td>"Is this manager equipped to handle it? Do they need support?"</td>
+          <td>"Do we have a performance management system that works?"</td>
+          <td>"Does our culture reward or punish honest performance feedback?"</td>
+        </tr>
+        <tr>
+          <td><strong>"Client is unhappy"</strong></td>
+          <td>"Let me show them the latest demo"</td>
+          <td>"Let me understand their real concern and create a recovery plan"</td>
+          <td>"Who should own this relationship and what's our account strategy?"</td>
+          <td>"Is this a one-off or a pattern? What's the contract risk?"</td>
+          <td>"Is our service model meeting market expectations?"</td>
+        </tr>
+        <tr>
+          <td><strong>"We should adopt new technology X"</strong></td>
+          <td>"Let me prototype it this sprint"</td>
+          <td>"What's the team training cost and timeline?"</td>
+          <td>"How does this align with our platform strategy?"</td>
+          <td>"What competitive advantage does this give us?"</td>
+          <td>"Does this shift our market positioning or create new revenue streams?"</td>
+        </tr>
+        <tr>
+          <td><strong>"Someone just quit"</strong></td>
+          <td>"Who covers their work?"</td>
+          <td>"Why did they leave? What does exit data show?"</td>
+          <td>"Is this a retention trend? What's our attrition rate?"</td>
+          <td>"What's the cost of turnover and are we competitive on compensation?"</td>
+          <td>"Is our employee value proposition strong enough for the market we're in?"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quote-block">
+    "The mistake at every level is thinking the level above you is doing the same thing you're doing, just for more people. They're not. They're solving a fundamentally different category of problem."
+    <cite>— David "The Architect" Nguyen, Division Head</cite>
+  </div>
+</section>
+
+<!-- ==================== HARD TRUTHS ==================== -->
+<section class="hard-truths" id="hard-truths">
+  <div style="max-width: 800px; margin: 0 auto;">
+    <h2 class="section-title">Hard Truths</h2>
+    <p class="section-subtitle">Things your council wants you to hear — even if they sting.</p>
+
+    <div class="truth-card">
+      <div class="truth-num">#1 — From Monica (CEO)</div>
+      <p>"Your technical excellence is now your biggest risk. Every time you solve a technical problem yourself, you get a dopamine hit and rob someone else of a growth opportunity. You're addicted to being useful in the old way. Break the addiction."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#2 — From Richard (BOD)</div>
+      <p>"Nobody at the board level cares about your sprint velocity. They care about margin, client satisfaction trends, and whether you can grow revenue. If you can't translate your work into business language, you're invisible at the level where decisions about your future are made."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#3 — From James (Dept Head)</div>
+      <p>"The people from WICHO's team are watching you right now with microscope-level attention. Every meeting you run, every decision you make, every person you give interesting work to — they're tracking it for signs of favoritism. You have about 90 days before their opinions harden. Use them wisely."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#4 — From Dr. Lan (Vietnam Specialist)</div>
+      <p>"Your Vietnamese teams are not 'resources.' They are human beings with career dreams, family pressures, and a deep desire to be seen as partners — not labor. The way you treat them will either be your competitive moat or your biggest source of attrition."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#5 — From Professor Choi (Korea Specialist)</div>
+      <p>"In Korea, your reputation is being shaped right now in conversations you're not part of. What your Korean stakeholders say about you at dinner, at golf, in the hallway — that narrative is forming. You don't control it with performance alone. You influence it with relationships, composure, and how you make people feel."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#6 — From David (Division Head)</div>
+      <p>"If you don't establish a functioning leadership team in the first 60 days — a group that meets weekly, debates openly, and commits to shared decisions — you'll be a bottleneck within 90 days. You cannot scale through individual brilliance. You scale through a system."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#7 — From Sarah (Delivery Manager)</div>
+      <p>"You're going to be tempted to say yes to everything to prove the merger was worth it. Don't. Overcommitment is the #1 killer of newly merged orgs. It's better to deliver 5 projects excellently than 8 projects adequately. Protect your capacity."</p>
+    </div>
+
+    <div class="truth-card">
+      <div class="truth-num">#8 — From Minh (Team Lead)</div>
+      <p>"Please don't become one of those leaders who only talks to other leaders. Your frontline people know things that will never make it into a status report. Find a way to keep hearing them."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MINDSET UPGRADE ==================== -->
+<section class="section" id="mindset">
+  <h2 class="section-title">Next-Level Mindset Upgrade</h2>
+  <p class="section-subtitle">The mental shifts required to operate at the level your new role demands.</p>
+
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="from-to">
+        <div class="from">🔴 "I need to know everything that's happening"</div>
+        <div class="arrow">→</div>
+        <div class="to">🟢 "I need to know the right things and trust my system for the rest"</div>
+      </div>
+      <p class="insight">Control freak → Signal architect. Build dashboards, skip-levels, and pulse checks. Let go of the illusion that knowing = leading.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="from-to">
+        <div class="from">🔴 "I'm the best problem solver here"</div>
+        <div class="arrow">→</div>
+        <div class="to">🟢 "I develop the best problem solvers here"</div>
+      </div>
+      <p class="insight">Hero → Coach. Your value is measured by how many people you make capable, not how many problems you personally fix.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="from-to">
+        <div class="from">🔴 "Status report: the project is on track"</div>
+        <div class="arrow">→</div>
+        <div class="to">🟢 "Strategic update: here's how our portfolio positions us for Q3 growth"</div>
+      </div>
+      <p class="insight">Reporter → Strategist. The BOD doesn't want to know what happened. They want to know what it means and where we're going.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="from-to">
+        <div class="from">🔴 "I'll handle this client escalation myself"</div>
+        <div class="arrow">→</div>
+        <div class="to">🟢 "Let me coach the account manager through this and join only if needed"</div>
+      </div>
+      <p class="insight">Firefighter → Fire prevention architect. If you're always in the fire truck, nobody's designing fire-safe buildings.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="from-to">
+        <div class="from">🔴 "I don't do politics"</div>
+        <div class="arrow">→</div>
+        <div class="to">🟢 "I build relationships and manage stakeholder alignment proactively"</div>
+      </div>
+      <p class="insight">Naive idealist → Principled strategist. Politics isn't dirty. Relationships, influence, and alignment are core leadership work.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="from-to">
+        <div class="from">🔴 "The merger is done — let's get back to work"</div>
+        <div class="arrow">→</div>
+        <div class="to">🟢 "The merger is a 12-month integration journey that needs its own strategy"</div>
+      </div>
+      <p class="insight">The announcement was the easy part. Cultural integration, trust building, and structural clarity take a full year. Plan accordingly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 30-60-90 DAY PLAN ==================== -->
+<section class="section" id="plan" style="background: #f8f9fa;">
+  <h2 class="section-title">Your 30-60-90 Day Leadership Plan</h2>
+  <p class="section-subtitle">Tailored to leading a merged organization in Korea with Vietnamese teams.</p>
+
+  <div class="tab-container">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(event, 'plan-30')">Days 1-30: Listen & Stabilize</button>
+      <button class="tab-btn" onclick="switchTab(event, 'plan-60')">Days 31-60: Align & Structure</button>
+      <button class="tab-btn" onclick="switchTab(event, 'plan-90')">Days 61-90: Accelerate & Lead</button>
+    </div>
+
+    <div class="tab-panel active" id="plan-30">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--teal);"></div>
+          <h4>Week 1: The Listening Tour</h4>
+          <p>Meet every direct report 1-on-1. Ask: "What was working well before the merger that I should protect?" and "What's your biggest concern right now?" Take notes. Don't promise anything yet.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--teal);"></div>
+          <h4>Week 1: Coffee with WICHO</h4>
+          <p>Informal. Respectful. Ask for his insights on his former team. Signal publicly that you value his legacy. This one conversation prevents months of shadow resistance.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--teal);"></div>
+          <h4>Week 2: Map the Reality</h4>
+          <p>Create a simple map: every project, every client, every team lead, every key person. Identify overlaps, gaps, and risks. Don't share this yet — it's your intelligence.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--teal);"></div>
+          <h4>Week 2-3: Establish Communication Rhythm</h4>
+          <p>Start a weekly 30-min all-hands (or written update). Set the tone: transparent, inclusive, focused. This becomes the heartbeat of the new org.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--teal);"></div>
+          <h4>Week 3-4: Sit in on Standups</h4>
+          <p>Attend 2-3 team standups from WICHO's former teams. Listen only. This signals respect and gives you ground-truth intelligence.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--teal);"></div>
+          <h4>Week 4: First All-Hands Message</h4>
+          <p>Share what you've heard (themes, not names). Acknowledge concerns. Share 3-5 commitments for the next 30 days. Be honest about what you don't know yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="plan-60">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--sage);"></div>
+          <h4>Week 5-6: Form Your Leadership Team</h4>
+          <p>Identify 4-5 key leaders. Include at least 2 from WICHO's former side. Start weekly leadership meetings. Define: what decisions does this group make together?</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--sage);"></div>
+          <h4>Week 5-6: Clarify Structure</h4>
+          <p>Every person should know: who they report to, what their team's #1 priority is, and how to escalate. Publish a simple, clear org structure. It doesn't need to be perfect — it needs to exist.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--sage);"></div>
+          <h4>Week 6-7: Client Relationship Audit</h4>
+          <p>Map every client. Who owns the relationship? What's the contract status? Where are upsell opportunities? Meet your top 3 clients in person. Frame it as: "I want to understand how we can serve you better."</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--sage);"></div>
+          <h4>Week 7-8: Delivery Health Check</h4>
+          <p>Establish 3-5 unified metrics that all teams report. Don't force tool changes — just align on what to measure. Traffic-light dashboard: Green / Yellow / Red for each project.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--sage);"></div>
+          <h4>Week 8: Quick Win Delivery</h4>
+          <p>Ship 1-2 visible improvements from the merger. Maybe: consolidated a vendor, improved a process, launched a cross-team initiative. The BOD needs to see merger value early.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="plan-90">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--gold);"></div>
+          <h4>Week 9-10: Strategic Narrative</h4>
+          <p>Write a 1-page document: "What the Merged Organization Can Do That Neither Could Do Alone." Share it with the BOD. This is your strategic vision. It should excite people.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--gold);"></div>
+          <h4>Week 9-10: Vietnam Team Visit</h4>
+          <p>Visit your Vietnamese teams in person. Have dinner. Listen to their career concerns. Announce at least one tangible investment in their growth (training, career path, recognition program).</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--gold);"></div>
+          <h4>Week 11-12: Leadership Development</h4>
+          <p>Identify 2-3 high-potential people in the merged org. Start investing in their growth. Assign stretch projects. Begin the process of building your successor.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--gold);"></div>
+          <h4>Week 12: 90-Day Retrospective</h4>
+          <p>Share with your leadership team and the BOD: what worked, what didn't, what we've learned, what's next. This signals maturity and accountability. Leaders who reflect publicly earn deep trust.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== RED FLAGS ==================== -->
+<section class="section" id="red-flags">
+  <h2 class="section-title">Red Flags to Watch After the Merger</h2>
+  <p class="section-subtitle">Early warning signs that something is going wrong beneath the surface.</p>
+
+  <div class="red-flags-grid">
+    <div class="red-flag-card">
+      <h4>🚨 "Us vs. Them" Language</h4>
+      <p>If you hear people saying "our team" vs. "their team" after 60 days, the integration is failing. Culture doesn't merge in an announcement — it merges through shared victories and trust.</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Silent Departures</h4>
+      <p>If strong performers from WICHO's side start leaving without warning, it means they've already checked out emotionally. By the time they resign, you've lost them months ago. Watch for disengagement signals: reduced participation, fewer ideas, minimal eye contact in meetings.</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Meeting Proliferation</h4>
+      <p>If the number of meetings doubles after the merge, it means roles and decision-rights are unclear. People schedule meetings when they don't know who should decide. Fix the clarity, and meetings will naturally decrease.</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Escalation Bypass</h4>
+      <p>If people from either side are going directly to the BOD or to clients instead of through you, your authority hasn't been established. This needs to be addressed directly — not angrily, but clearly: "I want to support you. Let's make sure I'm in the loop so I can help."</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Shadow Decision-Making</h4>
+      <p>If decisions are being made in hallway conversations or after-hours chats rather than in your leadership meetings, your governance structure isn't working. The informal channel will always exist — but it shouldn't be where the real decisions happen.</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Client Confusion</h4>
+      <p>If clients are unsure who their contact is now, or if they're getting different messages from different people in the merged org, fix this immediately. Client confidence is fragile during transitions.</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Vietnam Team Silence</h4>
+      <p>If your Vietnamese teams become unusually quiet — fewer questions, fewer suggestions, shorter standup updates — they may have concluded that the merger doesn't benefit them and have disengaged. Silence from Vietnamese teams is the loudest alarm bell.</p>
+    </div>
+    <div class="red-flag-card">
+      <h4>🚨 Your Own Calendar</h4>
+      <p>If you're spending more than 60% of your time in reactive mode (firefighting, escalations, status updates) after 60 days, you haven't delegated enough. Your calendar is the most honest mirror of your leadership level.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CLIENT MEETING MATURITY MAP ==================== -->
+<section class="section" id="clients" style="background: #f1f3f5;">
+  <h2 class="section-title">Client Meeting Maturity Map</h2>
+  <p class="section-subtitle">How your approach to client meetings should evolve as you grow into your role.</p>
+
+  <div class="maturity-levels">
+    <div class="maturity-card" style="border-top: 4px solid #adb5bd;">
+      <div class="level" style="color: #adb5bd;">L1</div>
+      <h4>The Reporter</h4>
+      <p>"Here's what we did this sprint." You show up with status. The client listens politely. No real dialogue.</p>
+    </div>
+    <div class="maturity-card" style="border-top: 4px solid var(--teal);">
+      <div class="level" style="color: var(--teal);">L2</div>
+      <h4>The Problem-Solver</h4>
+      <p>"We found an issue, here's our plan." You come with problems AND solutions. Client starts to trust your judgment.</p>
+    </div>
+    <div class="maturity-card" style="border-top: 4px solid var(--sage);">
+      <div class="level" style="color: var(--sage);">L3</div>
+      <h4>The Advisor</h4>
+      <p>"Based on market trends, you might want to consider..." You're proactive. Client starts asking for your opinion, not just your output.</p>
+    </div>
+    <div class="maturity-card" style="border-top: 4px solid var(--gold);">
+      <div class="level" style="color: var(--gold);">L4</div>
+      <h4>The Strategic Partner</h4>
+      <p>"Let me share how our capabilities can help you achieve your 2027 goals." You're talking about their future, not your deliverables. This is where you need to be.</p>
+    </div>
+    <div class="maturity-card" style="border-top: 4px solid var(--lavender);">
+      <div class="level" style="color: var(--lavender);">L5</div>
+      <h4>The Trusted Confidant</h4>
+      <p>The client calls you before they call their own team. You're part of their inner circle. This takes years and is built on consistently demonstrating that you care about THEIR success, not just your contract.</p>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    "Most technical leaders are stuck at L2. They come to client meetings armed with facts. But clients don't buy facts — they buy confidence, vision, and the feeling that someone truly understands their problems. Move to L3 within 6 months. It changes everything."
+    <cite>— Richard "The Chess Player" Yoon, BOD</cite>
+  </div>
+</section>
+
+<!-- ==================== HOW TO LEAD VIETNAMESE TEAMS ==================== -->
+<section class="section" id="vietnam">
+  <h2 class="section-title">How to Lead Vietnamese Teams Well</h2>
+  <p class="section-subtitle">Insights from Dr. Lan, Minh, and David — people who've done this at scale.</p>
+
+  <div class="culture-grid">
+    <div class="culture-card" style="border-left: 4px solid var(--sage);">
+      <h4 style="border-bottom-color: var(--sage);">🌱 Building Trust</h4>
+      <ul>
+        <li>Trust is built through consistency, not grand gestures. Show up. Follow through. Every single time.</li>
+        <li>Visit in person at least quarterly. "Camera-off Zoom" leadership destroys offshore team morale.</li>
+        <li>Learn 5-10 Vietnamese phrases. It signals effort and respect in a way nothing else can.</li>
+        <li>Remember team members' names, their cities, their interests. Vietnamese teams notice this immediately.</li>
+        <li>Share your own struggles and vulnerabilities. Vietnamese teams open up when leaders go first.</li>
+      </ul>
+    </div>
+
+    <div class="culture-card" style="border-left: 4px solid var(--teal);">
+      <h4 style="border-bottom-color: var(--teal);">🗣️ Communication</h4>
+      <ul>
+        <li>"Yes" often means "I heard you," not "I agree" or "I can do this." Always confirm understanding by asking them to rephrase the task.</li>
+        <li>"It's a little bit difficult" = "This is very hard or impossible." Calibrate your urgency accordingly.</li>
+        <li>Create safe escalation channels. Anonymous surveys, trusted team leads, written channels — anything that doesn't require public face-risk.</li>
+        <li>Give feedback privately and kindly. Public correction shuts Vietnamese team members down, sometimes permanently.</li>
+        <li>Praise publicly. Recognition in front of Korean stakeholders is incredibly motivating.</li>
+      </ul>
+    </div>
+
+    <div class="culture-card" style="border-left: 4px solid var(--warm);">
+      <h4 style="border-bottom-color: var(--warm);">📈 Growth & Retention</h4>
+      <ul>
+        <li>Build a clear technical career ladder: Junior → Mid → Senior → Staff → Principal. With real criteria and salary jumps.</li>
+        <li>Invest in training and certification. Vietnamese developers are hungry to learn — this is your retention weapon.</li>
+        <li>Let Vietnamese devs present to clients directly. Nothing builds ownership like having a name and face on the work.</li>
+        <li>Celebrate Vietnamese holidays (Tet, Mid-Autumn Festival). A small bonus or day off during Tet earns loyalty for a year.</li>
+        <li>Create paths to leadership roles. If every manager is Korean/foreign, Vietnamese team members will see a ceiling.</li>
+      </ul>
+    </div>
+
+    <div class="culture-card" style="border-left: 4px solid var(--lavender);">
+      <h4 style="border-bottom-color: var(--lavender);">⚡ Team Dynamics</h4>
+      <ul>
+        <li>Vietnamese teams are deeply relational. Team bonding (lunches, outings, team dinners) isn't a perk — it's infrastructure.</li>
+        <li>Don't break up working teams unless necessary. Social bonds are load-bearing walls in Vietnamese team performance.</li>
+        <li>Empower team leads. In Vietnamese culture, the team lead is the "big brother/sister" (anh/chị). Undermining them undermines the team.</li>
+        <li>Address conflict privately and indirectly. Vietnamese team members rarely confront openly — they withdraw.</li>
+        <li>Be patient with initiative. It's not that Vietnamese devs lack ideas — they're waiting for explicit permission to share them.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== HOW TO LEAD KOREAN TEAMS ==================== -->
+<section class="section" id="korea" style="background: #f8f9fa;">
+  <h2 class="section-title">How to Lead in Korean Business Context</h2>
+  <p class="section-subtitle">Professor Choi and Richard's field guide to navigating Korea's invisible rules.</p>
+
+  <div class="culture-grid">
+    <div class="culture-card" style="border-left: 4px solid #003049;">
+      <h4 style="border-bottom-color: #003049;">🏢 Hierarchy & Face</h4>
+      <ul>
+        <li>Always address Korean stakeholders by title: 부장님, 상무님, 대표님. Using first names too early feels disrespectful.</li>
+        <li>Never publicly disagree with someone senior. Find a private moment, frame it as a question, not a challenge.</li>
+        <li>In meetings, let the most senior Korean person speak first or set the agenda. This isn't submission — it's protocol.</li>
+        <li>When presenting bad news, always bring a solution. "We have a problem" without a plan signals incompetence in Korean context.</li>
+        <li>How you treat WICHO publicly is being carefully noted. Graciousness toward someone who lost power is deeply respected.</li>
+      </ul>
+    </div>
+
+    <div class="culture-card" style="border-left: 4px solid #457b9d;">
+      <h4 style="border-bottom-color: #457b9d;">🤝 Relationships</h4>
+      <ul>
+        <li>회식 (hoesik/team dinner) is not optional socializing. It's where real trust is built. Participate genuinely.</li>
+        <li>A warm introduction (소개) from a trusted person is worth more than any amount of self-promotion.</li>
+        <li>Find a 선배 (sunbae/senior mentor) in the Korean business ecosystem. Their endorsement is an invisible accelerator.</li>
+        <li>Remember that Korean business runs on relationships over years, not transaction over months. Plant seeds now for harvests later.</li>
+        <li>Small gestures matter: a handwritten card during Chuseok, remembering someone's child's school milestone.</li>
+      </ul>
+    </div>
+
+    <div class="culture-card" style="border-left: 4px solid #a8dadc;">
+      <h4 style="border-bottom-color: #a8dadc;">📊 Communication Style</h4>
+      <ul>
+        <li>Korean stakeholders want structured updates: Background → Status → Risk → Plan → Ask. Not freeform narrative.</li>
+        <li>"네, 알겠습니다" = "I heard you," not "I agree." Watch for follow-up actions to gauge real agreement.</li>
+        <li>Show trajectory, not snapshots. "Defects decreased 18% MoM" is better than "we had 12 defects."</li>
+        <li>Written reports matter more than you think. A well-formatted weekly report signals professionalism and control.</li>
+        <li>In negotiations, patience wins. Korean stakeholders may take multiple meetings to reach a decision. This is thorough, not slow.</li>
+      </ul>
+    </div>
+
+    <div class="culture-card" style="border-left: 4px solid #1d3557;">
+      <h4 style="border-bottom-color: #1d3557;">🎯 Executive Presence in Korea</h4>
+      <ul>
+        <li>Dress one level above what you think is necessary for client meetings. Appearance signals respect for the relationship.</li>
+        <li>Arrive 5-10 minutes early. Being on time is being late in Korean business culture.</li>
+        <li>Use two hands when giving and receiving business cards. Study theirs before putting it away.</li>
+        <li>Composure under pressure is deeply respected. When things go wrong, be the calmest person in the room.</li>
+        <li>Learn to read 눈치 (nunchi) — the unspoken mood of the room. When someone frowns, pause and ask for input. Don't barrel through your slides.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXECUTIVE PRESENCE ==================== -->
+<section class="section" id="presence">
+  <h2 class="section-title">What Executive Presence Really Looks Like</h2>
+  <p class="section-subtitle">It's not charisma. It's not confidence. It's the way you make a room feel when you walk in.</p>
+
+  <div class="presence-grid">
+    <div class="presence-card">
+      <div class="presence-icon">🎯</div>
+      <h4>Composure Under Fire</h4>
+      <p>When the project is burning and everyone is panicking, you're the one who says: "Okay. Here's what we know. Here's what we don't. Here's what we're doing next." Calm is contagious. So is panic.</p>
+    </div>
+    <div class="presence-card">
+      <div class="presence-icon">👂</div>
+      <h4>Listening That People Can Feel</h4>
+      <p>When you're in a 1-on-1, the other person should feel like they're the only person in the world. Put down the phone. Close the laptop. Ask follow-up questions. This is rare enough that it becomes a superpower.</p>
+    </div>
+    <div class="presence-card">
+      <div class="presence-icon">🗣️</div>
+      <h4>Saying Less, Meaning More</h4>
+      <p>Junior leaders talk too much in meetings because they're afraid of silence. Senior leaders speak less, choose words carefully, and let silence work for them. Every sentence should earn its place.</p>
+    </div>
+    <div class="presence-card">
+      <div class="presence-icon">🤝</div>
+      <h4>Making Others Look Good</h4>
+      <p>In client meetings, publicly credit your team. "That was Huy's architecture — brilliant work." In Korean culture especially, a leader who elevates others is seen as strong, not weak.</p>
+    </div>
+    <div class="presence-card">
+      <div class="presence-icon">🪞</div>
+      <h4>Consistency Between Public and Private</h4>
+      <p>People trust leaders whose behavior doesn't change based on who's watching. If you're kind to executives and impatient with juniors, everyone notices. Presence is integrity made visible.</p>
+    </div>
+    <div class="presence-card">
+      <div class="presence-icon">🌊</div>
+      <h4>Comfort with Ambiguity</h4>
+      <p>"I don't know yet, but here's how we'll figure it out." This sentence, said with calm confidence, is more powerful than any bluff. Pretending to know when you don't erodes trust faster than anything.</p>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    "Executive presence is not about being impressive. It's about being so grounded in who you are and what you believe that people naturally orient toward you when things get uncertain. It's gravity, not fireworks."
+    <cite>— Monica "The Visionary" Ha, CEO</cite>
+  </div>
+</section>
+
+<!-- ==================== FINAL SYNTHESIS ==================== -->
+<section class="synthesis" id="synthesis">
+  <div style="max-width: 800px; margin: 0 auto;">
+    <h2 class="section-title">The Synthesis</h2>
+    <p style="color: rgba(255,255,255,0.6); margin-bottom: 3rem; font-size: 1.1rem;">Eight voices. One message. This is what your council wants you to carry forward.</p>
+
+    <div class="synthesis-content">
+
+      <h3>Who You Need to Become</h3>
+      <p>You are no longer a technical leader. You are an <strong>organizational architect</strong> — someone who designs systems where good people can do great work, where clients feel partnered with (not serviced), and where two formerly separate cultures can weave into something stronger than either was alone.</p>
+
+      <p>Your value is no longer measured by what you deliver. It's measured by <strong>what you make possible for others</strong>. The code you write is organizational clarity. The architecture you design is team structure. The bugs you fix are trust deficits and communication gaps. The deployment you manage is the integration of two cultures into one.</p>
+
+      <h3>What You Must Stop Doing Now</h3>
+      <ul class="stop-list">
+        <li>Stop solving technical problems yourself — develop people who solve them</li>
+        <li>Stop being the smartest person in the room — be the person who makes the room smarter</li>
+        <li>Stop hiding in delivery work because it's comfortable — embrace the ambiguity of leadership</li>
+        <li>Stop treating politics as something dirty — relationships and influence are core leadership tools</li>
+        <li>Stop speaking in project language to the BOD — learn the language of business, margin, and strategy</li>
+        <li>Stop assuming your Vietnamese teams will speak up — build systems that surface truth safely</li>
+        <li>Stop treating the merger as "done" — you're in month 1 of a 12-month integration</li>
+        <li>Stop trying to be liked by everyone — be fair, be clear, be consistent</li>
+      </ul>
+
+      <h3>What You Must Start Doing Now</h3>
+      <ul class="start-list">
+        <li>Build a functioning leadership team that makes decisions together</li>
+        <li>Create organizational clarity: who does what, who reports to whom, what matters most</li>
+        <li>Invest in relationships — with WICHO, with Korean stakeholders, with your Vietnamese team leads, with the BOD</li>
+        <li>Develop your strategic narrative: what can this merged org do that neither could do alone?</li>
+        <li>Protect your time for thinking, not just doing — aim for 25% strategic/future-focused time within 90 days</li>
+        <li>Visit your Vietnamese teams in person and invest in their growth and career paths</li>
+        <li>Show up to client meetings as a strategic partner, not a delivery reporter</li>
+        <li>Start developing 2-3 people who could take your job — this is the strongest signal you're ready for the next level</li>
+        <li>Learn to read the room in Korean context — nunchi, face, and the weight of unspoken expectations</li>
+        <li>Reflect publicly — share what you've learned, admit what you got wrong, adjust visibly</li>
+      </ul>
+
+      <h3 style="margin-top: 3rem;">Your Operating Philosophy</h3>
+      <p style="font-size: 1.2rem; font-weight: 600; color: var(--gold); line-height: 1.6; padding: 1.5rem; border: 1px solid rgba(246,199,68,0.3); border-radius: 12px; margin-top: 1rem;">
+        "I build organizations where talented people can do their best work. I create clarity in chaos, trust across cultures, and value that neither side of this merger could create alone. I lead with composure, decide with input, and measure my success not by what I deliver — but by the leaders I develop and the opportunities I create."
+      </p>
+
+      <p style="margin-top: 3rem; font-size: 0.95rem; color: rgba(255,255,255,0.5);">
+        — From your council, with respect: Minh, Sarah, James, David, Richard, Monica, Professor Choi, and Dr. Lan
+      </p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.35);">
+        Go build something extraordinary. You're ready for this.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<script>
+// ===== Expandable sections =====
+function toggleExpand(header) {
+  const section = header.parentElement;
+  section.classList.toggle('open');
+}
+
+// ===== Tab switching =====
+function switchTab(event, tabId) {
+  const container = event.target.closest('.tab-container');
+  container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// ===== Smooth scroll for nav =====
+document.querySelectorAll('.nav-sticky a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ===== Scroll-triggered fade-in animation =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.agent-card, .truth-card, .red-flag-card, .mindset-card, .maturity-card, .culture-card, .presence-card, .timeline-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+
+</body>
+</html>

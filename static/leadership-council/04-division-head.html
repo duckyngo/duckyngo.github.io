@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David "Kiến Trúc Sư" Nguyễn — Giám đốc Khối</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --agent-gradient: linear-gradient(135deg, #e63946, #d62828);
+            --bg: #0f0f1a;
+            --card-bg: #16162a;
+            --text: #e0e0e0;
+            --text-muted: #a0a0b0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* NAV BAR */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(246, 199, 68, 0.15);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-back:hover { opacity: 0.8; }
+
+        .nav-agents {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-agents a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+
+        .nav-agents a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        /* HERO */
+        .hero {
+            margin-top: 60px;
+            padding: 4rem 1.5rem 3rem;
+            background: var(--agent-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg));
+        }
+
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            margin: 0 auto 1.2rem;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero-role {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            max-width: 650px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* EXPANDABLE SECTIONS */
+        .section {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            border-color: var(--rose);
+            background: rgba(230, 57, 70, 0.05);
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .section-toggle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .section.open .section-toggle {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 5000px;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .section-content h3 {
+            color: var(--teal);
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        .section-content ul {
+            padding-left: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.6rem;
+            color: var(--text);
+        }
+
+        /* STORY BUBBLES */
+        .story-bubble {
+            background: rgba(246, 199, 68, 0.04);
+            border-left: 4px solid var(--gold);
+            border-radius: 0 10px 10px 0;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            font-style: italic;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.8;
+        }
+
+        .story-bubble.rose {
+            background: rgba(230, 57, 70, 0.06);
+            border-left-color: var(--rose);
+        }
+
+        .story-bubble.teal {
+            background: rgba(0, 180, 216, 0.06);
+            border-left-color: var(--teal);
+        }
+
+        .story-bubble.sage {
+            background: rgba(82, 183, 136, 0.06);
+            border-left-color: var(--sage);
+        }
+
+        .story-bubble .attribution {
+            display: block;
+            margin-top: 0.6rem;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 0.85rem;
+        }
+
+        /* MISTAKE CARDS */
+        .mistake-card {
+            background: rgba(230, 57, 70, 0.06);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mistake-card h4 {
+            color: var(--rose);
+            margin-bottom: 0.5rem;
+        }
+
+        .mistake-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .hero { padding: 3rem 1rem 2.5rem; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero-quote { font-size: 1rem; }
+            .content { padding: 1.5rem 1rem; }
+            .section-header h2 { font-size: 1.05rem; }
+            .nav-agents { gap: 0.5rem; }
+            .nav-agents a { font-size: 0.75rem; padding: 0.2rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a href="index.html" class="nav-back">← Về Trang Chính</a>
+        <div class="nav-agents">
+            <a href="03-engineering-manager.html">← Trước</a>
+            <a href="05-bod-leader.html">Tiếp →</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-avatar">🏗️</div>
+        <h1>David "Kiến Trúc Sư" Nguyễn</h1>
+        <p class="hero-role">Giám đốc Khối · 150+ người, 4 văn phòng · 18 năm, ex-FPT & TMA</p>
+        <div class="hero-badge">🏗️ Nhà Tư Duy Cấu Trúc</div>
+        <p class="hero-quote">"Khi tổ chức vượt qua 50 người, bạn không còn quản lý con người nữa — bạn đang quản lý một HỆ THỐNG. Và hệ thống cần kiến trúc, không phải thiện chí."</p>
+    </section>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- SECTION 1: Bài Học Xương Máu -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>💔 Bài Học Xương Máu</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <p>Tôi từng nghĩ rằng mình là người quản lý giỏi. Ở FPT, tôi đưa team từ 30 lên 150 người trong chưa đầy 4 năm. Ai cũng khen. Nhưng sự thật là — tôi suýt tự phá hủy mình vì <strong>không thay đổi cách vận hành khi quy mô thay đổi</strong>.</p>
+
+                    <div class="story-bubble rose">
+                        Khi team còn 30 người, tôi biết tên vợ/chồng của từng người. Tôi biết ai đang có issue gì, ai cần được thăng tiến. Tôi tự hào về "open door policy" của mình. Rồi team lên 80. Tôi vẫn nghĩ mình nắm được mọi thứ.
+                        <br><br>
+                        Cho đến một ngày, sếp gọi tôi vào phòng và hỏi: "David, team Đà Nẵng của em đang có vấn đề gì vậy? Anh nghe phàn nàn từ khách hàng."
+                        <br><br>
+                        Tôi đứng đơ. Tôi KHÔNG BIẾT team Đà Nẵng đang gặp vấn đề. Một team lead đã xin nghỉ, hai senior dev đang toxic với nhau, và delivery trễ 3 sprint liên tiếp. Tôi nghe tin từ SẾP CỦA MÌNH, không phải từ team.
+                        <span class="attribution">— David Nguyễn, nhớ lại thời điểm FPT 2014</span>
+                    </div>
+
+                    <p>"Open door policy" của tôi hóa ra là một lời nói dối mà tôi tự kể cho mình. Cửa tôi có mở, nhưng tôi ở Hà Nội, team ở Đà Nẵng. Khoảng cách không chỉ là địa lý — khoảng cách là <strong>kiến trúc thông tin bị hỏng</strong>.</p>
+
+                    <h3>Tái cấu trúc dòng thông tin</h3>
+                    <p>Sau sự cố đó, tôi xây lại toàn bộ cách thông tin chảy trong tổ chức:</p>
+                    <ul>
+                        <li><strong>Skip-level 1-on-1:</strong> Mỗi tháng, tôi nói chuyện trực tiếp với 8-10 người KHÔNG phải direct reports. Không phải để bypass manager, mà để cảm nhận "nhiệt độ" thực sự của tổ chức.</li>
+                        <li><strong>Anonymous pulse survey:</strong> 3 câu hỏi, 2 tuần/lần. Đơn giản: "Mức năng lượng tuần này?", "Có gì cản trở công việc?", "Cần gì từ leadership?". Response rate 85% vì ngắn gọn.</li>
+                        <li><strong>Hệ thống "early warning":</strong> Dạy mỗi team lead nhận diện 5 dấu hiệu cảnh báo — attrition risk, morale drop, delivery slip — và report ngay, không chờ đến monthly review.</li>
+                    </ul>
+
+                    <div class="story-bubble sage">
+                        Bài học lớn nhất của tôi: khi tổ chức vượt qua ~50 người, bạn PHẢI chuyển từ quản lý bằng quan hệ cá nhân sang quản lý bằng hệ thống. Không phải vì bạn không quan tâm — mà vì bộ não con người không thể duy trì quan hệ sâu với hơn 50 người. Đó là khoa học, không phải khuyết điểm.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Điều Bạn Cần Nghe Ngay -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <p>Bạn vừa được giao dẫn dắt tổ chức hợp nhất. Đây là lúc bạn cần nghĩ như một <strong>kiến trúc sư tổ chức</strong>, không phải một technical leader giỏi.</p>
+
+                    <div class="story-bubble">
+                        "Vẽ sơ đồ tổ chức bạn CẦN, không phải sơ đồ bạn THỪA KẾ."
+                        <span class="attribution">— Nguyên tắc #1 của tôi khi merger</span>
+                    </div>
+
+                    <h3>Bước 1: Xác định năng lực cốt lõi</h3>
+                    <p>Trước khi vẽ bất kỳ org chart nào, hãy tự hỏi: <strong>tổ chức hợp nhất này cần xuất sắc ở 3-4 năng lực nào?</strong></p>
+                    <ul>
+                        <li>Delivery excellence cho khách hàng Hàn Quốc?</li>
+                        <li>Khả năng scale team nhanh cho dự án mới?</li>
+                        <li>Technical innovation và R&D?</li>
+                        <li>Quản trị quan hệ khách hàng cấp cao?</li>
+                    </ul>
+                    <p>Thiết kế cấu trúc XUNG QUANH những năng lực đó. Đừng nhét người vào ô có sẵn.</p>
+
+                    <h3>Bước 2: Xây dựng Leadership Team thực sự</h3>
+                    <p>Bạn cần 4-5 direct reports tạo thành một <strong>leadership team họp như một nhóm</strong>, không phải những người report song song. Sự khác biệt rất lớn:</p>
+                    <ul>
+                        <li><strong>Parallel reporters:</strong> Mỗi người gặp bạn riêng, ai lo việc nấy, không ownership chung.</li>
+                        <li><strong>Leadership team:</strong> Họp nhóm hàng tuần, cùng quyết định, cùng chịu trách nhiệm cho cả tổ chức — không chỉ team của mình.</li>
+                    </ul>
+
+                    <h3>Bước 3: Tìm cơ hội consolidation</h3>
+                    <p>Merger không phải là ghép hai team lại với nhau. Merger là tìm ra những <strong>cơ hội hợp nhất khiến mọi người mạnh hơn</strong>.</p>
+
+                    <div class="story-bubble teal">
+                        Khi tôi merge hai division ở TMA, tôi phát hiện 6 người đang làm DevOps theo 6 cách khác nhau ở 6 team. Tôi consolidate thành 1 shared DevOps team gồm 4 người — giỏi nhất từ cả hai bên. Giải phóng 2 người, và tạo ra function mới: "Developer Experience" — chuyên lo tooling, CI/CD, và developer productivity cho toàn bộ tổ chức.
+                        <br><br>
+                        Kết quả? Deploy time giảm 60%, developer satisfaction tăng, và 2 người được giải phóng chuyển sang project có giá trị cao hơn. Win-win-win.
+                        <span class="attribution">— Kinh nghiệm merger tại TMA</span>
+                    </div>
+
+                    <h3>Bước 4: Quản lý "Frozen Middle"</h3>
+                    <p>Đây là cảnh báo quan trọng nhất: <strong>"frozen middle"</strong> — lớp mid-manager đang đợi xem gió thổi hướng nào trước khi cam kết.</p>
+                    <ul>
+                        <li>Họ không chống đối công khai — họ chỉ đơn giản là <em>không hành động</em>.</li>
+                        <li>Họ truyền sự bất an xuống team bên dưới bằng ngôn ngữ cơ thể, bằng sự im lặng.</li>
+                        <li>Bạn PHẢI có cuộc nói chuyện 1-on-1 với từng mid-manager trong 30 ngày đầu. Hỏi thẳng: "Anh/chị thấy vai trò của mình thế nào trong tổ chức mới? Cần gì từ tôi?"</li>
+                    </ul>
+
+                    <h3>Bước 5: Quản lý LÊN TRÊN</h3>
+                    <p>Ở level này, bạn phải quản lý lên trên nhiều như quản lý xuống dưới. Frame mọi communication một cách chiến lược — leadership cấp cao cần thấy bạn <strong>kiểm soát được tình hình</strong>, không phải đang vật lộn.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Sai Lầm Cần Tránh -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>⚠️ Sai Lầm Cần Tránh</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <div class="mistake-card">
+                        <h4>Sai lầm #1: Giữ nguyên cấu trúc cũ và chỉ "ghép" hai team</h4>
+                        <p>Khi tôi merge lần đầu ở FPT, tôi giữ nguyên hai team structure và chỉ thêm mình ở trên. Kết quả: hai "bộ lạc" tồn tại song song, văn hóa "bên tôi" vs "bên họ" kéo dài 8 tháng. Tôi đáng ra phải redesign structure từ đầu — tạo team MỚI với người từ CẢ HAI BÊN, phá vỡ ranh giới cũ ngay từ tuần đầu.</p>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h4>Sai lầm #2: Cố gắng tự mình giải quyết mọi thứ thay vì xây hệ thống</h4>
+                        <p>Khi team lên 150 người, tôi vẫn cố approve mọi technical decision quan trọng. Calendar kín 12 giờ/ngày, toàn meeting. Tôi trở thành bottleneck lớn nhất của chính tổ chức mình. Bài học: viết Technical Decision Framework, phân quyền quyết định theo level rủi ro, chỉ escalate lên tôi khi cost > $50K hoặc ảnh hưởng > 3 team.</p>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h4>Sai lầm #3: Bỏ quên "người cũ" của WICHO trong 60 ngày đầu</h4>
+                        <p>Trong một merger tương tự ở TMA, tôi tập trung vào team mình và "giả định" team bên kia sẽ ổn. 3 senior engineers từ bên kia nghỉ trong tháng thứ 2 — họ cảm thấy bị bỏ rơi, không ai hỏi ý kiến. Đặc biệt với team của WICHO, bạn PHẢI chủ động tiếp cận từng người chủ chốt. Hỏi: "Bạn giỏi gì nhất? Bạn muốn phát triển hướng nào? Tổ chức mới có thể giúp gì?"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Câu Chuyện Thực Tế -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>📖 Câu Chuyện Thực Tế</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <h3>Khi DevOps trở thành chiến trường ngầm</h3>
+
+                    <p>Năm 2018, tôi merge hai division ở TMA. Division A có văn hóa "move fast, fix later" — deploy 5 lần/ngày, incident rate cao nhưng time-to-market nhanh. Division B cực kỳ cẩn thận — mỗi release cần 3 ngày review, hiếm khi có bug nhưng khách hàng phàn nàn về tốc độ.</p>
+
+                    <div class="story-bubble">
+                        Tuần đầu sau merger, hai team DevOps gặp nhau trong meeting room. Ai cũng lịch sự. Nhưng dưới bề mặt, mỗi bên nghĩ bên kia làm sai. Team A nghĩ team B chậm chạp, thiếu đổi mới. Team B nghĩ team A cẩu thả, vô kỷ luật.
+                        <br><br>
+                        Xung đột không nổ trong meeting — nó nổ trong Slack channels, trong code review comments mang tính sarcastic, trong việc từ chối merge PR của nhau.
+                    </div>
+
+                    <p>Tôi nhận ra vấn đề không phải kỹ thuật — vấn đề là <strong>không ai định nghĩa "tốt" nghĩa là gì cho tổ chức MỚI</strong>.</p>
+
+                    <p>Giải pháp của tôi:</p>
+                    <ul>
+                        <li>Tập hợp 6 người làm DevOps từ cả hai bên vào một phòng trong 2 ngày.</li>
+                        <li>Bài tập: "Nếu chúng ta xây DevOps từ SỐ 0 cho tổ chức này, nó sẽ trông như thế nào?"</li>
+                        <li>Kết quả: shared DevOps team 4 người — 2 từ team A, 2 từ team B. Kết hợp tốc độ của A và kỷ luật của B.</li>
+                        <li>2 người còn lại? Tạo function mới: "Developer Experience" — lo tooling, documentation, onboarding cho developer mới.</li>
+                    </ul>
+
+                    <div class="story-bubble sage">
+                        6 tháng sau, deploy frequency tăng 40%, incident rate giảm 55%. Nhưng quan trọng hơn — người từ hai bên bắt đầu tự gọi mình là "team chúng tôi" thay vì "bên tôi" và "bên họ". Đó mới là chiến thắng thực sự.
+                        <span class="attribution">— David Nguyễn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Góc Nhìn Việt Nam - Hàn Quốc -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>🌏 Góc Nhìn Việt Nam - Hàn Quốc</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <h3>🇻🇳 Phía Việt Nam: Xây dựng Technical Leadership Track</h3>
+
+                    <p>Vấn đề lớn nhất của IT outsourcing Việt Nam: <strong>senior engineers nghỉ việc vì không thấy đường phát triển ngoài management</strong>. Họ thấy chỉ có hai lựa chọn: lên làm manager (dù không muốn) hoặc nhảy sang công ty khác với lương cao hơn 30%.</p>
+
+                    <div class="story-bubble teal">
+                        Tôi xây Technical Leadership Track ở FPT: Senior Engineer → Staff Engineer → Principal Engineer. Mỗi level có tiêu chí rõ ràng, compensation tương đương management track, và scope of influence tăng dần. Staff Engineer được expect dẫn dắt technical direction cho 2-3 team. Principal Engineer ảnh hưởng kiến trúc toàn division.
+                        <br><br>
+                        Kết quả: attrition rate từ 28% giảm còn 14% trong 18 tháng. Không phải vì lương tăng — mà vì người ta thấy TƯƠNG LAI.
+                        <span class="attribution">— Kết quả thực tế tại FPT</span>
+                    </div>
+
+                    <p>Với tổ chức hợp nhất, đây là cơ hội vàng: xây track này từ đầu, áp dụng cho CẢ HAI BÊN. Nó tạo ra ngôn ngữ chung và hệ thống giá trị chung.</p>
+
+                    <h3>🇰🇷 Phía Hàn Quốc: Sự rõ ràng trong tổ chức = Năng lực</h3>
+
+                    <p>Stakeholder Hàn Quốc đánh giá partner qua <strong>sự rõ ràng và trật tự của tổ chức</strong>. Trong văn hóa doanh nghiệp Hàn, mỗi người có vị trí rõ ràng, mỗi quyết định có owner, mỗi quy trình có documentation.</p>
+
+                    <ul>
+                        <li><strong>Chuẩn bị org chart sạch sẽ:</strong> Khi gặp khách hàng Hàn Quốc, có sẵn org chart rõ ràng: ai phụ trách gì, escalation path, và điểm contact cho từng loại vấn đề.</li>
+                        <li><strong>Role clarity = Trust:</strong> Khách hàng Hàn cần biết "ai quyết định cái này?" và nhận được câu trả lời ngay, không phải "để tôi check lại".</li>
+                        <li><strong>Clean transition narrative:</strong> Đừng để khách hàng nghe về merger từ nguồn khác. Chuẩn bị thông điệp chủ động: "Chúng tôi đã hợp nhất để phục vụ quý vị tốt hơn, đây là cấu trúc mới, đây là người phụ trách của quý vị."</li>
+                    </ul>
+
+                    <div class="story-bubble">
+                        Organizational clarity signals competence — sự rõ ràng tổ chức là tín hiệu của năng lực. Trong mắt stakeholder Hàn Quốc, một tổ chức mới merge mà trình bày rõ ràng, gọn gàng, biết mình muốn gì — đó là dấu hiệu đáng tin cậy nhất.
+                        <span class="attribution">— David Nguyễn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('open');
+        }
+
+        // Scroll-triggered fade-in
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monica "Tầm Nhìn" Hà — CEO</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --agent-gradient: linear-gradient(135deg, #2d00f7, #6a00f4);
+            --bg: #0f0f1a;
+            --card-bg: #16162a;
+            --text: #e0e0e0;
+            --text-muted: #a0a0b0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(246, 199, 68, 0.15);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-back:hover { opacity: 0.8; }
+
+        .nav-agents {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-agents a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+
+        .nav-agents a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .hero {
+            margin-top: 60px;
+            padding: 4rem 1.5rem 3rem;
+            background: var(--agent-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg));
+        }
+
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            margin: 0 auto 1.2rem;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero-role {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            border-color: #6a00f4;
+            background: rgba(106, 0, 244, 0.05);
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .section-toggle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .section.open .section-toggle {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 5000px;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .section-content h3 {
+            color: var(--teal);
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        .section-content ul {
+            padding-left: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.6rem;
+            color: var(--text);
+        }
+
+        .story-bubble {
+            background: rgba(246, 199, 68, 0.04);
+            border-left: 4px solid var(--gold);
+            border-radius: 0 10px 10px 0;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            font-style: italic;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.8;
+        }
+
+        .story-bubble.rose {
+            background: rgba(230, 57, 70, 0.06);
+            border-left-color: var(--rose);
+        }
+
+        .story-bubble.teal {
+            background: rgba(0, 180, 216, 0.06);
+            border-left-color: var(--teal);
+        }
+
+        .story-bubble.sage {
+            background: rgba(82, 183, 136, 0.06);
+            border-left-color: var(--sage);
+        }
+
+        .story-bubble.purple {
+            background: rgba(106, 0, 244, 0.06);
+            border-left-color: #6a00f4;
+        }
+
+        .story-bubble .attribution {
+            display: block;
+            margin-top: 0.6rem;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 0.85rem;
+        }
+
+        .mistake-card {
+            background: rgba(230, 57, 70, 0.06);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mistake-card h4 {
+            color: var(--rose);
+            margin-bottom: 0.5rem;
+        }
+
+        .mistake-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .shift-card {
+            background: rgba(106, 0, 244, 0.06);
+            border: 1px solid rgba(106, 0, 244, 0.2);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .shift-card .arrow {
+            color: var(--gold);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .shift-card .from {
+            color: var(--text-muted);
+            text-decoration: line-through;
+            min-width: 40%;
+        }
+
+        .shift-card .to {
+            color: var(--sage);
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 3rem 1rem 2.5rem; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero-quote { font-size: 1rem; }
+            .content { padding: 1.5rem 1rem; }
+            .section-header h2 { font-size: 1.05rem; }
+            .nav-agents { gap: 0.5rem; }
+            .nav-agents a { font-size: 0.75rem; padding: 0.2rem 0.6rem; }
+            .shift-card { flex-direction: column; gap: 0.3rem; text-align: center; }
+            .shift-card .from { min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-back">← Về Trang Chính</a>
+        <div class="nav-agents">
+            <a href="05-bod-leader.html">← Trước</a>
+            <a href="07-executive-coach.html">Tiếp →</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-avatar">🔭</div>
+        <h1>Monica "Tầm Nhìn" Hà</h1>
+        <p class="hero-role">CEO · Công ty Dịch vụ IT · 25 năm, xây dựng từ 5 đến 800 người</p>
+        <div class="hero-badge">🔭 Người Nhìn Xa Trông Rộng</div>
+        <p class="hero-quote">"Bạn đang ở điểm uốn nguy hiểm nhất sự nghiệp: những gì đưa bạn đến đây sẽ KHÔNG đưa bạn đi tiếp. Câu hỏi là — bạn có dám buông cái cũ để nắm cái mới không?"</p>
+    </section>
+
+    <div class="content">
+
+        <!-- SECTION 1: Bài Học Xương Máu -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>💔 Bài Học Xương Máu</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <p>Tôi bắt đầu là developer ở Sài Gòn. Năm 2001, tôi bay sang Seoul với $3,000 và một giấc mơ. Xây công ty từ phòng ngủ — 5 người đầu tiên là bạn đại học. Hôm nay chúng tôi có 800 người.</p>
+
+                    <p>Nhưng hành trình đó suýt kết thúc khi công ty được 50 người. Vì tôi.</p>
+
+                    <div class="story-bubble rose">
+                        Khi công ty lên 50 người, tôi vẫn review architecture của mọi dự án. Tôi debug production incidents vào cuối tuần. Calendar tôi kín meeting từ 8h sáng đến 6h chiều, rồi tôi code từ 9h tối đến 1h sáng. Tôi tự hào về điều đó — "Mình vẫn technical, mình vẫn hands-on."
+                        <br><br>
+                        CTO của tôi — một người tôi tuyển từ ngày đầu — ngồi xuống và nói thẳng:
+                        <br><br>
+                        <strong>"Mỗi giờ chị code là một giờ chị không làm những thứ chỉ chị mới làm được: tầm nhìn, quan hệ khách hàng, và xây dựng thế hệ lãnh đạo tiếp theo."</strong>
+                        <br><br>
+                        Tôi tức giận. Tôi nghĩ anh ta đang nói tôi dở. Phải mất 3 tháng tôi mới hiểu: anh ta đang cứu công ty khỏi chính tôi.
+                        <span class="attribution">— Monica Hà, nhớ lại năm 2008</span>
+                    </div>
+
+                    <h3>Nơi ẩn náu quen thuộc</h3>
+                    <p>Sự thật mà tôi phải đối diện: tôi dùng công việc kỹ thuật như <strong>NƠI ẨN NÁU</strong>. Code rõ ràng, có đúng có sai, cho feedback ngay lập tức. Leadership thì mờ mịt — bạn đưa ra quyết định và phải đợi hàng tháng, hàng năm mới biết đúng sai.</p>
+
+                    <p>Việc code khiến tôi cảm thấy mình hữu ích, mình giỏi, mình đang đóng góp. Nhưng nó là BẪY. Vì mỗi giờ tôi code là một giờ tôi không:</p>
+                    <ul>
+                        <li>Xây quan hệ với khách hàng mới</li>
+                        <li>Phát triển lãnh đạo kế nhiệm</li>
+                        <li>Suy nghĩ về tương lai 2-3 năm tới</li>
+                        <li>Giải quyết xung đột tổ chức đang âm ỉ</li>
+                    </ul>
+
+                    <div class="story-bubble purple">
+                        Quá trình chuyển đổi từ "doing" sang "enabling" là một sự mất mát. Bạn phải THƯƠNG TIẾC danh tính cũ. Người developer giỏi, người kiến trúc sư xuất sắc, người giải quyết vấn đề nhanh nhất phòng — danh tính đó mang lại cho bạn niềm vui và sự tự tin suốt 15-20 năm. Và bây giờ bạn phải đặt nó xuống. Đó là grief thật sự. Nhưng nếu bạn không buông, bạn sẽ giữ chặt cái cũ và bỏ lỡ cái mới.
+                        <span class="attribution">— Monica Hà</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Điều Bạn Cần Nghe Ngay -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <p>Bạn đang ở điểm uốn nguy hiểm nhất. Tôi gọi nó là <strong>"ngưỡng bất khả thi"</strong> — nơi kỹ năng cũ không còn đủ, nhưng kỹ năng mới chưa hình thành. Mọi CEO, mọi executive giỏi đều phải vượt qua ngưỡng này. Không ai vượt qua mà không đau.</p>
+
+                    <h3>Những chuyển đổi bạn phải thực hiện</h3>
+
+                    <div class="shift-card">
+                        <span class="from">"Tôi giải quyết vấn đề"</span>
+                        <span class="arrow">→</span>
+                        <span class="to">"Tôi xây tổ chức giải quyết vấn đề"</span>
+                    </div>
+
+                    <div class="shift-card">
+                        <span class="from">"Tôi biết câu trả lời"</span>
+                        <span class="arrow">→</span>
+                        <span class="to">"Tôi hỏi câu hỏi đúng"</span>
+                    </div>
+
+                    <div class="shift-card">
+                        <span class="from">"Tôi deliver dự án"</span>
+                        <span class="arrow">→</span>
+                        <span class="to">"Tôi xây năng lực deliver"</span>
+                    </div>
+
+                    <div class="shift-card">
+                        <span class="from">"Team cần tôi"</span>
+                        <span class="arrow">→</span>
+                        <span class="to">"Team mạnh hơn khi tôi không có mặt"</span>
+                    </div>
+
+                    <h3>Bài test lịch (Calendar Test)</h3>
+                    <p>Mở lịch tuần trước. Phân loại mọi block thời gian vào 3 category:</p>
+                    <ul>
+                        <li><strong>(a) Làm việc trực tiếp:</strong> review code, fix bug, viết spec, join technical meeting</li>
+                        <li><strong>(b) Giúp người khác làm việc:</strong> 1-on-1, coaching, unblock team, resolve conflict</li>
+                        <li><strong>(c) Suy nghĩ về tương lai:</strong> strategy, relationship building, organizational design, learning</li>
+                    </ul>
+                    <p>Ở level của bạn, category (c) phải chiếm <strong>25-30%</strong>. Nếu nó dưới 10%, bạn đang sống trong quá khứ.</p>
+
+                    <h3>Narrative cho merger</h3>
+                    <div class="story-bubble teal">
+                        Đừng kể câu chuyện "hai team gộp lại thành một". Nhàm chán và không truyền cảm hứng. Hãy trả lời câu hỏi này — và biến nó thành narrative:
+                        <br><br>
+                        <strong>"Tổ chức hợp nhất có thể làm gì mà cả hai bên riêng lẻ KHÔNG THỂ?"</strong>
+                        <br><br>
+                        Đó mới là câu chuyện đáng kể. Đó mới là lý do mọi người muốn commit.
+                        <span class="attribution">— Monica Hà</span>
+                    </div>
+
+                    <h3>Bắt đầu đào tạo người thay thế</h3>
+                    <p>Nghe counter-intuitive, nhưng: bắt đầu develop người có thể thay bạn ở vị trí HIỆN TẠI ngay bây giờ. Đây không phải dấu hiệu yếu — đây là <strong>tín hiệu mạnh nhất gửi đến BOD rằng bạn sẵn sàng cho level tiếp theo</strong>.</p>
+                    <p>Leader không có successor là leader không thể thăng tiến. Vì không ai thay được họ.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Sai Lầm Cần Tránh -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>⚠️ Sai Lầm Cần Tránh</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <div class="mistake-card">
+                        <h4>Sai lầm #1: Cố gắng được tất cả mọi người yêu thích</h4>
+                        <p>Khi merger, sẽ có người không happy. Sẽ có người từ team WICHO cảm thấy mất quyền. Sẽ có người từ team bạn cảm thấy threatened. Bạn KHÔNG THỂ khiến tất cả vui. Mục tiêu không phải "được yêu thích" — mục tiêu là "được tôn trọng và công bằng". Quyết định rõ ràng, communicate thẳng thắn, đối xử fair. Một số người sẽ rời đi. Đó là OK.</p>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h4>Sai lầm #2: Nhầm lẫn "planning" với "strategy"</h4>
+                        <p>"Hoàn thành dự án đúng hạn" không phải strategy — đó là planning. "Trở thành đối tác IT outsourcing #1 cho fintech Hàn Quốc trong 3 năm" — ĐÓ mới là strategy. Strategy là chọn CUỘC CHƠI nào để chơi và chọn CÁCH THẮNG. Nếu "chiến lược" của bạn không giúp nói KHÔNG với một số thứ, nó không phải chiến lược.</p>
+                    </div>
+
+                    <div class="mistake-card">
+                        <h4>Sai lầm #3: Giữ "toxic performer" vì họ mang lại kết quả</h4>
+                        <p>Tôi đã trả giá đắt cho sai lầm này. Tôi có một manager mang về $3M revenue/năm — nhưng anh ta toxic: bully team, chơi chính trị, phá hoại văn hóa. Tôi tolerate vì sợ mất revenue. Ngày tôi sa thải anh ta là ngày đắt giá nhất — và quan trọng nhất — cho linh hồn công ty. Vì <strong>văn hóa là thứ bạn TOLERATE, không phải thứ bạn RAO GIẢNG</strong>. Team thấy bạn giữ người toxic, họ hiểu message: "performance quan trọng hơn giá trị". Và văn hóa chết từ đó.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Câu Chuyện Thực Tế -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>📖 Câu Chuyện Thực Tế</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <h3>Ngày tôi sa thải người mang về $3M</h3>
+
+                    <p>Năm 2015, công ty tôi có khoảng 400 người. Và một manager tên Phong (tên đã đổi) quản lý account lớn nhất — $3M revenue, 60 người. Phong giỏi. Client yêu Phong. Số liệu của Phong luôn đẹp.</p>
+
+                    <div class="story-bubble rose">
+                        Nhưng bên trong team Phong, mọi thứ thối rữa. Phong bully junior dev trước mặt mọi người. Phong chơi favorite — ai nịnh thì lên, ai có ý kiến thì bị gạt. Phong nói xấu team khác, tạo "bộ lạc" riêng. Khi HR nhận complaint, Phong nói: "Mấy đứa yếu thì nên đi chỗ khác."
+                        <br><br>
+                        Tôi biết. Tôi biết từ lâu. Nhưng tôi tự nói với mình: "Phong mang về $3M. Mình không thể mất account đó. Mình sẽ nói chuyện với Phong, Phong sẽ thay đổi."
+                        <br><br>
+                        Phong không thay đổi. Trong 2 năm tôi "manage" Phong, 12 người giỏi nghỉ việc. Exit interview nào cũng nhắc đến Phong. Nhưng tôi vẫn giữ.
+                    </div>
+
+                    <p>Điểm bùng phát đến khi một senior engineer — 6 năm gắn bó — gửi resignation letter trực tiếp cho tôi. Trong đó cô viết:</p>
+
+                    <div class="story-bubble">
+                        "Chị Monica, em luôn tin vào giá trị công ty. Nhưng khi em thấy chị biết những gì anh Phong làm mà vẫn giữ, em hiểu rằng giá trị đó chỉ trên giấy. Em không muốn làm ở nơi mà performance quan trọng hơn con người."
+                        <span class="attribution">— Trích resignation letter</span>
+                    </div>
+
+                    <p>Tôi sa thải Phong tuần sau đó. Revenue account đó giảm 40% trong 6 tháng. Đau. Rất đau.</p>
+
+                    <p>Nhưng trong 12 tháng tiếp theo:</p>
+                    <ul>
+                        <li>Attrition rate toàn công ty giảm từ 25% xuống 16%</li>
+                        <li>3 người giỏi đã nghỉ quay lại — "Nghe nói Phong đi rồi, em muốn về"</li>
+                        <li>Team cũ của Phong rebuild, revenue recover 80% trong 12 tháng</li>
+                        <li>Và quan trọng nhất: mọi người trong công ty biết rằng <strong>giá trị là thật, không phải slogan</strong></li>
+                    </ul>
+
+                    <div class="story-bubble sage">
+                        Văn hóa là thứ bạn tolerate, không phải thứ bạn preach. Ngày tôi sa thải Phong là ngày đắt giá nhất — và quan trọng nhất — cho linh hồn công ty.
+                        <span class="attribution">— Monica Hà</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Góc Nhìn Việt Nam - Hàn Quốc -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>🌏 Góc Nhìn Việt Nam - Hàn Quốc</h2>
+                <span class="section-toggle">+</span>
+            </div>
+            <div class="section-body">
+                <div class="section-content">
+                    <h3>🌉 Cầu nối Việt-Hàn: Lợi thế cạnh tranh lớn nhất của bạn</h3>
+
+                    <p>Tôi nói thẳng: vị trí "cầu nối Việt Nam - Hàn Quốc" của bạn là <strong>competitive moat lớn nhất</strong> — và bạn có thể chưa nhận ra giá trị thực sự của nó.</p>
+
+                    <div class="story-bubble purple">
+                        Khi tôi xây công ty, tôi là một trong rất ít người Việt ở Seoul hiểu cả hai thế giới. Tôi hiểu tại sao manager Hàn frustrated khi developer Việt nói "vâng" nhưng không làm theo. Tôi hiểu tại sao developer Việt frustrated khi khách Hàn thay đổi requirement liên tục mà không giải thích lý do.
+                        <br><br>
+                        Mỗi lần tôi "dịch" được sự hiểu lầm giữa hai bên, tôi không chỉ giải quyết vấn đề — tôi tạo ra giá trị mà đối thủ KHÔNG THỂ copy. Vì họ không có người như tôi. Và bạn cũng có lợi thế đó.
+                        <span class="attribution">— Monica Hà</span>
+                    </div>
+
+                    <h3>🇻🇳 Phía Việt Nam: Đầu tư vào thế hệ tiếp theo</h3>
+
+                    <p>Thách thức lớn nhất của IT outsourcing Việt Nam không phải technical skill — mà là <strong>leadership pipeline</strong>. Có hàng ngàn developer giỏi, nhưng rất ít người biết cách lãnh đạo, giao tiếp với khách hàng quốc tế, và suy nghĩ chiến lược.</p>
+
+                    <ul>
+                        <li>Xác định 3-5 người có tiềm năng lãnh đạo trong tổ chức hợp nhất. Đầu tư vào họ: cho họ exposure với khách hàng, cho họ dẫn initiative, cho họ fail safely.</li>
+                        <li>Đây không chỉ là succession planning — đây là cách bạn SCALE bản thân. Mỗi leader bạn phát triển là thêm một phiên bản "bạn" trong tổ chức.</li>
+                    </ul>
+
+                    <h3>🇰🇷 Phía Hàn Quốc: Strategy, không phải execution</h3>
+
+                    <p>Stakeholder Hàn Quốc ở cấp cao đánh giá partner qua <strong>tầm nhìn chiến lược</strong>, không chỉ execution quality.</p>
+
+                    <div class="story-bubble teal">
+                        Khi tôi bắt đầu pitch "Chúng tôi sẽ trở thành đối tác IT #1 cho fintech Hàn Quốc" thay vì "Chúng tôi deliver đúng hạn, đúng chất lượng" — phản ứng từ C-suite khách hàng hoàn toàn khác. Họ ngồi thẳng dậy. Họ hỏi thêm. Họ thấy mình đang nói chuyện với một PARTNER, không phải vendor.
+                        <br><br>
+                        "Trở thành đối tác #1 cho fintech Hàn Quốc" là STRATEGY.
+                        <br>
+                        "Hoàn thành dự án đúng hạn" là PLANNING.
+                        <br><br>
+                        Đừng nhầm lẫn hai thứ này.
+                        <span class="attribution">— Monica Hà</span>
+                    </div>
+
+                    <h3>Lời cuối</h3>
+                    <p>Bạn đang ở ngưỡng cửa của một chương mới. Chương cũ — technical leader giỏi, delivery expert, problem solver — đã đưa bạn đến đây. Nhưng chương tiếp theo cần một phiên bản khác của bạn.</p>
+
+                    <div class="story-bubble">
+                        Đừng vội. Đừng cố hoàn hảo. Nhưng hãy bắt đầu. Mỗi ngày, hỏi bản thân: "Hôm nay mình đang LÀM việc, hay đang XÂY TỔ CHỨC làm việc?" Khi câu trả lời nghiêng về "xây tổ chức" — bạn đang đi đúng hướng.
+                        <span class="attribution">— Monica Hà</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('open');
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

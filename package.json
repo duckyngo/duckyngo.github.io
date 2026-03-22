@@ -35,5 +35,11 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "gh-pages": "^3.2.3"
+  },
+  "overrides": {
+    "socket.io-parser": "~4.2.4"
+  },
+  "resolutions": {
+    "socket.io-parser": "~4.2.4"
   }
 }
