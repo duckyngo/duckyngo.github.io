@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao Diện Đại Sư - DevExtreme Expert Agent</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dx-orange: #FF5722;
+            --dx-coral: #FF7043;
+            --dx-deep: #E64A19;
+            --dx-light: #FFF3E0;
+            --dx-amber: #FF9800;
+            --dx-dark: #1A1A2E;
+            --dx-card: #FFFFFF;
+            --dx-text: #2D2D2D;
+            --dx-muted: #757575;
+            --dx-success: #4CAF50;
+            --dx-danger: #F44336;
+            --dx-info: #2196F3;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--dx-dark);
+            color: var(--dx-text);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* Animated grid background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255, 87, 34, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 87, 34, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Floating data cells */
+        .floating-cell {
+            position: fixed;
+            border: 1px solid rgba(255, 87, 34, 0.15);
+            border-radius: 4px;
+            background: rgba(255, 87, 34, 0.05);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-cell:nth-child(1) {
+            width: 80px; height: 30px; top: 10%; left: 5%;
+            animation: floatCell 12s ease-in-out infinite;
+        }
+        .floating-cell:nth-child(2) {
+            width: 120px; height: 25px; top: 30%; right: 8%;
+            animation: floatCell 15s ease-in-out infinite reverse;
+        }
+        .floating-cell:nth-child(3) {
+            width: 60px; height: 35px; top: 60%; left: 12%;
+            animation: floatCell 10s ease-in-out infinite 2s;
+        }
+        .floating-cell:nth-child(4) {
+            width: 100px; height: 28px; top: 80%; right: 15%;
+            animation: floatCell 14s ease-in-out infinite 1s;
+        }
+        .floating-cell:nth-child(5) {
+            width: 90px; height: 32px; top: 45%; left: 85%;
+            animation: floatCell 11s ease-in-out infinite 3s;
+        }
+
+        @keyframes floatCell {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+            25% { transform: translateY(-20px) rotate(2deg); opacity: 0.6; }
+            50% { transform: translateY(-10px) rotate(-1deg); opacity: 0.4; }
+            75% { transform: translateY(-30px) rotate(1deg); opacity: 0.5; }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--dx-orange), var(--dx-amber), var(--dx-coral));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow:
+                0 20px 60px rgba(255, 87, 34, 0.4),
+                0 0 0 4px rgba(255, 87, 34, 0.2),
+                inset 0 -4px 12px rgba(0, 0, 0, 0.15);
+            animation: avatarFloat 4s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+            animation: avatarShine 3s ease-in-out infinite;
+        }
+
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        @keyframes avatarShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .status-badge {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, var(--dx-success), #66BB6A);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            animation: pulseStatus 2s ease-in-out infinite;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes pulseStatus {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--dx-orange), var(--dx-amber), #FFD54F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            margin-bottom: 25px;
+        }
+
+        .hero .tagline {
+            display: inline-block;
+            background: rgba(255, 87, 34, 0.15);
+            border: 1px solid rgba(255, 87, 34, 0.3);
+            color: var(--dx-coral);
+            padding: 10px 28px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 87, 34, 0.15);
+            backdrop-filter: blur(10px);
+            min-width: 130px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dx-orange);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Section styling */
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 87, 34, 0.2);
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .section-header .section-sub {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--dx-card);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 87, 34, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(255, 87, 34, 0.15);
+        }
+
+        /* Backstory card */
+        .backstory {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backstory::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dx-orange), var(--dx-amber), var(--dx-coral));
+        }
+
+        .backstory p {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--dx-text);
+        }
+
+        .backstory .first-letter {
+            font-size: 3.5rem;
+            font-weight: 900;
+            float: left;
+            color: var(--dx-orange);
+            line-height: 1;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        /* Skills grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .skill-card {
+            background: var(--dx-card);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid rgba(255, 87, 34, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 36px rgba(255, 87, 34, 0.2);
+            border-color: var(--dx-orange);
+        }
+
+        .skill-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--dx-orange), var(--dx-amber));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .skill-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dx-text);
+            margin-bottom: 6px;
+        }
+
+        .skill-desc {
+            font-size: 0.82rem;
+            color: var(--dx-muted);
+        }
+
+        .skill-level {
+            margin-top: 10px;
+            height: 4px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-level-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--dx-orange), var(--dx-amber));
+            border-radius: 4px;
+            animation: fillBar 2s ease-out forwards;
+            transform-origin: left;
+        }
+
+        @keyframes fillBar {
+            from { width: 0; }
+        }
+
+        /* Insights / Bi Kip */
+        .bikip-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .bikip-item {
+            background: var(--dx-card);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            border: 1px solid rgba(255, 87, 34, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bikip-item:hover {
+            border-color: var(--dx-orange);
+            transform: translateX(8px);
+            box-shadow: -4px 4px 20px rgba(255, 87, 34, 0.1);
+        }
+
+        .bikip-number {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--dx-orange), var(--dx-coral));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+        }
+
+        .bikip-content h4 {
+            font-weight: 700;
+            color: var(--dx-text);
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+        }
+
+        .bikip-content p {
+            color: var(--dx-muted);
+            font-size: 0.92rem;
+        }
+
+        /* Stories */
+        .story-card {
+            background: var(--dx-card);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 87, 34, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .story-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 87, 34, 0.12);
+        }
+
+        .story-emoji {
+            font-size: 3rem;
+            position: absolute;
+            top: -15px;
+            right: 25px;
+            animation: wobble 3s ease-in-out infinite;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        .story-title {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--dx-deep);
+            margin-bottom: 12px;
+            padding-right: 50px;
+        }
+
+        .story-body {
+            color: var(--dx-text);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .story-body .quote {
+            display: block;
+            margin: 12px 0;
+            padding: 12px 20px;
+            background: var(--dx-light);
+            border-left: 4px solid var(--dx-orange);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            color: var(--dx-deep);
+            font-weight: 500;
+        }
+
+        .story-moral {
+            margin-top: 14px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.08), rgba(255, 152, 0, 0.08));
+            border-radius: 12px;
+            font-size: 0.88rem;
+            color: var(--dx-deep);
+            font-weight: 600;
+        }
+
+        /* Mistakes */
+        .mistakes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .mistake-card {
+            background: var(--dx-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(244, 67, 54, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .mistake-card:hover {
+            border-color: var(--dx-danger);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(244, 67, 54, 0.1);
+        }
+
+        .mistake-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .mistake-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--dx-danger), #EF5350);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .mistake-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--dx-danger);
+        }
+
+        .mistake-desc {
+            font-size: 0.88rem;
+            color: var(--dx-muted);
+            margin-bottom: 10px;
+        }
+
+        .mistake-fix {
+            font-size: 0.85rem;
+            padding: 10px 14px;
+            background: rgba(76, 175, 80, 0.08);
+            border-radius: 10px;
+            color: var(--dx-success);
+            font-weight: 500;
+            border: 1px solid rgba(76, 175, 80, 0.15);
+        }
+
+        /* PBX Relevance */
+        .pbx-card {
+            background: var(--dx-card);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid rgba(255, 87, 34, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pbx-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dx-orange), var(--dx-amber), var(--dx-coral), var(--dx-orange));
+            background-size: 300% 100%;
+            animation: gradientSlide 4s linear infinite;
+        }
+
+        @keyframes gradientSlide {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        .pbx-intro {
+            font-size: 1.05rem;
+            margin-bottom: 24px;
+            color: var(--dx-text);
+        }
+
+        .pbx-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .pbx-feature {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 18px;
+            background: rgba(255, 87, 34, 0.03);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 87, 34, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .pbx-feature:hover {
+            background: rgba(255, 87, 34, 0.08);
+            border-color: rgba(255, 87, 34, 0.2);
+        }
+
+        .pbx-feature-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .pbx-feature h4 {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--dx-deep);
+            margin-bottom: 4px;
+        }
+
+        .pbx-feature p {
+            font-size: 0.85rem;
+            color: var(--dx-muted);
+        }
+
+        /* Code snippets */
+        .code-block {
+            background: #1E1E2E;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: #CDD6F4;
+            border: 1px solid rgba(255, 87, 34, 0.2);
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'DevExtreme';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.7rem;
+            color: var(--dx-orange);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 600;
+            opacity: 0.6;
+        }
+
+        .code-block .keyword { color: #CBA6F7; }
+        .code-block .string { color: #A6E3A1; }
+        .code-block .comment { color: #6C7086; font-style: italic; }
+        .code-block .prop { color: #89B4FA; }
+        .code-block .value { color: #FAB387; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .footer .dx-logo {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero .subtitle { font-size: 1rem; }
+            .stats-row { gap: 12px; }
+            .stat-item { min-width: 100px; padding: 10px 15px; }
+            .card, .story-card, .pbx-card { padding: 24px; }
+            .skills-grid { grid-template-columns: 1fr 1fr; }
+            .mistakes-grid { grid-template-columns: 1fr; }
+            .pbx-features { grid-template-columns: 1fr; }
+            .avatar { width: 140px; height: 140px; font-size: 60px; }
+            .section-header h2 { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 480px) {
+            .skills-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.7rem; }
+            .stats-row { flex-direction: column; align-items: center; }
+        }
+
+        /* Scroll animations */
+        .animate-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .animate-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="floating-cell"></div>
+<div class="floating-cell"></div>
+<div class="floating-cell"></div>
+<div class="floating-cell"></div>
+<div class="floating-cell"></div>
+
+<div class="container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="avatar-wrapper">
+            <div class="avatar">
+                <span>🧙</span>
+            </div>
+            <div class="status-badge">ONLINE</div>
+        </div>
+        <h1>Giao Diện Đại Sư</h1>
+        <p class="subtitle">Chuyên Gia DevExtreme &bull; Bậc Thầy UI Enterprise &bull; Agent #12</p>
+        <div class="tagline">
+            "Grid nào ta cũng trị, Form nào ta cũng thuần, Popup nào ta cũng đóng được... trừ popup license" 🔥
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-number">23.2</span>
+                <span class="stat-label">DX Version</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Components</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">10K+</span>
+                <span class="stat-label">Rows Tamed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">CSS Overrides</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience & Backstory -->
+    <section class="section animate-in">
+        <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, var(--dx-orange), var(--dx-amber));">📜</div>
+            <div>
+                <h2>Lai Lịch & Võ Công</h2>
+                <span class="section-sub">Hành trình từ jQuery đến DevExtreme Đại Sư</span>
+            </div>
+        </div>
+
+        <div class="card backstory">
+            <p>
+                <span class="first-letter">T</span>hưở xưa, ở một vùng đất nọ có tên là "Enterprise Vietnam", có một lão ông suốt ngày ngồi code bảng dữ liệu. Người ta gọi lão là <strong>Giao Diện Đại Sư</strong> — không phải vì lão đẹp trai (mặc dù cũng không xấu), mà vì lão có khả năng biến bất kỳ cái bảng Excel nào thành một <strong>DataGrid</strong> hoành tráng chỉ trong vài dòng config.
+            </p>
+            <p>
+                Lão bắt đầu cuộc đời với jQuery và nhứng cái table HTML xấu xí. Rồi một ngày đẹp trời, lão phát hiện ra <strong>DevExtreme</strong> — bộ thư viện UI enterprise mạnh nhất mà lão từng thấy. Từ đó, lão tu luyện suốt ngày đêm, nghiên cứu từng component, từ <strong>DataGrid</strong> huyền thoại đến <strong>TreeView</strong> thần bí, từ <strong>Form</strong> linh hoạt đến <strong>Popup</strong> đa dạng.
+            </p>
+            <p>
+                Với DevExtreme 23.2 kết hợp Vue.js, lão đã tạo ra vô số giao diện enterprise khiến khách hàng phải trầm trồ: <em>"Ơ, cái này nhìn giống hệt Excel nhưng mà... đẹp hơn Excel!"</em>. Lão thành thạo <strong>custom templates</strong>, <strong>data sources</strong> từ remote API, <strong>virtual scrolling</strong> cho hàng chục ngàn dòng, và <strong>export</strong> ra Excel/PDF mượt như nước.
+            </p>
+            <p>
+                Giờ đây, lão gia nhập dự án <strong>PBX</strong> — một hệ thống tổng đài doanh nghiệp cần giao diện mạnh mẽ, linh hoạt, và quan trọng nhất là phải chạy nhanh. Lão nói: <em>"Grid ta render, form ta validate, tree ta expand — thiên hạ vô địch!"</em>
+            </p>
+        </div>
+
+        <!-- Skills grid -->
+        <div class="skills-grid">
+            <div class="skill-card animate-in">
+                <span class="skill-icon">📊</span>
+                <div class="skill-name">DataGrid</div>
+                <div class="skill-desc">Sorting, filtering, grouping, editing, master-detail</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 98%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">🌳</span>
+                <div class="skill-name">TreeView / TreeList</div>
+                <div class="skill-desc">Lazy loading, drag & drop, checkbox modes</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 95%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">📝</span>
+                <div class="skill-name">Form & Validation</div>
+                <div class="skill-desc">Dynamic layouts, custom editors, async rules</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 96%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">💬</span>
+                <div class="skill-name">Popup & Dialogs</div>
+                <div class="skill-desc">Modal, modeless, drag, resize, toolbar</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 93%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">🎨</span>
+                <div class="skill-name">Custom Templates</div>
+                <div class="skill-desc">Cell templates, header templates, Vue slots</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 97%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">🔌</span>
+                <div class="skill-name">Data Sources</div>
+                <div class="skill-desc">CustomStore, OData, ArrayStore, remote ops</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 94%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">⚡</span>
+                <div class="skill-name">Virtual Scrolling</div>
+                <div class="skill-desc">Render 100K rows mượt như bơ</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 96%;"></div></div>
+            </div>
+            <div class="skill-card animate-in">
+                <span class="skill-icon">📤</span>
+                <div class="skill-name">Export & Print</div>
+                <div class="skill-desc">Excel, PDF, CSV — đúng format, đúng style</div>
+                <div class="skill-level"><div class="skill-level-fill" style="width: 92%;"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bi Kip (Insights) -->
+    <section class="section animate-in">
+        <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #E91E63, #F06292);">🔮</div>
+            <div>
+                <h2>Bí Kíp Giao Diện Đại Sư</h2>
+                <span class="section-sub">Những chiêu thức bí truyền chỉ truyền cho người có duyên</span>
+            </div>
+        </div>
+
+        <div class="bikip-list">
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">1</div>
+                <div class="bikip-content">
+                    <h4>DataGrid remoteOperations — Để server lo hết!</h4>
+                    <p>Đừng bao giờ load 10,000 dòng về client rồi filter. Hãy bật <code>remoteOperations: true</code> và để backend xử lý sorting, filtering, paging. Grid chỉ hiển thị — nhanh như chớp. Ông nội dạy: <em>"Việc nặng thì giao cho server, con cháu nhàn thân!"</em></p>
+                </div>
+            </div>
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">2</div>
+                <div class="bikip-content">
+                    <h4>Virtual Scrolling + Row Rendering Mode</h4>
+                    <p>Bật <code>scrolling.mode: 'virtual'</code> kết hợp <code>rowRenderingMode: 'virtual'</code>. Grid sẽ chỉ render những row đang hiển thị trên màn hình. 100K rows mà scroll mượt như đang lướt TikTok. Bí kíp này đã cứu biết bao dự án khỏi cảnh lag!</p>
+                </div>
+            </div>
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">3</div>
+                <div class="bikip-content">
+                    <h4>CustomStore — Vũ khí tối thượng kết nối API</h4>
+                    <p>Đừng dùng ArrayStore rồi tự fetch data. Hãy dùng <code>CustomStore</code> với <code>load</code>, <code>insert</code>, <code>update</code>, <code>remove</code> functions. DevExtreme sẽ tự quản lý state, caching, và retry. Viết một lần, dùng mãi mãi — như tình yêu với code vậy!</p>
+                </div>
+            </div>
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">4</div>
+                <div class="bikip-content">
+                    <h4>Template Slot trong Vue — Sức mạnh thật sự</h4>
+                    <p>DevExtreme Vue cho phép dùng <code>#cell-template</code> slot để custom render từng cell. Kết hợp với Vue's reactivity, bạn có thể render components phức tạp bên trong grid mà không lo performance. Nhớ dùng <code>:key</code> binding để tránh re-render toàn bộ!</p>
+                </div>
+            </div>
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">5</div>
+                <div class="bikip-content">
+                    <h4>State Persistence — Người dùng sẽ cảm ơn bạn</h4>
+                    <p>Bật <code>stateStoring</code> để lưu trạng thái column order, filter, sort vào localStorage. Lần sau user mở lại, mọi thứ y chang lúc trước. Khách hàng sẽ nghĩ bạn là phù thủy — mà thực ra chỉ là 3 dòng config!</p>
+                </div>
+            </div>
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">6</div>
+                <div class="bikip-content">
+                    <h4>Export có style — Đừng export trần trụi</h4>
+                    <p>Khi export Excel, dùng <code>onExporting</code> + <code>exceljs</code> để custom header, thêm logo công ty, format cell colors. Sếp nhận file Excel mà tưởng đang xem báo cáo từ SAP chứ không phải từ web app. Ấn tượng gấp 10 lần!</p>
+                </div>
+            </div>
+            <div class="bikip-item animate-in">
+                <div class="bikip-number">7</div>
+                <div class="bikip-content">
+                    <h4>repaintChangesOnly — Chống giật lag thần thánh</h4>
+                    <p>Set <code>repaintChangesOnly: true</code> trên DataGrid. Thay vì re-render toàn bộ grid khi data thay đổi, chỉ render lại cells đã thay đổi. Tiết kiệm CPU, tiết kiệm điện, cứu trái đất — vừa code vừa bảo vệ môi trường!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fun Stories -->
+    <section class="section animate-in">
+        <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, #9C27B0, #BA68C8);">📖</div>
+            <div>
+                <h2>Chuyện Kể Bên Bàn Code</h2>
+                <span class="section-sub">Những câu chuyện bi hài mà ông nội kể lại, có thật 100%... có thể</span>
+            </div>
+        </div>
+
+        <!-- Story 1 -->
+        <div class="story-card animate-in">
+            <span class="story-emoji">💀</span>
+            <div class="story-title">Chương 1: "10,000 Dòng Và Cái Tab Browser Tắt Thở"</div>
+            <div class="story-body">
+                <p>Ngày xưa, có một chàng dev trẻ tuổi nghĩ rằng DataGrid có thể handle mọi thứ. Chàng quyết định load <strong>10,000 dòng</strong> call history từ API về client, không paging, không virtual scrolling, không remoteOperations — vì chàng tin vào sức mạnh của Chrome.</p>
+                <span class="quote">"Chrome có 16GB RAM mà lo gì? Cứ load hết về!" — Lời cuối của chàng dev trước khi tab crash.</span>
+                <p>Grid render xong thì Chrome hiện ra cái popup huyền thoại: <em>"This page is not responding. Kill page?"</em>. PM đứng sau lưng, mặt tái nhợt. QA cười không nhặt được mồm.</p>
+                <p>Từ đó, chàng dev ngộ ra chân lý: bật <code>virtual scrolling</code>, set <code>pageSize: 50</code>, enable <code>remoteOperations</code>. Grid load trong 200ms. PM hạnh phúc, QA hết việc, Chrome thở phào.</p>
+            </div>
+            <div class="story-moral">
+                Bài học: Đừng bao giờ đánh giá thấp sức phá hoại của 10K DOM nodes. Virtual scrolling là bạn, không phải là option.
+            </div>
+        </div>
+
+        <!-- Story 2 -->
+        <div class="story-card animate-in">
+            <span class="story-emoji">🚨</span>
+            <div class="story-title">Chương 2: "Cái Popup License Xuất Hiện Trước Mặt Khách Hàng"</div>
+            <div class="story-body">
+                <p>Hôm đó là ngày demo sản phẩm cho khách hàng Hàn Quốc. Mọi thứ đã sẵn sàng: slide đẹp, data test đầy đủ, dev ăn mặc lịch sự (thậm chí còn cạo râu).</p>
+                <p>Bấm vào trang quản lý cuộc gọi... DataGrid hiện ra hoành tráng. Khách hàng gật đầu hài lòng. Rồi đột nhiên, một cái popup đỏ lòm xuất hiện giữa màn hình:</p>
+                <span class="quote">"DevExtreme: The license key is invalid. Please contact DevExpress to obtain a valid license."</span>
+                <p>Cả phòng im lặng. PM nhìn dev. Dev nhìn PM. Khách hàng nhìn cả hai rồi hỏi: <em>"이게 뭐예요?"</em> (Cái gì vậy?)</p>
+                <p>Hóa ra ai đó commit file <code>.env</code> mới mà quên copy license key. Từ đó, team có rule: <strong>kiểm tra license trước MỌI buổi demo</strong>, và license key được lưu ở vault, không phải ở file <code>.env.example</code>.</p>
+            </div>
+            <div class="story-moral">
+                Bài học: License DevExtreme không phải thứ bạn nhớ lúc nào cũng được. Hãy kiểm tra nó như kiểm tra xem mình có quên mặc quần trước khi ra đường.
+            </div>
+        </div>
+
+        <!-- Story 3 -->
+        <div class="story-card animate-in">
+            <span class="story-emoji">⚔️</span>
+            <div class="story-title">Chương 3: "Cuộc Chiến CSS Override Kéo Dài 3 Ngày"</div>
+            <div class="story-body">
+                <p>Designer gửi mockup: <em>"Em muốn cái header của DataGrid có border-radius 12px, font chữ custom, và gradient background."</em></p>
+                <p>Dev: <em>"OK, dễ mà!"</em></p>
+                <p>30 phút sau: <code>.dx-datagrid-headers</code> — không ăn. 2 giờ sau: <code>.dx-datagrid .dx-header-row</code> — override bị đè. 1 ngày sau: <code>.dx-datagrid-headers .dx-datagrid-table .dx-row .dx-header-row td</code> — vẫn thua.</p>
+                <span class="quote">"Tại sao CSS DevExtreme lại có specificity cao như vậy?! Ai thiết kế cái này?! !important đâu, cho ta !important!" — Dev lúc 2h sáng, mắt đỏ hoe.</span>
+                <p>Cuối cùng, sau 3 ngày chiến đấu, dev phát hiện ra bí mật: DevExtreme dùng inline styles cho một số property. Giải pháp? Dùng <code>onCellPrepared</code> event để set style bằng JS, hoặc dùng <code>cssClass</code> prop kết hợp <code>encapsulation</code>. Hoặc đơn giản hơn: dùng DevExtreme's ThemeBuilder để custom theme từ đầu.</p>
+            </div>
+            <div class="story-moral">
+                Bài học: Đừng đánh nhau với DevExtreme CSS bằng tay. Hãy dùng ThemeBuilder hoặc API events. Chiến tranh CSS chưa bao giờ có người thắng.
+            </div>
+        </div>
+
+        <!-- Story 4 -->
+        <div class="story-card animate-in">
+            <span class="story-emoji">🤯</span>
+            <div class="story-title">Chương 4: "Cái TreeView Đệ Quy Vô Hạn"</div>
+            <div class="story-body">
+                <p>Có lần, một dev thiết kế cây phòng ban cho PBX. Data từ backend trả về dạng flat array với <code>parentId</code>. Dev bind vào TreeView, chạy thử — cây hiện ra đẹp lắm. 3 cấp, gọn gàng.</p>
+                <p>Rồi đến khi test với data thật. Ai đó trong database set <code>parentId</code> của phòng ban A trỏ về phòng ban B, mà phòng ban B lại trỏ về phòng ban A. Circular reference!</p>
+                <span class="quote">"Sao cái TreeView cứ expand mãi không dừng? Ơ... ơ... Chrome lại crash rồi!" — Dev, lần thứ 2 trong đời thấy Chrome tắt thở.</span>
+                <p>Giải pháp: validate data trước khi bind, dùng <code>dataStructure: 'tree'</code> thay vì <code>'plain'</code> khi cần, và luôn có depth limit. Ông nội dạy rằng: <em>"Cây nào cũng có gốc, đệ quy nào cũng cần điểm dừng!"</em></p>
+            </div>
+            <div class="story-moral">
+                Bài học: Luôn validate dữ liệu cây. Circular reference + recursive rendering = máy tính thành lò sưởi.
+            </div>
+        </div>
+    </section>
+
+    <!-- Common Mistakes -->
+    <section class="section animate-in">
+        <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, var(--dx-danger), #EF5350);">🚫</div>
+            <div>
+                <h2>Sai Lầm Kinh Điển</h2>
+                <span class="section-sub">Những cái bẫy DevExtreme mà 99% dev đều từng mắc (kể cả Đại Sư hồi trẻ)</span>
+            </div>
+        </div>
+
+        <div class="mistakes-grid">
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">1</div>
+                    <div class="mistake-title">Load toàn bộ data về client</div>
+                </div>
+                <div class="mistake-desc">
+                    Gọi API lấy hết 50K records rồi nhét vào ArrayStore. Grid lag, browser khóc, user bỏ đi uống cà phê chờ load.
+                </div>
+                <div class="mistake-fix">
+                    Dùng CustomStore + remoteOperations. Server trả về từng page 50 records. Nhanh, gọn, lẹ!
+                </div>
+            </div>
+
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">2</div>
+                    <div class="mistake-title">Quên tắt autoExpandAll trên TreeList</div>
+                </div>
+                <div class="mistake-desc">
+                    TreeList có 500 nodes, <code>autoExpandAll: true</code> mặc định. Mở trang lên là thấy cây phả hệ 20 đời hiện ra cùng lúc.
+                </div>
+                <div class="mistake-fix">
+                    Set autoExpandAll: false, dùng expandedRowKeys để control, hoặc lazy load children.
+                </div>
+            </div>
+
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">3</div>
+                    <div class="mistake-title">CSS !important chiến tranh</div>
+                </div>
+                <div class="mistake-desc">
+                    Override DevExtreme CSS bằng 500 dòng !important. Mỗi bản update DX mới là CSS vỡ hết, phải đi fix lại toàn bộ.
+                </div>
+                <div class="mistake-fix">
+                    Dùng ThemeBuilder tạo custom theme. Hoặc dùng cssClass prop + onCellPrepared event.
+                </div>
+            </div>
+
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">4</div>
+                    <div class="mistake-title">Không set keyExpr trên DataGrid</div>
+                </div>
+                <div class="mistake-desc">
+                    Quên set <code>keyExpr</code>, grid không biết row nào là row nào. Selection loạn, editing sai row, master-detail mở nhầm chỗ.
+                </div>
+                <div class="mistake-fix">
+                    LUÔN set keyExpr (VD: keyExpr="id"). Đây là dòng config quan trọng nhất mà hay bị quên nhất!
+                </div>
+            </div>
+
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">5</div>
+                    <div class="mistake-title">Bind reactive object trực tiếp vào dataSource</div>
+                </div>
+                <div class="mistake-desc">
+                    Dùng Vue ref/reactive trực tiếp làm dataSource. Mỗi lần state thay đổi, grid re-render toàn bộ, giao diện nhấp nháy như đèn disco.
+                </div>
+                <div class="mistake-fix">
+                    Wrap trong computed hoặc dùng DataSource instance. Set repaintChangesOnly: true để chỉ update cells thay đổi.
+                </div>
+            </div>
+
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">6</div>
+                    <div class="mistake-title">Popup trong Popup trong Popup</div>
+                </div>
+                <div class="mistake-desc">
+                    Mở popup chỉnh sửa, bên trong có popup chọn nhân viên, bên trong có popup confirm. Matryoshka doll edition. Z-index: 999999.
+                </div>
+                <div class="mistake-fix">
+                    Thiết kế lại flow. Dùng drawer/panel thay popup con. Tối đa 2 levels popup, còn lại dùng inline editing.
+                </div>
+            </div>
+
+            <div class="mistake-card animate-in">
+                <div class="mistake-header">
+                    <div class="mistake-icon">7</div>
+                    <div class="mistake-title">Quên dispose DataSource khi unmount</div>
+                </div>
+                <div class="mistake-desc">
+                    Component bị unmount nhưng DataSource vẫn đang polling/fetching. Memory leak tích tụ, app chạy càng lâu càng chậm.
+                </div>
+                <div class="mistake-fix">
+                    Gọi dataSource.dispose() trong onBeforeUnmount(). Hoặc dùng composable pattern để tự động cleanup.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PBX Relevance -->
+    <section class="section animate-in">
+        <div class="section-header">
+            <div class="section-icon" style="background: linear-gradient(135deg, var(--dx-info), #42A5F5);">🏢</div>
+            <div>
+                <h2>DevExtreme Trong Dự Án PBX</h2>
+                <span class="section-sub">Vì sao PBX chọn DevExtreme làm vũ khí giao diện chính</span>
+            </div>
+        </div>
+
+        <div class="pbx-card">
+            <p class="pbx-intro">
+                Dự án <strong>PBX</strong> — hệ thống tổng đài doanh nghiệp — cần giao diện có khả năng hiển thị lượng lớn dữ liệu real-time: lịch sử cuộc gọi, danh sách agents, cây phòng ban, cấu hình hệ thống. DevExtreme 23.2 kết hợp Vue.js là lựa chọn hoàn hảo vì nó sinh ra để xử lý enterprise UI — nơi mà "bảng dữ liệu là vua" và "form cấu hình là hoàng hậu".
+            </p>
+
+            <div class="pbx-features">
+                <div class="pbx-feature">
+                    <span class="pbx-feature-icon">📞</span>
+                    <div>
+                        <h4>Lịch Sử Cuộc Gọi (Call History)</h4>
+                        <p>DataGrid với virtual scrolling hiển thị hàng chục ngàn cuộc gọi. Filtering theo ngày, agent, trạng thái. Export báo cáo Excel cho quản lý. Remote operations để backend xử lý query nặng.</p>
+                    </div>
+                </div>
+                <div class="pbx-feature">
+                    <span class="pbx-feature-icon">🏗️</span>
+                    <div>
+                        <h4>Cây Phòng Ban & Tổ Chức</h4>
+                        <p>TreeView/TreeList hiển thị cấu trúc phòng ban, nhóm agent, hàng đợi cuộc gọi. Drag & drop để di chuyển agent giữa các nhóm. Lazy loading cho tổ chức lớn.</p>
+                    </div>
+                </div>
+                <div class="pbx-feature">
+                    <span class="pbx-feature-icon">⚙️</span>
+                    <div>
+                        <h4>Form Cấu Hình Hệ Thống</h4>
+                        <p>DevExtreme Form với dynamic layout cho màn hình cấu hình: thông tin agent, cài đặt hàng đợi, lịch làm việc, kịch bản cuộc gọi. Validation rules đảm bảo data luôn hợp lệ.</p>
+                    </div>
+                </div>
+                <div class="pbx-feature">
+                    <span class="pbx-feature-icon">📊</span>
+                    <div>
+                        <h4>Dashboard & Báo Cáo</h4>
+                        <p>DataGrid grouped views cho thống kê cuộc gọi theo agent, theo phòng ban, theo giờ. Summary rows tính tổng, trung bình, tỷ lệ cuộc gọi nhỡ. PivotGrid cho phân tích đa chiều.</p>
+                    </div>
+                </div>
+                <div class="pbx-feature">
+                    <span class="pbx-feature-icon">🔔</span>
+                    <div>
+                        <h4>Popup Thông Báo & Confirm</h4>
+                        <p>Popup hiển thị thông tin cuộc gọi đến, xác nhận chuyển cuộc gọi, cảnh báo hàng đợi đầy. Toast notifications cho sự kiện real-time từ WebSocket.</p>
+                    </div>
+                </div>
+                <div class="pbx-feature">
+                    <span class="pbx-feature-icon">🎛️</span>
+                    <div>
+                        <h4>Quản Lý Agent & Extension</h4>
+                        <p>DataGrid với inline editing để quản lý danh sách agent, số nội bộ (extension), trạng thái. Batch editing cho thao tác hàng loạt. Master-detail view cho chi tiết từng agent.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" style="margin-top: 24px;">
+<span class="comment">// Ví dụ: DataGrid cuộc gọi trong PBX</span>
+&lt;<span class="keyword">DxDataGrid</span>
+  <span class="prop">:data-source</span>=<span class="string">"callHistoryStore"</span>
+  <span class="prop">:remote-operations</span>=<span class="string">"true"</span>
+  <span class="prop">:allow-column-resizing</span>=<span class="string">"true"</span>
+  <span class="prop">key-expr</span>=<span class="string">"callId"</span>
+  <span class="prop">:repaint-changes-only</span>=<span class="string">"true"</span>
+&gt;
+  &lt;<span class="keyword">DxScrolling</span> <span class="prop">mode</span>=<span class="string">"virtual"</span> /&gt;
+  &lt;<span class="keyword">DxFilterRow</span> <span class="prop">:visible</span>=<span class="string">"true"</span> /&gt;
+  &lt;<span class="keyword">DxExport</span> <span class="prop">:enabled</span>=<span class="string">"true"</span> /&gt;
+  &lt;<span class="keyword">DxColumn</span> <span class="prop">data-field</span>=<span class="string">"callerNumber"</span> <span class="prop">caption</span>=<span class="string">"So goi"</span> /&gt;
+  &lt;<span class="keyword">DxColumn</span> <span class="prop">data-field</span>=<span class="string">"agentName"</span> <span class="prop">caption</span>=<span class="string">"Agent"</span> /&gt;
+  &lt;<span class="keyword">DxColumn</span> <span class="prop">data-field</span>=<span class="string">"duration"</span> <span class="prop">caption</span>=<span class="string">"Thoi luong"</span> /&gt;
+  &lt;<span class="keyword">DxColumn</span> <span class="prop">data-field</span>=<span class="string">"status"</span> <span class="prop">caption</span>=<span class="string">"Trang thai"</span>
+    <span class="prop">cell-template</span>=<span class="string">"statusTemplate"</span> /&gt;
+&lt;/<span class="keyword">DxDataGrid</span>&gt;
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="dx-logo">🧙</span>
+        <p><strong>Giao Dien Dai Su</strong> &bull; DevExtreme Expert Agent #12</p>
+        <p style="margin-top: 8px;">PBX Project &copy; 2026 &bull; SotaTek</p>
+        <p style="margin-top: 12px; font-size: 0.78rem; opacity: 0.5;">
+            "Grid ta render, Form ta validate, Tree ta expand — thien ha vo dich!"
+        </p>
+    </footer>
+
+</div>
+
+<script>
+    // Scroll animation observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

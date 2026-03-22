@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type An Toàn Sư - Bậc Thầy TypeScript | PBX Agent Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ts-50: #eff6ff;
+            --ts-100: #dbeafe;
+            --ts-200: #bfdbfe;
+            --ts-300: #93c5fd;
+            --ts-400: #60a5fa;
+            --ts-500: #3178c6;
+            --ts-600: #2563eb;
+            --ts-700: #1d4ed8;
+            --ts-800: #1e40af;
+            --ts-900: #1e3a8a;
+            --ts-950: #172554;
+            --cyan-400: #22d3ee;
+            --cyan-500: #06b6d4;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #050d1a 0%, #0a1628 25%, #0d1117 50%, #0a1628 75%, #050d1a 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--ts-500);
+            opacity: 0.08;
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) { width: 300px; height: 300px; top: 10%; left: -5%; animation-delay: 0s; animation-duration: 25s; }
+        .particle:nth-child(2) { width: 200px; height: 200px; top: 50%; right: -3%; animation-delay: -5s; animation-duration: 20s; background: var(--cyan-500); }
+        .particle:nth-child(3) { width: 150px; height: 150px; bottom: 10%; left: 30%; animation-delay: -10s; animation-duration: 30s; }
+        .particle:nth-child(4) { width: 250px; height: 250px; top: 30%; left: 50%; animation-delay: -7s; animation-duration: 22s; background: var(--ts-600); opacity: 0.05; }
+        .particle:nth-child(5) { width: 180px; height: 180px; bottom: 30%; right: 20%; animation-delay: -12s; animation-duration: 28s; }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -50px) scale(1.1); }
+            50% { transform: translate(-20px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+
+        /* Floating TS logos */
+        .ts-float {
+            position: fixed;
+            font-size: 1.2rem;
+            opacity: 0.04;
+            animation: tsFloat 15s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+            font-weight: 900;
+            color: var(--ts-400);
+        }
+
+        .ts-float:nth-child(1) { top: 8%; left: 12%; animation-delay: 0s; }
+        .ts-float:nth-child(2) { top: 25%; right: 8%; animation-delay: -3s; font-size: 1rem; }
+        .ts-float:nth-child(3) { top: 55%; left: 5%; animation-delay: -6s; font-size: 1.5rem; }
+        .ts-float:nth-child(4) { top: 75%; right: 15%; animation-delay: -9s; }
+        .ts-float:nth-child(5) { top: 40%; left: 80%; animation-delay: -4s; font-size: 0.9rem; }
+        .ts-float:nth-child(6) { top: 90%; left: 40%; animation-delay: -7s; }
+
+        @keyframes tsFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.04; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.08; }
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HERO / HEADER ===== */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 32px;
+        }
+
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--ts-500), var(--ts-700), #1a365d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            box-shadow:
+                0 0 0 4px rgba(49, 120, 198, 0.3),
+                0 0 40px rgba(49, 120, 198, 0.25),
+                0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: avatarPulse 4s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 34px;
+            border: 2px solid transparent;
+            border-top-color: var(--ts-400);
+            border-right-color: var(--ts-500);
+            animation: spinRing 8s linear infinite;
+        }
+
+        .avatar-ring-2 {
+            position: absolute;
+            top: -16px;
+            left: -16px;
+            right: -16px;
+            bottom: -16px;
+            border-radius: 38px;
+            border: 1px solid transparent;
+            border-bottom-color: var(--cyan-400);
+            border-left-color: var(--ts-300);
+            animation: spinRing 12s linear infinite reverse;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--ts-300), #fff, var(--ts-200));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--ts-300);
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .hero .tagline {
+            font-size: 1rem;
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+            color: rgba(147, 197, 253, 0.6);
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 28px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(49, 120, 198, 0.12);
+            border: 1px solid rgba(49, 120, 198, 0.25);
+            color: var(--ts-300);
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            background: rgba(49, 120, 198, 0.22);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 120, 198, 0.2);
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            margin-bottom: 64px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--ts-700), var(--ts-900));
+            box-shadow: 0 4px 16px rgba(49, 120, 198, 0.25);
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--ts-200), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: rgba(10, 25, 50, 0.6);
+            border: 1px solid rgba(49, 120, 198, 0.12);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(12px);
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(49, 120, 198, 0.4), transparent);
+        }
+
+        .card:hover {
+            border-color: rgba(49, 120, 198, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(30, 64, 175, 0.25);
+        }
+
+        .card p, .card li {
+            color: rgba(226, 232, 240, 0.8);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--ts-300);
+            margin-bottom: 12px;
+        }
+
+        .card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--cyan-400);
+            margin-bottom: 8px;
+        }
+
+        /* ===== INSIGHT GRID ===== */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .insight-card {
+            background: rgba(10, 25, 50, 0.5);
+            border: 1px solid rgba(49, 120, 198, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ts-500), var(--cyan-400));
+            transform: scaleX(0);
+            transition: transform 0.35s ease;
+        }
+
+        .insight-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .insight-card:hover {
+            border-color: rgba(49, 120, 198, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(30, 64, 175, 0.2);
+        }
+
+        .insight-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--ts-600), var(--ts-800));
+            font-weight: 800;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .insight-card h4 {
+            color: var(--ts-200);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .insight-card p {
+            color: rgba(226, 232, 240, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* ===== STORY CARDS ===== */
+        .story-card {
+            background: rgba(10, 25, 50, 0.5);
+            border: 1px solid rgba(49, 120, 198, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--ts-500), var(--cyan-400), transparent);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .story-card:hover::after {
+            opacity: 1;
+        }
+
+        .story-card:hover {
+            border-color: rgba(49, 120, 198, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(30, 64, 175, 0.15);
+        }
+
+        .story-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .story-card h3 {
+            color: var(--ts-200);
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+        }
+
+        .story-card p {
+            color: rgba(226, 232, 240, 0.75);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .story-card .moral {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: rgba(49, 120, 198, 0.1);
+            border-left: 3px solid var(--ts-500);
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: var(--ts-300);
+            font-size: 0.9rem;
+        }
+
+        /* ===== MISTAKE LIST ===== */
+        .mistake-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mistake-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(49, 120, 198, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .mistake-item:last-child {
+            border-bottom: none;
+        }
+
+        .mistake-item:hover {
+            padding-left: 8px;
+        }
+
+        .mistake-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            flex-shrink: 0;
+        }
+
+        .mistake-content h4 {
+            color: #fca5a5;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .mistake-content p {
+            color: rgba(226, 232, 240, 0.65);
+            font-size: 0.9rem;
+        }
+
+        .mistake-fix {
+            color: var(--cyan-400) !important;
+            font-size: 0.85rem !important;
+            margin-top: 6px;
+        }
+
+        /* ===== CODE BLOCKS ===== */
+        .code-block {
+            background: rgba(5, 15, 30, 0.8);
+            border: 1px solid rgba(49, 120, 198, 0.15);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            color: var(--ts-200);
+            margin: 12px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block .keyword { color: #c586c0; }
+        .code-block .type { color: #4ec9b0; }
+        .code-block .string { color: #ce9178; }
+        .code-block .comment { color: #6a9955; font-style: italic; }
+        .code-block .func { color: #dcdcaa; }
+        .code-block .param { color: #9cdcfe; }
+        .code-block .num { color: #b5cea8; }
+
+        /* ===== PBX SECTION ===== */
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .pbx-card {
+            background: rgba(10, 25, 50, 0.5);
+            border: 1px solid rgba(49, 120, 198, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.35s ease;
+        }
+
+        .pbx-card:hover {
+            border-color: rgba(49, 120, 198, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.2);
+        }
+
+        .pbx-card .pbx-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .pbx-card h4 {
+            color: var(--ts-200);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pbx-card p {
+            color: rgba(226, 232, 240, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 48px 0 40px;
+            border-top: 1px solid rgba(49, 120, 198, 0.1);
+            margin-top: 40px;
+        }
+
+        .footer p {
+            color: rgba(147, 197, 253, 0.4);
+            font-size: 0.85rem;
+        }
+
+        .footer .ts-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--ts-500);
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 8px 20px;
+            background: rgba(49, 120, 198, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(49, 120, 198, 0.15);
+            letter-spacing: 2px;
+        }
+
+        /* ===== TYPE ANIMATION ===== */
+        @keyframes typeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: typeIn 0.6s ease-out backwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero .subtitle { font-size: 1.05rem; }
+            .card, .story-card { padding: 24px; }
+            .insight-grid, .pbx-grid { grid-template-columns: 1fr; }
+            .container { padding: 0 16px; }
+            .section-header h2 { font-size: 1.4rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { padding: 48px 0 36px; }
+            .avatar { width: 120px; height: 120px; font-size: 52px; }
+            .hero h1 { font-size: 1.6rem; }
+            .badge { font-size: 0.7rem; padding: 4px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background particles -->
+<div class="bg-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<!-- Floating TS symbols -->
+<div class="ts-float">TS</div>
+<div class="ts-float">&lt;T&gt;</div>
+<div class="ts-float">type</div>
+<div class="ts-float">interface</div>
+<div class="ts-float">enum</div>
+<div class="ts-float">keyof</div>
+
+<div class="container">
+
+    <!-- ===== HERO ===== -->
+    <header class="hero animate-in">
+        <div class="avatar-wrapper">
+            <div class="avatar">&#x1F9D9;</div>
+            <div class="avatar-ring"></div>
+            <div class="avatar-ring-2"></div>
+        </div>
+        <h1>Type An Toan Su</h1>
+        <div class="subtitle">Su Phu Cua Moi Kieu Du Lieu</div>
+        <div class="tagline">
+            "any la con duong cua ke luoi bieng. unknown la con duong cua ke kho ngoan.
+            Hay chon con duong kho ngoan, roi compiler se bao ve con suot doi."
+        </div>
+        <div class="badge-row">
+            <span class="badge">&#x1F4D8; TypeScript 5.9</span>
+            <span class="badge">&#x1F9EC; Generics Master</span>
+            <span class="badge">&#x1F50D; Type Narrowing</span>
+            <span class="badge">&#x1F3AF; Discriminated Unions</span>
+            <span class="badge">&#x1F6E1;&#xFE0F; Type Safety</span>
+            <span class="badge">&#x2699;&#xFE0F; Utility Types</span>
+            <span class="badge">&#x1F4DC; Declaration Files</span>
+        </div>
+    </header>
+
+    <!-- ===== BACKSTORY ===== -->
+    <section class="animate-in delay-1">
+        <div class="section-header">
+            <div class="section-icon">&#x1F4DA;</div>
+            <h2>Than The & Noi Cong</h2>
+        </div>
+
+        <div class="card">
+            <h3>&#x1F9D9; Nguon Goc Cua Type An Toan Su</h3>
+            <p>
+                Ngay xua ngay xua, o mot vung dat xa xoi goi la JavaScript Land, dan cu song trong canh hon loan.
+                Khong ai biet bien <code>x</code> la so hay la chuoi. Mot function nhan vao <code>user</code> nhung tra ve <code>undefined</code>
+                ma chang ai hay biet. Loi lam chi xuat hien luc nua dem, khi production bung chay nhu phao hoa.
+            </p>
+            <p style="margin-top: 12px;">
+                Giua con loan lac ay, mot vi su phu xuat hien tu nui Redmond - ten la <strong>Anders Hejlsberg</strong>.
+                Ong mang theo mot mon vo cong goi la <strong>TypeScript</strong>. "Ta se dem trat tu den vung dat nay,"
+                ong noi. "Moi bien se co type, moi function se co contract, va moi loi sai se bi bat TRUOC khi chay."
+            </p>
+            <p style="margin-top: 12px;">
+                Type An Toan Su la hoc tro truc tiep cua truong phai nay. Sau 10 nam luyen cong tu TypeScript 1.0 den 5.9,
+                lao da luyen thanh cac tuyet ky: <strong>Generics</strong> giup code linh hoat ma van an toan,
+                <strong>Utility Types</strong> giup bien hoa type nhu ao thuat, <strong>Discriminated Unions</strong>
+                giup xu ly moi truong hop khong sot, <strong>Type Narrowing</strong> giup compiler thong minh hon,
+                va <strong>Declaration Files (.d.ts)</strong> giup giao tiep voi the gioi JavaScript ben ngoai.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>&#x1F3AF; Chuyen Mon Sau</h3>
+            <p>
+                <strong>Type System Architecture:</strong> Hieu sau ve structural typing, nominal typing patterns,
+                va cach TypeScript dung structural subtyping khac voi Java/C#. Biet cach exploit type system de tao
+                ra nhung API "khong the dung sai" - neu compile duoc thi chac chan dung.<br><br>
+                <strong>Generics & Conditional Types:</strong> Tu generic don gian nhu <code>Array&lt;T&gt;</code>
+                den conditional types phuc tap nhu <code>T extends string ? A : B</code>,
+                mapped types nhu <code>{ [K in keyof T]: ... }</code>,
+                va template literal types de xay dung type-level programming.<br><br>
+                <strong>Declaration Files & Module System:</strong> Viet .d.ts cho thu vien khong co type,
+                hieu cach <code>declare module</code>, <code>declare global</code>, va triple-slash directives hoat dong.
+                Biet cach cau hinh <code>tsconfig.json</code> cho moi loai du an tu lib den app.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== INSIGHTS ===== -->
+    <section class="animate-in delay-2">
+        <div class="section-header">
+            <div class="section-icon">&#x1F4A1;</div>
+            <h2>Bi Kip Type An Toan</h2>
+        </div>
+
+        <div class="insight-grid">
+            <div class="insight-card">
+                <div class="insight-num">1</div>
+                <h4>Strict Mode La Bat Buoc</h4>
+                <p>
+                    Bat <code>"strict": true</code> trong tsconfig la viec dau tien. Khong co strict mode thi TypeScript
+                    chi la JavaScript voi them vai chu thich. strict mode bat tat ca cac kiem tra: noImplicitAny,
+                    strictNullChecks, strictFunctionTypes... Day la "giap sat" bao ve con truoc moi loi lam.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">2</div>
+                <h4>unknown > any, Luon Luon</h4>
+                <p>
+                    Khi nhan du lieu tu ben ngoai (API, user input, JSON.parse), dung <code>unknown</code> thay vi <code>any</code>.
+                    <code>unknown</code> bat con phai kiem tra type truoc khi dung - nhu nguoi gac cong lam viec nghiem tuc.
+                    <code>any</code> thi nhu mo cong cho ai vao cung duoc.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">3</div>
+                <h4>Discriminated Unions Cho Moi State</h4>
+                <p>
+                    Thay vi <code>{ loading: boolean; error: string | null; data: T | null }</code>,
+                    hay dung discriminated union: <code>{ status: 'loading' } | { status: 'error', error: string } | { status: 'success', data: T }</code>.
+                    Compiler se bat con xu ly moi truong hop, khong the quen.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">4</div>
+                <h4>as const & Satisfies - Cap Doi Hoan Hao</h4>
+                <p>
+                    <code>as const</code> bien object thanh readonly literal type. <code>satisfies</code> kiem tra type
+                    ma khong lam mat thong tin. Ket hop hai cai nay de vua co type safety vua giu nguyen literal types
+                    cho autocomplete sieu chinh xac.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">5</div>
+                <h4>Type Narrowing - De Compiler Tu Hieu</h4>
+                <p>
+                    Dung <code>typeof</code>, <code>instanceof</code>, <code>in</code>, va custom type guards
+                    (<code>function isX(v): v is X</code>) de thu hep type. Compiler TypeScript rat thong minh -
+                    chi can con goi y dung cach, no se tu suy luan ra type chinh xac.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">6</div>
+                <h4>Khong Bao Gio Export type va value Cung Ten</h4>
+                <p>
+                    TypeScript cho phep export mot type va mot value cung ten (declaration merging).
+                    Nhung dung lam. No gay nham lan kinh khung. Hay dat ten ro rang: <code>UserType</code> cho type,
+                    <code>User</code> cho class/interface. Dong nghiep se cam on con.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">7</div>
+                <h4>Branded Types Cho ID</h4>
+                <p>
+                    <code>type UserId = string & { __brand: 'UserId' }</code> - nghe nhu phu phep nhung cuc ky huu ich.
+                    Ngan chan viec truyen nham <code>orderId</code> vao cho can <code>userId</code>.
+                    Trong PBX, viec nham extension ID voi agent ID la tham hoa.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FUN STORIES ===== -->
+    <section class="animate-in delay-3">
+        <div class="section-header">
+            <div class="section-icon">&#x1F4D6;</div>
+            <h2>Chuyen Ke Ong Gia Lap Trinh</h2>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">&#x1F525;</span>
+            <h3>Chuyen Thu Nhat: "any Addiction" - Con Nghien any</h3>
+            <p>
+                Ngay xua, co mot cau lap trinh vien tre ten la Tuan. Tuan vua chuyen tu JavaScript sang TypeScript.
+                Moi lan thay dong do, Tuan ghi <code>as any</code>. Compiler het loi? <code>as any</code>.
+                Khong biet type la gi? <code>: any</code>. Tuan vui lam, code chay muot ma, khong loi gi ca.
+            </p>
+            <p style="margin-top: 10px;">
+                Mot thang sau, production sap. Nguyen nhan: mot API tra ve <code>null</code> thay vi object,
+                nhung vi Tuan dung <code>any</code> nen compiler khong canh bao. Tuan ngoi debug 3 ngay 3 dem.
+                Khi tim ra loi, Tuan khoc. "Neu toi dung <code>unknown</code>," Tuan noi trong nuoc mat,
+                "compiler da bat loi nay tu tuan truoc."
+            </p>
+            <p style="margin-top: 10px;">
+                Tu do, Tuan lap mot quy dinh cho team: ai viet <code>any</code> ma khong co comment giai thich
+                thi phai mua ca phe cho ca team. Quy ca phe chay duoc 2 thang thi het nguoi vi pham.
+            </p>
+            <div class="moral">
+                Bai hoc: <code>any</code> la thuoc phien - dung mot lan thi muon dung mai.
+                Hay cai nghien som di, keo production keu cuu.
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">&#x1F3CB;&#xFE0F;</span>
+            <h3>Chuyen Thu Hai: "Generic Hell" - Dia Nguc Generic</h3>
+            <p>
+                Anh Hung la "kien truc su" cua team. Anh doc duoc mot bai viet ve Generics va phat cuong.
+                Anh bat dau generic hoa MOI THU. Mot function <code>getUser()</code> don gian bi bien thanh:
+            </p>
+            <div class="code-block">
+                <span class="keyword">function</span> <span class="func">getUser</span>&lt;<br>
+                &nbsp;&nbsp;<span class="type">T</span> <span class="keyword">extends</span> <span class="type">BaseEntity</span>,<br>
+                &nbsp;&nbsp;<span class="type">K</span> <span class="keyword">extends</span> <span class="keyword">keyof</span> <span class="type">T</span>,<br>
+                &nbsp;&nbsp;<span class="type">V</span> <span class="keyword">extends</span> <span class="type">T</span>[<span class="type">K</span>],<br>
+                &nbsp;&nbsp;<span class="type">R</span> <span class="keyword">extends</span> <span class="type">Record</span>&lt;<span class="type">K</span>, <span class="type">V</span>&gt;<br>
+                &gt;(<span class="param">id</span>: <span class="type">T</span>[<span class="string">'id'</span>]): <span class="type">Promise</span>&lt;<span class="type">R</span>&gt;
+            </div>
+            <p style="margin-top: 10px;">
+                Khi code review, ca team nhin man hinh im lang 5 phut. Cuoi cung, ban Linh - thuc tap sinh - rut re hoi:
+                "Anh oi, function nay chi lay user theo ID thoi ma, sao no trong nhu de thi tien si vay?"
+            </p>
+            <p style="margin-top: 10px;">
+                Anh Hung im lang. Roi anh xoa het, viet lai: <code>function getUser(id: string): Promise&lt;User&gt;</code>.
+                Ca team vo tay.
+            </p>
+            <div class="moral">
+                Bai hoc: Generic la cong cu manh, nhung dung bien code thanh de thi Olympics.
+                KISS - Keep It Simple, Su Phu!
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">&#x1F47B;</span>
+            <h3>Chuyen Thu Ba: "The Phantom Type" - Ma Type Khong Ton Tai</h3>
+            <p>
+                Team backend viet API tra ve response co truong <code>status</code>. Frontend team tin tuong
+                va tao interface:
+            </p>
+            <div class="code-block">
+                <span class="keyword">interface</span> <span class="type">ApiResponse</span> {<br>
+                &nbsp;&nbsp;<span class="param">status</span>: <span class="string">'success'</span> | <span class="string">'error'</span>;<br>
+                &nbsp;&nbsp;<span class="param">data</span>: <span class="type">any</span>;<br>
+                }
+            </div>
+            <p style="margin-top: 10px;">
+                Moi thu chay tot... cho den khi backend team "cap nhat nho" va doi <code>status</code> thanh
+                <code>result</code> ma khong noi cho ai. Frontend van dung <code>response.status</code>,
+                TypeScript van compile thanh cong (vi <code>data: any</code> cho phep moi thu).
+                Production: trang trang, khong hien gi het.
+            </p>
+            <p style="margin-top: 10px;">
+                Tu do, team hoc duoc 3 bai hoc: (1) Dung <code>any</code> cho data la tu sat.
+                (2) Phai co shared types giua frontend va backend. (3) Va quan trong nhat -
+                phai co <strong>contract testing</strong> de bat loi khi API thay doi.
+            </p>
+            <div class="moral">
+                Bai hoc: Type chi an toan khi no dung voi thuc te.
+                Neu API thay doi ma type khong doi, thi type chi la "loi hua suong" - dep ma khong that.
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">&#x1F3AD;</span>
+            <h3>Chuyen Thu Tu: "Type Gymnastics" - The Duc Kieu Du Lieu</h3>
+            <p>
+                Co mot ngay, ong lao nhan duoc yeu cau: "Tao mot type ma tu dong extract tat ca nested keys
+                cua mot object, flatten chung thanh dot notation, va chi giu lai nhung key co value la string."
+                Ong lao ngoi 4 tieng va viet ra:
+            </p>
+            <div class="code-block">
+                <span class="keyword">type</span> <span class="type">DotNestedKeys</span>&lt;<span class="type">T</span>&gt; = <br>
+                &nbsp;&nbsp;<span class="type">T</span> <span class="keyword">extends</span> <span class="type">object</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;? { [<span class="type">K</span> <span class="keyword">in</span> <span class="keyword">keyof</span> <span class="type">T</span> &amp; <span class="type">string</span>]:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">T</span>[<span class="type">K</span>] <span class="keyword">extends</span> <span class="type">string</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? <span class="type">K</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="type">T</span>[<span class="type">K</span>] <span class="keyword">extends</span> <span class="type">object</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? `${<span class="type">K</span>}.${<span class="type">DotNestedKeys</span>&lt;<span class="type">T</span>[<span class="type">K</span>]&gt;}`<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="keyword">never</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}[<span class="keyword">keyof</span> <span class="type">T</span> &amp; <span class="type">string</span>]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;: <span class="keyword">never</span>;
+            </div>
+            <p style="margin-top: 10px;">
+                No chay. Compiler hieu. Nhung 3 thang sau, khong ai trong team (ke ca ong lao) doc lai hieu no lam gi.
+                Cuoi cung team viet mot function runtime de lam cung viec ay - 5 dong code, ai doc cung hieu.
+            </p>
+            <div class="moral">
+                Bai hoc: Chi vi TypeScript CHO PHEP lam type gymnastics khong co nghia la con NEN lam.
+                Type la tai lieu - neu nguoi doc khong hieu, thi no that bai.
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== COMMON MISTAKES ===== -->
+    <section class="animate-in delay-4">
+        <div class="section-header">
+            <div class="section-icon">&#x26A0;&#xFE0F;</div>
+            <h2>Nhung Loi Sai Kinh Dien</h2>
+        </div>
+
+        <div class="card">
+            <ul class="mistake-list">
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>1. Dung "as" de ep type thay vi kiem tra</h4>
+                        <p>
+                            <code>const user = data as User</code> - day khong phai la "chuyen doi type",
+                            day la con noi doi voi compiler. Neu <code>data</code> khong phai la <code>User</code>,
+                            compiler se khong biet, va runtime se noi cho con bang cach... sap ung dung.
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Dung type guard <code>function isUser(d: unknown): d is User</code>
+                            de kiem tra that su truoc khi dung.
+                        </p>
+                    </div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>2. Quen bat strictNullChecks</h4>
+                        <p>
+                            Khong bat <code>strictNullChecks</code> thi <code>null</code> va <code>undefined</code>
+                            co the gan vao bat ky type nao. Tuc la <code>const name: string = null</code> hoan toan hop le.
+                            Day la nguon goc cua 90% loi "Cannot read property of null".
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Bat <code>"strict": true</code> - no bao gom strictNullChecks va nhieu thu khac.
+                        </p>
+                    </div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>3. Enum tran lan khong kiem soat</h4>
+                        <p>
+                            <code>enum Status { Active, Inactive }</code> - trong nhu vo hai nhung tao ra
+                            JavaScript code phuc tap. Va numeric enum cho phep <code>Status[42]</code> ma khong bao loi!
+                            Nhieu team dung enum cho moi thu roi phat hien bundle size tang vut.
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Dung <code>const enum</code> hoac tot hon la
+                            <code>type Status = 'active' | 'inactive'</code> (string literal union).
+                        </p>
+                    </div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>4. Interface khong lo cho mot API response</h4>
+                        <p>
+                            Viet mot interface 200 dong cho mot API response phuc tap, roi khong bao gio cap nhat khi
+                            API thay doi. Interface thanh "tai lieu gia" - noi mot dang, thuc te mot neo.
+                            Nguy hiem hon khong co type.
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Dung code generation tu OpenAPI/Swagger spec, hoac dung zod de validate runtime
+                            va infer type cung luc.
+                        </p>
+                    </div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>5. Non-null assertion (!) khap noi</h4>
+                        <p>
+                            <code>document.getElementById('app')!</code> - dau cham than nay noi voi compiler
+                            "tin tao di, no khong bao gio null dau." Nhung con khong phai la than tien.
+                            Element co the khong ton tai, va con se gap loi runtime.
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Kiem tra null that su:
+                            <code>const el = document.getElementById('app'); if (!el) throw new Error('...')</code>
+                        </p>
+                    </div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>6. Return type khong tuong minh cho public API</h4>
+                        <p>
+                            De TypeScript tu infer return type thi tien, nhung khi export function ra ngoai module,
+                            return type bi infer co the thay doi khi refactor ma khong ai biet.
+                            Mot ngay dep troi, consumer nhan duoc type khac va khong hieu vi sao.
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Luon ghi ro return type cho moi public/exported function.
+                            Dung ESLint rule <code>@typescript-eslint/explicit-function-return-type</code>.
+                        </p>
+                    </div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-icon">&#x1F4A5;</div>
+                    <div class="mistake-content">
+                        <h4>7. Quen rang object type la structural</h4>
+                        <p>
+                            <code>interface Cat { meow(): void }</code> va <code>interface Dog { meow(): void }</code>
+                            - TypeScript coi Cat va Dog la CUNG MOT TYPE vi chung co cung structure.
+                            Truyen Dog vao cho can Cat? Compiler dong y 100%. Haha... khong vui.
+                        </p>
+                        <p class="mistake-fix">
+                            Fix: Dung branded types hoac private fields de tao nominal typing khi can phan biet.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ===== PBX PROJECT ===== -->
+    <section class="animate-in delay-5">
+        <div class="section-header">
+            <div class="section-icon">&#x260E;&#xFE0F;</div>
+            <h2>TypeScript Trong Du An PBX</h2>
+        </div>
+
+        <div class="card" style="margin-bottom: 28px;">
+            <h3>&#x1F3D7;&#xFE0F; Tong Quan Kien Truc TypeScript</h3>
+            <p>
+                Du an PBX su dung TypeScript 5.9 xuyen suot ca frontend lan middleware. Frontend xay dung tren
+                <strong>Vue.js</strong> voi Composition API, noi TypeScript phat huy suc manh voi
+                <code>defineComponent</code>, <code>ref&lt;T&gt;</code>, va <code>computed</code> duoc type day du.
+                Gateway middleware chay tren <strong>Node.js</strong>, xu ly giao tiep giua frontend va backend C#,
+                chuyen doi du lieu, xac thuc, va quan ly WebSocket cho real-time call events.
+            </p>
+        </div>
+
+        <div class="pbx-grid">
+            <div class="pbx-card">
+                <span class="pbx-icon">&#x1F5A5;&#xFE0F;</span>
+                <h4>Vue.js Frontend</h4>
+                <p>
+                    Moi component dung <code>&lt;script setup lang="ts"&gt;</code>.
+                    Props duoc type voi <code>defineProps&lt;T&gt;()</code>, emits voi <code>defineEmits&lt;T&gt;()</code>.
+                    Pinia stores co full type inference. Discriminated unions cho call states:
+                    ringing, connected, on-hold, terminated.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-icon">&#x1F310;</span>
+                <h4>Node.js Gateway</h4>
+                <p>
+                    Gateway middleware lam cau noi giua Vue frontend va C# backend.
+                    TypeScript dam bao request/response contracts chinh xac.
+                    Shared types giua frontend va gateway giup hai ben luon dong bo,
+                    giam thieu loi "field nay ten gi, type gi?"
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-icon">&#x1F4DE;</span>
+                <h4>Call State Machine</h4>
+                <p>
+                    Discriminated unions la vu khi chinh cho call state management:
+                    <code>type CallState = IdleState | RingingState | ConnectedState | HoldState</code>.
+                    Moi state co nhung fields rieng, TypeScript dam bao khong truy cap nham field.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-icon">&#x1F50C;</span>
+                <h4>WebSocket Events</h4>
+                <p>
+                    Real-time events tu SIP server duoc type hoa day du.
+                    <code>type WsEvent = CallEvent | AgentEvent | QueueEvent</code>.
+                    Type narrowing giup xu ly moi loai event chinh xac, khong bao gio
+                    nham <code>CallEndEvent</code> voi <code>CallStartEvent</code>.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-icon">&#x1F9E9;</span>
+                <h4>Shared Types Package</h4>
+                <p>
+                    Mot package chung chua toan bo types duoc chia se giua frontend, gateway, va co the ca
+                    test suites. Khi API thay doi, chi can cap nhat mot cho - TypeScript se bao loi
+                    o TAT CA nhung noi can cap nhat theo.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-icon">&#x1F6E1;&#xFE0F;</span>
+                <h4>Runtime Validation</h4>
+                <p>
+                    TypeScript chi kiem tra luc compile. Du lieu tu SIP server, API, hay user input
+                    can duoc validate luc runtime. Zod schemas vua validate vua infer type -
+                    mot cong doi viec, dam bao type khong bao gio "noi doi".
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer animate-in delay-6">
+        <div class="ts-logo">TS</div>
+        <p>Type An Toan Su &bull; PBX Agent Profile &bull; TypeScript 5.9</p>
+        <p style="margin-top: 8px; font-size: 0.8rem;">
+            "Code khong co type giong nhu lai xe khong co kinh - di duoc, nhung dau dau lam."
+        </p>
+    </footer>
+
+</div>
+
+</body>
+</html>

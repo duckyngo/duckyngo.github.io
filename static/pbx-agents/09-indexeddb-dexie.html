@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 09 — Kho Dữ Liệu Thần | IndexedDB & Dexie.js Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --amber-50: #fffbeb;
+            --amber-100: #fef3c7;
+            --amber-200: #fde68a;
+            --amber-300: #fcd34d;
+            --amber-400: #fbbf24;
+            --amber-500: #f59e0b;
+            --amber-600: #d97706;
+            --amber-700: #b45309;
+            --amber-800: #92400e;
+            --amber-900: #78350f;
+            --brown-50: #fdf8f1;
+            --brown-100: #f5e6d0;
+            --brown-600: #8b5e3c;
+            --brown-700: #6d4427;
+            --brown-800: #4a2c17;
+            --brown-900: #3b1f0b;
+            --card-bg: rgba(255, 251, 235, 0.88);
+            --card-border: rgba(245, 158, 11, 0.25);
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #3b1f0b 0%, #78350f 25%, #92400e 50%, #b45309 75%, #78350f 100%);
+            min-height: 100vh;
+            color: #3b1f0b;
+            overflow-x: hidden;
+        }
+
+        /* === Radial glow background === */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(217, 119, 6, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 20% 70%, rgba(180, 83, 9, 0.05) 0%, transparent 35%);
+            pointer-events: none;
+            z-index: 0;
+            animation: bgShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* === Floating particles === */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0.07;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.07; }
+            90% { opacity: 0.07; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .particle:nth-child(1) { left: 6%; animation-duration: 22s; animation-delay: 0s; font-size: 1.5rem; }
+        .particle:nth-child(2) { left: 18%; animation-duration: 28s; animation-delay: 3s; }
+        .particle:nth-child(3) { left: 33%; animation-duration: 25s; animation-delay: 6s; font-size: 1.6rem; }
+        .particle:nth-child(4) { left: 48%; animation-duration: 20s; animation-delay: 2s; }
+        .particle:nth-child(5) { left: 62%; animation-duration: 26s; animation-delay: 8s; font-size: 1.1rem; }
+        .particle:nth-child(6) { left: 76%; animation-duration: 24s; animation-delay: 4s; }
+        .particle:nth-child(7) { left: 88%; animation-duration: 30s; animation-delay: 10s; font-size: 1.3rem; }
+        .particle:nth-child(8) { left: 52%; animation-duration: 19s; animation-delay: 1s; }
+
+        /* === Container === */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === HEADER / AVATAR === */
+        .agent-header {
+            text-align: center;
+            padding: 50px 30px 40px;
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.15), rgba(180, 83, 9, 0.2));
+            border-radius: 24px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            backdrop-filter: blur(16px);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-header::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -20%;
+            width: 140%;
+            height: 120%;
+            background: radial-gradient(ellipse, rgba(253, 230, 138, 0.12) 0%, transparent 70%);
+            animation: headerGlow 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes headerGlow {
+            0% { transform: translateX(-10%) scale(1); opacity: 0.6; }
+            100% { transform: translateX(10%) scale(1.1); opacity: 1; }
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--amber-400), var(--amber-700), var(--brown-800));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 68px;
+            box-shadow:
+                0 0 0 5px rgba(251, 191, 36, 0.3),
+                0 0 40px rgba(245, 158, 11, 0.3),
+                0 8px 32px rgba(59, 31, 11, 0.4);
+            animation: avatarPulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 0 5px rgba(251, 191, 36, 0.3), 0 0 40px rgba(245, 158, 11, 0.3), 0 8px 32px rgba(59, 31, 11, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(251, 191, 36, 0.45), 0 0 60px rgba(245, 158, 11, 0.4), 0 8px 32px rgba(59, 31, 11, 0.4); }
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            border-radius: 50%;
+            border: 2px dashed var(--amber-400);
+            animation: ringRotate 20s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .agent-badge {
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, var(--brown-900), var(--brown-800));
+            color: var(--amber-200);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--amber-500);
+            letter-spacing: 1px;
+            z-index: 3;
+        }
+
+        .agent-name {
+            font-size: 2.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--amber-200), var(--amber-400), var(--amber-200));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .agent-title {
+            font-size: 1.1rem;
+            color: var(--amber-300);
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        .agent-tagline {
+            font-size: 0.95rem;
+            color: var(--amber-200);
+            margin-top: 14px;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+            opacity: 0.7;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--amber-300);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            background: rgba(251, 191, 36, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* === SECTION CARDS === */
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 28px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 24px rgba(59, 31, 11, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: cardSlideIn 0.6s ease-out both;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 36px rgba(59, 31, 11, 0.14);
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.15s; }
+        .section:nth-child(4) { animation-delay: 0.2s; }
+        .section:nth-child(5) { animation-delay: 0.25s; }
+        .section:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes cardSlideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-icon {
+            font-size: 1.6rem;
+            margin-right: 10px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--brown-800);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--amber-200);
+        }
+
+        /* === BACKSTORY === */
+        .backstory {
+            line-height: 1.85;
+            font-size: 1rem;
+            color: var(--brown-700);
+        }
+
+        .backstory p {
+            margin-bottom: 14px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(251, 191, 36, 0.2) 0%, rgba(217, 119, 6, 0.15) 100%);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--brown-900);
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .skill-chip {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(251, 191, 36, 0.05));
+            border: 1px solid rgba(245, 158, 11, 0.15);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--brown-800);
+            transition: all 0.3s ease;
+        }
+
+        .skill-chip:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(251, 191, 36, 0.1));
+            transform: scale(1.03);
+        }
+
+        .skill-chip .chip-icon {
+            font-size: 1.3rem;
+        }
+
+        /* === INSIGHTS (BI KIP) === */
+        .insight-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.7), rgba(253, 230, 138, 0.3));
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-left: 4px solid var(--amber-500);
+            border-radius: 0 14px 14px 0;
+            padding: 20px 22px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            transition: transform 0.25s ease, background 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateX(6px);
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.9), rgba(253, 230, 138, 0.5));
+        }
+
+        .insight-num {
+            min-width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--amber-500), var(--amber-700));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .insight-content h4 {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: var(--brown-800);
+            margin-bottom: 6px;
+        }
+
+        .insight-content p {
+            font-size: 0.92rem;
+            color: var(--brown-600);
+            line-height: 1.7;
+        }
+
+        .insight-content code {
+            background: var(--brown-900);
+            color: var(--amber-300);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+        }
+
+        /* === STORIES === */
+        .story {
+            background: linear-gradient(135deg, rgba(245, 230, 208, 0.6), rgba(253, 248, 241, 0.8));
+            border-left: 4px solid var(--amber-500);
+            border-radius: 0 16px 16px 0;
+            padding: 24px 26px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease;
+        }
+
+        .story:hover {
+            transform: translateX(4px);
+        }
+
+        .story::before {
+            content: attr(data-icon);
+            position: absolute;
+            top: -8px;
+            right: 16px;
+            font-size: 2.5rem;
+            opacity: 0.15;
+        }
+
+        .story-emoji {
+            font-size: 1.6rem;
+            margin-right: 8px;
+        }
+
+        .story-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--amber-800);
+            margin-bottom: 12px;
+        }
+
+        .story p {
+            font-size: 0.93rem;
+            color: var(--brown-700);
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .story .dialogue {
+            font-style: italic;
+            color: var(--amber-700);
+            font-weight: 500;
+        }
+
+        .grandpa-quote {
+            font-style: italic;
+            color: var(--amber-700);
+            border-left: 3px solid var(--amber-300);
+            padding: 10px 14px;
+            margin: 12px 0 0;
+            font-size: 0.93rem;
+            background: rgba(251, 191, 36, 0.08);
+            border-radius: 0 8px 8px 0;
+            line-height: 1.7;
+        }
+
+        /* === MISTAKES === */
+        .mistake-list {
+            list-style: none;
+        }
+
+        .mistake-item {
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.5), rgba(255, 251, 235, 0.7));
+            border: 1px solid rgba(217, 119, 6, 0.15);
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            transition: all 0.25s ease;
+        }
+
+        .mistake-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(220, 38, 38, 0.2);
+        }
+
+        .mistake-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .mistake-item h4 {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 5px;
+        }
+
+        .mistake-item p {
+            font-size: 0.9rem;
+            color: var(--brown-600);
+            line-height: 1.65;
+        }
+
+        .mistake-item code {
+            background: var(--brown-900);
+            color: var(--amber-300);
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+        }
+
+        .mistake-fix {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* === PBX SECTION === */
+        .pbx-intro {
+            line-height: 1.85;
+            font-size: 1rem;
+            color: var(--brown-700);
+            margin-bottom: 16px;
+        }
+
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .pbx-card {
+            background: linear-gradient(145deg, rgba(254, 243, 199, 0.6), rgba(253, 230, 138, 0.25));
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .pbx-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(180, 83, 9, 0.12);
+        }
+
+        .pbx-card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .pbx-card h4 {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: var(--brown-800);
+            margin-bottom: 8px;
+        }
+
+        .pbx-card p {
+            font-size: 0.88rem;
+            color: var(--brown-600);
+            line-height: 1.65;
+        }
+
+        .schema-block {
+            background: var(--brown-900);
+            color: var(--amber-300);
+            border-radius: 12px;
+            padding: 22px 26px;
+            margin-top: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            line-height: 1.75;
+            overflow-x: auto;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .schema-block .comment { color: rgba(253, 230, 138, 0.4); }
+        .schema-block .keyword { color: #fbbf24; }
+        .schema-block .string { color: #a3e635; }
+        .schema-block .method { color: #67e8f9; }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 30px 16px;
+            color: rgba(253, 230, 138, 0.4);
+            font-size: 0.82rem;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--amber-500), transparent);
+            margin: 0 auto 14px;
+            border-radius: 2px;
+        }
+
+        /* === SCROLLBAR === */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--brown-900); }
+        ::-webkit-scrollbar-thumb { background: var(--amber-700); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--amber-500); }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .container { padding: 14px 12px 40px; }
+            .agent-header { padding: 36px 18px 30px; }
+            .agent-name { font-size: 1.8rem; }
+            .avatar { width: 120px; height: 120px; font-size: 52px; }
+            .section { padding: 22px 18px; }
+            .section-title { font-size: 1.25rem; }
+            .pbx-grid { grid-template-columns: 1fr; }
+            .skill-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .agent-name { font-size: 1.5rem; }
+            .skill-grid { grid-template-columns: 1fr; }
+            .badge-row { gap: 5px; }
+            .badge { font-size: 0.7rem; padding: 4px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div class="particles">
+    <div class="particle">&#x1f4be;</div>
+    <div class="particle">&#x1f5c4;&#xfe0f;</div>
+    <div class="particle">&#x1f4e6;</div>
+    <div class="particle">&#x1f512;</div>
+    <div class="particle">&#x1f4be;</div>
+    <div class="particle">&#x1f4ca;</div>
+    <div class="particle">&#x1f5c3;&#xfe0f;</div>
+    <div class="particle">&#x26a1;</div>
+</div>
+
+<div class="container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="agent-header">
+        <div class="avatar-wrapper">
+            <div class="avatar-ring"></div>
+            <div class="avatar">&#x1f3fa;</div>
+            <span class="agent-badge">AG-09</span>
+        </div>
+        <h1 class="agent-name">Kho D&#7919; Li&#7879;u Th&#7847;n</h1>
+        <p class="agent-title">Th&#7847;n H&#7897; V&#7879; IndexedDB &amp; Dexie.js &#x2022; Th&#7907; Kho Tr&#236;nh Duy&#7879;t</p>
+        <p class="agent-tagline">"D&#7919; li&#7879;u kh&#244;ng m&#7845;t, ch&#7881; l&#224; b&#7841;n ch&#432;a bi&#7871;t n&#243; n&#7857;m &#7903; object store n&#224;o th&#244;i."</p>
+        <div class="badge-row">
+            <span class="badge">IndexedDB API</span>
+            <span class="badge">Dexie.js 3.2</span>
+            <span class="badge">Offline-First</span>
+            <span class="badge">Transactions</span>
+            <span class="badge">Schema Versioning</span>
+            <span class="badge">Bulk Operations</span>
+            <span class="badge">Compound Indexes</span>
+            <span class="badge">liveQuery</span>
+        </div>
+    </header>
+
+    <!-- ===== BACKSTORY ===== -->
+    <div class="section">
+        <h2 class="section-title">
+            <span class="section-icon">&#x1f4dc;</span>
+            Th&#226;n Th&#7871; &amp; V&#245; C&#244;ng Tu Luy&#7879;n
+        </h2>
+        <div class="backstory">
+            <p>
+                Ng&#224;y x&#7917;a ng&#224;y x&#432;a, khi <span class="highlight">localStorage</span> c&#242;n &#273;ang oai phong v&#7899;i 5MB b&#7897; nh&#7899; t&#237; hon v&#224; ngh&#297; m&#236;nh l&#224; vua c&#7911;a client-side storage, c&#243; m&#7897;t ch&#224;ng trai tr&#7867; t&#234;n l&#224; <strong>Kho D&#7919; Li&#7879;u Th&#7847;n</strong> &#273;&#227; nh&#7853;n ra r&#7857;ng 5MB l&#224; kh&#244;ng &#273;&#7911; cho b&#7845;t k&#7923; ai c&#7843;. <em>"C&#225;i n&#224;y l&#432;u &#273;&#432;&#7907;c m&#7845;y c&#225;i string th&#236; n&#243;i g&#236; &#273;&#7871;n c&#7843; b&#7897; d&#7919; li&#7879;u nh&#226;n vi&#234;n?"</em> &#x2014; ch&#224;ng l&#7849;m b&#7849;m r&#7891;i l&#7863;ng l&#7869; &#273;i t&#236;m v&#249;ng &#273;&#7845;t m&#7899;i.
+            </p>
+            <p>
+                Ch&#224;ng g&#7863;p <span class="highlight">IndexedDB</span> &#x2014; m&#7897;t c&#417; s&#7903; d&#7919; li&#7879;u NoSQL kh&#7893;ng l&#7891; n&#7857;m ngay trong tr&#236;nh duy&#7879;t. Nh&#432;ng tr&#7901;i &#417;i, c&#225;i API c&#7911;a n&#243;... Callback l&#7891;ng callback, transaction t&#7921; &#273;&#7897;ng commit, error handling r&#7889;i nh&#432; t&#7893; m&#7889;i. Ch&#224;ng m&#7845;t 3 &#273;&#234;m li&#234;n &#273;&#7875; hi&#7875;u t&#7841;i sao transaction c&#7913; t&#7921; &#273;&#7897;ng &#273;&#243;ng l&#7841;i gi&#7919;a ch&#7915;ng khi ch&#224;ng &#273;ang await m&#7897;t Promise. T&#243;c r&#7909;ng, m&#7855;t th&#226;m, nhung kh&#244;ng b&#7887; cu&#7897;c.
+            </p>
+            <p>
+                R&#7891;i m&#7897;t ng&#224;y &#273;&#7865;p tr&#7901;i, <span class="highlight">Dexie.js</span> xu&#7845;t hi&#7879;n nh&#432; m&#7897;t v&#7847;ng h&#224;o quang. C&#225;i wrapper th&#7847;n th&#225;nh n&#224;y bi&#7871;n IndexedDB t&#7915; "con qu&#225;i v&#7853;t kh&#243; ch&#7883;u" th&#224;nh "c&#417; s&#7903; d&#7919; li&#7879;u &#273;&#225;ng y&#234;u nh&#7845;t tr&#236;nh duy&#7879;t". Table definitions, version management, live queries &#x2014; t&#7845;t c&#7843; &#273;&#7873;u m&#432;&#7907;t m&#224; nh&#432; b&#417;. Ch&#224;ng kh&#243;c v&#236; vui s&#432;&#7899;ng v&#224; t&#7915; &#273;&#243; tr&#7903; th&#224;nh <strong>Th&#7847;n H&#7897; V&#7879; c&#7911;a Dexie</strong>.
+            </p>
+            <p>
+                Hi&#7879;n t&#7841;i, v&#7899;i h&#417;n <strong>200+ d&#7921; &#225;n</strong> s&#7917; d&#7909;ng Dexie, t&#7915; &#7913;ng d&#7909;ng POS offline &#273;&#7871;n h&#7879; th&#7889;ng PBX l&#432;u 8 object stores v&#7899;i 6-8MB d&#7919; li&#7879;u, ch&#224;ng &#273;&#227; th&#7845;y &#273;&#7911; m&#7885;i th&#7913;: t&#7915; <span class="highlight">schema migration</span> l&#224;m m&#7845;t d&#7919; li&#7879;u, <span class="highlight">storage quota exceeded</span> tr&#234;n iOS Safari, &#273;&#7871;n <span class="highlight">compound index</span> b&#7883; sai th&#7913; t&#7921;. M&#7895;i l&#7847;n nh&#432; v&#7853;y, ch&#224;ng l&#7841;i th&#234;m m&#7897;t v&#7871;t s&#7865;o v&#224; m&#7897;t b&#224;i h&#7885;c.
+            </p>
+
+            <div class="skill-grid">
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f3d7;&#xfe0f;</span>
+                    <span>IndexedDB API g&#7889;c</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x26a1;</span>
+                    <span>Dexie.js Wrapper</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f504;</span>
+                    <span>Transaction ACID</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f4cb;</span>
+                    <span>Index &amp; Compound Keys</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f4e6;</span>
+                    <span>Bulk Operations</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f522;</span>
+                    <span>Schema Versioning</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f4e1;</span>
+                    <span>Offline-First Pattern</span>
+                </div>
+                <div class="skill-chip">
+                    <span class="chip-icon">&#x1f50d;</span>
+                    <span>Cursor &amp; Range Query</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BI KIP ===== -->
+    <div class="section">
+        <h2 class="section-title">
+            <span class="section-icon">&#x1f4a1;</span>
+            B&#237; K&#237;p C&#7911;a Kho D&#7919; Li&#7879;u Th&#7847;n
+        </h2>
+        <div class="insight-grid">
+            <div class="insight-card">
+                <div class="insight-num">1</div>
+                <div class="insight-content">
+                    <h4>Dexie l&#224; b&#7841;n, IndexedDB thu&#7847;n l&#224;... b&#7841;n kh&#243; t&#237;nh</h4>
+                    <p>IndexedDB API g&#7889;c to&#224;n callback v&#224; event, code d&#224;i nh&#432; s&#7899; T&#225;o Qu&#226;n. Dexie b&#7885;c n&#243; l&#7841;i b&#7857;ng Promise, cho b&#7841;n vi&#7871;t <code>db.employees.where('dept').equals('Sales').toArray()</code> thay v&#236; 30 d&#242;ng m&#7903; transaction, t&#7841;o request, l&#7855;ng nghe onsuccess/onerror. Ai d&#249;ng IndexedDB thu&#7847;n m&#224; kh&#244;ng kh&#243;c th&#236; ch&#7855;c l&#224; robot!</p>
+                </div>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">2</div>
+                <div class="insight-content">
+                    <h4>Version upgrade &#x2014; ngh&#7879; thu&#7853;t kh&#244;ng ph&#225; ho&#7841;i</h4>
+                    <p>M&#7895;i l&#7847;n thay &#273;&#7893;i schema, b&#7841;n ph&#7843;i t&#259;ng version. Dexie cho ph&#233;p khai b&#225;o tu&#7847;n t&#7921;: <code>db.version(2).stores({...})</code>, <code>db.version(3).stores({...})</code>. Nh&#432;ng nh&#7899;: KH&#212;NG BAO GI&#7900; x&#243;a version c&#361; kh&#7887;i code cho &#273;&#7871;n khi ch&#7855;c 100% kh&#244;ng ai c&#242;n d&#249;ng version &#273;&#243;. Qu&#234;n quy t&#7855;c n&#224;y l&#224; m&#7845;t d&#7919; li&#7879;u nh&#432; ch&#417;i!</p>
+                </div>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">3</div>
+                <div class="insight-content">
+                    <h4>bulkPut() nhanh h&#417;n put() trong v&#242;ng l&#7863;p g&#7845;p 50-100 l&#7847;n</h4>
+                    <p>&#272;&#7915;ng bao gi&#7901; <code>for (item of items) await db.put(item)</code>. H&#227;y d&#249;ng <code>db.table.bulkPut(items)</code>. S&#7921; kh&#225;c bi&#7879;t? 1000 records: v&#242;ng l&#7863;p m&#7845;t ~3 gi&#226;y, bulkPut m&#7845;t ~50ms. Nhanh g&#7845;p 60 l&#7847;n! V&#236; bulk ch&#7881; t&#7841;o M&#7896;T transaction thay v&#236; 1000 transactions ri&#234;ng l&#7867;.</p>
+                </div>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">4</div>
+                <div class="insight-content">
+                    <h4>Compound index &#x2014; th&#7913; t&#7921; field quy&#7871;t &#273;&#7883;nh t&#7845;t c&#7843;</h4>
+                    <p>Index <code>[departmentId+lastName]</code> c&#243; th&#7875; query theo <code>departmentId</code> ho&#7863;c <code>departmentId + lastName</code>, nh&#432;ng KH&#212;NG th&#7875; query ch&#7881; theo <code>lastName</code>. N&#243; gi&#7889;ng nh&#432; s&#7889; &#273;i&#7879;n tho&#7841;i v&#7853;y &#x2014; bi&#7871;t m&#227; v&#249;ng th&#236; tra &#273;&#432;&#7907;c, nh&#432;ng ch&#7881; bi&#7871;t 4 s&#7889; cu&#7889;i th&#236; v&#244; d&#7909;ng. &#272;&#7863;t field filter nhi&#7873;u nh&#7845;t l&#234;n tr&#432;&#7899;c!</p>
+                </div>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">5</div>
+                <div class="insight-content">
+                    <h4>Transaction scope: kh&#244;ng &#273;&#432;&#7907;c await th&#7913; kh&#244;ng ph&#7843;i Dexie</h4>
+                    <p>D&#249;ng <code>db.transaction('rw', db.employees, db.contacts, async () =&gt; {...})</code> khi c&#7847;n thao t&#225;c nhi&#7873;u b&#7843;ng c&#249;ng l&#250;c. Nh&#432;ng n&#7871;u b&#7841;n await m&#7897;t <code>fetch()</code> ho&#7863;c <code>setTimeout</code> b&#234;n trong, transaction s&#7869; b&#7883; auto-commit v&#236; IndexedDB kh&#244;ng cho ph&#233;p "t&#7841;m d&#7915;ng". Fetch data tr&#432;&#7899;c, r&#7891;i m&#7899;i m&#7903; transaction &#273;&#7875; ghi!</p>
+                </div>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">6</div>
+                <div class="insight-content">
+                    <h4>liveQuery() &#x2014; reactive m&#224; kh&#244;ng c&#7847;n th&#234;m g&#236;</h4>
+                    <p>Dexie 3.x c&#243; <code>liveQuery(() =&gt; db.employees.toArray())</code> &#x2014; t&#7921; &#273;&#7897;ng c&#7853;p nh&#7853;t UI khi data thay &#273;&#7893;i, y nh&#432; computed property c&#7911;a Vue. K&#7871;t h&#7907;p v&#7899;i Pinia th&#236; m&#432;&#7907;t nh&#432; nhung, kh&#244;ng c&#7847;n polling hay manual refresh g&#236; h&#7871;t! L&#432;u &#253;: callback ph&#7843;i l&#224; synchronous function tr&#7843; v&#7873; Promise.</p>
+                </div>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">7</div>
+                <div class="insight-content">
+                    <h4>iOS Safari: 1GB l&#224; l&#253; thuy&#7871;t, 50MB l&#224; th&#7921;c t&#7871;</h4>
+                    <p>Apple n&#243;i IndexedDB c&#243; th&#7875; l&#432;u &#273;&#7871;n 1GB. Th&#7921;c t&#7871;? Sau 50MB Safari b&#7855;t &#273;&#7847;u h&#7887;i user <em>"Trang web n&#224;y mu&#7889;n l&#432;u d&#7919; li&#7879;u, b&#7841;n c&#243; &#273;&#7891;ng &#253; kh&#244;ng?"</em> v&#224; n&#7871;u user b&#7845;m "Kh&#244;ng" th&#236;... <code>db.open()</code> fail im l&#7863;ng. Lu&#244;n lu&#244;n b&#7855;t l&#7895;i khi open database v&#224; c&#243; fallback plan!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FUN STORIES ===== -->
+    <div class="section">
+        <h2 class="section-title">
+            <span class="section-icon">&#x1f4da;</span>
+            Chuy&#7879;n K&#7875; B&#234;n B&#7871;p L&#7917;a C&#7911;a &#212;ng
+        </h2>
+
+        <div class="story" data-icon="&#x1f4a5;">
+            <h3 class="story-title">&#x1f4a5; Th&#7843;m H&#7885;a Schema Migration &#272;&#234;m Giao Th&#7915;a</h3>
+            <p>
+                Ng&#224;y x&#432;a, c&#243; m&#7897;t team deploy b&#7843;n c&#7853;p nh&#7853;t &#273;&#250;ng &#273;&#234;m 30 T&#7871;t. H&#7885; t&#259;ng version t&#7915; 3 l&#234;n 7 nh&#432;ng "ti&#7871;t ki&#7879;m th&#7901;i gian" b&#7857;ng c&#225;ch nh&#7843;y qua version 4, 5, 6. Dexie c&#7847;n ch&#7841;y upgrade tu&#7847;n t&#7921; 3&#x2192;4&#x2192;5&#x2192;6&#x2192;7, nh&#432;ng v&#236; kh&#244;ng c&#243; version 4, 5, 6... n&#243; nh&#7843;y th&#7859;ng t&#7915; 3 l&#234;n 7.
+            </p>
+            <p>
+                T&#7845;t c&#7843; c&#225;c index trung gian bi&#7871;n m&#7845;t. 50,000 records nh&#226;n vi&#234;n v&#7851;n c&#242;n nh&#432;ng kh&#244;ng th&#7875; query theo ph&#242;ng ban &#273;&#432;&#7907;c n&#7919;a. C&#7843; team ph&#7843;i ng&#7891;i s&#7917;a d&#7919; li&#7879;u b&#7857;ng tay trong khi ph&#225;o n&#7893; r&#7847;n r&#7847;n b&#234;n ngo&#224;i. &#212;ng tr&#432;&#7903;ng ph&#242;ng g&#7885;i &#273;i&#7879;n: <span class="dialogue">"Sao app ch&#7871;t r&#7891;i? T&#244;i &#273;ang c&#7847;n tra s&#7889; &#273;i&#7879;n tho&#7841;i &#273;&#7889;i t&#225;c &#273;&#7875; ch&#250;c T&#7871;t!"</span>
+            </p>
+            <div class="grandpa-quote">
+                "Ch&#225;u &#417;i, schema migration gi&#7889;ng nh&#432; &#273;i c&#7847;u thang v&#7853;y. B&#7887; m&#7897;t b&#7853;c th&#236; ng&#227; ch&#7843;y m&#225;u. &#272;&#7915;ng bao gi&#7901; nh&#7843;y version!" &#x2014; &#212;ng Kho D&#7919; Li&#7879;u
+            </div>
+        </div>
+
+        <div class="story" data-icon="&#x1f4be;">
+            <h3 class="story-title">&#x1f4be; Ng&#224;y IndexedDB &#258;n H&#7871;t &#7892; C&#7913;ng C&#7911;a Kh&#225;ch H&#224;ng</h3>
+            <p>
+                M&#7897;t l&#7847;n, c&#243; th&#7857;ng dev (ta kh&#244;ng n&#243;i t&#234;n, nh&#432;ng n&#243; ng&#7891;i c&#7841;nh ta) quy&#7871;t &#273;&#7883;nh cache TO&#192;N B&#7896; h&#236;nh &#7843;nh nh&#226;n vi&#234;n v&#224;o IndexedDB d&#432;&#7899;i d&#7841;ng base64. <span class="dialogue">"Offline-first m&#224;, ph&#7843;i cache t&#7845;t!"</span> &#x2014; n&#243; t&#7921; tin n&#243;i. C&#244;ng ty c&#243; 3000 nh&#226;n vi&#234;n, m&#7895;i &#7843;nh ~500KB. T&#237;nh ra: <strong>1.5GB</strong> nh&#233;t v&#224;o IndexedDB.
+            </p>
+            <p>
+                Tr&#236;nh duy&#7879;t g&#224;o l&#234;n <code>QuotaExceededError</code> r&#7891;i ng&#7845;t x&#7881;u. User th&#236; th&#7845;y app tr&#7855;ng tinh, t&#432;&#7903;ng m&#225;y h&#7887;ng &#273;em &#273;i b&#7843;o h&#224;nh. &#212;ng b&#7843;o v&#7879; t&#242;a nh&#224; g&#7885;i l&#234;n: <span class="dialogue">"M&#7845;y ch&#250; dev &#417;i, nh&#226;n vi&#234;n ph&#242;ng k&#7871; to&#225;n x&#225;ch m&#225;y t&#237;nh &#273;i s&#7917;a h&#7871;t r&#7891;i, c&#225;c ch&#250; c&#243; bi&#7871;t g&#236; kh&#244;ng?"</span>
+            </p>
+            <div class="grandpa-quote">
+                "D&#7919; li&#7879;u gi&#7889;ng nh&#432; &#273;&#7891; &#259;n trong t&#7911; l&#7841;nh. Kh&#244;ng d&#7885;n d&#7865;p th&#432;&#7901;ng xuy&#234;n th&#236; s&#7869; c&#243; m&#249;i v&#224; h&#7871;t ch&#7895;! Ch&#7881; cache text/JSON c&#7847;n thi&#7871;t, &#7843;nh th&#236; d&#249;ng URL + Service Worker cache!" &#x2014; &#212;ng Kho D&#7919; Li&#7879;u
+            </div>
+        </div>
+
+        <div class="story" data-icon="&#x1f50d;">
+            <h3 class="story-title">&#x1f50d; B&#237; &#7848;n C&#7911;a Cursor V&#224; Ch&#250; Junior Ho&#7843;ng Lo&#7841;n</h3>
+            <p>
+                M&#7897;t b&#7841;n junior m&#7899;i v&#224;o ngh&#7873;, ch&#432;a bi&#7871;t Dexie, quy&#7871;t &#273;&#7883;nh d&#249;ng IndexedDB native API. B&#7841;n &#7845;y m&#7903; cursor &#273;&#7875; duy&#7879;t 10,000 records, nh&#432;ng vi&#7871;t <code>cursor.continue()</code> trong m&#7897;t <code>setTimeout</code> v&#236; <span class="dialogue">"mu&#7889;n cho n&#243; ch&#7841;y t&#7915; t&#7915;"</span>. K&#7871;t qu&#7843;? Transaction auto-commit sau l&#7847;n <code>continue()</code> &#273;&#7847;u ti&#234;n, cursor bi&#7871;n m&#7845;t, nh&#7853;n &#273;&#432;&#7907;c error: <em>"Transaction has already completed"</em>.
+            </p>
+            <p>
+                B&#7841;n &#7845;y google 3 ng&#224;y kh&#244;ng hi&#7875;u t&#7841;i sao. Cu&#7889;i c&#249;ng, &#244;ng ch&#7881; cho b&#7841;n &#7845;y 2 d&#242;ng code Dexie: <code>db.employees.offset(0).limit(100).toArray()</code>. B&#7841;n &#7845;y nh&#236;n m&#224;n h&#236;nh, r&#7891;i nh&#236;n &#244;ng, r&#7891;i kh&#243;c. Code t&#7915; 200 d&#242;ng callback hell c&#242;n M&#7896;T D&#210;NG.
+            </p>
+            <div class="grandpa-quote">
+                "Native IndexedDB API l&#224; dao hai l&#432;&#7905;i. Kh&#244;ng bi&#7871;t s&#7917; d&#7909;ng th&#236; &#273;&#7913;t tay. Dexie l&#224; c&#225;i th&#7899;t &#x2014; an to&#224;n v&#224; hi&#7879;u qu&#7843; h&#417;n nhi&#7873;u!" &#x2014; &#212;ng Kho D&#7919; Li&#7879;u
+            </div>
+        </div>
+
+        <div class="story" data-icon="&#x1f47b;">
+            <h3 class="story-title">&#x1f47b; H&#7891;n Ma C&#7911;a Incognito Mode</h3>
+            <p>
+                Kh&#225;ch h&#224;ng b&#225;o: <span class="dialogue">"App c&#7911;a c&#225;c b&#7841;n b&#7883; l&#7895;i! M&#7895;i l&#7847;n m&#7903; l&#234;n l&#224; d&#7919; li&#7879;u bi&#7871;n m&#7845;t!"</span> Team debug 2 ng&#224;y, ki&#7875;m tra sync logic, network calls, t&#7845;t c&#7843; &#273;&#7873;u ok. Cu&#7889;i c&#249;ng ph&#225;t hi&#7879;n: kh&#225;ch h&#224;ng d&#249;ng <strong>Incognito Mode</strong> c&#7911;a Firefox. Trong ch&#7871; &#273;&#7897; n&#224;y, IndexedDB v&#7851;n ho&#7841;t &#273;&#7897;ng b&#236;nh th&#432;&#7901;ng... nh&#432;ng khi &#273;&#243;ng tab th&#236; x&#243;a s&#7841;ch h&#7871;t.
+            </p>
+            <p>
+                T&#7915; &#273;&#243;, team th&#234;m m&#7897;t d&#242;ng check <code>navigator.storage.persisted()</code> v&#224; hi&#7879;n th&#244;ng b&#225;o: <span class="dialogue">"B&#7841;n &#273;ang d&#249;ng ch&#7871; &#273;&#7897; ri&#234;ng t&#432;, d&#7919; li&#7879;u s&#7869; kh&#244;ng &#273;&#432;&#7907;c l&#432;u l&#226;u d&#224;i."</span> Kh&#225;ch h&#224;ng: <span class="dialogue">"&#192; th&#7871; &#224;, t&#244;i c&#7913; t&#432;&#7903;ng d&#249;ng Incognito th&#236; virus kh&#244;ng v&#224;o &#273;&#432;&#7907;c..."</span>
+            </p>
+            <div class="grandpa-quote">
+                "Incognito Mode gi&#7889;ng nh&#432; vi&#7871;t l&#234;n c&#225;t v&#7853;y ch&#225;u. S&#243;ng x&#224; t&#7899;i th&#236; ch&#7919; c&#361;ng m&#7845;t!" &#x2014; &#212;ng Kho D&#7919; Li&#7879;u
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== COMMON MISTAKES ===== -->
+    <div class="section">
+        <h2 class="section-title">
+            <span class="section-icon">&#x26a0;&#xfe0f;</span>
+            Nh&#7919;ng L&#7895;i Sai Kinh &#272;i&#7875;n (M&#224; Ai C&#361;ng M&#7855;c)
+        </h2>
+        <ul class="mistake-list">
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f40c;</span>
+                <div>
+                    <h4>D&#249;ng put() trong v&#242;ng for &#273;&#7875; insert 10,000 records</h4>
+                    <p>M&#7895;i l&#7847;n <code>put()</code> l&#224; m&#7897;t transaction. 10,000 transaction = tr&#236;nh duy&#7879;t &#273;&#7893; m&#7891; h&#244;i v&#224; fan quay v&#249; v&#249;. User t&#432;&#7903;ng app &#273;ang thi&#7873;n. Performance t&#259;ng 50-100x khi d&#249;ng bulk!</p>
+                    <div class="mistake-fix">&#x2705; D&#249;ng <code>db.table.bulkPut(arrayOfItems)</code> &#x2014; 1 transaction cho t&#7845;t c&#7843;!</div>
+                </div>
+            </li>
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f62d;</span>
+                <div>
+                    <h4>Qu&#234;n kh&#244;ng &#273;&#7863;t index r&#7891;i where() ch&#7841;y nh&#432; r&#249;a b&#242;</h4>
+                    <p>Dexie cho ph&#233;p <code>.where('field').equals(value)</code> nh&#432;ng n&#7871;u field kh&#244;ng &#273;&#432;&#7907;c index trong schema, n&#243; ph&#7843;i full-scan to&#224;n b&#7897; table. 50,000 records m&#224; full-scan th&#236; user k&#7883;p pha tr&#224;, u&#7889;ng h&#7871;t, r&#7891;i app m&#7899;i ch&#7841;y xong.</p>
+                    <div class="mistake-fix">&#x2705; T&#7841;o index cho field c&#7847;n query, d&#249;ng .where().equals() ho&#7863;c .between()!</div>
+                </div>
+            </li>
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f92f;</span>
+                <div>
+                    <h4>Await fetch() b&#234;n trong db.transaction()</h4>
+                    <p>IndexedDB transaction t&#7921; &#273;&#7897;ng commit khi kh&#244;ng c&#242;n pending request. Await <code>fetch()</code> = transaction ngh&#297; b&#7841;n ra &#273;i r&#7891;i = auto commit = c&#225;c thao t&#225;c sau b&#225;o l&#7895;i. Th&#7857;ng &#273;&#224;n em ta debug 2 ng&#224;y, t&#243;c r&#7909;ng n&#7917;a &#273;&#7847;u v&#236; c&#225;i n&#224;y.</p>
+                    <div class="mistake-fix">&#x2705; Quy t&#7855;c v&#224;ng: fetch data tr&#432;&#7899;c, m&#7903; transaction sau, ghi nhanh r&#7891;i &#273;&#243;ng!</div>
+                </div>
+            </li>
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f648;</span>
+                <div>
+                    <h4>Kh&#244;ng handle l&#7895;i khi db.open() tr&#234;n Safari/iOS</h4>
+                    <p>Safari c&#243; th&#7875; t&#7915; ch&#7889;i m&#7903; IndexedDB n&#7871;u user t&#7855;t storage, d&#249;ng Private Browsing, ho&#7863;c h&#7871;t quota. Kh&#244;ng try-catch <code>db.open()</code> l&#224; t&#7921; s&#225;t. App crash im l&#7863;ng v&#224; user ch&#7881; th&#7845;y m&#224;n h&#236;nh tr&#7855;ng.</p>
+                    <div class="mistake-fix">&#x2705; Lu&#244;n c&#243; error handling v&#224; fallback UI khi database kh&#244;ng m&#7903; &#273;&#432;&#7907;c!</div>
+                </div>
+            </li>
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f4c5;</span>
+                <div>
+                    <h4>L&#432;u ng&#224;y th&#225;ng d&#7841;ng string "2025-3-15" r&#7891;i sort sai b&#233;t</h4>
+                    <p>IndexedDB sort theo binary comparison. String "2025-3-15" &#273;&#7913;ng TR&#431;&#7898;C "2025-12-01" v&#236; k&#253; t&#7921; '3' > '1'. &#272;&#226;y l&#224; c&#225;i b&#7851;y kinh &#273;i&#7875;n m&#224; 10 ng&#432;&#7901;i th&#236; 9 ng&#432;&#7901;i d&#237;nh.</p>
+                    <div class="mistake-fix">&#x2705; Lu&#244;n l&#432;u date d&#7841;ng <code>Date object</code> ho&#7863;c <code>timestamp number</code>. Ho&#7863;c &#237;t nh&#7845;t d&#249;ng ISO format c&#243; zero-padding!</div>
+                </div>
+            </li>
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f5d1;&#xfe0f;</span>
+                <div>
+                    <h4>X&#243;a version c&#361; trong code "cho g&#7885;n"</h4>
+                    <p>User A &#273;ang ch&#7841;y version 2, b&#7841;n deploy code ch&#7881; c&#242;n version 5. User A m&#7903; app, Dexie kh&#244;ng bi&#7871;t c&#225;ch upgrade t&#7915; 2 l&#234;n 5 v&#236; kh&#244;ng c&#243; version 3, 4. K&#7871;t qu&#7843;: database b&#7883; x&#243;a s&#7841;ch ho&#7863;c l&#7895;i kh&#244;ng m&#7903; &#273;&#432;&#7907;c. GI&#7918; L&#7840;I T&#7844;T C&#7842; VERSION c&#361;!</p>
+                    <div class="mistake-fix">&#x2705; Gi&#7919; nguy&#234;n to&#224;n b&#7897; version declarations. "S&#7841;ch code" kh&#244;ng &#273;&#225;ng &#273;&#7875; &#273;&#225;nh &#273;&#7893;i d&#7919; li&#7879;u user!</div>
+                </div>
+            </li>
+            <li class="mistake-item">
+                <span class="mistake-icon">&#x1f4a3;</span>
+                <div>
+                    <h4>D&#249;ng .toArray() cho 100,000 records r&#7891;i filter trong JS</h4>
+                    <p>Thay v&#236; d&#249;ng Dexie query (<code>.where()</code>, <code>.between()</code>), nhi&#7873;u ng&#432;&#7901;i load TO&#192;N B&#7896; table v&#224;o memory r&#7891;i <code>.filter()</code> trong JavaScript. 100K records x 500 bytes = 50MB RAM bay m&#224;u. Gi&#7889;ng c&#243; &#244; t&#244; m&#224; &#273;i b&#7897;!</p>
+                    <div class="mistake-fix">&#x2705; Dexie query ch&#7841;y tr&#234;n IndexedDB engine, nhanh v&#224; ti&#7871;t ki&#7879;m RAM h&#417;n nhi&#7873;u!</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ===== PBX PROJECT RELEVANCE ===== -->
+    <div class="section">
+        <h2 class="section-title">
+            <span class="section-icon">&#x260e;&#xfe0f;</span>
+            &#7912;ng D&#7909;ng Trong D&#7921; &#193;n PBX
+        </h2>
+        <div class="pbx-intro">
+            <p>
+                D&#7921; &#225;n PBX s&#7917; d&#7909;ng <span class="highlight">Dexie 3.2</span> l&#224;m l&#7899;p l&#432;u tr&#7919; client-side, v&#7899;i kho&#7843;ng <strong>8 object stores</strong> ch&#7913;a d&#7919; li&#7879;u ph&#242;ng ban, nh&#226;n vi&#234;n, danh b&#7841;, l&#7883;ch v&#7855;ng m&#7863;t, v&#224; nhi&#7873;u th&#7913; kh&#225;c &#x2014; t&#7893;ng c&#7897;ng kho&#7843;ng <strong>6-8MB</strong>. Khi operator ng&#7891;i tr&#7921;c t&#7893;ng &#273;&#224;i, m&#7885;i th&#7913; ph&#7843;i nhanh nh&#432; ch&#7899;p &#x2014; kh&#244;ng th&#7875; ch&#7901; API m&#7895;i l&#7847;n t&#236;m s&#7889; n&#7897;i b&#7897; hay tra c&#7913;u ph&#242;ng ban. &#272;&#226;y l&#224; c&#225;ch Kho D&#7919; Li&#7879;u Th&#7847;n gi&#250;p d&#7921; &#225;n PBX ch&#7841;y m&#432;&#7907;t m&#224;:
+            </p>
+        </div>
+
+        <div class="pbx-grid">
+            <div class="pbx-card">
+                <div class="pbx-card-icon">&#x1f465;</div>
+                <h4>Employees &amp; Contacts</h4>
+                <p>L&#432;u tr&#7919; danh s&#225;ch nh&#226;n vi&#234;n v&#224; danh b&#7841; li&#234;n l&#7841;c offline. Khi m&#7845;t m&#7841;ng, user v&#7851;n tra c&#7913;u &#273;&#432;&#7907;c s&#7889; n&#7897;i b&#7897;, extension, v&#224; th&#244;ng tin li&#234;n h&#7879; nhanh ch&#243;ng. Query local ch&#7881; m&#7845;t 1-5ms!</p>
+            </div>
+            <div class="pbx-card">
+                <div class="pbx-card-icon">&#x1f3e2;</div>
+                <h4>Departments</h4>
+                <p>C&#226;y ph&#242;ng ban &#273;&#432;&#7907;c cache trong IndexedDB v&#7899;i compound index <code>[parentId+name]</code> &#273;&#7875; hi&#7875;n th&#7883; org chart nhanh kh&#244;ng c&#7847;n g&#7885;i API m&#7895;i l&#7847;n.</p>
+            </div>
+            <div class="pbx-card">
+                <div class="pbx-card-icon">&#x1f3d6;&#xfe0f;</div>
+                <h4>Absences &amp; Schedules</h4>
+                <p>L&#7883;ch v&#7855;ng m&#7863;t, l&#7883;ch tr&#7921;c ca &#273;&#432;&#7907;c sync v&#7873; &#273;&#7875; hi&#7875;n th&#7883; real-time ai &#273;ang s&#7861;n s&#224;ng nh&#7853;n cu&#7897;c g&#7885;i. liveQuery() t&#7921; &#273;&#7897;ng c&#7853;p nh&#7853;t UI khi c&#243; thay &#273;&#7893;i.</p>
+            </div>
+            <div class="pbx-card">
+                <div class="pbx-card-icon">&#x1f504;</div>
+                <h4>Delta Sync</h4>
+                <p>Ch&#7881; sync d&#7919; li&#7879;u &#273;&#227; thay &#273;&#7893;i t&#7915; l&#7847;n sync cu&#7889;i (d&#7921;a tr&#234;n lastModified timestamp). Gi&#7843;m 95% d&#7919; li&#7879;u truy&#7873;n t&#7843;i v&#224; tr&#225;nh l&#7895;i "&#259;n h&#7871;t &#7893; c&#7913;ng" nh&#432; chuy&#7879;n k&#7875; tr&#234;n!</p>
+            </div>
+            <div class="pbx-card">
+                <div class="pbx-card-icon">&#x26a1;</div>
+                <h4>Bulk Operations</h4>
+                <p>Khi sync l&#7847;n &#273;&#7847;u (initial load), d&#249;ng <code>bulkPut()</code> &#273;&#7875; nh&#7853;p 5000+ records trong m&#7897;t transaction. Th&#7901;i gian: ~200ms thay v&#236; 15s n&#7871;u d&#249;ng put() t&#7915;ng c&#225;i.</p>
+            </div>
+            <div class="pbx-card">
+                <div class="pbx-card-icon">&#x1f6e1;&#xfe0f;</div>
+                <h4>Offline Resilience</h4>
+                <p>Khi m&#7841;ng m&#7845;t, app v&#7851;n ho&#7841;t &#273;&#7897;ng b&#236;nh th&#432;&#7901;ng v&#7899;i d&#7919; li&#7879;u cached. C&#225;c thao t&#225;c ghi &#273;&#432;&#7907;c queue l&#7841;i v&#224; sync l&#234;n server khi c&#243; m&#7841;ng tr&#7903; l&#7841;i.</p>
+            </div>
+        </div>
+
+        <div class="schema-block">
+            <span class="comment">// PBX Dexie Schema &#x2014; V&#237; d&#7909; &#273;&#417;n gi&#7843;n h&#243;a</span><br>
+            <span class="keyword">const</span> db = <span class="keyword">new</span> Dexie(<span class="string">'PBX_Database'</span>);<br><br>
+            db.<span class="method">version</span>(1).<span class="method">stores</span>({<br>
+            &nbsp;&nbsp;employees: <span class="string">'++id, name, extension, [departmentId+lastName]'</span>,<br>
+            &nbsp;&nbsp;departments: <span class="string">'++id, name, parentId, [parentId+name]'</span>,<br>
+            &nbsp;&nbsp;contacts: <span class="string">'++id, phone, email, [companyName+lastName]'</span>,<br>
+            &nbsp;&nbsp;absences: <span class="string">'++id, employeeId, date, [employeeId+date]'</span>,<br>
+            &nbsp;&nbsp;callHistory: <span class="string">'++id, timestamp, callerId, calleeId'</span>,<br>
+            &nbsp;&nbsp;extensions: <span class="string">'++id, number, type, departmentId'</span>,<br>
+            &nbsp;&nbsp;queues: <span class="string">'++id, name, strategy'</span>,<br>
+            &nbsp;&nbsp;syncMeta: <span class="string">'++id, tableName, lastSyncAt'</span><br>
+            });<br><br>
+            <span class="comment">// Lu&#244;n gi&#7919; version c&#361; khi upgrade!</span><br>
+            db.<span class="method">version</span>(2).<span class="method">stores</span>({<br>
+            &nbsp;&nbsp;employees: <span class="string">'++id, name, extension, [departmentId+lastName], status'</span>,<br>
+            &nbsp;&nbsp;<span class="comment">// ...c&#225;c table kh&#225;c gi&#7919; nguy&#234;n</span><br>
+            }).<span class="method">upgrade</span>(tx =&gt; {<br>
+            &nbsp;&nbsp;<span class="keyword">return</span> tx.employees.<span class="method">toCollection</span>().<span class="method">modify</span>(emp =&gt; {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;emp.status = emp.status || <span class="string">'active'</span>;<br>
+            &nbsp;&nbsp;});<br>
+            });
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-divider"></div>
+        <p>&#x1f3fa; Kho D&#7919; Li&#7879;u Th&#7847;n &#x2022; Agent Profile #09 &#x2022; PBX Project 2026</p>
+        <p style="margin-top:6px;">IndexedDB + Dexie.js 3.2 &#x2022; "M&#7841;ng c&#243; th&#7875; m&#7845;t, nh&#432;ng d&#7919; li&#7879;u trong kho c&#7911;a ta th&#236; tr&#432;&#7901;ng t&#7891;n m&#227;i m&#227;i... &#224; m&#224; c&#361;ng &#273;&#7915;ng x&#243;a cache nh&#233;!"</p>
+    </footer>
+
+</div>
+</body>
+</html>

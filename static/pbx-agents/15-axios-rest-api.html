@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Chiến Thần — Axios & REST API | PBX Agent #15</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+        :root {
+            --axios-primary: #5A29E4;
+            --axios-dark: #3B1A96;
+            --axios-light: #7B4FFF;
+            --axios-glow: #A78BFA;
+            --indigo-900: #1E1B4B;
+            --indigo-800: #2E2771;
+            --indigo-700: #3730A3;
+            --indigo-50: #EEF2FF;
+            --surface: #0B0720;
+            --surface-card: #161040;
+            --surface-card-hover: #1E1555;
+            --text-primary: #E8E0FF;
+            --text-secondary: #A5A0CC;
+            --accent-orange: #FF7E33;
+            --accent-green: #22D3EE;
+            --accent-red: #F43F5E;
+            --accent-yellow: #FBBF24;
+            --accent-teal: #2DD4BF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--surface);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        .bg-cosmos {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(90, 41, 228, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(123, 79, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(34, 211, 238, 0.05) 0%, transparent 60%),
+                var(--surface);
+            animation: cosmosShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes cosmosShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(15deg); }
+        }
+
+        /* Grid overlay */
+        .bg-cosmos::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(90, 41, 228, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(90, 41, 228, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridDrift 30s linear infinite;
+        }
+
+        @keyframes gridDrift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating HTTP method badges */
+        .floating-badge {
+            position: fixed;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            opacity: 0.07;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatMethod 25s linear infinite;
+        }
+
+        .floating-badge.get { background: #22D3EE; color: #0B0720; }
+        .floating-badge.post { background: #22C55E; color: #0B0720; }
+        .floating-badge.put { background: #FF7E33; color: #0B0720; }
+        .floating-badge.delete { background: #F43F5E; color: #0B0720; }
+        .floating-badge.patch { background: #FBBF24; color: #0B0720; }
+
+        .floating-badge:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .floating-badge:nth-child(2) { left: 20%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-badge:nth-child(3) { left: 40%; animation-delay: 2s; animation-duration: 28s; }
+        .floating-badge:nth-child(4) { left: 60%; animation-delay: 6s; animation-duration: 20s; }
+        .floating-badge:nth-child(5) { left: 80%; animation-delay: 1s; animation-duration: 24s; }
+        .floating-badge:nth-child(6) { left: 90%; animation-delay: 3s; animation-duration: 26s; }
+        .floating-badge:nth-child(7) { left: 35%; animation-delay: 8s; animation-duration: 30s; }
+        .floating-badge:nth-child(8) { left: 70%; animation-delay: 5s; animation-duration: 19s; }
+
+        @keyframes floatMethod {
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.07; }
+            90% { opacity: 0.05; }
+            100% { transform: translateY(-10vh) rotate(15deg); opacity: 0; }
+        }
+
+        /* === MAIN CONTAINER === */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* === NAV BAR === */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(90, 41, 228, 0.2);
+        }
+
+        .nav-bar .logo {
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--axios-glow);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-bar .agent-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: rgba(90, 41, 228, 0.15);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(90, 41, 228, 0.3);
+        }
+
+        /* === HERO HEADER === */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem 4rem;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--axios-primary), var(--axios-light), var(--accent-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            box-shadow:
+                0 0 40px rgba(90, 41, 228, 0.4),
+                0 0 80px rgba(90, 41, 228, 0.2),
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+            animation: avatarPulse 4s ease-in-out infinite;
+            position: relative;
+        }
+
+        .avatar::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--axios-glow);
+            border-right-color: var(--accent-green);
+            animation: orbitalSpin 6s linear infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(90, 41, 228, 0.4), 0 0 80px rgba(90, 41, 228, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(90, 41, 228, 0.5), 0 0 100px rgba(90, 41, 228, 0.3); }
+        }
+
+        @keyframes orbitalSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-orb {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            border: 3px solid var(--surface);
+            animation: statusBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(34, 211, 238, 0.6); }
+            50% { opacity: 0.6; box-shadow: 0 0 20px rgba(34, 211, 238, 0.9); }
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #E8E0FF, var(--axios-glow), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            animation: titleShimmer 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleShimmer {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        .hero .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero .tagline {
+            font-size: 0.95rem;
+            color: var(--axios-glow);
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        /* HTTP method tags row */
+        .method-tags {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .method-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            letter-spacing: 1px;
+        }
+
+        .method-tag.get { background: rgba(34, 211, 238, 0.15); color: #22D3EE; border: 1px solid rgba(34, 211, 238, 0.3); }
+        .method-tag.post { background: rgba(34, 197, 94, 0.15); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .method-tag.put { background: rgba(255, 126, 51, 0.15); color: #FF7E33; border: 1px solid rgba(255, 126, 51, 0.3); }
+        .method-tag.delete { background: rgba(244, 63, 94, 0.15); color: #F43F5E; border: 1px solid rgba(244, 63, 94, 0.3); }
+        .method-tag.patch { background: rgba(251, 191, 36, 0.15); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.3); }
+
+        /* === SECTION STYLING === */
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+        .section:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(90, 41, 228, 0.25);
+        }
+
+        .section-header .icon {
+            font-size: 1.6rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--axios-primary), var(--axios-light));
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(90, 41, 228, 0.3);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .section-header h2 span {
+            color: var(--axios-glow);
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--surface-card);
+            border: 1px solid rgba(90, 41, 228, 0.2);
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 1.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--axios-primary), var(--axios-light), var(--accent-green));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            background: var(--surface-card-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(90, 41, 228, 0.2);
+            border-color: rgba(90, 41, 228, 0.4);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--axios-glow);
+            margin-bottom: 0.8rem;
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .card strong {
+            color: var(--text-primary);
+        }
+
+        /* Story cards */
+        .story-card {
+            background: linear-gradient(135deg, var(--surface-card), rgba(90, 41, 228, 0.08));
+            border-left: 4px solid var(--axios-primary);
+        }
+
+        .story-card .story-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .story-card .story-title .emoji {
+            font-size: 1.5rem;
+        }
+
+        .story-card .story-title h3 {
+            margin-bottom: 0;
+        }
+
+        .story-card .moral {
+            margin-top: 1rem;
+            padding: 0.8rem 1rem;
+            background: rgba(90, 41, 228, 0.12);
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            font-size: 0.9rem;
+        }
+
+        /* Insight cards */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .insight-card {
+            background: var(--surface-card);
+            border: 1px solid rgba(90, 41, 228, 0.2);
+            border-radius: 14px;
+            padding: 1.4rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .insight-card:hover {
+            background: var(--surface-card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(90, 41, 228, 0.15);
+        }
+
+        .insight-card .number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--axios-primary);
+            opacity: 0.3;
+            position: absolute;
+            top: 0.8rem;
+            right: 1rem;
+        }
+
+        .insight-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--axios-glow);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-card p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Mistake list */
+        .mistake-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1.2rem 1.5rem;
+            background: var(--surface-card);
+            border: 1px solid rgba(244, 63, 94, 0.15);
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .mistake-item:hover {
+            background: var(--surface-card-hover);
+            border-color: rgba(244, 63, 94, 0.35);
+            transform: translateX(5px);
+        }
+
+        .mistake-item .mistake-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+        }
+
+        .mistake-item .mistake-content h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            margin-bottom: 0.3rem;
+        }
+
+        .mistake-item .mistake-content p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* PBX Section */
+        .pbx-highlight {
+            background: linear-gradient(135deg, rgba(90, 41, 228, 0.1), rgba(34, 211, 238, 0.08));
+            border: 1px solid rgba(90, 41, 228, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .pbx-highlight h3 {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pbx-highlight ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pbx-highlight li {
+            padding: 0.6rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+        }
+
+        .pbx-highlight li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--axios-glow);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        /* Code blocks */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(90, 41, 228, 0.15);
+            padding: 0.15rem 0.45rem;
+            border-radius: 5px;
+            font-size: 0.85em;
+            color: var(--accent-green);
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.2rem;
+            background: var(--surface-card);
+            border: 1px solid rgba(90, 41, 228, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(90, 41, 228, 0.2);
+        }
+
+        .stat-item .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--axios-glow), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(90, 41, 228, 0.15);
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .insight-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .container { padding: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.6rem; }
+            .stats-bar { grid-template-columns: 1fr 1fr; }
+            .method-tags { gap: 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-cosmos"></div>
+
+<!-- Floating HTTP methods -->
+<span class="floating-badge get">GET</span>
+<span class="floating-badge post">POST</span>
+<span class="floating-badge put">PUT</span>
+<span class="floating-badge delete">DELETE</span>
+<span class="floating-badge patch">PATCH</span>
+<span class="floating-badge get">200 OK</span>
+<span class="floating-badge delete">404</span>
+<span class="floating-badge post">201</span>
+
+<div class="container">
+
+    <!-- Nav -->
+    <nav class="nav-bar">
+        <div class="logo">PBX Agent Hub</div>
+        <div class="agent-id">Agent #15 &bull; Axios v1.13</div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+        <div class="avatar-container">
+            <div class="avatar">&#9889;</div>
+            <div class="status-orb"></div>
+        </div>
+        <h1>API Chi&#7871;n Th&#7847;n</h1>
+        <p class="subtitle">B&#7853;c th&#7847;y Axios &amp; REST API &mdash; Ng&#432;&#7901;i canh gi&#7919; m&#7885;i request trong d&#7921; &#225;n PBX</p>
+        <p class="tagline">&ldquo;T&#244;i kh&#244;ng g&#7917;i request. T&#244;i g&#7917;i <em>l&#7901;i nguy&#7879;n</em> &#273;&#7871;n server, v&#224; server ph&#7843;i tr&#7843; l&#7901;i.&rdquo;</p>
+        <div class="method-tags">
+            <span class="method-tag get">GET</span>
+            <span class="method-tag post">POST</span>
+            <span class="method-tag put">PUT</span>
+            <span class="method-tag patch">PATCH</span>
+            <span class="method-tag delete">DELETE</span>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">1M+</div>
+            <div class="stat-label">Request &#273;&#227; g&#7917;i</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">99.7%</div>
+            <div class="stat-label">Uptime API</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">42ms</div>
+            <div class="stat-label">Avg Response</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Bug CORS c&#242;n s&#243;t</div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION 1: BACKSTORY ===== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="icon">&#128220;</div>
+            <h2>Truy&#7873;n Thuy&#7871;t <span>API Chi&#7871;n Th&#7847;n</span></h2>
+        </div>
+        <div class="card">
+            <h3>&#128308; K&#7867; sinh ra t&#7915; nh&#7919;ng d&#242;ng JSON</h3>
+            <p>
+                Ng&#224;y x&#432;a, ng&#224;y x&#432;a... c&#243; m&#7897;t c&#7853;u b&#233; sinh ra trong m&#7897;t th&#7871; gi&#7899;i m&#224; m&#7885;i th&#7913; &#273;&#7873;u &#273;&#432;&#7907;c g&#7917;i qua HTTP.
+                C&#7853;u b&#233; &#7845;y ch&#7859;ng bi&#7871;t &#273;i, ch&#7881; bi&#7871;t <code>GET</code>. Ch&#7859;ng bi&#7871;t vi&#7871;t, ch&#7881; bi&#7871;t <code>POST</code>.
+                Mu&#7889;n x&#243;a g&#236;, c&#7853;u d&#249;ng <code>DELETE</code>. Mu&#7889;n s&#7917;a, c&#7853;u d&#249;ng <code>PUT</code>.
+                V&#224; khi l&#7899;n l&#234;n, c&#7853;u nh&#7853;n ra m&#236;nh c&#243; m&#7897;t s&#7913;c m&#7841;nh phi th&#432;&#7901;ng &mdash; <strong>kh&#7843; n&#259;ng intercept m&#7885;i request v&#224; response</strong>
+                tr&#432;&#7899;c khi ch&#250;ng ch&#7841;m t&#7899;i &#273;&#237;ch.
+            </p>
+            <p style="margin-top: 1rem;">
+                T&#7915; &#273;&#243;, ng&#432;&#7901;i ta g&#7885;i c&#7853;u l&#224; <strong>API Chi&#7871;n Th&#7847;n</strong> &mdash; ng&#432;&#7901;i n&#7855;m gi&#7919; 6 vi&#234;n ng&#7885;c v&#244; c&#7921;c:
+            </p>
+            <ul style="margin-top: 0.8rem; padding-left: 1.5rem;">
+                <li><strong>RESTful Principles</strong> &mdash; Ng&#7885;c Kh&#244;ng Tr&#7841;ng Th&#225;i (Stateless)</li>
+                <li><strong>HTTP Methods</strong> &mdash; Ng&#7885;c Ng&#361; H&#224;nh (GET, POST, PUT, PATCH, DELETE)</li>
+                <li><strong>Interceptors</strong> &mdash; Ng&#7885;c Th&#7901;i Gian (b&#7855;t request/response gi&#7919;a &#273;&#432;&#7901;ng)</li>
+                <li><strong>Error Handling</strong> &mdash; Ng&#7885;c Kh&#244;ng Gian (x&#7917; l&#253; m&#7885;i status code)</li>
+                <li><strong>Retry Logic</strong> &mdash; Ng&#7885;c B&#7845;t T&#7917; (th&#7845;t b&#7841;i th&#236; th&#7917; l&#7841;i!)</li>
+                <li><strong>Cancellation Tokens</strong> &mdash; Ng&#7885;c H&#7911;y Di&#7879;t (h&#7911;y request khi kh&#244;ng c&#7847;n n&#7919;a)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>&#128161; Chuy&#234;n m&#244;n s&#226;u</h3>
+            <p>
+                API Chi&#7871;n Th&#7847;n th&#244;ng th&#7841;o <strong>Axios 1.13</strong> nh&#432; m&#7897;t &#273;&#7847;u b&#7871;p th&#244;ng th&#7841;o con dao.
+                Request/Response transformation? D&#7877; nh&#432; &#259;n ch&#225;o.
+                T&#7915; vi&#7879;c thi&#7871;t l&#7853;p <code>baseURL</code>, c&#7845;u h&#236;nh <code>timeout</code>,
+                &#273;&#7871;n vi&#7879;c g&#7855;n <code>Authorization: Bearer token</code> t&#7921; &#273;&#7897;ng qua interceptors &mdash;
+                t&#7845;t c&#7843; &#273;&#7873;u &#273;&#432;&#7907;c x&#7917; l&#253; m&#432;&#7907;t m&#224; nh&#432; l&#7909;a.
+                V&#224; &#273;&#7915;ng quên: khi server tr&#7843; v&#7873; l&#7895;i 401, Chi&#7871;n Th&#7847;n s&#7869; l&#7863;ng l&#7869; refresh token
+                v&#224; g&#7917;i l&#7841;i request nh&#432; ch&#432;a c&#243; g&#236; x&#7843;y ra. &#272;&#7859;ng c&#7845;p l&#224; v&#297;nh c&#7917;u.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: INSIGHTS ===== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="icon">&#128218;</div>
+            <h2>B&#237; K&#237;p <span>Axios Th&#7845;t Truy&#7873;n</span></h2>
+        </div>
+        <div class="insight-grid">
+            <div class="insight-card">
+                <div class="number">01</div>
+                <h4>T&#7841;o Axios Instance ri&#234;ng</h4>
+                <p>
+                    &#272;&#7915;ng bao gi&#7901; d&#249;ng <code>axios</code> global. H&#227;y t&#7841;o instance ri&#234;ng v&#7899;i
+                    <code>axios.create()</code> &#273;&#7875; m&#7895;i module c&#243; <code>baseURL</code>,
+                    <code>headers</code>, <code>timeout</code> ri&#234;ng. Gi&#7889;ng nh&#432; m&#7895;i v&#245; s&#297; c&#7847;n thanh ki&#7871;m ri&#234;ng v&#7853;y.
+                </p>
+            </div>
+            <div class="insight-card">
+                <div class="number">02</div>
+                <h4>Interceptors l&#224; b&#7843;o b&#7889;i</h4>
+                <p>
+                    Request interceptor &#273;&#7875; g&#7855;n token. Response interceptor &#273;&#7875; b&#7855;t l&#7895;i to&#224;n c&#7909;c.
+                    &#272;&#226;y l&#224; n&#417;i t&#7889;t nh&#7845;t &#273;&#7875; x&#7917; l&#253; 401 v&#224; auto-refresh token.
+                    Nh&#7899;: interceptor ch&#7841;y theo th&#7913; t&#7921; ng&#432;&#7907;c &mdash; c&#225;i th&#234;m sau ch&#7841;y tr&#432;&#7899;c!
+                </p>
+            </div>
+            <div class="insight-card">
+                <div class="number">03</div>
+                <h4>Retry v&#7899;i Exponential Backoff</h4>
+                <p>
+                    Khi g&#7863;p l&#7895;i 5xx ho&#7863;c network error, &#273;&#7915;ng b&#7887; cu&#7897;c. H&#227;y retry v&#7899;i delay t&#259;ng d&#7847;n:
+                    1s, 2s, 4s... D&#249;ng <code>axios-retry</code> ho&#7863;c t&#7921; vi&#7871;t. Server c&#361;ng c&#7847;n
+                    th&#7901;i gian ngh&#7881; ng&#417;i ch&#7913;, &#273;&#7915;ng spam n&#243;!
+                </p>
+            </div>
+            <div class="insight-card">
+                <div class="number">04</div>
+                <h4>AbortController thay CancelToken</h4>
+                <p>
+                    <code>CancelToken</code> &#273;&#227; b&#7883; deprecated t&#7915; Axios 0.22. H&#227;y d&#249;ng
+                    <code>AbortController</code> chu&#7849;n c&#7911;a tr&#236;nh duy&#7879;t. &#272;&#7863;c bi&#7879;t h&#7919;u &#237;ch khi
+                    user chuy&#7875;n trang m&#224; request c&#361; v&#7851;n ch&#432;a xong &mdash; h&#7911;y n&#243; &#273;i cho s&#7841;ch!
+                </p>
+            </div>
+            <div class="insight-card">
+                <div class="number">05</div>
+                <h4>Transform data t&#7841;i interceptor</h4>
+                <p>
+                    Backend tr&#7843; <code>snake_case</code>? Frontend c&#7847;n <code>camelCase</code>?
+                    &#272;&#7863;t logic transform &#7903; response interceptor. M&#7897;t ch&#7895;, m&#7897;t l&#7847;n,
+                    kh&#244;ng bao gi&#7901; l&#7863;p l&#7841;i &#7903; t&#7915;ng component. DRY l&#224; &#273;&#7841;o!
+                </p>
+            </div>
+            <div class="insight-card">
+                <div class="number">06</div>
+                <h4>X&#7917; l&#253; error t&#7853;p trung</h4>
+                <p>
+                    &#272;&#7915;ng try-catch &#7903; m&#7895;i n&#417;i g&#7885;i API. H&#227;y t&#7841;o m&#7897;t error handler chung
+                    trong response interceptor: hi&#7879;n toast cho 4xx, redirect cho 401,
+                    log cho 5xx. R&#245; r&#224;ng, g&#7885;n g&#224;ng, chuy&#234;n nghi&#7879;p.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 3: FUN STORIES ===== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="icon">&#128214;</div>
+            <h2>Chuy&#7879;n &#272;&#7901;i <span>C&#7911;a &#212;ng N&#7897;i API</span></h2>
+        </div>
+
+        <!-- Story 1: CORS -->
+        <div class="card story-card">
+            <div class="story-title">
+                <span class="emoji">&#128123;</span>
+                <h3>C&#417;n &#193;c M&#7897;ng Mang T&#234;n CORS</h3>
+            </div>
+            <p>
+                Ng&#224;y x&#7917;a, &#244;ng n&#7897;i c&#242;n tr&#7867;, m&#7899;i v&#224;o ngh&#7873; code. &#212;ng vi&#7871;t c&#225;i API &#273;&#7865;p nh&#432; m&#417;,
+                test b&#7857;ng Postman th&#236; m&#432;&#7907;t m&#224; nh&#432; l&#7909;a. T&#7921; tin deploy l&#234;n, m&#7903; tr&#236;nh duy&#7879;t ra g&#7885;i...
+                <strong>&ldquo;Access-Control-Allow-Origin&rdquo;</strong> &#273;&#7887; l&#242;m. &#212;ng t&#432;&#7903;ng server h&#7887;ng,
+                restart 15 l&#7847;n, &#273;&#7893;i 3 c&#225;i port, th&#7853;m ch&#237; c&#242;n t&#7855;t c&#7843; firewall.
+            </p>
+            <p style="margin-top: 0.5rem;">
+                Cu&#7889;i c&#249;ng, sau 6 ti&#7871;ng v&#7853;t l&#7897;n, m&#7897;t th&#7857;ng dev senior &#273;i ngang n&#243;i:
+                <em>&ldquo;Anh &#417;i, anh thi&#7871;u c&#225;i header <code>Access-Control-Allow-Origin</code> &#7903; backend.&rdquo;</em>
+                &#212;ng n&#7897;i su&#7889;t mu&#7889;n b&#7887; ngh&#7873;. Nh&#432;ng kh&#244;ng, &#244;ng &#7903; l&#7841;i v&#224; tr&#7903; th&#224;nh... Chi&#7871;n Th&#7847;n.
+                T&#7915; &#273;&#243;, &#244;ng lu&#244;n d&#7863;n ch&#225;u: <em>&ldquo;CORS kh&#244;ng ph&#7843;i bug frontend &#273;&#226;u con, n&#243; l&#224; backend qu&#234;n c&#7845;u h&#236;nh!&rdquo;</em>
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: CORS l&#224; v&#7845;n &#273;&#7873; c&#7911;a server, kh&#244;ng ph&#7843;i client. Postman kh&#244;ng c&#243; CORS v&#236; n&#243; kh&#244;ng ph&#7843;i tr&#236;nh duy&#7879;t!</div>
+        </div>
+
+        <!-- Story 2: 401 infinite loop -->
+        <div class="card story-card">
+            <div class="story-title">
+                <span class="emoji">&#128256;</span>
+                <h3>V&#242;ng L&#7863;p 401 V&#244; T&#7853;n &mdash; Khi Refresh Token C&#361;ng H&#7871;t H&#7841;n</h3>
+            </div>
+            <p>
+                M&#7897;t ng&#224;y n&#7885;, &#244;ng n&#7897;i vi&#7871;t interceptor t&#7921; &#273;&#7897;ng refresh token khi g&#7863;p 401.
+                Logic ch&#7841;y ngon l&#7855;m: g&#7863;p 401 &rarr; g&#7885;i refresh &rarr; l&#7845;y token m&#7899;i &rarr; g&#7917;i l&#7841;i request. Tuy&#7879;t v&#7901;i!
+            </p>
+            <p style="margin-top: 0.5rem;">
+                Nh&#432;ng &#244;ng qu&#234;n m&#7897;t &#273;i&#7873;u: <strong>c&#225;i API refresh token c&#361;ng c&#243; th&#7875; tr&#7843; 401</strong>.
+                V&#224; interceptor l&#7841;i b&#7855;t 401 &#273;&#243;, l&#7841;i g&#7885;i refresh, l&#7841;i 401, l&#7841;i g&#7885;i...
+                Tab tr&#236;nh duy&#7879;t crash sau 30 gi&#226;y v&#7899;i 10,000 request. PM &#273;&#7913;ng &#273;&#7857;ng sau:
+                <em>&ldquo;Sao server n&#243; b&#7883; DDoS v&#7853;y anh?&rdquo;</em>
+                &#212;ng n&#7897;i: <em>&ldquo;&#192;... do anh t&#7921; DDoS ch&#237;nh m&#236;nh.&rdquo;</em>
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: Lu&#244;n exclude endpoint refresh token kh&#7887;i interceptor, ho&#7863;c &#273;&#7863;t gi&#7899;i h&#7841;n retry. &#272;&#7915;ng &#273;&#7875; con r&#7855;n c&#7855;n &#273;u&#244;i m&#236;nh!</div>
+        </div>
+
+        <!-- Story 3: Forgetting to await -->
+        <div class="card story-card">
+            <div class="story-title">
+                <span class="emoji">&#128565;</span>
+                <h3>Qu&#234;n Await &mdash; Data &#272;&#226;u R&#7891;i?!</h3>
+            </div>
+            <p>
+                C&#243; l&#7847;n, &#244;ng n&#7897;i c&#243; m&#7897;t th&#7857;ng ch&#225;u intern m&#7899;i v&#224;o. N&#243; g&#7885;i API xong r&#7891;i
+                <code>console.log(data)</code> ra &#273;&#432;&#7907;c... <code>Promise {&lt;pending&gt;}</code>.
+                N&#243; h&#7887;i: <em>&ldquo;&#212;ng &#417;i, sao API tr&#7843; v&#7873; c&#225;i Promise m&#224; kh&#244;ng tr&#7843; data v&#7853;y &#244;ng?&rdquo;</em>
+            </p>
+            <p style="margin-top: 0.5rem;">
+                &#212;ng n&#7897;i nh&#236;n code, th&#7845;y thi&#7871;u <code>await</code> tr&#432;&#7899;c <code>axios.get()</code>.
+                &#212;ng ch&#7881; n&#243;i m&#7897;t c&#226;u: <em>&ldquo;Con &#417;i, g&#7885;i API m&#224; kh&#244;ng await, gi&#7889;ng nh&#432; g&#7885;i
+                &#273;i&#7879;n r&#7891;i c&#250;p m&#225;y tr&#432;&#7899;c khi ng&#432;&#7901;i ta tr&#7843; l&#7901;i v&#7853;y. Ai l&#224;m th&#7871; bao gi&#7901;?&rdquo;</em>
+                Th&#7857;ng ch&#225;u t&#7915; &#273;&#243; kh&#244;ng bao gi&#7901; qu&#234;n <code>await</code> n&#7919;a.
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: axios.get/post/put/delete tr&#7843; v&#7873; Promise. Lu&#244;n await ho&#7863;c .then(). &#272;&#7915;ng &#273;&#7875; Promise n&#243; tr&#244;i d&#7841;t!</div>
+        </div>
+
+        <!-- Story 4: Wrong HTTP method -->
+        <div class="card story-card">
+            <div class="story-title">
+                <span class="emoji">&#129327;</span>
+                <h3>D&#249;ng Sai HTTP Method &mdash; GET V&#7899;i Body</h3>
+            </div>
+            <p>
+                M&#7897;t ch&#224;ng trai tr&#7867; trong team, t&#7921; tin nh&#432; m&#7897;t con c&#244;ng, quy&#7871;t &#273;&#7883;nh g&#7917;i
+                <code>GET</code> request v&#7899;i body ch&#7913;a 15 filters phức tạp.
+                <em>&ldquo;GET n&#243; c&#361;ng g&#7917;i body &#273;&#432;&#7907;c m&#224;, em test Postman OK r&#7891;i!&rdquo;</em>
+            </p>
+            <p style="margin-top: 0.5rem;">
+                Deploy l&#234;n production, load balancer n&#243; strip h&#7871;t body c&#7911;a GET request.
+                API tr&#7843; v&#7873; to&#224;n b&#7897; database v&#236; kh&#244;ng c&#243; filter. 500GB data bay th&#7859;ng v&#224;o tr&#236;nh duy&#7879;t.
+                &#212;ng n&#7897;i nghe tin, ch&#7881; l&#7855;c &#273;&#7847;u: <em>&ldquo;GET l&#224; &#273;&#7875; l&#7845;y, kh&#244;ng ph&#7843;i &#273;&#7875; g&#7917;i.
+                Mu&#7889;n g&#7917;i data th&#236; d&#249;ng POST. &#272;&#226;y l&#224; quy lu&#7853;t c&#7911;a tr&#7901;i &#273;&#7845;t, kh&#244;ng ai thay &#273;&#7893;i &#273;&#432;&#7907;c!&rdquo;</em>
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: GET kh&#244;ng n&#234;n c&#243; body (d&#249; spec kh&#244;ng c&#7845;m). N&#7871;u c&#7847;n g&#7917;i data ph&#7913;c t&#7841;p, d&#249;ng POST ho&#7863;c query params.</div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 4: COMMON MISTAKES ===== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="icon">&#128683;</div>
+            <h2>L&#7895;i Sai <span>Kinh &#272;i&#7875;n</span> Khi L&#224;m REST API</h2>
+        </div>
+
+        <div class="mistake-item">
+            <div class="mistake-icon">&#128128;</div>
+            <div class="mistake-content">
+                <h4>1. Kh&#244;ng x&#7917; l&#253; error response</h4>
+                <p>
+                    G&#7885;i API xong th&#236; ch&#7881; x&#7917; l&#253; <code>.then()</code>, b&#7887; m&#7863;c <code>.catch()</code>
+                    nh&#432; b&#7887; r&#417;i ng&#432;&#7901;i y&#234;u c&#361;. Khi server tr&#7843; 500, app im l&#7863;ng ch&#7871;t nh&#432; thi&#7871;n &#273;&#7883;nh.
+                    User t&#432;&#7903;ng app h&#7887;ng, PM t&#432;&#7903;ng dev l&#432;&#7901;i, dev th&#236;... &#273;ang ng&#7911;.
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <div class="mistake-icon">&#128163;</div>
+            <div class="mistake-content">
+                <h4>2. Hardcode URL trong component</h4>
+                <p>
+                    <code>axios.get('http://localhost:3000/api/users')</code> &mdash; Xin ch&#250;c m&#7915;ng,
+                    b&#7841;n v&#7915;a t&#7841;o ra m&#7897;t qu&#7843; bom h&#7865;n gi&#7901;! Deploy l&#234;n production l&#224; n&#7893;.
+                    H&#227;y d&#249;ng <code>baseURL</code> v&#224; environment variables nh&#432; ng&#432;&#7901;i v&#259;n minh.
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <div class="mistake-icon">&#127917;</div>
+            <div class="mistake-content">
+                <h4>3. Kh&#244;ng set timeout</h4>
+                <p>
+                    Kh&#244;ng c&#243; <code>timeout</code>, request s&#7869; ch&#7901; m&#227;i m&#227;i nh&#432; ch&#7901; ng&#432;&#7901;i y&#234;u c&#361; quay l&#7841;i.
+                    Server &#273;i ng&#7911; 30 ph&#250;t? User c&#361;ng ch&#7901; 30 ph&#250;t.
+                    Set timeout 10-15 gi&#226;y r&#7891;i hi&#7879;n th&#244;ng b&#225;o l&#7895;i cho &#273;&#224;ng ho&#224;ng!
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <div class="mistake-icon">&#128038;</div>
+            <div class="mistake-content">
+                <h4>4. G&#7917;i token trong URL</h4>
+                <p>
+                    <code>/api/users?token=abc123</code> &mdash; Ch&#250;c m&#7915;ng, token c&#7911;a b&#7841;n &#273;&#227; xu&#7845;t hi&#7879;n
+                    trong server log, browser history, v&#224; c&#243; th&#7875; c&#7843; Google n&#7919;a.
+                    Token thu&#7897;c v&#7873; <code>Authorization</code> header, kh&#244;ng ph&#7843;i query string!
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <div class="mistake-icon">&#9889;</div>
+            <div class="mistake-content">
+                <h4>5. G&#7885;i API trong v&#242;ng l&#7863;p kh&#244;ng ki&#7875;m so&#225;t</h4>
+                <p>
+                    <code>users.forEach(u => axios.delete(`/api/user/${u.id}`))</code> &mdash;
+                    1000 users = 1000 request c&#249;ng l&#250;c. Server: <em>&ldquo;Ai &#273;ang DDoS t&#244;i v&#7853;y?&rdquo;</em>
+                    H&#227;y d&#249;ng <code>Promise.all()</code> v&#7899;i batch, ho&#7863;c g&#7917;i m&#7897;t request v&#7899;i danh s&#225;ch IDs.
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <div class="mistake-icon">&#128584;</div>
+            <div class="mistake-content">
+                <h4>6. &#272;&#7863;t t&#234;n endpoint kh&#244;ng RESTful</h4>
+                <p>
+                    <code>POST /api/getUserByIdAndDeleteIfInactive</code> &mdash; &#272;&#226;y kh&#244;ng ph&#7843;i REST,
+                    &#273;&#226;y l&#224; ti&#7875;u thuy&#7871;t. REST d&#249;ng danh t&#7915; (nouns), kh&#244;ng ph&#7843;i &#273;&#7897;ng t&#7915;:
+                    <code>GET /api/users/:id</code> v&#224; <code>DELETE /api/users/:id</code>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 5: PBX PROJECT ===== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="icon">&#9742;&#65039;</div>
+            <h2>Vai Tr&#242; Trong <span>D&#7921; &#193;n PBX</span></h2>
+        </div>
+
+        <div class="pbx-highlight">
+            <h3>&#128268; Axios L&#224; C&#7847;u N&#7889;i Gi&#7919;a Vue.js v&#224; .NET Backend</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.2rem; font-size: 0.95rem;">
+                Trong d&#7921; &#225;n PBX, m&#7885;i t&#432;&#417;ng t&#225;c gi&#7919;a giao di&#7879;n ng&#432;&#7901;i d&#249;ng (Vue.js + DevExtreme)
+                v&#224; h&#7879; th&#7889;ng backend (.NET) &#273;&#7873;u &#273;i qua Axios. API Chi&#7871;n Th&#7847;n ch&#7883;u tr&#225;ch nhi&#7879;m &#273;&#7843;m b&#7843;o
+                m&#7885;i request &#273;&#7873;u nhanh, &#273;&#250;ng, v&#224; an to&#224;n.
+            </p>
+            <ul>
+                <li>
+                    <strong>Qu&#7843;n l&#253; phi&#234;n &#273;&#259;ng nh&#7853;p (Auth):</strong> Interceptor t&#7921; &#273;&#7897;ng g&#7855;n
+                    <code>Bearer token</code> v&#224;o m&#7895;i request. Khi token h&#7871;t h&#7841;n (401),
+                    t&#7921; &#273;&#7897;ng refresh v&#224; retry &mdash; ng&#432;&#7901;i d&#249;ng kh&#244;ng h&#7873; bi&#7871;t.
+                </li>
+                <li>
+                    <strong>G&#7885;i API qu&#7843;n l&#253; cu&#7897;c g&#7885;i:</strong> L&#7845;y danh s&#225;ch extension, l&#7883;ch s&#7917; cu&#7897;c g&#7885;i,
+                    tr&#7841;ng th&#225;i t&#7893;ng &#273;&#224;i &mdash; t&#7845;t c&#7843; qua REST API v&#7899;i Axios instance chuy&#234;n d&#7909;ng.
+                </li>
+                <li>
+                    <strong>X&#7917; l&#253; l&#7895;i t&#7853;p trung:</strong> M&#7885;i l&#7895;i API (4xx, 5xx) &#273;&#7873;u &#273;&#432;&#7907;c b&#7855;t &#7903; response interceptor,
+                    hi&#7879;n th&#244;ng b&#225;o DevExtreme toast ph&#249; h&#7907;p. Kh&#244;ng &#273;&#7875; user th&#7845;y trang tr&#7855;ng.
+                </li>
+                <li>
+                    <strong>Cancel request khi chuy&#7875;n trang:</strong> D&#249;ng <code>AbortController</code>
+                    k&#7871;t h&#7907;p v&#7899;i Vue Router navigation guard &#273;&#7875; h&#7911;y request c&#361; khi user chuy&#7875;n route.
+                    Ti&#7871;t ki&#7879;m t&#224;i nguy&#234;n, tr&#225;nh memory leak.
+                </li>
+                <li>
+                    <strong>Retry cho API quan tr&#7885;ng:</strong> C&#225;c API li&#234;n quan &#273;&#7871;n &#273;&#7891;ng b&#7897; tr&#7841;ng th&#225;i &#273;i&#7879;n tho&#7841;i IP
+                    &#273;&#432;&#7907;c c&#7845;u h&#236;nh retry 3 l&#7847;n v&#7899;i exponential backoff. M&#7845;t k&#7871;t n&#7889;i 1 gi&#226;y
+                    kh&#244;ng c&#243; ngh&#297;a l&#224; m&#7845;t cu&#7897;c g&#7885;i!
+                </li>
+                <li>
+                    <strong>API Gateway Proxy:</strong> Axios g&#7885;i qua Node.js gateway (Agent #13)
+                    &#273;&#7875; &#273;&#7871;n backend .NET. BaseURL &#273;&#432;&#7907;c c&#7845;u h&#236;nh theo environment:
+                    dev, staging, production &mdash; kh&#244;ng hardcode bao gi&#7901;.
+                </li>
+                <li>
+                    <strong>Request/Response Logging:</strong> M&#7885;i API call &#273;&#7873;u &#273;&#432;&#7907;c log &#7903; interceptor
+                    (ch&#7881; &#7903; dev mode) &#273;&#7875; debug nhanh. Production th&#236; t&#7855;t &#273;&#7875; kh&#244;ng l&#7897; th&#244;ng tin nh&#7841;y c&#7843;m.
+                </li>
+            </ul>
+        </div>
+
+        <div class="card" style="margin-top: 1.2rem;">
+            <h3>&#128640; Ki&#7871;n tr&#250;c Axios trong PBX</h3>
+            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 2; color: var(--accent-green); background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 10px; overflow-x: auto;">
+                Vue Component<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&#8595; g&#7885;i API service<br>
+                Pinia Store / Composable<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&#8595; axios.get/post/put/delete<br>
+                Axios Instance (baseURL, timeout, headers)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&#8595; Request Interceptor (g&#7855;n token)<br>
+                Node.js Gateway (proxy)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&#8595; forward<br>
+                .NET Backend API<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&#8595; response<br>
+                Response Interceptor (transform, error handling)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&#8595; data<br>
+                Vue Component &#128154;
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>PBX Agent #15 &bull; API Chi&#7871;n Th&#7847;n &bull; Axios v1.13 &bull; &ldquo;M&#7885;i request &#273;&#7873;u c&#243; c&#226;u chuy&#7879;n ri&#234;ng&rdquo;</p>
+        <p style="margin-top: 0.4rem;">SotaTek &copy; 2026 &mdash; D&#7921; &#225;n PBX</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

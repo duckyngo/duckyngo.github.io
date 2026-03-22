@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Profile - Tin Hieu Vuong | SignalR Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal-50: #f0fdfa;
+            --teal-100: #ccfbf1;
+            --teal-200: #99f6e4;
+            --teal-300: #5eead4;
+            --teal-400: #2dd4bf;
+            --teal-500: #14b8a6;
+            --teal-600: #0d9488;
+            --teal-700: #0f766e;
+            --teal-800: #115e59;
+            --teal-900: #134e4a;
+            --green-400: #4ade80;
+            --green-500: #22c55e;
+            --green-600: #16a34a;
+            --emerald-400: #34d399;
+            --emerald-500: #10b981;
+            --dark-900: #0c1220;
+            --dark-800: #111827;
+            --dark-700: #1a2332;
+            --dark-600: #243044;
+            --dark-500: #2d3b50;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-900);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(13, 148, 136, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Signal pulse lines background */
+        @keyframes signalFlow {
+            0% { transform: translateX(-100%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw); opacity: 0; }
+        }
+
+        @keyframes signalFlowReverse {
+            0% { transform: translateX(100vw); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-100%); opacity: 0; }
+        }
+
+        .signal-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .signal-line {
+            position: absolute;
+            height: 1px;
+            width: 120px;
+            background: linear-gradient(90deg, transparent, var(--teal-400), transparent);
+            opacity: 0;
+        }
+
+        .signal-line:nth-child(1) { top: 15%; animation: signalFlow 6s ease-in-out infinite; animation-delay: 0s; }
+        .signal-line:nth-child(2) { top: 30%; animation: signalFlowReverse 8s ease-in-out infinite; animation-delay: 1s; width: 80px; }
+        .signal-line:nth-child(3) { top: 50%; animation: signalFlow 7s ease-in-out infinite; animation-delay: 2s; width: 150px; }
+        .signal-line:nth-child(4) { top: 70%; animation: signalFlowReverse 5s ease-in-out infinite; animation-delay: 0.5s; width: 100px; }
+        .signal-line:nth-child(5) { top: 85%; animation: signalFlow 9s ease-in-out infinite; animation-delay: 3s; width: 60px; }
+        .signal-line:nth-child(6) { top: 40%; animation: signalFlowReverse 6.5s ease-in-out infinite; animation-delay: 1.5s; width: 90px; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb a {
+            color: var(--teal-400);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--teal-300);
+        }
+
+        /* Hero / Avatar Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 30px 10px rgba(20, 184, 166, 0.15); }
+        }
+
+        @keyframes connectionPulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            border: 2px solid var(--teal-400);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            animation: connectionPulse 3s ease-out infinite;
+        }
+
+        .avatar-ring:nth-child(2) { animation-delay: 1s; }
+        .avatar-ring:nth-child(3) { animation-delay: 2s; }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal-700), var(--teal-500), var(--emerald-400));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+            z-index: 2;
+            border: 3px solid var(--teal-400);
+            box-shadow: 0 0 40px rgba(20, 184, 166, 0.3);
+        }
+
+        /* Connection status indicator */
+        .status-dot {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: var(--green-400);
+            border-radius: 50%;
+            border: 3px solid var(--dark-800);
+            z-index: 3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--teal-300), var(--green-400), var(--teal-200));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.1rem;
+            color: var(--teal-400);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .hero .tagline {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .badge-teal {
+            background: rgba(20, 184, 166, 0.1);
+            border-color: rgba(20, 184, 166, 0.3);
+            color: var(--teal-300);
+        }
+
+        .badge-green {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--green-400);
+        }
+
+        .badge-emerald {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--emerald-400);
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--dark-600);
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--teal-800), var(--teal-700));
+            border-radius: 12px;
+            border: 1px solid var(--teal-600);
+        }
+
+        .section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-header h2 span {
+            color: var(--teal-400);
+        }
+
+        /* Card styles */
+        .card {
+            background: var(--dark-800);
+            border: 1px solid var(--dark-600);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--teal-700);
+            box-shadow: 0 4px 20px rgba(20, 184, 166, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .card p strong {
+            color: var(--teal-300);
+        }
+
+        /* Backstory card */
+        .backstory-card {
+            background: linear-gradient(135deg, var(--dark-800), var(--dark-700));
+            border: 1px solid var(--teal-800);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backstory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal-500), var(--green-400), var(--teal-500));
+        }
+
+        .backstory-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            line-height: 1.8;
+        }
+
+        .backstory-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Skills grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .skill-item {
+            background: var(--dark-700);
+            border: 1px solid var(--dark-600);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .skill-item:hover {
+            border-color: var(--teal-600);
+            background: var(--dark-600);
+        }
+
+        .skill-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--teal-400);
+            flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(20, 184, 166, 0.5);
+        }
+
+        .skill-item span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Secret technique cards */
+        .secret-card {
+            background: var(--dark-800);
+            border: 1px solid var(--dark-600);
+            border-left: 4px solid var(--teal-500);
+            border-radius: 0 16px 16px 0;
+            padding: 24px;
+            margin-bottom: 16px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .secret-card:hover {
+            border-left-color: var(--green-400);
+            box-shadow: 0 4px 16px rgba(20, 184, 166, 0.1);
+            transform: translateX(4px);
+        }
+
+        .secret-number {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--dark-600);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .secret-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .secret-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .secret-card code {
+            background: var(--dark-700);
+            border: 1px solid var(--dark-500);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--teal-300);
+        }
+
+        /* Story cards */
+        .story-card {
+            background: linear-gradient(135deg, var(--dark-800), rgba(15, 118, 110, 0.05));
+            border: 1px solid var(--dark-600);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.06) 0%, transparent 70%);
+        }
+
+        .story-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 14px;
+        }
+
+        .story-card h3 .story-emoji {
+            margin-right: 8px;
+        }
+
+        .story-card p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.9;
+            margin-bottom: 12px;
+        }
+
+        .story-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .story-moral {
+            background: rgba(20, 184, 166, 0.08);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.88rem;
+            color: var(--teal-300);
+            font-style: italic;
+        }
+
+        /* Mistake cards */
+        .mistake-card {
+            background: var(--dark-800);
+            border: 1px solid var(--dark-600);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.3s;
+        }
+
+        .mistake-card:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .mistake-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .mistake-content h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 6px;
+        }
+
+        .mistake-content p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .mistake-fix {
+            margin-top: 8px;
+            padding: 8px 14px;
+            background: rgba(20, 184, 166, 0.08);
+            border: 1px solid rgba(20, 184, 166, 0.15);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--teal-300);
+        }
+
+        /* PBX relevance section */
+        .pbx-card {
+            background: linear-gradient(135deg, var(--dark-800), rgba(15, 118, 110, 0.08));
+            border: 1px solid var(--teal-800);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pbx-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal-500), var(--green-400), var(--emerald-500));
+        }
+
+        .pbx-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 16px;
+        }
+
+        .pbx-card p {
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .pbx-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .pbx-feature {
+            background: var(--dark-700);
+            border: 1px solid var(--dark-500);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pbx-feature:hover {
+            border-color: var(--teal-600);
+            transform: translateY(-2px);
+        }
+
+        .pbx-feature .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .pbx-feature h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 6px;
+        }
+
+        .pbx-feature p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Architecture diagram */
+        .architecture-box {
+            background: var(--dark-900);
+            border: 1px solid var(--dark-500);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--teal-300);
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.6;
+        }
+
+        /* Connection animation */
+        @keyframes dataStream {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .data-stream-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--dark-700), var(--teal-500), var(--green-400), var(--teal-500), var(--dark-700));
+            background-size: 200% 100%;
+            animation: dataStream 3s linear infinite;
+            margin: 30px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--dark-600);
+            margin-top: 40px;
+        }
+
+        .footer p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .footer .agent-id {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--teal-500);
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .container { padding: 12px; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .pbx-feature-grid { grid-template-columns: 1fr; }
+            .mistake-card { flex-direction: column; }
+            .architecture-box { font-size: 0.65rem; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated signal lines background -->
+    <div class="signal-lines">
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="./index.html">Agent Hub</a>
+            <span>/</span>
+            <span>02 - SignalR Expert</span>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="avatar-wrapper">
+                <div class="avatar-ring"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar">&#x1F4E1;</div>
+                <div class="status-dot"></div>
+            </div>
+
+            <h1>Tin Hieu Vuong</h1>
+            <p class="subtitle">SignalR Grandmaster &bull; Vua Thoi Gian Thuc</p>
+            <p class="tagline">
+                "Ngay ta chua sinh ra, WebSocket da goi ten ta. Ngay ta lon len, moi connection deu di qua tay ta.
+                Ta la nguoi giup client va server noi chuyen voi nhau khong can gui thu!"
+            </p>
+
+            <div class="badge-row">
+                <span class="badge badge-teal">&#x1F50C; SignalR Hub</span>
+                <span class="badge badge-green">&#x26A1; WebSocket</span>
+                <span class="badge badge-emerald">&#x1F4E8; Real-time Events</span>
+                <span class="badge badge-teal">&#x1F504; Connection Lifecycle</span>
+                <span class="badge badge-green">&#x1F465; Groups & Users</span>
+                <span class="badge badge-emerald">&#x1F6E0; .NET + Vue.js</span>
+            </div>
+        </header>
+
+        <div class="data-stream-bar"></div>
+
+        <!-- Experience & Expertise -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x1F3AF;</div>
+                <h2>Than The & <span>Noi Luc</span></h2>
+            </div>
+
+            <div class="backstory-card">
+                <p>
+                    Chuyen ke rang, tu thuo xa xua khi HTTP con la "gui thu roi doi" -- mot chieu, mot request, mot response,
+                    roi chia tay nhau mai mai -- co mot cau be ten <strong>Tin Hieu Vuong</strong> luon tu hoi:
+                    "Tai sao client va server khong the noi chuyen voi nhau nhu hai nguoi ban?"
+                </p>
+                <p>
+                    Cau be lon len, di khap cac vung dat <strong>Long Polling</strong> (gui request lien tuc nhu nhan tin cho crush khong tra loi),
+                    vung dat <strong>Server-Sent Events</strong> (server chi biet noi ma khong biet nghe -- giong ong ba ke chuyen),
+                    cho den khi cau gap duoc than ky <strong>WebSocket</strong> -- kenh giao tiep hai chieu, full-duplex, nhu hai
+                    nguoi noi chuyen dien thoai that su!
+                </p>
+                <p>
+                    Nhung WebSocket tho qua, kho quan ly qua. Cau can mot lop ao dai dang cap hon. Va the la
+                    <strong>SignalR</strong> ra doi -- lop abstraction tuyet voi cua Microsoft, tu dong chon transport tot nhat
+                    (WebSocket &gt; SSE &gt; Long Polling), quan ly connection, ho tro Groups, va con nhieu dieu ky dieu khac.
+                    Tin Hieu Vuong tro thanh cao thu, mang thong diep real-time den moi noi, khong ai bi "delay"!
+                </p>
+            </div>
+
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>SignalR Hub & Hub Protocol</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>WebSocket, SSE, Long Polling</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Connection Lifecycle</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Groups & User Mapping</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Reconnection Strategies</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Scale-out voi Redis Backplane</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>MessagePack Protocol</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Authentication & Authorization</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Strongly-typed Hubs</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Client SDK (.NET, JS, Vue)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights / Secret Techniques -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x1F4DC;</div>
+                <h2>Bi Kip <span>Chuyen Gia</span></h2>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">01</div>
+                <h3>&#x1F504; Hieu Dung Transport Fallback</h3>
+                <p>
+                    SignalR khong chi la WebSocket! No tu dong "fallback" theo thu tu:
+                    <code>WebSocket</code> &#x2192; <code>Server-Sent Events</code> &#x2192; <code>Long Polling</code>.
+                    Nhieu junior nghi WebSocket la tat ca, nhung khi client nam sau proxy cua cong ty (khong ho tro WS),
+                    SSE hoac Long Polling se cuu mang. Dung bao gio ep transport -- hay de SignalR tu chon!
+                    Ngoai tru khi ban biet chinh xac moi truong deploy.
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">02</div>
+                <h3>&#x1F465; Group la Vu Khi Bi Mat</h3>
+                <p>
+                    <code>Groups.AddToGroupAsync(connectionId, "room-123")</code> -- chi mot dong code nay thoi
+                    ma suc manh vo cung. Thay vi loop qua tat ca connection de gui message, ban chi can
+                    <code>Clients.Group("room-123").SendAsync(...)</code>. Trong PBX, moi phong call la mot Group.
+                    Agent join Group khi nhan cuoc goi, roi roi Group khi ket thuc. Sach, gon, hieu qua.
+                    Luu y: Group tu dong xoa khi khong con connection nao -- khong can don dep!
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">03</div>
+                <h3>&#x1F512; ConnectionId Khong Phai La Dinh Danh Nguoi Dung</h3>
+                <p>
+                    Day la sai lam kinh dien. <code>ConnectionId</code> thay doi moi lan reconnect!
+                    Nguoi dung mo 3 tab trinh duyet = 3 ConnectionId khac nhau. Muon gui cho "nguoi dung A"?
+                    Dung <code>Clients.User(userId)</code> -- SignalR se tu map qua <code>IUserIdProvider</code>.
+                    Hoac tu xay mot <code>Dictionary&lt;userId, List&lt;connectionId&gt;&gt;</code> trong
+                    <code>OnConnectedAsync</code> / <code>OnDisconnectedAsync</code>. Dung bao gio luu
+                    ConnectionId vao database lam "user identifier"!
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">04</div>
+                <h3>&#x1F680; Scale-out Voi Redis Backplane</h3>
+                <p>
+                    Khi deploy nhieu instance server (2, 3, 10 instance...), client A ket noi vao server 1,
+                    client B vao server 2. Lam sao A gui tin nhan cho B? Cau tra loi:
+                    <code>AddStackExchangeRedis()</code> -- Redis Backplane se dong bo message giua cac server.
+                    Moi message gui tu server 1 se duoc Redis fan-out den server 2, 3... Khong co Redis Backplane,
+                    he thong multi-instance cua ban se "cam nhu dieu" -- tin nhan mat tich bi an.
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">05</div>
+                <h3>&#x2764; Strongly-Typed Hub La Tinh Yeu</h3>
+                <p>
+                    Thay vi <code>Clients.All.SendAsync("ReceiveMessage", msg)</code> -- de bi loi typo,
+                    hay dung <code>Hub&lt;ICallHubClient&gt;</code> voi interface dinh nghia san.
+                    Khi do ban goi <code>Clients.All.ReceiveCallEvent(data)</code> -- compiler se bao loi
+                    neu ten method sai. Trong du an lon nhu PBX, mot chu viet sai ten method = ca team debug 2 ngay.
+                    Strongly-typed Hub la "bao hiem nhan tho" cho developer!
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">06</div>
+                <h3>&#x1F6E1; Reconnection -- Nghe Thuat Khong De Mat Ket Noi</h3>
+                <p>
+                    Client SignalR (.js) co <code>withAutomaticReconnect([0, 2000, 5000, 10000, 30000])</code> --
+                    tu dong ket noi lai voi thoi gian tang dan. Nhung luu y: trong luc mat ket noi,
+                    moi event server gui deu <strong>mat</strong>! Khong co "message queue" tu dong.
+                    Ban phai tu xu ly: khi reconnect thanh cong, goi API lay state moi nhat.
+                    Trong PBX, khi agent reconnect, phai goi lai <code>GetCurrentCallState()</code>
+                    de dong bo trang thai cuoc goi.
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">07</div>
+                <h3>&#x1F4E6; MessagePack -- Nhanh Hon JSON 5 Lan</h3>
+                <p>
+                    SignalR mac dinh dung JSON. Nhung neu ban can performance cao (nhu PBX voi hang tram
+                    cuoc goi dong thoi), chuyen sang <code>MessagePack</code> -- binary protocol nho hon,
+                    nhanh hon JSON 5-10 lan. Chi can <code>AddMessagePackProtocol()</code> o server
+                    va <code>withHubProtocol(new MessagePackHubProtocol())</code> o client.
+                    Trade-off: kho debug hon vi khong doc duoc bang mat thuong.
+                </p>
+            </div>
+        </section>
+
+        <div class="data-stream-bar"></div>
+
+        <!-- Fun Stories -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x1F4DA;</div>
+                <h2>Chuyen Doi Xua <span>Ke Lai</span></h2>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F4AC;</span> Cai Ngay Tin Nhan Di Lac</h3>
+                <p>
+                    Ngay xua ngay xua, co mot anh developer tre ten Minh, xay chat feature cho he thong PBX.
+                    Anh Minh dung <code>Clients.All.SendAsync("ReceiveMessage", msg)</code> de gui tin nhan.
+                    Moi thu chay ngon lanh... cho den khi sep goi dien cho khach hang ma tin nhan "Anh oi em di an trua khong?"
+                    cua co nhan vien Lan hien len tren man hinh cua TAT CA 200 nguoi trong cong ty.
+                </p>
+                <p>
+                    Sep do mat, khach hang cuoi ngat, co Lan muon chui xuong dat. Anh Minh hoc duoc bai hoc dau doi:
+                    <code>Clients.All</code> nghia la <strong>TAT CA MOI NGUOI</strong>, ke ca sep, ke ca khach hang,
+                    ke ca ong bao ve.
+                </p>
+                <div class="story-moral">
+                    Bai hoc: Luon dung <code>Clients.User(userId)</code> hoac <code>Clients.Group(groupId)</code>.
+                    <code>Clients.All</code> chi dung cho broadcast thong bao toan he thong. Dung bao gio gui tin nhan
+                    rieng tu qua <code>Clients.All</code>!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F50C;</span> "Connection Ma" Luc Nua Dem</h3>
+                <p>
+                    Mot dem khuya, team dev nhan duoc alert: server RAM tang vot 95%. Tat ca hoang hot check.
+                    Hoa ra, co mot trang admin dashboard ma khong ai dong -- no cu reconnect lien tuc,
+                    tao ra hang ngan "connection ma" (zombie connections).
+                </p>
+                <p>
+                    Ly do: anh dev A viet code <code>withAutomaticReconnect()</code> nhung quen xu ly
+                    <code>onclose</code>. Moi lan mat mang wifi (van phong dem hay bi), client reconnect
+                    nhung connection cu khong duoc dispose. Server om giu hang ngan connection khong ai dung,
+                    nhu mot quan cafe giu 1000 cai ban dat truoc nhung khong ai den!
+                </p>
+                <div class="story-moral">
+                    Bai hoc: Luon implement <code>OnDisconnectedAsync()</code> o server de don dep.
+                    Va o client, xu ly <code>onclose</code> event dung cach. Connection phai co sinh co tu
+                    -- khong duoc chi sinh ma khong tu!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F4DD;</span> Loi Chinh Ta Trieu Do</h3>
+                <p>
+                    Anh Tuan -- senior dev 5 nam kinh nghiem, tu tin viet code SignalR nhu "an com binh dan".
+                    Server gui: <code>SendAsync("RecieveCallUpdate", data)</code>.
+                    Client lang nghe: <code>connection.on("ReceiveCallUpdate", callback)</code>.
+                </p>
+                <p>
+                    Ban nhin thay loi chua? "Rec<strong>ie</strong>ve" vs "Rec<strong>ei</strong>ve" -- mot loi chinh ta nho xiu
+                    ma ca team debug 3 ngay troi. Postman test API: ok. Server log: da gui. Client: khong nhan duoc gi het.
+                    Anh Tuan nho om, toc bac them vai soi. QA report bug "P0 - Critical". PM hoi hang ngay
+                    "fix xong chua?". Cuoi cung co em intern moi vao, doc code 5 phut, chi ra loi typo.
+                </p>
+                <div class="story-moral">
+                    Bai hoc: LUON dung <code>Hub&lt;IClientInterface&gt;</code> (strongly-typed hub).
+                    Compiler se bao loi chinh ta ngay luc build -- khong can doi 3 ngay debug.
+                    Va nho: em intern doi khi gioi hon senior, vi em doc code bang "mat tuoi"!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F30D;</span> Scale-out Kinh Hoang</h3>
+                <p>
+                    Khi he thong PBX len production voi 2 server instances, moi thu on... trong 5 phut dau tien.
+                    Sau do khach hang bao: "Toi goi dien nhung dashboard khong cap nhat!". Kiem tra: agent A ket noi
+                    server 1, dashboard cua manager ket noi server 2. Server 1 gui event "cuoc goi moi" nhung
+                    server 2 khong biet gi het -- nhu hai ong hang xom khong bao gio noi chuyen voi nhau!
+                </p>
+                <p>
+                    Team cap toc cai Redis Backplane luc 2h sang. Deploy xong, moi thu thong suot. Nhung hom sau,
+                    Redis bi restart va... ca he thong im lang nhu to chua. Hoa ra chua config reconnect cho Redis!
+                </p>
+                <div class="story-moral">
+                    Bai hoc: Multi-instance = bat buoc co Backplane (Redis/Azure SignalR Service).
+                    Va luon config retry policy cho Backplane connection. Khong co Backplane,
+                    he thong multi-server chi la "nhieu server co don dung canh nhau".
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Mistakes -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x26A0;</div>
+                <h2>Sai Lam <span>Muon Thuo</span></h2>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F4A5;</div>
+                <div class="mistake-content">
+                    <h3>Luu ConnectionId vao Database</h3>
+                    <p>
+                        ConnectionId thay doi moi lan reconnect, moi tab trinh duyet la mot ConnectionId khac.
+                        Luu no vao DB nhu luu so dien thoai tam -- ngay mai no da doi so roi!
+                        Dung User mapping hoac tu quan ly dictionary in-memory.
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Dung <code>IUserIdProvider</code> de map userId &harr; connections tu dong.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F634;</div>
+                <div class="mistake-content">
+                    <h3>Blocking Call Trong Hub Method</h3>
+                    <p>
+                        Goi <code>.Result</code> hoac <code>.Wait()</code> trong Hub method = tu sat.
+                        SignalR Hub chi co gioi han so thread xu ly. Block mot thread = giam throughput ca he thong.
+                        Nhu ban di vao nha hang chi co 10 ban ma ngoi lam viec ca ngay!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Luon dung <code>async/await</code>. Khong bao gio <code>.Result</code> trong Hub.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F4E2;</div>
+                <div class="mistake-content">
+                    <h3>Dung Clients.All Cho Moi Thu</h3>
+                    <p>
+                        "Tien thi gui het cho tat ca" -- tu duy nay lam 100 nguoi nhan tin nhan chi danh cho 1 nguoi.
+                        Ton bandwidth, lo thong tin, va user bao: "Sao toi thay cuoc goi cua nguoi khac?"
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: <code>Clients.User()</code>, <code>Clients.Group()</code>, hoac
+                        <code>Clients.Client(connectionId)</code> tuy truong hop.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F4A8;</div>
+                <div class="mistake-content">
+                    <h3>Khong Xu Ly Reconnection Phia Client</h3>
+                    <p>
+                        Client mat mang 3 giay, reconnect thanh cong, nhung trang thai da cu. User thay dashboard
+                        "dung hinh" -- cuoc goi da ket thuc nhung van hien "dang goi". Vi trong 3 giay mat ket noi,
+                        event "cuoc goi ket thuc" da bi mat!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Khi <code>onreconnected</code>, goi API lay trang thai moi nhat. Khong tin tuong
+                        "data cu" tren UI.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F6AB;</div>
+                <div class="mistake-content">
+                    <h3>Gui Object Qua Lon Qua SignalR</h3>
+                    <p>
+                        Gui ca cai List 10,000 records qua SignalR "cho nhanh" -- nhu nhoi ca con voi vao
+                        duong ong nuoc! SignalR de gui event nho, realtime, khong phai de truyen file.
+                        Message lon lam cham tat ca connection khac trong cung Hub.
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Chi gui notification nho (ID, type, summary). Client tu goi REST API de lay data day du.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F513;</div>
+                <div class="mistake-content">
+                    <h3>Quen Authentication Cho Hub</h3>
+                    <p>
+                        Hub endpoint mo toang cho bat ky ai ket noi. Khong co <code>[Authorize]</code>,
+                        khong validate token. Bat ky ai biet URL deu co the lang nghe moi cuoc goi trong he thong!
+                        Bao mat nhu... khong co cua!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: <code>[Authorize]</code> tren Hub class. Gui JWT qua access_token query string
+                        (vi WebSocket khong ho tro header). Config
+                        <code>OnMessageReceived</code> de doc token.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F648;</div>
+                <div class="mistake-content">
+                    <h3>Khong Don Dep Khi Disconnect</h3>
+                    <p>
+                        User dong tab, connection chet, nhung server van giu reference trong memory.
+                        Sau 1 tuan, server nhu mot cai kho chua day hop rong -- RAM day nghet,
+                        GC chay lien tuc, performance xuong vuc!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Override <code>OnDisconnectedAsync()</code>. Xoa user khoi dictionary,
+                        roi khoi Group, don dep moi resource lien quan.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="data-stream-bar"></div>
+
+        <!-- PBX Project Relevance -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x260E;</div>
+                <h2>Vai Tro Trong <span>Du An PBX</span></h2>
+            </div>
+
+            <div class="pbx-card">
+                <h3>&#x1F4E1; CallHub -- Trai Tim Thoi Gian Thuc Cua PBX</h3>
+                <p>
+                    Trong du an PBX, <strong>SignalR CallHub</strong> la thanh phan cot loi de truyen tai
+                    trang thai cuoc goi tu .NET backend den Vue.js frontend theo thoi gian thuc. Moi khi co
+                    cuoc goi den, cuoc goi chuyen tiep, agent pick up, hoac cuoc goi ket thuc --
+                    tat ca deu duoc push qua CallHub ngay lap tuc, khong can polling!
+                </p>
+                <p>
+                    CallHub hoat dong nhu "tong dai vien so" -- lang nghe moi su kien tu SIP server,
+                    bien doi thanh event co cau truc, roi day xuong dung agent, dung dashboard, dung man hinh
+                    can hien thi. Khong co CallHub, agent phai F5 lien tuc de biet co cuoc goi moi -- that la
+                    mot tham hoa UX!
+                </p>
+
+                <div class="architecture-box">
+&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;      &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;      &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
+&#x2502;   SIP Server    &#x2502; ───▶ &#x2502;  .NET Backend        &#x2502; ───▶ &#x2502;   Vue.js Client  &#x2502;
+&#x2502;   (Asterisk)    &#x2502;      &#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510; &#x2502;      &#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510; &#x2502;
+&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;      &#x2502;  &#x2502;   CallHub     &#x2502; &#x2502; ═══▶ &#x2502;  &#x2502;  Pinia Store&#x2502; &#x2502;
+                           &#x2502;  &#x2502;  (SignalR)   &#x2502; &#x2502;      &#x2502;  &#x2502;  &#x2192; UI Update&#x2502; &#x2502;
+  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;      &#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518; &#x2502;      &#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518; &#x2502;
+  &#x2502;  Redis          &#x2502; ◄──▶ &#x2502;                    &#x2502;      &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+  &#x2502;  (Backplane)    &#x2502;      &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+
+  ═══▶  WebSocket (real-time, bi-directional)
+  ───▶  HTTP/SIP events</div>
+
+                <div class="pbx-feature-grid">
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F4DE;</div>
+                        <h4>Cuoc Goi Den</h4>
+                        <p>Push event "IncomingCall" toi agent dang ranh, hien popup ngay lap tuc</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F504;</div>
+                        <h4>Chuyen Tiep</h4>
+                        <p>Notify agent moi khi co cuoc goi duoc transfer, cap nhat UI realtime</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F4CA;</div>
+                        <h4>Dashboard Live</h4>
+                        <p>Manager xem so cuoc goi, trang thai agent, thoi gian cho -- tat ca realtime</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F514;</div>
+                        <h4>Agent Status</h4>
+                        <p>Dong bo trang thai Available/Busy/Away giua tat ca cac man hinh</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F50A;</div>
+                        <h4>Call Recording</h4>
+                        <p>Thong bao khi recording bat dau/ket thuc, luu tru hoan tat</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F6A8;</div>
+                        <h4>Alert & Warning</h4>
+                        <p>Push canh bao khi hang doi qua dai, agent mat ket noi, loi he thong</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                "Moi connection la mot soi day ket noi con nguoi. Ta khong chi gui data -- ta gui su tin tuong."
+            </p>
+            <p class="agent-id">
+                AGENT-02 &bull; TIN-HIEU-VUONG &bull; SIGNALR-SPECIALIST &bull; PBX-TEAM
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>

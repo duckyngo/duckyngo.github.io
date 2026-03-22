@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 04 — Vue Đại Hiệp | Vue.js 3 Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --vue-green: #42b883;
+            --vue-dark-green: #35495e;
+            --vue-light-green: #5edba6;
+            --vue-mint: #a8f0d4;
+            --vue-navy: #2c3e50;
+            --vue-teal: #1a9e6f;
+            --bg-dark: #0a1f15;
+            --card-bg: rgba(240, 255, 248, 0.95);
+            --text-dark: #1a3a2a;
+            --text-light: #e6fff2;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #0a1f15 0%, #0d2a1c 25%, #0a1f15 50%, #061410 100%);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(66, 184, 131, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(53, 73, 94, 0.06) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(94, 219, 166, 0.04) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(2%, -1%) scale(1.02); }
+            66% { transform: translate(-1%, 2%) scale(0.98); }
+        }
+
+        /* Floating Vue logos */
+        .floating-vue {
+            position: fixed;
+            font-size: 1.6rem;
+            opacity: 0.08;
+            animation: floatUp 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+            color: var(--vue-green);
+            font-weight: 900;
+        }
+
+        .floating-vue:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 22s; }
+        .floating-vue:nth-child(2) { left: 15%; animation-delay: 4s; animation-duration: 18s; }
+        .floating-vue:nth-child(3) { left: 25%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-vue:nth-child(4) { left: 40%; animation-delay: 6s; animation-duration: 20s; }
+        .floating-vue:nth-child(5) { left: 55%; animation-delay: 1s; animation-duration: 23s; }
+        .floating-vue:nth-child(6) { left: 70%; animation-delay: 5s; animation-duration: 19s; }
+        .floating-vue:nth-child(7) { left: 85%; animation-delay: 3s; animation-duration: 21s; }
+        .floating-vue:nth-child(8) { left: 92%; animation-delay: 7s; animation-duration: 24s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.08; }
+            90% { opacity: 0.08; }
+            100% { transform: translateY(-100vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        /* === MAIN CONTAINER === */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* === HERO HEADER === */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem;
+            box-shadow: 0 0 60px rgba(66, 184, 131, 0.4), 0 0 120px rgba(66, 184, 131, 0.15);
+            animation: avatarGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes avatarGlow {
+            0% { box-shadow: 0 0 60px rgba(66, 184, 131, 0.4), 0 0 120px rgba(66, 184, 131, 0.15); }
+            100% { box-shadow: 0 0 80px rgba(66, 184, 131, 0.6), 0 0 160px rgba(66, 184, 131, 0.25); }
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 184px;
+            height: 184px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--vue-green);
+            border-right-color: var(--vue-light-green);
+            animation: spinRing 4s linear infinite;
+        }
+
+        .avatar-ring-2 {
+            position: absolute;
+            top: -22px;
+            left: -22px;
+            width: 204px;
+            height: 204px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-bottom-color: var(--vue-mint);
+            border-left-color: var(--vue-teal);
+            animation: spinRing 6s linear infinite reverse;
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-light-green), var(--vue-mint));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: none;
+            animation: titleShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--vue-mint);
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .hero-tagline {
+            font-size: 1rem;
+            color: rgba(168, 240, 212, 0.6);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: rgba(66, 184, 131, 0.15);
+            color: var(--vue-mint);
+            border: 1px solid rgba(66, 184, 131, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        /* === SECTION STYLES === */
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+        .section:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-teal));
+            box-shadow: 0 4px 20px rgba(66, 184, 131, 0.3);
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--vue-light-green);
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: rgba(168, 240, 212, 0.5);
+            font-weight: 400;
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(66, 184, 131, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vue-green), var(--vue-light-green), var(--vue-teal));
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+        }
+
+        .card p {
+            line-height: 1.8;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        /* === BACKSTORY === */
+        .backstory-text {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-dark);
+        }
+
+        .backstory-text .highlight {
+            color: var(--vue-teal);
+            font-weight: 700;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-card {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.08), rgba(53, 73, 94, 0.05));
+            border: 1px solid rgba(66, 184, 131, 0.2);
+            border-radius: 14px;
+            padding: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.15), rgba(53, 73, 94, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .skill-card-title {
+            font-weight: 700;
+            color: var(--vue-teal);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .skill-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        /* === INSIGHTS (BI KIP) === */
+        .insight-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--vue-green);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .insight-item:hover {
+            border-left-color: var(--vue-light-green);
+            transform: translateX(6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .insight-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-teal));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 0.85rem;
+            box-shadow: 0 3px 12px rgba(66, 184, 131, 0.4);
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--vue-dark-green);
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .insight-desc {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .insight-code {
+            background: var(--vue-dark-green);
+            color: var(--vue-mint);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        /* === STORIES === */
+        .story-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(66, 184, 131, 0.12);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vue-green), transparent);
+        }
+
+        .story-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .story-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--vue-dark-green);
+            margin-bottom: 0.8rem;
+        }
+
+        .story-text {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: var(--text-dark);
+        }
+
+        .story-moral {
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.1), rgba(26, 158, 111, 0.08));
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--vue-teal);
+            font-size: 0.9rem;
+            border-left: 3px solid var(--vue-green);
+        }
+
+        /* === MISTAKES === */
+        .mistake-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .mistake-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(66, 184, 131, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .mistake-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .mistake-icon {
+            font-size: 2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .mistake-title {
+            font-weight: 700;
+            color: #c0392b;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mistake-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            opacity: 0.9;
+        }
+
+        .mistake-fix {
+            margin-top: 0.8rem;
+            padding: 0.5rem 0.8rem;
+            background: rgba(66, 184, 131, 0.1);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--vue-teal);
+            font-weight: 600;
+        }
+
+        /* === PBX RELEVANCE === */
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .pbx-card {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.06), rgba(53, 73, 94, 0.04));
+            border: 1px solid rgba(66, 184, 131, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .pbx-card:hover {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.12), rgba(53, 73, 94, 0.08));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .pbx-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .pbx-card-title {
+            font-weight: 700;
+            color: var(--vue-teal);
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pbx-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(66, 184, 131, 0.15);
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: rgba(168, 240, 212, 0.4);
+        }
+
+        .footer-vue {
+            font-size: 1.2rem;
+            color: var(--vue-green);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+            .hero-subtitle { font-size: 1.1rem; }
+            .container { padding: 1rem 1rem 3rem; }
+            .hero { padding: 2.5rem 1rem; }
+            .avatar { width: 120px; height: 120px; font-size: 3.5rem; }
+            .avatar-ring { width: 144px; height: 144px; top: -12px; left: -12px; }
+            .avatar-ring-2 { width: 164px; height: 164px; top: -22px; left: -22px; }
+            .section-title { font-size: 1.4rem; }
+            .card { padding: 1.5rem; }
+            .skill-grid { grid-template-columns: 1fr; }
+            .mistake-grid { grid-template-columns: 1fr; }
+            .pbx-grid { grid-template-columns: 1fr; }
+            .badge-row { gap: 0.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.8rem; }
+            .section-header { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ANIMATED BACKGROUND -->
+    <div class="bg-animation"></div>
+    <div class="floating-vue">V</div>
+    <div class="floating-vue">&lt;/&gt;</div>
+    <div class="floating-vue">ref()</div>
+    <div class="floating-vue">V</div>
+    <div class="floating-vue">.vue</div>
+    <div class="floating-vue">V</div>
+    <div class="floating-vue">setup()</div>
+    <div class="floating-vue">V</div>
+
+    <div class="container">
+
+        <!-- ==================== HERO ==================== -->
+        <header class="hero">
+            <div class="avatar-container">
+                <div class="avatar-ring-2"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar">&#9889;</div>
+            </div>
+            <h1 class="hero-title">Vue Dai Hiep</h1>
+            <p class="hero-subtitle">Agent 04 &mdash; Dai Su Composition API &amp; Reactivity</p>
+            <p class="hero-tagline">
+                "Mot ref() dung cho bang muoi dong code Options API. Tin ta di, ta da tu tran chien Options API di len roi."
+            </p>
+            <div class="badge-row">
+                <span class="badge">&#9889; Vue 3.5</span>
+                <span class="badge">&#128218; Composition API</span>
+                <span class="badge">&#127795; Pinia</span>
+                <span class="badge">&#128739; Vue Router</span>
+                <span class="badge">&#128311; TypeScript</span>
+                <span class="badge">&#128200; DevExtreme</span>
+            </div>
+        </header>
+
+        <!-- ==================== BACKSTORY ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128214;</div>
+                <div>
+                    <h2 class="section-title">Than The &amp; Lai Lich</h2>
+                    <span class="section-subtitle">Cau chuyen cua ke luyen vo Vue tu thuo so khai</span>
+                </div>
+            </div>
+            <div class="card">
+                <p class="backstory-text">
+                    Ngay xua ngay xua, o mot vung dat xa xoi goi la <span class="highlight">JavaScript Kingdom</span>,
+                    co mot chang thieu nien ten la <span class="highlight">Vue Dai Hiep</span>. Chang lon len trong thoi ky
+                    jQuery thong tri thien ha &mdash; khi ma viec thao tac DOM bang tay la chuyen thuong ngay o huyen.
+                    <br><br>
+                    Mot ngay no, chang tinh co gap duoc <span class="highlight">Evan You</span> &mdash; vi dai su sang tao ra Vue.js.
+                    Evan truyen cho chang bi kip <span class="highlight">Reactivity System</span>, day chang cach dung
+                    <span class="highlight">ref()</span> va <span class="highlight">reactive()</span> de bien doi du lieu ma UI tu dong cap nhat
+                    nhu co phep thuat.
+                    <br><br>
+                    Tu do, Vue Dai Hiep lang thang khap giang ho, tu <span class="highlight">Options API</span> chuyen sang
+                    <span class="highlight">Composition API</span>, tu <span class="highlight">Vuex</span> chuyen sang
+                    <span class="highlight">Pinia</span>, luyen thanh <span class="highlight">computed()</span>,
+                    <span class="highlight">watch()</span>, <span class="highlight">watchEffect()</span>,
+                    va nam vung tat ca <span class="highlight">lifecycle hooks</span> tu onMounted den onUnmounted.
+                    Chang con ket ban voi <span class="highlight">Vue Router</span> de di khap cac trang, va hoc cach
+                    phoi hop voi <span class="highlight">TypeScript</span> de code them vung chac.
+                </p>
+            </div>
+
+            <div class="skill-grid">
+                <div class="skill-card">
+                    <div class="skill-card-title">&#9889; Composition API</div>
+                    <div class="skill-card-desc">Master setup(), ref(), reactive(), composables. Gom logic nhu gom do an vao hop &mdash; gon gang, sach se, tai su dung duoc.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128161; Reactivity System</div>
+                    <div class="skill-card-desc">Hieu ro Proxy, dependency tracking, effect scheduling. Biet duoc khi nao Vue "theo doi" ban va khi nao no "bo qua" ban.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128200; Computed &amp; Watch</div>
+                    <div class="skill-card-desc">computed() cho gia tri phai sinh, watch() cho side effects. Biet khi nao dung cai nao nhu biet khi nao an com, khi nao an pho.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#127795; Pinia Store</div>
+                    <div class="skill-card-desc">Quan ly state toan cuc voi Pinia. Actions, getters, $subscribe &mdash; moi thu deu trong tam tay. Vuex da la qua khu.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128739; Vue Router</div>
+                    <div class="skill-card-desc">Navigation guards, lazy loading, dynamic routes, nested routes. Dieu huong trang web nhu GPS dinh vi cuoc doi.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128311; TypeScript</div>
+                    <div class="skill-card-desc">defineProps&lt;T&gt;(), defineEmits&lt;T&gt;(), generic components. TypeScript la ao giap bao ve code khoi loi type luc runtime.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== INSIGHTS (BI KIP) ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128220;</div>
+                <div>
+                    <h2 class="section-title">Bi Kip Vue.js</h2>
+                    <span class="section-subtitle">Nhung dieu ta hoc duoc sau bao nhieu lan "deploy xong moi phat hien bug"</span>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">1</div>
+                <div class="insight-title">ref() vs reactive() &mdash; Chon sai la kho ca doi</div>
+                <div class="insight-desc">
+                    <strong>ref()</strong> cho primitive values (string, number, boolean) va khi can .value de truy cap.
+                    <strong>reactive()</strong> cho object/array nhung KHONG BAO GIO destructure truc tiep, vi se mat reactivity.
+                    Meo: cu dung ref() cho moi thu, an toan hon nhieu. reactive() chi dung khi ban thuc su hieu minh dang lam gi.
+                </div>
+                <div class="insight-code">
+// SAI - mat reactivity khi destructure<br>
+const state = reactive({ count: 0 })<br>
+const { count } = state // count khong reactive nua!<br><br>
+// DUNG - dung ref() hoac toRefs()<br>
+const count = ref(0) // luon reactive<br>
+const { count } = toRefs(state) // van reactive
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">2</div>
+                <div class="insight-title">Composables &mdash; Vu khi bi mat cua Composition API</div>
+                <div class="insight-desc">
+                    Dung tao component khong lo voi 500 dong code trong setup(). Hay tach logic ra thanh cac composable function
+                    (useXxx). Day la ly do Composition API ton tai &mdash; de ban co the tai su dung logic giua cac component
+                    ma khong can mixins (cai thu doc hai do).
+                </div>
+                <div class="insight-code">
+// composables/useCallStatus.ts<br>
+export function useCallStatus() {<br>
+&nbsp;&nbsp;const isOnCall = ref(false)<br>
+&nbsp;&nbsp;const duration = ref(0)<br>
+&nbsp;&nbsp;const startCall = () => { isOnCall.value = true }<br>
+&nbsp;&nbsp;return { isOnCall, duration, startCall }<br>
+}
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">3</div>
+                <div class="insight-title">watchEffect() vs watch() &mdash; Hai anh em khac tinh</div>
+                <div class="insight-desc">
+                    <strong>watchEffect()</strong> tu dong theo doi moi dependency ben trong va chay ngay lap tuc.
+                    <strong>watch()</strong> chi theo doi nhung gi ban chi dinh va cho ban gia tri cu + moi.
+                    Meo: watchEffect() cho "toi muon lam gi do khi bat ky dependency nao thay doi".
+                    watch() cho "toi muon biet cu the cai gi thay doi va gia tri truoc la bao nhieu".
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">4</div>
+                <div class="insight-title">Template Refs + nextTick() &mdash; Doi DOM san sang</div>
+                <div class="insight-desc">
+                    Khi ban thay doi reactive data, DOM khong cap nhat ngay lap tuc. Vue "gom" cac thay doi lai va cap nhat mot lan.
+                    Neu ban can truy cap DOM ngay sau khi thay doi data, hay dung <strong>nextTick()</strong>.
+                    Day la sai lam kinh dien cua nguoi moi: thay doi data roi doc DOM ngay &mdash; va tu hoi tai sao no van la gia tri cu.
+                </div>
+                <div class="insight-code">
+const message = ref('Xin chao')<br>
+message.value = 'Tam biet'<br><br>
+// SAI: DOM chua cap nhat<br>
+console.log(el.textContent) // van la "Xin chao"<br><br>
+// DUNG: doi nextTick<br>
+await nextTick()<br>
+console.log(el.textContent) // "Tam biet"
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">5</div>
+                <div class="insight-title">provide/inject &mdash; Chong Prop Drilling</div>
+                <div class="insight-desc">
+                    Khi ban truyen props qua 5-6 tang component, code se tro nen nhu cai cay Giang sinh &mdash; dep nhung roi.
+                    <strong>provide/inject</strong> cho phep component ong truyen thang data cho component chau ma khong can qua trung gian.
+                    Nhung nho: dung lam dung, vi debug se kho hon khi ban khong biet data den tu dau.
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">6</div>
+                <div class="insight-title">defineModel() &mdash; Vuot cua Vue 3.4+</div>
+                <div class="insight-desc">
+                    Truoc Vue 3.4, two-way binding cho component tu lam la cuc hinh: defineProps + defineEmits + computed get/set.
+                    Gio chi can <strong>defineModel()</strong> la xong. Mot dong thay ba muoi dong.
+                    Day la minh chung rang Vue luon tien hoa de dev bot kho.
+                </div>
+                <div class="insight-code">
+// Truoc Vue 3.4 - dai dong dong<br>
+const props = defineProps(['modelValue'])<br>
+const emit = defineEmits(['update:modelValue'])<br>
+const value = computed({<br>
+&nbsp;&nbsp;get: () => props.modelValue,<br>
+&nbsp;&nbsp;set: (v) => emit('update:modelValue', v)<br>
+})<br><br>
+// Vue 3.4+ - gon nhu tho<br>
+const value = defineModel&lt;string&gt;()
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FUN STORIES ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128214;</div>
+                <div>
+                    <h2 class="section-title">Chuyen Ke Ben Bep Lua</h2>
+                    <span class="section-subtitle">Ong noi Vue ke chuyen cho con chau nghe</span>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#128163;</span>
+                <h3 class="story-title">Cai Bay Reactivity &mdash; Hay Cach Ong Mat 3 Ngay Debug</h3>
+                <p class="story-text">
+                    Ngay xua, ong co mot cai object lon nhu cai nha, ong bo no vao <code>reactive()</code> dep de lam.
+                    Roi mot ngay, ong can truyen mot phan cua no cho component con. Ong vui ve destructure:
+                    <code>const { name, age } = userState</code>.
+                    <br><br>
+                    Ong thay doi <code>name</code>, nhung UI cu nhu tuong &mdash; khong nhuc nhich. Ong tuong Vue bi loi.
+                    Ong doc lai docs. Ong hoi Stack Overflow. Ong thuc den 3 gio sang.
+                    <br><br>
+                    Hoa ra, khi destructure reactive object, cac gia tri primitive bi "tach roi" khoi Proxy va mat het reactivity.
+                    Ong phai dung <code>toRefs()</code> hoac <code>storeToRefs()</code> voi Pinia store.
+                    Tu do, ong khong bao gio destructure reactive object nua. Ong bao con chau: <strong>"Dung bao gio xat nho reactivity ra!"</strong>
+                </p>
+                <div class="story-moral">
+                    &#128161; Bai hoc: Destructure reactive object = mat reactivity. Dung toRefs() hoac cu truy cap qua object goc.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#9876;</span>
+                <h3 class="story-title">Cuoc Chien v-if vs v-show &mdash; Ai Moi La Vo Lam Minh Chu?</h3>
+                <p class="story-text">
+                    O mot du an ngay xua, team ong co hai phe: phe <code>v-if</code> va phe <code>v-show</code>.
+                    Phe v-if noi: "Toi tiet kiem DOM node, toi la vuong!" Phe v-show dap: "Toi toggle nhanh hon, toi moi la vuong!"
+                    <br><br>
+                    Ho tranh luan 2 tieng trong cuoc hop. PM ngoi do khong hieu gi, chi biet la deadline sap den.
+                    <br><br>
+                    Cuoi cung ong phai dung day phan xu: <strong>v-if</strong> dung khi condition it thay doi (vi no destroy/recreate DOM).
+                    <strong>v-show</strong> dung khi toggle thuong xuyen (vi no chi thay doi CSS display).
+                    Trong PBX project, cai call panel toggle lien tuc thi dung v-show. Cai admin settings hiem khi mo thi dung v-if.
+                    <br><br>
+                    Tu do hai phe hoa binh. Nhung ong van thay ho lien nhau ve <code>v-if</code> voi <code>v-for</code> tren cung element...
+                    do lai la chuyen khac.
+                </p>
+                <div class="story-moral">
+                    &#128161; Bai hoc: v-if cho render co dieu kien (lazy), v-show cho toggle thuong xuyen. Va DUNG BAO GIO dung v-if voi v-for tren cung element!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#127875;</span>
+                <h3 class="story-title">Ac Mong Prop Drilling &mdash; Khi Props Di Qua 7 Tang Dia Nguc</h3>
+                <p class="story-text">
+                    Ong con nho cai du an dau tien dung Vue. Ong co mot cai theme color can truyen tu App.vue xuong
+                    den mot cai button nho xiu nam sau tan 7 tang component.
+                    <br><br>
+                    Ong truyen props: App &rarr; Layout &rarr; Sidebar &rarr; Menu &rarr; MenuItem &rarr; SubMenu &rarr; Button.
+                    Moi component phai khai bao <code>defineProps</code> roi truyen tiep xuong. Code dai nhu song Han.
+                    <br><br>
+                    Mot ngay, PM noi: "Doi ten prop tu 'themeColor' thanh 'primaryColor' nhe."
+                    Ong phai sua 7 file. Ong muon khoc.
+                    <br><br>
+                    Roi ong hoc duoc <code>provide/inject</code>. Ong provide o App.vue, inject o Button &mdash; xong.
+                    Sau nay co Pinia, moi thu con de hon nua. Ong dat theme vao store, component nao can thi lay.
+                    <strong>Doi ong khong bao gio drilling nua.</strong>
+                </p>
+                <div class="story-moral">
+                    &#128161; Bai hoc: Qua 2-3 tang props thi nen dung provide/inject hoac Pinia store. Prop drilling la duong dan ngan nhat den burnout.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#128123;</span>
+                <h3 class="story-title">Ma onUnmounted &mdash; Khi Memory Leak Am Tham An Mung</h3>
+                <p class="story-text">
+                    Co mot lan, ong lam tinh nang realtime cho PBX &mdash; lang nghe SIP events qua WebSocket.
+                    Ong dang ky event listener trong <code>onMounted()</code>, roi... quen mat <code>onUnmounted()</code>.
+                    <br><br>
+                    Moi lan user navigate di roi quay lai, mot listener moi duoc tao ra ma cai cu khong bi huy.
+                    Sau 30 phut, tab browser an 2GB RAM. User goi dien bao: "Sao may tinh tui nong nhu lo nuong vay?"
+                    <br><br>
+                    Tu do ong co quy tac bat thanh van: <strong>"Co onMounted thi phai co onUnmounted.
+                    addEventListener thi removeEventListener. Subscribe thi unsubscribe. Nhu am voi duong, co vay co lai."</strong>
+                </p>
+                <div class="story-moral">
+                    &#128161; Bai hoc: LUON don dep trong onUnmounted(). setInterval, addEventListener, WebSocket subscription &mdash; tat ca phai duoc huy khi component bi destroy.
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== COMMON MISTAKES ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128683;</div>
+                <div>
+                    <h2 class="section-title">Nhung Loi Kinh Dien</h2>
+                    <span class="section-subtitle">Nhung "ho" ma ai cung phai roi xuong it nhat mot lan</span>
+                </div>
+            </div>
+
+            <div class="mistake-grid">
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128165;</div>
+                    <div class="mistake-title">Quen .value voi ref()</div>
+                    <div class="mistake-desc">
+                        Trong script setup, ref() can .value de doc/ghi. Trong template thi khong can.
+                        So luong lan dev viet <code>count++</code> thay vi <code>count.value++</code>
+                        roi tu hoi "tai sao no khong tang?" nhieu khong dem xue.
+                    </div>
+                    <div class="mistake-fix">&#9989; Meo: bat ESLint + Vue plugin, no se nhac ban ngay.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128561;</div>
+                    <div class="mistake-title">Thay doi prop truc tiep</div>
+                    <div class="mistake-desc">
+                        Props la ONE-WAY data flow. Thay doi prop truc tiep se bi Vue canh bao va gay ra bug kho debug.
+                        Dung lam cha no lam, dung sua hang xom.
+                    </div>
+                    <div class="mistake-fix">&#9989; Dung emit event len parent hoac dung defineModel() cho two-way binding.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128293;</div>
+                    <div class="mistake-title">v-for khong co :key</div>
+                    <div class="mistake-desc">
+                        Khong dung :key hoac dung index lam key. Vue se khong biet element nao thay doi,
+                        dan den render sai va bug "ma" xuat hien khi sort/filter list.
+                    </div>
+                    <div class="mistake-fix">&#9989; Luon dung unique ID lam key. KHONG BAO GIO dung index neu list co the thay doi.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128064;</div>
+                    <div class="mistake-title">Goi API trong computed()</div>
+                    <div class="mistake-desc">
+                        computed() la synchronous va duoc cache. Goi async API trong computed la hanh dong pham phap.
+                        No se chay nhieu lan khong kiem soat va khong bao gio return dung.
+                    </div>
+                    <div class="mistake-fix">&#9989; Goi API trong onMounted() hoac watch(), luu ket qua vao ref().</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128680;</div>
+                    <div class="mistake-title">Deep watch ma khong can thiet</div>
+                    <div class="mistake-desc">
+                        <code>watch(obj, cb, { deep: true })</code> tren object lon se lam Vue phai duyet toan bo object
+                        moi khi co bat ky thay doi nao. Performance chet nhu con ho bi cam.
+                    </div>
+                    <div class="mistake-fix">&#9989; Chi watch property cu the: watch(() => obj.value.name, cb). Chinh xac va nhanh hon.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#129327;</div>
+                    <div class="mistake-title">Component khong lo 1000+ dong</div>
+                    <div class="mistake-desc">
+                        Nhoi het moi thu vao mot component duy nhat. Template 300 dong, script 500 dong, style 200 dong.
+                        Doi ma maintain code nay bat dau tu khi ban khong nho minh viet gi.
+                    </div>
+                    <div class="mistake-fix">&#9989; Tach thanh composables + child components. Moi component nen duoi 200 dong.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PBX RELEVANCE ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128222;</div>
+                <div>
+                    <h2 class="section-title">Vue.js Trong Du An PBX</h2>
+                    <span class="section-subtitle">Cach Vue 3.5 tro thanh xuong song cua giao dien PBX</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="backstory-text">
+                    Toan bo giao dien nguoi dung cua he thong PBX duoc xay dung tren <span class="highlight">Vue 3.5</span>
+                    voi <span class="highlight">Composition API</span> va <span class="highlight">TypeScript</span>.
+                    Day la mot he thong quan ly tong dai dien thoai doanh nghiep, noi ma moi giay deu quan trong &mdash;
+                    tu viec hien thi trang thai cuoc goi realtime, quan ly hang doi, den giao dien agent xử ly cuoc goi.
+                </p>
+            </div>
+
+            <div class="pbx-grid">
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128222;</div>
+                    <div class="pbx-card-title">Giao Dien Cuoc Goi Realtime</div>
+                    <div class="pbx-card-desc">
+                        Vue reactivity system la nen tang de hien thi trang thai cuoc goi (ringing, connected, on-hold)
+                        theo thoi gian thuc. ref() va computed() giup UI cap nhat tuc thi khi SIP events thay doi.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#127795;</div>
+                    <div class="pbx-card-title">Pinia Quan Ly State</div>
+                    <div class="pbx-card-desc">
+                        Trang thai agent (available, busy, away), danh sach cuoc goi, cau hinh he thong &mdash;
+                        tat ca duoc quan ly tap trung trong Pinia stores. storeToRefs() dam bao reactivity khi
+                        destructure store data.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128739;</div>
+                    <div class="pbx-card-title">Vue Router &amp; Guards</div>
+                    <div class="pbx-card-desc">
+                        Dieu huong giua cac trang: Dashboard, Call History, Agent Management, Settings.
+                        Navigation guards kiem tra quyen truy cap va trang thai dang nhap truoc khi cho phep vao trang.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128200;</div>
+                    <div class="pbx-card-title">DevExtreme Components</div>
+                    <div class="pbx-card-desc">
+                        Bang du lieu, bieu do thong ke, form nhap lieu &mdash; DevExtreme cung cap UI components san co.
+                        Vue 3 wrapper giup tich hop mượt ma voi Composition API va reactive data binding.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128268;</div>
+                    <div class="pbx-card-title">Composables Cho Logic Nghiep Vu</div>
+                    <div class="pbx-card-desc">
+                        useCallManager(), useAgentStatus(), useWebSocket() &mdash; logic nghiep vu duoc dong goi
+                        trong composables, tai su dung across components. Clean code, de test, de maintain.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128311;</div>
+                    <div class="pbx-card-title">TypeScript An Toan</div>
+                    <div class="pbx-card-desc">
+                        Moi component, moi composable, moi store deu co type definitions.
+                        defineProps&lt;T&gt;() va defineEmits&lt;T&gt;() dam bao rang data flow giua cac component
+                        luon dung kieu, bat loi ngay luc compile thay vi luc production.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FOOTER ==================== -->
+        <footer class="footer">
+            <div class="footer-vue">&#9889; Vue Dai Hiep &mdash; Agent 04</div>
+            <p class="footer-text">
+                "Code Vue khong kho, kho la khi ban quen .value" &mdash; PBX Agent Profiles
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

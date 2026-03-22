@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Dự Án Đại Sư - Agent #00 | PBX Grand Master PM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy-50: #f0f4ff;
+            --navy-100: #dbe4ff;
+            --navy-200: #bac8ff;
+            --navy-300: #91a7ff;
+            --navy-400: #748ffc;
+            --navy-500: #5c7cfa;
+            --navy-600: #4c6ef5;
+            --navy-700: #3b5bdb;
+            --navy-800: #1e3a5f;
+            --navy-900: #0d1b3e;
+            --navy-950: #080e24;
+            --gold-50: #fffdf0;
+            --gold-100: #fff9db;
+            --gold-200: #ffec99;
+            --gold-300: #ffe066;
+            --gold-400: #ffd43b;
+            --gold-500: #fcc419;
+            --gold-600: #fab005;
+            --gold-700: #f59f00;
+            --gold-800: #e67700;
+            --gold-900: #b35c00;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --red-400: #f87171;
+            --red-500: #ef4444;
+            --green-400: #4ade80;
+            --green-500: #22c55e;
+            --amber-400: #fbbf24;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--navy-950) 0%, #0a1628 25%, #0d1b3e 50%, #0a1628 75%, var(--navy-950) 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* ========== ANIMATED BACKGROUND ========== */
+        .bg-particles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+        .particle {
+            position: absolute; border-radius: 50%; opacity: 0.06;
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+        .particle:nth-child(1) { width: 400px; height: 400px; top: 5%; left: -5%; background: var(--navy-500); animation-duration: 28s; }
+        .particle:nth-child(2) { width: 300px; height: 300px; top: 40%; right: -5%; background: var(--gold-500); animation-delay: -5s; animation-duration: 22s; }
+        .particle:nth-child(3) { width: 200px; height: 200px; bottom: 10%; left: 25%; background: var(--navy-400); animation-delay: -10s; animation-duration: 32s; }
+        .particle:nth-child(4) { width: 350px; height: 350px; top: 20%; left: 50%; background: var(--gold-600); animation-delay: -7s; animation-duration: 25s; opacity: 0.04; }
+        .particle:nth-child(5) { width: 250px; height: 250px; bottom: 25%; right: 15%; background: var(--navy-300); animation-delay: -12s; animation-duration: 30s; }
+        .particle:nth-child(6) { width: 180px; height: 180px; top: 70%; left: 10%; background: var(--gold-400); animation-delay: -3s; animation-duration: 26s; opacity: 0.04; }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            25% { transform: translate(30px,-50px) scale(1.1); }
+            50% { transform: translate(-20px,30px) scale(0.9); }
+            75% { transform: translate(40px,20px) scale(1.05); }
+        }
+
+        /* Gold shimmer line */
+        .gold-shimmer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold-400), var(--gold-500), var(--gold-400), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+            z-index: 1000;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Stars / sparkles */
+        .sparkle {
+            position: fixed; width: 3px; height: 3px; border-radius: 50%;
+            background: var(--gold-300); pointer-events: none; z-index: 0;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+        .sparkle:nth-child(1) { top: 8%; left: 15%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 22%; left: 78%; animation-delay: 1s; }
+        .sparkle:nth-child(3) { top: 45%; left: 5%; animation-delay: 2s; }
+        .sparkle:nth-child(4) { top: 65%; left: 90%; animation-delay: 0.5s; }
+        .sparkle:nth-child(5) { top: 80%; left: 40%; animation-delay: 1.5s; }
+        .sparkle:nth-child(6) { top: 35%; left: 55%; animation-delay: 3s; }
+        .sparkle:nth-child(7) { top: 90%; left: 70%; animation-delay: 2.5s; }
+        .sparkle:nth-child(8) { top: 15%; left: 45%; animation-delay: 0.8s; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; transform: scale(1.5); }
+        }
+
+        .container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            position: relative; z-index: 1;
+        }
+
+        /* ========== HERO / HEADER ========== */
+        .hero {
+            text-align: center; padding: 80px 0 60px;
+            position: relative;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+        }
+
+        .agent-number {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px; font-weight: 600;
+            color: var(--gold-400);
+            background: rgba(252, 196, 25, 0.08);
+            border: 1px solid rgba(252, 196, 25, 0.2);
+            padding: 6px 20px; border-radius: 100px;
+            letter-spacing: 3px; text-transform: uppercase;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .avatar-container {
+            width: 180px; height: 180px; margin: 0 auto 30px;
+            position: relative;
+            animation: fadeInUp 1s ease;
+        }
+        .avatar-ring {
+            position: absolute; inset: -8px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--gold-400);
+            border-right-color: var(--gold-500);
+            animation: rotateRing 4s linear infinite;
+        }
+        .avatar-ring-2 {
+            position: absolute; inset: -16px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-bottom-color: var(--navy-400);
+            border-left-color: var(--navy-300);
+            animation: rotateRing 6s linear infinite reverse;
+        }
+        @keyframes rotateRing {
+            to { transform: rotate(360deg); }
+        }
+        .avatar {
+            width: 180px; height: 180px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy-800), var(--navy-900));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 72px; position: relative; overflow: hidden;
+            box-shadow: 0 0 40px rgba(252,196,25,0.15), 0 0 80px rgba(92,124,250,0.1);
+        }
+        .avatar::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(252,196,25,0.1), transparent 50%);
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px; font-weight: 900;
+            background: linear-gradient(135deg, var(--gold-300), var(--gold-500), var(--gold-300));
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShift 4s ease infinite;
+            margin-bottom: 8px; line-height: 1.2;
+        }
+        @keyframes goldShift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 200% center; }
+        }
+
+        .hero-subtitle {
+            font-size: 18px; color: var(--navy-300);
+            font-style: italic; margin-bottom: 12px;
+            font-family: 'Playfair Display', serif;
+        }
+        .hero-tagline {
+            font-size: 14px; color: var(--slate-300);
+            max-width: 600px; margin: 0 auto 30px;
+            opacity: 0.8;
+        }
+
+        /* Badges */
+        .badges {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+            margin-top: 25px; animation: fadeInUp 1.2s ease;
+        }
+        .badge {
+            padding: 6px 16px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+            border: 1px solid; transition: all 0.3s ease;
+        }
+        .badge:hover { transform: translateY(-2px); }
+        .badge-gold {
+            color: var(--gold-400); border-color: rgba(252,196,25,0.3);
+            background: rgba(252,196,25,0.06);
+        }
+        .badge-gold:hover { background: rgba(252,196,25,0.12); box-shadow: 0 4px 15px rgba(252,196,25,0.15); }
+        .badge-navy {
+            color: var(--navy-300); border-color: rgba(92,124,250,0.3);
+            background: rgba(92,124,250,0.06);
+        }
+        .badge-navy:hover { background: rgba(92,124,250,0.12); box-shadow: 0 4px 15px rgba(92,124,250,0.15); }
+        .badge-special {
+            color: #fff; border-color: rgba(252,196,25,0.5);
+            background: linear-gradient(135deg, rgba(252,196,25,0.15), rgba(92,124,250,0.15));
+        }
+        .badge-special:hover { background: linear-gradient(135deg, rgba(252,196,25,0.25), rgba(92,124,250,0.25)); }
+
+        /* ========== SECTION STYLES ========== */
+        .section {
+            padding: 60px 0;
+            position: relative;
+            animation: fadeInUp 0.6s ease;
+        }
+        .section + .section::before {
+            content: ''; position: absolute; top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(252,196,25,0.2), transparent);
+        }
+
+        .section-header {
+            text-align: center; margin-bottom: 50px;
+        }
+        .section-icon {
+            font-size: 42px; margin-bottom: 12px; display: block;
+        }
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--gold-500);
+            letter-spacing: 4px; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px; font-weight: 700;
+            color: var(--gold-300);
+            margin-bottom: 10px;
+        }
+        .section-subtitle {
+            font-size: 15px; color: var(--slate-300);
+            max-width: 600px; margin: 0 auto;
+            opacity: 0.7;
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, rgba(13,27,62,0.8), rgba(8,14,36,0.9));
+            border: 1px solid rgba(252,196,25,0.08);
+            border-radius: 16px; padding: 36px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .card:hover {
+            border-color: rgba(252,196,25,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 30px rgba(252,196,25,0.05);
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px; font-weight: 700;
+            color: var(--gold-300); margin-bottom: 16px;
+        }
+        .card-subtitle {
+            font-size: 13px; color: var(--gold-500);
+            font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 12px;
+        }
+
+        /* Wisdom quote boxes */
+        .wisdom-box {
+            background: linear-gradient(135deg, rgba(252,196,25,0.05), rgba(252,196,25,0.02));
+            border-left: 4px solid var(--gold-500);
+            border-radius: 0 12px 12px 0;
+            padding: 24px 28px; margin: 24px 0;
+            position: relative;
+        }
+        .wisdom-box::before {
+            content: '\201C'; position: absolute; top: -5px; left: 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: 48px; color: var(--gold-500); opacity: 0.3;
+        }
+        .wisdom-box p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic; font-size: 16px;
+            color: var(--gold-200); line-height: 1.8;
+            padding-left: 10px;
+        }
+        .wisdom-box .wisdom-author {
+            font-family: 'Inter', sans-serif;
+            font-style: normal; font-size: 12px;
+            color: var(--gold-500); margin-top: 8px;
+            padding-left: 10px;
+        }
+
+        /* Korean term inline */
+        .kr {
+            color: var(--gold-400);
+            font-weight: 600;
+            background: rgba(252,196,25,0.06);
+            padding: 1px 6px; border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        /* Story cards */
+        .story-card {
+            background: linear-gradient(135deg, rgba(13,27,62,0.9), rgba(8,14,36,0.95));
+            border: 1px solid rgba(92,124,250,0.1);
+            border-radius: 16px; padding: 36px;
+            margin-bottom: 28px; position: relative; overflow: hidden;
+        }
+        .story-card::after {
+            content: ''; position: absolute; top: 0; right: 0;
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(252,196,25,0.05), transparent 70%);
+        }
+        .story-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px; font-weight: 900;
+            color: rgba(252,196,25,0.06);
+            position: absolute; top: 10px; right: 24px;
+            line-height: 1;
+        }
+        .story-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--gold-500);
+            letter-spacing: 3px; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .story-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px; font-weight: 700;
+            color: var(--gold-300); margin-bottom: 16px;
+        }
+        .story-card p {
+            color: var(--slate-200); margin-bottom: 14px;
+            font-size: 15px;
+        }
+        .story-lesson {
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.15);
+            border-radius: 10px; padding: 16px 20px;
+            margin-top: 16px;
+        }
+        .story-lesson-title {
+            font-size: 12px; font-weight: 700;
+            color: var(--green-400); letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .story-lesson p {
+            color: var(--green-400); font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative; padding-left: 40px;
+        }
+        .timeline::before {
+            content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--gold-500), var(--navy-600), var(--gold-500));
+        }
+        .timeline-item {
+            position: relative; margin-bottom: 40px;
+        }
+        .timeline-dot {
+            position: absolute; left: -33px; top: 6px;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--gold-500);
+            box-shadow: 0 0 12px rgba(252,196,25,0.4);
+            border: 3px solid var(--navy-950);
+        }
+        .timeline-item:hover .timeline-dot {
+            transform: scale(1.3);
+            transition: transform 0.3s ease;
+        }
+
+        /* Phase cards */
+        .phase-card {
+            background: linear-gradient(135deg, rgba(13,27,62,0.85), rgba(8,14,36,0.92));
+            border: 1px solid rgba(252,196,25,0.1);
+            border-radius: 16px; padding: 36px;
+            transition: all 0.3s ease;
+        }
+        .phase-card:hover {
+            border-color: rgba(252,196,25,0.2);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        }
+        .phase-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--gold-500);
+            letter-spacing: 3px; margin-bottom: 6px;
+        }
+        .phase-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px; font-weight: 700;
+            color: var(--gold-300); margin-bottom: 6px;
+        }
+        .phase-subtitle {
+            font-size: 14px; color: var(--navy-300);
+            font-style: italic; margin-bottom: 20px;
+        }
+
+        /* Progress bars */
+        .progress-container {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 16px; margin: 40px 0;
+        }
+        .progress-item {
+            text-align: center; padding: 20px 12px;
+            background: rgba(13,27,62,0.6);
+            border: 1px solid rgba(252,196,25,0.08);
+            border-radius: 12px;
+        }
+        .progress-label {
+            font-size: 11px; color: var(--gold-500);
+            letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 10px; font-weight: 600;
+        }
+        .progress-bar {
+            height: 6px; background: rgba(255,255,255,0.06);
+            border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 3px;
+            transition: width 2s ease;
+        }
+        .progress-fill-gold { background: linear-gradient(90deg, var(--gold-600), var(--gold-400)); }
+        .progress-fill-navy { background: linear-gradient(90deg, var(--navy-600), var(--navy-300)); }
+        .progress-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px; font-weight: 700; color: var(--gold-300);
+        }
+
+        /* Lists */
+        .wisdom-list {
+            list-style: none; padding: 0;
+        }
+        .wisdom-list li {
+            padding: 10px 0 10px 28px; position: relative;
+            font-size: 15px; color: var(--slate-200);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .wisdom-list li:last-child { border-bottom: none; }
+        .wisdom-list li::before {
+            content: ''; position: absolute; left: 0; top: 18px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--gold-500); opacity: 0.6;
+        }
+
+        /* Golden rules */
+        .golden-rule {
+            background: linear-gradient(135deg, rgba(252,196,25,0.04), rgba(252,196,25,0.01));
+            border: 1px solid rgba(252,196,25,0.1);
+            border-radius: 14px; padding: 28px 32px;
+            margin-bottom: 20px; position: relative;
+            transition: all 0.3s ease;
+        }
+        .golden-rule:hover {
+            border-color: rgba(252,196,25,0.25);
+            background: linear-gradient(135deg, rgba(252,196,25,0.06), rgba(252,196,25,0.02));
+        }
+        .golden-rule-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px; font-weight: 900;
+            color: rgba(252,196,25,0.08);
+            position: absolute; top: 8px; right: 20px; line-height: 1;
+        }
+        .golden-rule-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 700;
+            color: var(--gold-300); margin-bottom: 10px;
+        }
+        .golden-rule p {
+            font-size: 14px; color: var(--slate-300);
+        }
+
+        /* Mistake cards */
+        .mistake-card {
+            background: linear-gradient(135deg, rgba(239,68,68,0.04), rgba(8,14,36,0.9));
+            border: 1px solid rgba(239,68,68,0.12);
+            border-radius: 14px; padding: 28px 32px;
+            margin-bottom: 20px;
+        }
+        .mistake-card:hover {
+            border-color: rgba(239,68,68,0.25);
+        }
+        .mistake-label {
+            font-size: 11px; font-weight: 700;
+            color: var(--red-400); letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .mistake-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 700;
+            color: var(--red-400); margin-bottom: 12px;
+        }
+        .mistake-card p { font-size: 14px; color: var(--slate-300); margin-bottom: 10px; }
+        .mistake-fix {
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.12);
+            border-radius: 8px; padding: 12px 16px; margin-top: 10px;
+        }
+        .mistake-fix-label {
+            font-size: 11px; font-weight: 700;
+            color: var(--green-400); letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 4px;
+        }
+        .mistake-fix p { color: var(--green-400); margin-bottom: 0; }
+
+        /* Quote of the day */
+        .quote-of-day {
+            text-align: center; padding: 50px 40px;
+            background: linear-gradient(135deg, rgba(252,196,25,0.06), rgba(92,124,250,0.04));
+            border: 1px solid rgba(252,196,25,0.12);
+            border-radius: 20px; margin: 50px 0;
+            position: relative; overflow: hidden;
+        }
+        .quote-of-day::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, rgba(252,196,25,0.04), transparent 70%);
+        }
+        .quote-of-day-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--gold-500);
+            letter-spacing: 4px; text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .quote-of-day-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px; font-weight: 700;
+            font-style: italic; color: var(--gold-200);
+            max-width: 700px; margin: 0 auto 16px;
+            line-height: 1.5;
+        }
+        .quote-of-day-author {
+            font-size: 14px; color: var(--gold-500);
+        }
+
+        /* Korean lesson box */
+        .korean-box {
+            background: linear-gradient(135deg, rgba(92,124,250,0.05), rgba(8,14,36,0.9));
+            border: 1px solid rgba(92,124,250,0.12);
+            border-radius: 14px; padding: 28px 32px;
+            margin-bottom: 20px;
+        }
+        .korean-term {
+            font-size: 28px; font-weight: 700;
+            color: var(--navy-300); margin-bottom: 4px;
+        }
+        .korean-romanize {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; color: var(--gold-500);
+            margin-bottom: 12px;
+        }
+
+        /* Tool comparison table */
+        .tool-table {
+            width: 100%; border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .tool-table th {
+            text-align: left; padding: 12px 16px;
+            font-size: 12px; color: var(--gold-500);
+            letter-spacing: 1px; text-transform: uppercase;
+            border-bottom: 2px solid rgba(252,196,25,0.15);
+            background: rgba(252,196,25,0.03);
+        }
+        .tool-table td {
+            padding: 12px 16px; font-size: 14px;
+            color: var(--slate-200);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .tool-table tr:hover td {
+            background: rgba(252,196,25,0.02);
+        }
+
+        /* PBX specific */
+        .deadline-box {
+            background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02));
+            border: 2px solid rgba(239,68,68,0.2);
+            border-radius: 14px; padding: 28px 32px;
+            margin: 20px 0; text-align: center;
+        }
+        .deadline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 36px; font-weight: 900;
+            color: var(--red-400);
+        }
+        .deadline-label {
+            font-size: 14px; color: var(--slate-300); margin-top: 6px;
+        }
+        .deadline-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 32px; }
+            .section-title { font-size: 28px; }
+            .container { padding: 0 16px; }
+            .progress-container { grid-template-columns: repeat(2, 1fr); }
+            .deadline-grid { grid-template-columns: 1fr; }
+            .card, .phase-card, .story-card { padding: 24px; }
+            .badges { gap: 6px; }
+            .badge { font-size: 11px; padding: 4px 12px; }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center; padding: 60px 0 40px;
+            border-top: 1px solid rgba(252,196,25,0.08);
+        }
+        .footer p {
+            font-size: 13px; color: var(--slate-600);
+        }
+
+        /* Highlight text */
+        .hl { color: var(--gold-400); font-weight: 600; }
+        .hl-navy { color: var(--navy-300); font-weight: 600; }
+        .hl-red { color: var(--red-400); font-weight: 600; }
+        .hl-green { color: var(--green-400); font-weight: 600; }
+
+        /* Sub-section headers inside cards */
+        .sub-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 700;
+            color: var(--gold-300); margin: 24px 0 12px;
+        }
+        .sub-header:first-child { margin-top: 0; }
+
+        p { margin-bottom: 14px; font-size: 15px; }
+        p:last-child { margin-bottom: 0; }
+
+        strong { color: var(--gold-300); }
+    </style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="gold-shimmer"></div>
+<div class="bg-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+</div>
+<div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+<div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+<div class="sparkle"></div><div class="sparkle"></div>
+
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- SECTION 1: HERO / AGENT HEADER -->
+<!-- ============================================================ -->
+<section class="hero">
+    <div class="agent-number">Agent #00 &mdash; The One Who Holds It All Together</div>
+
+    <div class="avatar-container">
+        <div class="avatar-ring"></div>
+        <div class="avatar-ring-2"></div>
+        <div class="avatar">&#128081;</div>
+    </div>
+
+    <h1 class="hero-title">Quản Dự Án Đại Sư</h1>
+    <p class="hero-subtitle">Project Management Grand Master &bull; 15+ Năm Kinh Nghiệm</p>
+    <p class="hero-tagline">
+        "Một dự án thành công không phải vì dev giỏi. Mà vì PM biết cách giữ cho dev đừng giỏi sai hướng."
+        <br><span style="font-size:12px; color: var(--gold-500);">~ Quản Dự Án Đại Sư, sau 47 dự án và 3 lần suýt bỏ nghề</span>
+    </p>
+
+    <div class="badges">
+        <span class="badge badge-special">&#9733; Grand Master PM</span>
+        <span class="badge badge-gold">Agile / Scrum</span>
+        <span class="badge badge-gold">Waterfall</span>
+        <span class="badge badge-gold">Risk Management</span>
+        <span class="badge badge-navy">Stakeholder Management</span>
+        <span class="badge badge-navy">Korean Market &#127472;&#127479;</span>
+        <span class="badge badge-navy">Offshore Development</span>
+        <span class="badge badge-gold">PBX / Telecom</span>
+        <span class="badge badge-gold">Enterprise Solutions</span>
+        <span class="badge badge-navy">Cross-cultural Leadership</span>
+        <span class="badge badge-navy">Coway Korea</span>
+    </div>
+</section>
+
+<!-- Quote of the Day -->
+<div class="quote-of-day">
+    <div class="quote-of-day-label">&#10024; C&acirc;u N&oacute;i Của Ng&agrave;y &#10024;</div>
+    <div class="quote-of-day-text">
+        "Deadline kh&ocirc;ng phải l&agrave; ng&agrave;y cuối c&ugrave;ng. Deadline l&agrave; ng&agrave;y m&agrave; kh&aacute;ch h&agrave;ng bắt đầu nghi ngờ bạn."
+    </div>
+    <div class="quote-of-day-author">&mdash; Quản Dự &Aacute;n Đại Sư, 3 giờ s&aacute;ng, sau khi deploy production lần thứ 5</div>
+</div>
+
+<!-- Progress Overview -->
+<div class="progress-container">
+    <div class="progress-item">
+        <div class="progress-label">Dự &Aacute;n Ho&agrave;n Th&agrave;nh</div>
+        <div class="progress-value">47+</div>
+        <div class="progress-bar"><div class="progress-fill progress-fill-gold" style="width:94%"></div></div>
+    </div>
+    <div class="progress-item">
+        <div class="progress-label">N&aacute;m Kinh Nghiệm</div>
+        <div class="progress-value">15+</div>
+        <div class="progress-bar"><div class="progress-fill progress-fill-navy" style="width:100%"></div></div>
+    </div>
+    <div class="progress-item">
+        <div class="progress-label">Kh&aacute;ch H&agrave;ng H&agrave;n Quốc</div>
+        <div class="progress-value">12</div>
+        <div class="progress-bar"><div class="progress-fill progress-fill-gold" style="width:80%"></div></div>
+    </div>
+    <div class="progress-item">
+        <div class="progress-label">Lần Suýt Bỏ Nghề</div>
+        <div class="progress-value">3</div>
+        <div class="progress-bar"><div class="progress-fill progress-fill-navy" style="width:20%"></div></div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: BACKSTORY & EXPERIENCE -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#128214;</span>
+        <div class="section-number">Ph&acirc;n II</div>
+        <h2 class="section-title">C&acirc;u Chuyện Của Đại Sư</h2>
+        <p class="section-subtitle">15 năm, 47 dự &aacute;n, v&agrave; v&ocirc; số đ&ecirc;m trắng kh&ocirc;ng ngủ</p>
+    </div>
+
+    <div class="card">
+        <div class="card-subtitle">Khởi Đầu &mdash; Năm 2010</div>
+        <div class="card-title">Từ Một Thằng Nhóc Không Biết Gì Đến PM</div>
+        <p>
+            Năm 2010, tôi mới ra trường với tấm bằng CNTT loại khá &mdash; cái loại khá mà bạn biết là không giỏi lắm nhưng cũng đủ để xin việc. Tôi join một công ty outsource nhỏ ở Cầu Giấy, Hà Nội, với vai trò "fresher developer". Lương tháng đầu tiên: 5 triệu đồng. Đủ để ăn cơm bụi và mua trà đá.
+        </p>
+        <p>
+            Nhưng số phận có những ngã rẽ kỳ lạ. Sau 6 tháng code, sếp tôi &mdash; một ông anh người Nhật lai Việt &mdash; nhìn tôi và nói: <em>"Mày code không giỏi lắm, nhưng mày nói chuyện với khách hàng giỏi hơn mấy thằng senior. Mày có muốn thử làm bridge SE không?"</em>
+        </p>
+        <p>
+            Đó là lần đầu tiên tôi bước vào thế giới quản lý dự án mà không biết mình đang bước vào. Bridge SE &mdash; cầu nối giữa dev team và khách hàng &mdash; nghe thì oai nhưng thực tế là bạn bị cả hai bên chửi. Khách hàng chửi vì delivery chậm. Dev team chửi vì requirement thay đổi liên tục. Và bạn đứng giữa, cười méo mó, cố gắng làm cả hai bên vui.
+        </p>
+
+        <div class="wisdom-box">
+            <p>Bài học đầu tiên của tôi: PM không phải là người ra lệnh. PM là người đứng giữa lửa và nước, cố gắng không bị cả hai thiêu đốt.</p>
+            <div class="wisdom-author">&mdash; Nhật ký năm 2011, viết lúc 2 giờ sáng</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-subtitle">Bước Ngoặt &mdash; Năm 2013</div>
+        <div class="card-title">Lần Đầu Tiên Làm Việc Với Khách Hàng Hàn Quốc</div>
+        <p>
+            Năm 2013, công ty tôi ký được hợp đồng đầu tiên với một công ty Hàn Quốc &mdash; một startup fintech ở Seoul. Và đó là lúc cuộc đời PM của tôi thực sự bắt đầu... cũng như những đêm mất ngủ thực sự bắt đầu.
+        </p>
+        <p>
+            Khách hàng Nhật Bản mà tôi quen thì rất structured: spec rõ ràng, process chặt chẽ, thay đổi phải qua change request chính thức. Khách hàng Hàn Quốc thì... hoàn toàn khác. Họ nói <span class="kr">빨리빨리 (ppalli ppalli)</span> &mdash; nhanh nhanh &mdash; và họ THỰC SỰ muốn nhanh. Spec có thể thay đổi qua một tin nhắn KakaoTalk lúc 11 giờ đêm. Meeting có thể được gọi lúc 8 giờ sáng thứ Bảy. Và khi họ nói "OK, không vấn đề gì", đôi khi ý họ là "Tôi có rất nhiều vấn đề nhưng tôi chưa muốn nói bây giờ."
+        </p>
+        <p>
+            Dự án đầu tiên với Hàn Quốc đó &mdash; một hệ thống thanh toán di động &mdash; kéo dài 8 tháng thay vì 4 tháng dự kiến. Scope creep không phải là từ đúng để mô tả &mdash; đó là <span class="hl">scope tsunami</span>. Nhưng chính dự án đó đã dạy tôi hiểu văn hóa kinh doanh Hàn Quốc, và từ đó, tôi trở thành "chuyên gia Hàn Quốc" trong công ty &mdash; không phải vì tôi giỏi, mà vì không ai khác muốn làm.
+        </p>
+
+        <div class="wisdom-box">
+            <p>Làm việc với khách hàng Hàn Quốc giống như nhảy salsa: bạn phải học bước chân của đối phương, không phải ép họ nhảy theo nhạc của bạn. Và đôi khi, bạn phải nhảy rất nhanh.</p>
+            <div class="wisdom-author">&mdash; Bài thuyết trình nội bộ, 2014</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-subtitle">Trưởng Thành &mdash; 2015-2020</div>
+        <div class="card-title">Từ PM Thường Đến "Người Hàn Quốc Hiểu Việt Nam"</div>
+        <p>
+            Từ 2015 đến 2020, tôi đã manage hơn 20 dự án với khách hàng Hàn Quốc ở đủ lĩnh vực: e-commerce, fintech, logistics, manufacturing, và đặc biệt &mdash; telecom. Tôi đã làm việc với những tên tuổi lớn: Samsung SDS (không phải Samsung Electronics nhé, là công ty IT của tập đoàn Samsung), LG CNS, SK Telecom, và nhiều startup từ <span class="kr">강남 (Gangnam)</span>.
+        </p>
+        <p>
+            Mỗi dự án là một câu chuyện. Mỗi câu chuyện là một bài học. Có lần tôi phải bay sang Seoul gấp vì khách hàng "muốn gặp mặt trực tiếp để thảo luận" &mdash; hóa ra họ muốn đi <span class="kr">회식 (hoesik)</span> uống soju để build relationship trước khi ký hợp đồng. Có lần team tôi delivery đúng hạn, đúng spec, nhưng khách hàng không hài lòng vì "cảm giác không đúng" &mdash; một feedback mà đến giờ tôi vẫn không biết đó là UX feedback hay feedback tâm linh.
+        </p>
+        <p>
+            Năm 2018, tôi được promote lên Senior PM và bắt đầu manage các dự án lớn &mdash; team 15-30 người, budget từ $200K đến $2M, timeline 6-18 tháng. Đó cũng là lúc tôi hiểu rằng: <span class="hl">PM không phải về quản lý công việc. PM là về quản lý con người, kỳ vọng, và sự không chắc chắn.</span>
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-subtitle">Đại Sư &mdash; 2020-Nay</div>
+        <div class="card-title">Hành Trình Trở Thành Grand Master</div>
+        <p>
+            Năm 2020, COVID đến. Và nghịch lý thay, đó lại là thời kỳ vàng cho offshore development. Khi các công ty Hàn Quốc không thể thuê đủ developer local (vì dev Hàn Quốc vừa đắt vừa khó tuyển), họ quay sang Việt Nam. Và tôi &mdash; với kinh nghiệm 7 năm làm việc với Hàn Quốc &mdash; bỗng nhiên trở thành "hot commodity".
+        </p>
+        <p>
+            Trong 5 năm tiếp theo, tôi đã lead những dự án enterprise lớn nhất sự nghiệp: một hệ thống ERP cho một tập đoàn sản xuất Hàn Quốc (40 developers, 14 tháng), một nền tảng IoT cho smart home (25 developers, 10 tháng), và gần đây nhất &mdash; một hệ thống PBX doanh nghiệp cho Coway Korea, dự án mà bạn đang đọc về nó đây.
+        </p>
+        <p>
+            Với 15 năm kinh nghiệm, 47 dự án hoàn thành, 12 khách hàng Hàn Quốc, và 3 lần suýt bỏ nghề (lần thứ nhất vì burn out, lần thứ hai vì dự án fail, lần thứ ba vì COVID), tôi tự gọi mình là "Đại Sư" &mdash; không phải vì tôi giỏi nhất, mà vì tôi sống sót lâu nhất. Trong ngành PM, sống sót 15 năm mà không bị đau dạ dày mãn tính đã là một achievement rồi.
+        </p>
+
+        <div class="wisdom-box">
+            <p>Người ta hỏi tôi bí quyết thành công là gì. Tôi nói: không có bí quyết. Chỉ có kiên nhẫn, kỷ luật, và khả năng chịu đựng stress như một con lạc đà chịu nắng sa mạc. À, và uống nhiều cà phê.</p>
+            <div class="wisdom-author">&mdash; Phỏng vấn nội bộ, 2024</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: PROJECT PHASES - DETAILED WISDOM -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#128736;</span>
+        <div class="section-number">Phần III</div>
+        <h2 class="section-title">Bốn Giai Đoạn Của Mọi Dự Án</h2>
+        <p class="section-subtitle">Mỗi dự án đều đi qua 4 giai đoạn: Hào hứng, Hoang mang, Hoảng loạn, và Huề vốn</p>
+    </div>
+
+    <div class="timeline">
+        <!-- PHASE 1 -->
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="phase-card">
+                <div class="phase-number">PHASE 01</div>
+                <div class="phase-title">&#127793; Khởi Động &mdash; Kickoff</div>
+                <div class="phase-subtitle">2 tuần đầu tiên &bull; Giai đoạn hào hứng (và ngây thơ nhất)</div>
+
+                <p>
+                    Ah, Kickoff. Giai đoạn đẹp nhất của mọi dự án. Mọi người đều hào hứng. Slide deck thì đẹp. Mọi thứ đều "có thể làm được". Timeline thì "hơi tight nhưng khả thi". Budget thì "đủ nếu không có gì bất ngờ". Và bạn &mdash; PM ngây thơ &mdash; tin vào tất cả những điều đó.
+                </p>
+                <p>
+                    Spoiler alert: sẽ có rất nhiều bất ngờ.
+                </p>
+
+                <div class="sub-header">&#128269; Điều Đầu Tiên PM Cần Nghĩ Đến</div>
+                <p>
+                    Không phải timeline. Không phải tech stack. Không phải resource. Điều đầu tiên một PM giỏi nghĩ đến là: <span class="hl">AI LÀ NGƯỜI RA QUYẾT ĐỊNH THỰC SỰ?</span>
+                </p>
+                <p>
+                    Trong các công ty Hàn Quốc, hierarchy rất rõ ràng nhưng quyền lực thực sự thì không phải lúc nào cũng rõ ràng. Trên giấy tờ, <span class="kr">부장님 (bujangnim - trưởng phòng)</span> là người ký approval. Nhưng thực tế, <span class="kr">이사님 (isanim - giám đốc)</span> mới là người nói câu cuối cùng. Và đôi khi, cả hai đều phải hỏi ý kiến <span class="kr">대표님 (daepyonim - CEO)</span> &mdash; người mà bạn chưa bao giờ gặp trong bất kỳ meeting nào.
+                </p>
+
+                <div class="sub-header">&#128506; Stakeholder Mapping</div>
+                <p>
+                    Đây là kỹ năng sống còn. Tôi dùng ma trận Power/Interest (Quyền lực/Quan tâm) để phân loại stakeholder:
+                </p>
+                <ul class="wisdom-list">
+                    <li><strong>Quyền lực cao + Quan tâm cao:</strong> Đây là VIP. Họ cần được update thường xuyên, involve trong mọi quyết định lớn. Ở Hàn Quốc, thường là 이사님 hoặc 부장님 phụ trách dự án.</li>
+                    <li><strong>Quyền lực cao + Quan tâm thấp:</strong> Nguy hiểm nhất! Họ không care cho đến khi có vấn đề, rồi họ xuất hiện và lật đổ mọi quyết định bạn đã đưa ra. Cách xử lý: gửi executive summary ngắn gọn hàng tuần.</li>
+                    <li><strong>Quyền lực thấp + Quan tâm cao:</strong> Thường là end users hoặc team leads phía khách hàng. Họ có insights quý giá nhưng không có quyền quyết định. Lắng nghe họ nhưng đừng để họ drive requirements.</li>
+                    <li><strong>Quyền lực thấp + Quan tâm thấp:</strong> Ignore politely. Mời họ vào meeting thì mất thời gian, không mời thì không ai để ý.</li>
+                </ul>
+
+                <div class="sub-header">&#128172; "Yes" Không Có Nghĩa Là "Yes" Trong Văn Hóa Hàn Quốc</div>
+                <p>
+                    Đây là bẫy kinh điển mà MỌI PM Việt Nam làm việc với Hàn Quốc đều mắc phải ít nhất một lần. Trong meeting, bạn trình bày plan, khách hàng Hàn Quốc gật đầu, nói <span class="kr">"네, 알겠습니다" (ne, algessseumnida - vâng, tôi hiểu)</span>. Bạn nghĩ đó là approval. Bạn nhầm.
+                </p>
+                <p>
+                    Trong văn hóa Hàn Quốc, "네" (vâng) thường có nghĩa là "tôi đang nghe" chứ không phải "tôi đồng ý". Đặc biệt khi trong meeting có người có chức vụ cao hơn, nhân viên Hàn Quốc sẽ không phản đối trực tiếp &mdash; họ sẽ nói "네" trong meeting và sau đó gửi email riêng để nêu concerns. Hoặc tệ hơn, họ sẽ không nói gì và bạn phát hiện ra sự không đồng ý khi dự án đã đi được 2 tháng.
+                </p>
+                <p>
+                    <span class="hl">Cách xử lý:</span> Sau mỗi meeting, gửi Meeting Minutes (MoM) bằng văn bản, liệt kê rõ từng quyết định, từng action item. Yêu cầu họ reply "confirmed" bằng email. Nếu 48 giờ không reply, CHASE. Và nhớ: đọc kỹ những gì họ KHÔNG nói, quan trọng hơn những gì họ nói.
+                </p>
+
+                <div class="sub-header">&#128221; Requirements Gathering &mdash; Cái Bẫy Chết Người</div>
+                <p>
+                    Requirements gathering với khách hàng Hàn Quốc có một đặc điểm: họ biết họ muốn gì nhưng họ diễn đạt nó rất... abstract. "Hệ thống phải nhanh" &mdash; nhanh là bao nhiêu? "UI phải đẹp" &mdash; đẹp theo tiêu chuẩn nào? "Giống như hệ thống cũ nhưng tốt hơn" &mdash; tốt hơn ở đâu?
+                </p>
+                <p>
+                    Tôi đã mất 3 năm để hoàn thiện kỹ năng "hỏi đúng câu hỏi". Không hỏi "anh muốn gì?" mà hỏi "anh có thể cho tôi xem cách anh đang làm việc hiện tại không?". Không hỏi "system phải handle bao nhiêu users?" mà hỏi "hiện tại có bao nhiêu nhân viên sử dụng hệ thống? Peak time là khi nào? Có bao nhiêu transactions mỗi ngày?". Cụ thể. Đo lường được. Kiểm chứng được.
+                </p>
+
+                <div class="sub-header">&#128241; Kênh Giao Tiếp &mdash; KakaoTalk Là Vua</div>
+                <p>
+                    Quên Slack đi. Quên Microsoft Teams đi. Khách hàng Hàn Quốc sống và thở bằng <span class="kr">카카오톡 (KakaoTalk)</span>. Nếu bạn không có KakaoTalk, bạn basically không tồn tại trong mắt họ. Một số quy tắc:
+                </p>
+                <ul class="wisdom-list">
+                    <li>Tạo group chat KakaoTalk cho dự án NGAY từ ngày đầu tiên</li>
+                    <li>Reply nhanh &mdash; khách Hàn Quốc kỳ vọng reply trong vòng 30 phút (giờ làm việc)</li>
+                    <li>Dùng emoticons phù hợp &mdash; Hàn Quốc rất thích emoticon, nó thể hiện sự thân thiện</li>
+                    <li>NHƯNG &mdash; mọi quyết định quan trọng phải được confirm bằng email chính thức. KakaoTalk là để trao đổi nhanh, không phải để thay thế documentation</li>
+                    <li>Tuyệt đối không gửi tin nhắn sau 10 giờ tối giờ Hàn Quốc, trừ khi khẩn cấp thực sự</li>
+                </ul>
+
+                <div class="sub-header">&#128203; WBS (Work Breakdown Structure) &mdash; Bản Đồ Sống Còn</div>
+                <p>
+                    Tôi coi WBS như bản đồ kho báu. Không có WBS, bạn sẽ lạc trong rừng rậm requirements. WBS tốt phải break down đến level mà mỗi task có thể estimate trong 1-3 ngày. Không hơn. Nếu một task cần hơn 3 ngày, bạn chưa break đủ nhỏ.
+                </p>
+                <p>
+                    <span class="hl">Mẹo:</span> Khi làm WBS cho khách Hàn Quốc, thêm cột "Korean term" &mdash; viết tên mỗi module/feature bằng tiếng Hàn bên cạnh tiếng Anh. Nó thể hiện sự tôn trọng và giúp tránh hiểu lầm do dịch thuật.
+                </p>
+
+                <div class="sub-header">&#9888;&#65039; Risk Register Từ Ngày 1</div>
+                <p>
+                    PM mới thường nghĩ: "Risk register? Dự án mới bắt đầu, có risk gì đâu?" PM kỳ cựu thì biết: dự án mới bắt đầu là lúc risk NHIỀU NHẤT, vì bạn chưa biết mình không biết gì.
+                </p>
+                <p>Những risk phổ biến nhất khi làm offshore cho Hàn Quốc:</p>
+                <ul class="wisdom-list">
+                    <li><strong>Language barrier:</strong> Miscommunication do translation. Xác suất: 95%. Impact: Critical.</li>
+                    <li><strong>Scope creep:</strong> Khách hàng thêm yêu cầu liên tục. Xác suất: 99.9%. Impact: Critical.</li>
+                    <li><strong>Timezone conflict:</strong> Meeting bị lỡ, response chậm. Xác suất: 80%. Impact: High.</li>
+                    <li><strong>Key person leaves:</strong> Dev hoặc PM nghỉ việc giữa chừng. Xác suất: 40%. Impact: Critical.</li>
+                    <li><strong>Infrastructure/Environment issues:</strong> Server, VPN, deployment problems. Xác suất: 70%. Impact: Medium-High.</li>
+                    <li><strong>Cultural misunderstanding:</strong> Làm điều gì đó offensive mà không biết. Xác suất: 60%. Impact: Varies (có thể từ nhẹ đến mất hợp đồng).</li>
+                </ul>
+
+                <div class="sub-header">&#127981; Korean Business Etiquette &mdash; Những Điều Không Ai Dạy Bạn Ở Trường</div>
+                <p>
+                    <strong><span class="kr">존댓말 (jondaenmal)</span> &mdash; Kính ngữ:</strong> Tiếng Hàn có hệ thống kính ngữ phức tạp. Khi giao tiếp bằng tiếng Anh với khách Hàn Quốc, luôn dùng title + họ (Mr. Kim, Ms. Park). Đừng bao giờ gọi tên riêng trừ khi họ chủ động yêu cầu. Trong email, dùng "Dear 부장님" thay vì "Dear Mr. Kim" sẽ được đánh giá cao hơn rất nhiều.
+                </p>
+                <p>
+                    <strong>Danh thiếp:</strong> Khi nhận danh thiếp từ người Hàn, nhận bằng HAI tay, đọc kỹ, rồi đặt lên bàn trước mặt bạn trong suốt cuộc họp. ĐỪNG BAO GIỜ nhét vào túi quần ngay lập tức. Đó là hành vi bất kính.
+                </p>
+                <p>
+                    <strong><span class="kr">회식 (hoesik)</span> &mdash; Nhậu sau giờ làm:</strong> Nếu khách Hàn Quốc mời bạn đi 회식, đó là dấu hiệu TỐT. Họ muốn xây dựng quan hệ. Nếu bạn từ chối, họ sẽ không giận nhưng sẽ hơi thất vọng. Mẹo: đi, uống vừa phải, và lắng nghe nhiều hơn nói. Người Hàn Quốc chia sẻ rất nhiều thông tin quan trọng trong 회식 mà họ không bao giờ nói trong phòng họp.
+                </p>
+                <p>
+                    <strong>Hierarchy:</strong> Trong meeting với khách Hàn Quốc, luôn để người có chức vụ cao nhất bên bạn phát biểu trước. Nếu bạn là PM và có CTO cùng đi, để CTO nói trước. Người Hàn Quốc rất chú ý đến thứ bậc và sẽ ngầm đánh giá team của bạn qua cách bạn tôn trọng hierarchy.
+                </p>
+
+                <div class="wisdom-box">
+                    <p>2 tuần đầu tiên quyết định 80% thành bại của dự án. Không phải vì bạn code gì trong 2 tuần đó, mà vì bạn CÓ HIỂU đúng vấn đề hay không.</p>
+                    <div class="wisdom-author">&mdash; Quy tắc #1 của Đại Sư</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 2 -->
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="phase-card">
+                <div class="phase-number">PHASE 02</div>
+                <div class="phase-title">&#127776; Tháng Đầu Tiên &mdash; First Month</div>
+                <div class="phase-subtitle">Sprint 1-3 &bull; Giai đoạn thực tế bắt đầu đập vào mặt</div>
+
+                <p>
+                    Tuần thứ 3 đến tuần thứ 6: đây là lúc sự hào hứng ban đầu bay hơi và thực tế bắt đầu đập vào mặt bạn như một cái tát từ cuộc sống. Sprint 1 hầu như luôn luôn bị miss &mdash; và đó là BÌNH THƯỜNG. Nếu sprint 1 bạn hoàn thành 100%, hoặc bạn là thiên tài, hoặc bạn đã estimate quá dễ.
+                </p>
+
+                <div class="sub-header">&#128197; Sprint Planning &mdash; Thực Tế vs Ảo Tưởng</div>
+                <p>
+                    Ảo tưởng: "Sprint này chúng ta sẽ hoàn thành 50 story points!" Thực tế: hoàn thành 30 story points, trong đó 5 story points phải push sang sprint sau vì "hóa ra API phía Hàn Quốc chưa ready", 8 story points bị block vì "đang chờ answer từ khách hàng", và 7 story points "done nhưng cần revisit vì requirement thay đổi sau meeting hôm thứ Tư".
+                </p>
+                <p>
+                    <span class="hl">Quy tắc của Đại Sư:</span> Sprint đầu tiên, estimate xong rồi nhân với 1.5. Sprint thứ hai, nhân 1.3. Từ sprint thứ ba trở đi, bạn mới bắt đầu có velocity đáng tin cậy. Và nhớ: velocity là thống kê, không phải mệnh lệnh. Đừng ép team phải "cải thiện velocity" &mdash; ép thì họ sẽ giảm chất lượng để tăng số.
+                </p>
+
+                <div class="sub-header">&#128560; Khoảnh Khắc "Scope Gấp 3 Lần Estimate"</div>
+                <p>
+                    Đây là khoảnh khắc kinh điển mà mọi PM đều trải qua. Bạn estimate project mất 4 tháng. Sau 1 tháng, bạn nhận ra scope thực tế lớn gấp 2-3 lần. Không phải vì bạn estimate tệ (okay, có thể phần nào), mà vì:
+                </p>
+                <ul class="wisdom-list">
+                    <li>Khách hàng "quên" mention một số yêu cầu trong giai đoạn requirement</li>
+                    <li>Các yêu cầu "đơn giản" hóa ra phức tạp khi bắt đầu implement</li>
+                    <li>Integration với hệ thống cũ &mdash; cái hệ thống mà "documentation rất đầy đủ" hóa ra documentation từ năm 2015 và hệ thống đã được modify 47 lần kể từ đó</li>
+                    <li>Khách hàng xem demo sprint 1, bỗng nhiên nảy ra 20 ý tưởng mới: "À, nếu đã làm được cái này thì chắc cũng làm được cái kia chứ?"</li>
+                </ul>
+                <p>
+                    <span class="hl">Cách xử lý:</span> Không panic. Không giấu. Không "hy vọng sẽ bù lại được ở sprint sau". Ngay lập tức: (1) Document lại scope mới, (2) Tính lại estimate, (3) Đưa ra 3 options cho khách hàng: tăng timeline, tăng budget, hoặc cắt scope. Luôn luôn đưa 3 options &mdash; người Hàn Quốc thích có lựa chọn, không thích bị ép vào một phương án duy nhất.
+                </p>
+
+                <div class="sub-header">&#128104;&#8205;&#128187; Daily Standup &mdash; Văn Hóa Khác Biệt</div>
+                <p>
+                    Daily standup với team Việt Nam: 15 phút, mọi người nói "hôm qua em làm X, hôm nay em làm Y, không có blocker". Xong. Nhẹ nhàng. Êm đẹp.
+                </p>
+                <p>
+                    Daily standup có khách Hàn Quốc join: bỗng nhiên 15 phút thành 45 phút vì 부장님 muốn discuss chi tiết từng task, hỏi tại sao task A chưa xong, yêu cầu demo nhanh feature B, và đề xuất thay đổi UI của feature C. Và bạn &mdash; PM &mdash; phải vừa manage meeting, vừa translate (vì không phải ai cũng nói tiếng Anh tốt), vừa ghi note, vừa cố gắng giữ cho meeting không biến thành một design review session.
+                </p>
+                <p>
+                    <span class="hl">Giải pháp:</span> Tách daily standup thành 2: một internal standup với team Việt Nam (15 phút, tiếng Việt, technical focus), và một daily sync với khách Hàn Quốc (30 phút, tiếng Anh, progress focus). Khách Hàn Quốc không cần biết dev đang debug cái gì &mdash; họ cần biết feature X bao giờ xong.
+                </p>
+
+                <div class="sub-header">&#128200; Status Report &mdash; Nghệ Thuật Viết Báo Cáo Cho Sếp Hàn Quốc</div>
+                <p>
+                    Sếp Hàn Quốc yêu báo cáo. Yêu thiệt sự. Họ coi <span class="kr">보고서 (bogoseo - báo cáo)</span> là bằng chứng rằng bạn đang kiểm soát dự án. Một status report tốt cho khách Hàn Quốc cần:
+                </p>
+                <ul class="wisdom-list">
+                    <li><strong>Executive Summary</strong> ở đầu &mdash; 3 dòng tóm tắt: chúng tôi đang ở đâu, có vấn đề gì không, cần quyết định gì từ phía khách hàng</li>
+                    <li><strong>Traffic Light Status:</strong> 🟢 On track / 🟡 At risk / 🔴 Delayed &mdash; Mỗi module/feature cần có traffic light riêng</li>
+                    <li><strong>Số liệu cụ thể:</strong> 85% tasks completed, 12 bugs found / 10 fixed, velocity 32 points &mdash; Người Hàn Quốc tin vào số liệu</li>
+                    <li><strong>Risks & Issues:</strong> Liệt kê rõ ràng, kèm mitigation plan. Đừng giấu vấn đề &mdash; giấu rồi bị phát hiện thì mất trust vĩnh viễn</li>
+                    <li><strong>Next Steps:</strong> Rõ ràng, có timeline, có responsible person</li>
+                    <li>Gửi <strong>hàng tuần</strong>, cùng ngày cùng giờ. Người Hàn Quốc thích consistency</li>
+                </ul>
+
+                <div class="sub-header">&#127760; Timezone &mdash; 2 Giờ Tưởng Ít Nhưng Đau Lắm</div>
+                <p>
+                    Hàn Quốc UTC+9, Việt Nam UTC+7. Chênh lệch 2 giờ. Nghe ít? Sai. 2 giờ đó có nghĩa là:
+                </p>
+                <ul class="wisdom-list">
+                    <li>Khi dev Việt Nam đến văn phòng lúc 9h sáng, phía Hàn Quốc đã làm việc 2 giờ rồi &mdash; và đã gửi 15 messages hỏi progress</li>
+                    <li>Khi phía Hàn Quốc kết thúc ngày làm việc lúc 6h chiều (4h chiều VN), dev Việt Nam vẫn còn 3 giờ làm việc nhưng không ai bên Hàn để hỏi khi bị block</li>
+                    <li>Meeting 9h sáng Hàn Quốc = 7h sáng Việt Nam. Bạn nghĩ khách hàng sẽ dời meeting sang 10h cho team VN? Haha, không đâu.</li>
+                </ul>
+                <p>
+                    <span class="hl">Giải pháp:</span> Xác định "golden hours" &mdash; khoảng thời gian overlap tốt nhất (thường 9h-12h VN = 11h-14h KR). Tất cả meeting và sync quan trọng phải nằm trong golden hours. Ngoài golden hours, dùng async communication (email, Jira comments).
+                </p>
+
+                <div class="wisdom-box">
+                    <p>Tháng đầu tiên không phải để hoàn thành nhiều features. Tháng đầu tiên là để hiểu velocity thực sự của team, build trust với khách hàng, và phát hiện ra tất cả những "bất ngờ" trước khi chúng trở thành "thảm họa".</p>
+                    <div class="wisdom-author">&mdash; Quy tắc #2 của Đại Sư</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 3 -->
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="phase-card">
+                <div class="phase-number">PHASE 03</div>
+                <div class="phase-title">&#127754; Giai Đoạn Giữa &mdash; Middle Phase</div>
+                <div class="phase-subtitle">Tháng 2-3 &bull; Thung Lũng Tuyệt Vọng</div>
+
+                <p>
+                    Chào mừng bạn đến với <span class="hl">"Thung Lũng Tuyệt Vọng"</span> &mdash; giai đoạn mà mọi dự án phần mềm đều phải đi qua. Đây là lúc:
+                </p>
+                <ul class="wisdom-list">
+                    <li>Bug nhiều hơn feature</li>
+                    <li>Developer bắt đầu mệt mỏi và sloppy</li>
+                    <li>Khách hàng bắt đầu lo lắng và muốn thêm meeting</li>
+                    <li>Tech debt tích lũy từ sprint 1 bắt đầu phát tác</li>
+                    <li>Và bạn &mdash; PM &mdash; bắt đầu thức dậy lúc 3 giờ sáng vì lo lắng</li>
+                </ul>
+
+                <div class="sub-header">&#128531; Khi 3 Developer Nghỉ Việc Cùng Lúc</div>
+                <p>
+                    Đây không phải kịch bản giả định. Đây là chuyện thực tế tôi đã gặp 2 lần. Lần đầu năm 2017: 3 senior developers nghỉ việc trong vòng 2 tuần vì bị một công ty khác headhunt với lương gấp đôi. Dự án đang ở tháng thứ 3, deadline không thể dời.
+                </p>
+                <p>
+                    Tôi đã khóc trong toilet 10 phút (thực sự), rồi lau nước mắt, mở laptop, và bắt đầu damage control:
+                </p>
+                <ul class="wisdom-list">
+                    <li><strong>Bước 1:</strong> Kiểm tra knowledge overlap &mdash; ai còn lại có thể pick up code của người đã nghỉ?</li>
+                    <li><strong>Bước 2:</strong> Thông báo cho khách hàng NGAY. Không giấu. Giấu thì khi họ phát hiện, trust = 0.</li>
+                    <li><strong>Bước 3:</strong> Đề xuất plan B &mdash; tăng 2 developer từ team khác, extend timeline 2 tuần cho critical path, tạm deprioritize non-essential features.</li>
+                    <li><strong>Bước 4:</strong> Yêu cầu 3 người sắp nghỉ làm knowledge transfer intensive trong 2 tuần notice period. Mỗi người phải viết docs và pair programming với người thay thế.</li>
+                    <li><strong>Bước 5:</strong> Retrospective nội bộ &mdash; tại sao họ nghỉ? Lương? Văn hóa? Burn out? Sửa nguyên nhân gốc, không chỉ chữa triệu chứng.</li>
+                </ul>
+
+                <div class="sub-header">&#128187; Integration Testing &mdash; Ác Mộng Thường Trực</div>
+                <p>
+                    Unit test pass hết 100%. Beautiful green checks everywhere. Rồi bạn chạy integration test và mọi thứ... vỡ. Vỡ như một bản giao hưởng của chaos. API A trả sai format cho API B. Database connection pool bị exhaust sau 50 concurrent users. Cái service mà team Hàn Quốc nói "đã ready" hóa ra chỉ ready ở dev environment, production environment vẫn chưa deploy.
+                </p>
+                <p>
+                    <span class="hl">Bài học:</span> Integration testing phải bắt đầu SỚM. Không phải đợi đến khi tất cả features xong mới integrate. Integrate theo từng module, từng sprint. "Integrate early, integrate often" &mdash; như commit code vậy.
+                </p>
+
+                <div class="sub-header">&#127916; Cái Demo Thất Bại &mdash; Và Cách Hồi Sinh</div>
+                <p>
+                    Tôi nhớ như in: năm 2019, demo sprint review cho khách hàng Samsung SDS. Mọi thứ đã được test kỹ trước đó 1 giờ, chạy mượt mà. Rồi đến lúc demo thật, trước mặt 12 người bên khách hàng bao gồm cả 이사님... hệ thống crash. Màn hình trắng xóa. Im lặng kéo dài 8 giây (tôi đếm).
+                </p>
+                <p>
+                    Nguyên nhân: developer đã fix một bug last minute 30 phút trước demo, push trực tiếp lên demo server mà không test lại. Cái fix đó break một dependency khác.
+                </p>
+                <p>
+                    Cách tôi handle: Tôi bình tĩnh (bề ngoài &mdash; bên trong tim đập 180 bpm), nói "Xin lỗi quý vị, hệ thống đang load dữ liệu lớn, xin cho chúng tôi 2 phút". Trong 2 phút đó, tôi nhắn tin cho dev rollback commit cuối. Hệ thống lên lại. Demo tiếp. Và sau đó, tôi thiết lập quy tắc: <span class="hl">CODE FREEZE 3 GIỜ TRƯỚC MỌI DEMO. KHÔNG NGOẠI LỆ.</span>
+                </p>
+
+                <div class="sub-header">&#128556; Nghệ Thuật Nói "Không" Với Khách Hàng Hàn Quốc</div>
+                <p>
+                    Trong văn hóa Hàn Quốc, nói "không" trực tiếp là rất harsh. Nhưng đôi khi, bạn PHẢI nói không &mdash; nếu không, dự án sẽ scope creep đến chết.
+                </p>
+                <p>
+                    Cách tôi nói "không" mà không thực sự nói "không":
+                </p>
+                <ul class="wisdom-list">
+                    <li><em>"Đó là một ý tưởng rất hay. Để implement nó với chất lượng tốt nhất, chúng tôi cần thêm 2 sprint. Anh muốn chúng tôi thêm vào Phase 2 hay điều chỉnh priority của features hiện tại?"</em></li>
+                    <li><em>"Chúng tôi hoàn toàn có thể làm điều này. Tuy nhiên, nó sẽ ảnh hưởng đến deadline của Feature X. Anh có OK với trade-off đó không?"</em></li>
+                    <li><em>"Tôi hiểu yêu cầu này rất quan trọng. Cho phép tôi phân tích impact và gửi anh một proposal vào ngày mai với timeline và resource cần thiết."</em></li>
+                </ul>
+                <p>
+                    Bí quyết: luôn kèm GIẢI PHÁP sau khi nêu VẤN ĐỀ. Người Hàn Quốc ghét nghe vấn đề mà không có giải pháp.
+                </p>
+
+                <div class="sub-header">&#128295; Bug Triage &mdash; Cuộc Chiến Priority</div>
+                <p>
+                    "Tất cả bug đều là P1" &mdash; Khách hàng mọi dự án, mọi quốc gia, mọi thời đại. Tất nhiên điều đó vô nghĩa. Nếu tất cả đều P1, thì không có P1 nào cả.
+                </p>
+                <p>
+                    Cách tôi quản lý bug priority với khách Hàn Quốc: tạo một ma trận rõ ràng với tiêu chí cụ thể:
+                </p>
+                <ul class="wisdom-list">
+                    <li><strong>P1 - Blocker:</strong> Hệ thống crash, data loss, security breach. Fix trong 4 giờ.</li>
+                    <li><strong>P2 - Critical:</strong> Feature chính không hoạt động, workaround tồn tại. Fix trong 24 giờ.</li>
+                    <li><strong>P3 - Major:</strong> Feature phụ lỗi, UI issue nghiêm trọng. Fix trong sprint hiện tại.</li>
+                    <li><strong>P4 - Minor:</strong> Cosmetic, typo, minor UX. Fix khi có thời gian.</li>
+                </ul>
+                <p>
+                    Đưa ma trận này cho khách hàng approve TRƯỚC KHI có bug. Khi có bug, bạn chỉ cần refer lại ma trận: "Theo tiêu chí chúng ta đã thống nhất, bug này là P3, sẽ được fix trong sprint này."
+                </p>
+
+                <div class="wisdom-box">
+                    <p>Giai đoạn giữa là lúc dự án thử thách PM nhiều nhất. Mọi thứ có vẻ đang fail. Nhưng thực tế, đây là BÌNH THƯỜNG. Bạn chỉ cần giữ bình tĩnh, communicate transparently, và không đưa ra quyết định ngu ngốc khi đang panic.</p>
+                    <div class="wisdom-author">&mdash; Quy tắc #3 của Đại Sư</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 4 -->
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="phase-card">
+                <div class="phase-number">PHASE 04</div>
+                <div class="phase-title">&#127937; Giai Đoạn Cuối &mdash; Ending Phase</div>
+                <div class="phase-subtitle">Tháng cuối cùng &bull; Panic Zone (hoặc Miracle Zone)</div>
+
+                <p>
+                    Tháng cuối cùng. Đây là lúc mà dự án hoặc trở thành một tác phẩm nghệ thuật, hoặc trở thành một vụ cháy rừng. Không có middle ground. Và nhiệm vụ của PM là biến vụ cháy rừng thành... ít nhất là một đám cháy nhỏ có thể kiểm soát.
+                </p>
+
+                <div class="sub-header">&#128293; Panic Zone &mdash; Khi Mọi Thứ Vỡ Cùng Lúc</div>
+                <p>
+                    Tuần cuối cùng trước go-live. Đây là lúc:
+                </p>
+                <ul class="wisdom-list">
+                    <li>QA team Hàn Quốc tìm ra 47 bugs mới (17 trong số đó là "critical")</li>
+                    <li>Performance test fail vì hệ thống chỉ handle được 500 concurrent users thay vì 2000 như yêu cầu</li>
+                    <li>Một developer key bị ốm</li>
+                    <li>Khách hàng đột nhiên nhớ ra một yêu cầu "đã thống nhất từ đầu" mà bạn không hề có trong spec</li>
+                    <li>Server production chưa ready vì team infrastructure phía Hàn Quốc đang "xử lý"</li>
+                </ul>
+                <p>
+                    <span class="hl">Nguyên tắc sống sót:</span> Ưu tiên. Ưu tiên. Ưu tiên. Không phải mọi thứ đều cần fix trước go-live. Phân loại: (1) MUST HAVE &mdash; không có thì không thể go-live, (2) SHOULD HAVE &mdash; nên có nhưng có thể fix sau go-live trong 1 tuần, (3) NICE TO HAVE &mdash; fix trong hotfix sau.
+                </p>
+
+                <div class="sub-header">&#128203; UAT Với End Users Hàn Quốc</div>
+                <p>
+                    UAT (User Acceptance Testing) với end users Hàn Quốc là một trải nghiệm... đặc biệt. Họ test RẤT KỸ. Họ tìm ra những edge cases mà dev không bao giờ nghĩ đến. Họ so sánh pixel-by-pixel với mockup. Họ test trên mọi browser, mọi device. Và họ viết bug report chi tiết đến mức bạn vừa cảm kích vừa muốn khóc.
+                </p>
+                <p>
+                    <span class="hl">Chuẩn bị cho UAT:</span>
+                </p>
+                <ul class="wisdom-list">
+                    <li>Chuẩn bị test scenarios chi tiết &mdash; viết bằng tiếng Hàn (hoặc song ngữ)</li>
+                    <li>Setup một channel riêng cho UAT feedback &mdash; tách biệt với development channel</li>
+                    <li>Assign một người chuyên triage UAT feedback &mdash; không phải mọi feedback đều là bug</li>
+                    <li>Daily UAT sync meeting &mdash; 15 phút, review feedback mới, align priority</li>
+                    <li>Chuẩn bị tâm lý: bug count sẽ TĂNG GẤP ĐÔI sau UAT. Đó là bình thường.</li>
+                </ul>
+
+                <div class="sub-header">&#128736; Go-live Checklist &mdash; Cái List Đã Cứu Nhiều Dự Án</div>
+                <p>
+                    Qua 47 dự án, tôi đã tạo ra một go-live checklist mà tôi gọi là "Checklist Cứu Mạng". Một phần:
+                </p>
+                <ul class="wisdom-list">
+                    <li>&#9989; Database backup + verified restore &mdash; đã test restore chưa? Hay chỉ backup và CẦU NGUYỆN?</li>
+                    <li>&#9989; Rollback plan documented + tested &mdash; nếu go-live fail, rollback trong bao nhiêu phút?</li>
+                    <li>&#9989; SSL certificates valid + auto-renewal configured</li>
+                    <li>&#9989; DNS propagation checked &mdash; đã update DNS chưa? TTL bao nhiêu?</li>
+                    <li>&#9989; Monitoring/Alerting setup &mdash; ai nhận alert? Qua kênh nào? Số điện thoại emergency?</li>
+                    <li>&#9989; Performance test trên production environment (không phải staging!)</li>
+                    <li>&#9989; Data migration script tested với production data volume</li>
+                    <li>&#9989; End user communication sent &mdash; users biết hệ thống mới khi nào go-live chưa?</li>
+                    <li>&#9989; Support team trained + handover docs ready</li>
+                    <li>&#9989; War room setup &mdash; team ngồi cùng nhau trong 48h đầu sau go-live</li>
+                </ul>
+
+                <div class="sub-header">&#128163; Data Migration &mdash; Câu Chuyện Kinh Dị</div>
+                <p>
+                    Data migration là nguồn gốc của 80% các vụ go-live fail mà tôi đã chứng kiến. Tại sao? Vì mọi người luôn đánh giá thấp nó. "Ôi, chỉ là move data từ hệ thống cũ sang hệ thống mới thôi mà."
+                </p>
+                <p>
+                    KHÔNG. Data migration là:
+                </p>
+                <ul class="wisdom-list">
+                    <li>Data format khác nhau giữa hệ thống cũ và mới &mdash; 30% data cần transform</li>
+                    <li>Data dirty &mdash; duplicate records, null values nơi không nên null, encoding issues (đặc biệt với Korean characters &mdash; EUC-KR vs UTF-8 là ác mộng)</li>
+                    <li>Data volume lớn hơn dự kiến &mdash; "chỉ 1 triệu records" hóa ra 1 triệu records mỗi table, 50 tables, tổng cộng 50 triệu records</li>
+                    <li>Downtime window hẹp &mdash; khách hàng cho bạn 4 giờ để migrate. Migration script chạy mất 6 giờ trên test environment.</li>
+                </ul>
+
+                <div class="sub-header">&#128337; 3 Giờ Sáng &mdash; Truyền Thống Production Hotfix</div>
+                <p>
+                    Mọi PM có kinh nghiệm đều có ít nhất một câu chuyện "3 giờ sáng". Của tôi là thế này: Go-live xong, mọi thứ chạy tốt trong 6 giờ đầu. Rồi 3 giờ sáng, điện thoại reo. Monitoring alert: database CPU 98%. Hệ thống chậm dần. Users bắt đầu complaint.
+                </p>
+                <p>
+                    Hóa ra: một cái scheduled job mà team dev "quên" mention &mdash; job chạy lúc 3 giờ sáng để aggregate data &mdash; đang scan toàn bộ bảng 10 triệu records mà không có index. Trên dev environment (100K records), nó chạy 2 phút. Trên production (10M records), nó chạy 2 GIỜVÀ lock bảng.
+                </p>
+                <p>
+                    Từ đó, rule mới: <span class="hl">EVERY scheduled job, batch process, and background task MUST be documented, tested with production data volume, and included in the go-live checklist.</span>
+                </p>
+
+                <div class="sub-header">&#128221; Handover &mdash; Tài Liệu Không Ai Đọc Nhưng Ai Cũng Cần</div>
+                <p>
+                    Handover documentation. Mọi người ghét viết. Mọi người ghét đọc. Nhưng khi hệ thống gặp vấn đề lúc 3 giờ sáng 6 tháng sau go-live và team dev ban đầu đã chuyển sang dự án khác, cái documentation đó sẽ là SỰ KHÁC BIỆT giữa fix trong 30 phút và fix trong 3 ngày.
+                </p>
+                <p>
+                    Tài liệu handover tối thiểu cần có: Architecture diagram, API documentation, Database schema, Deployment guide, Known issues & workarounds, Monitoring & Alerting guide, Emergency contacts, và trên hết &mdash; <span class="hl">"Những điều kỳ lạ của hệ thống mà chỉ dev mới biết"</span> (tôi thực sự có một section tên như vậy trong template của mình).
+                </p>
+
+                <div class="wisdom-box">
+                    <p>Kết thúc dự án không phải khi bạn go-live. Kết thúc dự án là khi hệ thống chạy ổn định 1 tháng sau go-live, tài liệu được bàn giao đầy đủ, và team support có thể handle mọi issue mà không cần gọi bạn lúc 3 giờ sáng.</p>
+                    <div class="wisdom-author">&mdash; Quy tắc #4 của Đại Sư</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: KOREAN MARKET SPECIFIC LESSONS -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#127472;&#127479;</span>
+        <div class="section-number">Phần IV</div>
+        <h2 class="section-title">Bài Học Thị Trường Hàn Quốc</h2>
+        <p class="section-subtitle">Những điều không có trong sách giáo khoa PM &mdash; chỉ có trên chiến trường thực tế</p>
+    </div>
+
+    <div class="korean-box">
+        <div class="korean-term">빨리빨리</div>
+        <div class="korean-romanize">ppalli ppalli &mdash; "Nhanh nhanh!"</div>
+        <p>
+            Văn hóa <span class="kr">빨리빨리</span> là DNA của Hàn Quốc. Đất nước này đã từ một trong những quốc gia nghèo nhất thế giới trở thành nền kinh tế lớn thứ 10 thế giới trong chỉ 50 năm. Bằng cách nào? Bằng cách làm mọi thứ NHANH.
+        </p>
+        <p>
+            Khi khách hàng Hàn Quốc nói "빨리빨리", họ không đang áp lực bạn (okay, có thể một phần). Họ đang thể hiện văn hóa kinh doanh của họ &mdash; tốc độ là ưu tiên. Nhưng đây là cái bẫy: nếu bạn sacrifice chất lượng để đáp ứng tốc độ, CHÍNH HỌ sẽ criticize bạn về chất lượng. Paradox? Chào mừng đến với Hàn Quốc.
+        </p>
+        <p>
+            <span class="hl">Cách cân bằng:</span> Delivery nhanh nhưng theo từng phần. Thay vì nói "sẽ xong sau 2 tháng", nói "tuần này sẽ có demo feature A, tuần sau feature B". Người Hàn Quốc thích thấy PROGRESS, không thích đợi.
+        </p>
+    </div>
+
+    <div class="korean-box">
+        <div class="korean-term">보고서</div>
+        <div class="korean-romanize">bogoseo &mdash; "Báo cáo"</div>
+        <p>
+            Ở Việt Nam, nhiều company hoạt động kiểu "anh em trao đổi qua chat là xong". Ở Hàn Quốc? KHÔNG. Mọi thứ phải có <span class="kr">보고서</span>. Meeting? Có meeting minutes. Quyết định? Có decision log. Bug? Có bug report. Progress? Có weekly report. Thay đổi? Có change request form.
+        </p>
+        <p>
+            Đây không phải bureaucracy vô nghĩa (okay, đôi khi là vậy). Đây là cách người Hàn Quốc quản lý risk. Mọi thứ bằng văn bản = mọi thứ có thể trace = mọi thứ có accountability. Nếu bạn quen với văn hóa "nói miệng" của Việt Nam, hãy chuẩn bị thay đổi. Documentation là currency trong thế giới kinh doanh Hàn Quốc.
+        </p>
+    </div>
+
+    <div class="korean-box">
+        <div class="korean-term">회식</div>
+        <div class="korean-romanize">hoesik &mdash; "Nhậu sau giờ làm / Team building dinner"</div>
+        <p>
+            <span class="kr">회식</span> không chỉ là nhậu. Đó là một institution. Đó là nơi hierarchy được nới lỏng (một chút), nơi mọi người thực sự nói ra những gì họ nghĩ, và nơi relationships được build. Tôi đã ký nhiều hợp đồng hơn ở bàn nhậu <span class="kr">소주 (soju)</span> so với ở phòng họp.
+        </p>
+        <p>
+            <strong>Quy tắc 회식 cho người Việt Nam:</strong>
+        </p>
+        <ul class="wisdom-list">
+            <li>Khi rót rượu cho người lớn tuổi/chức vụ cao hơn, dùng HAI tay</li>
+            <li>Khi uống, nếu có người chức vụ cao hơn nhìn, quay mặt sang bên &mdash; đó là lễ nghĩa</li>
+            <li>Đừng bao giờ để ly của sếp trống &mdash; rót trước khi ly cạn</li>
+            <li>Round 1: ăn tối (BBQ). Round 2: quán rượu (bar). Round 3: karaoke. Bạn không bắt buộc phải ở đến Round 3, nhưng ở càng lâu = relationship càng tốt</li>
+            <li>Nếu bạn không uống được rượu, nói thẳng từ đầu. Người Hàn Quốc tôn trọng sự thật thà hơn là cố uống rồi say bí tỉ</li>
+        </ul>
+    </div>
+
+    <div class="korean-box">
+        <div class="korean-term">설날 &amp; 추석</div>
+        <div class="korean-romanize">Seollal &amp; Chuseok &mdash; Tết Nguyên Đán &amp; Tết Trung Thu Hàn Quốc</div>
+        <p>
+            Hai kỳ nghỉ lớn nhất của Hàn Quốc. <span class="kr">설날 (Seollal)</span> rơi vào khoảng tháng 1-2 (âm lịch) và <span class="kr">추석 (Chuseok)</span> vào tháng 9-10. Mỗi kỳ nghỉ kéo dài 3-5 ngày, nhưng thực tế team Hàn Quốc sẽ "slow down" 1-2 tuần trước và sau kỳ nghỉ.
+        </p>
+        <p>
+            <span class="hl">PM phải làm gì:</span> Đưa các kỳ nghỉ này vào project timeline NGAY TỪ ĐẦU. Nếu có release trong khoảng thời gian này, dời đi. Không ai ở Hàn Quốc sẽ review code hay approve release trong mùa 추석.
+        </p>
+        <p>
+            <strong>Lịch nghỉ khác cần lưu ý:</strong> 어린이날 (Children's Day, 5/5), 광복절 (Liberation Day, 15/8), 한글날 (Hangul Day, 9/10). Và nhớ: Hàn Quốc dùng lịch dương, nhưng 설날 và 추석 theo âm lịch &mdash; ngày khác nhau mỗi năm.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128269; Korean QA Teams &mdash; Họ Tìm Ra MỌI THỨ</div>
+        <p>
+            Nếu bạn nghĩ QA team Việt Nam kỹ, đợi cho bạn gặp QA team Hàn Quốc. Họ test với mức độ chi tiết mà developer coi là "paranoid" nhưng thực tế là "professional excellence". Họ test:
+        </p>
+        <ul class="wisdom-list">
+            <li>Mỗi form field với tất cả edge cases: empty, max length, special characters, Korean characters, emoji, SQL injection strings</li>
+            <li>Multi-browser: Chrome, Safari, Edge, và đôi khi cả Samsung Internet (vâng, Samsung có browser riêng và nhiều người Hàn dùng nó)</li>
+            <li>Network conditions: slow 3G, offline, reconnect</li>
+            <li>Pixel-perfect comparison với design mockup &mdash; sai 2px cũng bị log bug</li>
+            <li>Accessibility: keyboard navigation, screen reader, color contrast</li>
+        </ul>
+        <p>
+            <span class="hl">Lời khuyên:</span> Đừng coi đó là annoying. Coi đó là GIÁ TRỊ. QA Hàn Quốc giúp bạn ship sản phẩm chất lượng cao hơn. Embrace nó.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128176; Văn Hóa Hợp Đồng &amp; Thanh Toán Hàn Quốc</div>
+        <p>
+            Vài điều PM cần biết về contract và payment với khách Hàn Quốc:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Net 30-60:</strong> Đa số công ty Hàn Quốc thanh toán trong 30-60 ngày sau invoice. Không phải vì họ thiếu tiền, mà vì đó là process nội bộ của họ. Đừng panic.</li>
+            <li><strong>Milestone-based payment:</strong> Hầu hết hợp đồng chia thành milestones. Mỗi milestone có deliverables rõ ràng. Không deliver = không payment. Đơn giản.</li>
+            <li><strong>Warranty period:</strong> Khách Hàn Quốc thường yêu cầu 3-6 tháng warranty sau go-live. Budget cho giai đoạn này!</li>
+            <li><strong>Penalty clauses:</strong> Hợp đồng Hàn Quốc THƯỜNG có penalty cho delay. Đọc kỹ. Rất kỹ. Nếu penalty 1% mỗi tuần delay trên contract value $500K, mỗi tuần delay = $5,000 mất.</li>
+            <li><strong>Change request process:</strong> Đảm bảo hợp đồng có CR process rõ ràng. Scope creep mà không có CR = bạn làm miễn phí.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#127760; Quản Lý Language Barrier</div>
+        <p>
+            Đa số khách hàng Hàn Quốc nói tiếng Anh ở mức intermediate. Đủ để communicate basic, nhưng nuance thường bị mất. Và trong software development, nuance quyết định thành bại.
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Visual > Text:</strong> Dùng diagram, mockup, prototype thay vì văn bản dài. "A picture is worth a thousand words" &mdash; đặc biệt đúng khi cross-language.</li>
+            <li><strong>Confirm bằng ví dụ:</strong> Thay vì hỏi "bạn muốn sort ascending hay descending?", show hai screenshots: "option A trông thế này, option B trông thế này, bạn thích cái nào?"</li>
+            <li><strong>Avoid idioms:</strong> "Let's not reinvent the wheel", "That's a low-hanging fruit" &mdash; những idioms này có thể gây confusion. Nói đơn giản, trực tiếp.</li>
+            <li><strong>Written > Verbal:</strong> Sau mỗi cuộc gọi/meeting, gửi summary bằng text. Khách hàng có thể tra từ điển và hiểu chính xác hơn.</li>
+            <li><strong>Thuê translator:</strong> Nếu dự án lớn (>$200K), invest vào một translator/interpreter. ROI cực cao &mdash; tránh được một lần miscommunication đã hoàn vốn.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: CASE STUDIES / STORIES -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#128218;</span>
+        <div class="section-number">Phần V</div>
+        <h2 class="section-title">Những Câu Chuyện Thực Chiến</h2>
+        <p class="section-subtitle">6 câu chuyện từ chiến trường &mdash; mỗi câu chuyện là một bài học xương máu</p>
+    </div>
+
+    <!-- Story 1 -->
+    <div class="story-card">
+        <div class="story-number">01</div>
+        <div class="story-label">C&acirc;u Chuyện #1</div>
+        <div class="story-title">Dự Án Samsung &mdash; 2 Tuần Không Ngủ Vì Hiểu Lầm Requirement</div>
+        <p>
+            Năm 2016, team tôi nhận dự án từ Samsung SDS &mdash; một module quản lý kho cho hệ thống logistics nội bộ. Requirement doc dài 80 trang, tiếng Anh, được viết bởi một Business Analyst người Hàn Quốc. Chúng tôi đọc, hiểu (tưởng thế), estimate, và bắt đầu code.
+        </p>
+        <p>
+            3 tháng sau, demo sprint review. Khách hàng nhìn màn hình, im lặng 10 giây, rồi nói: "Đây không phải cái chúng tôi muốn."
+        </p>
+        <p>
+            Hóa ra, từ "inventory" trong requirement doc, team tôi hiểu là "kho hàng vật lý" (physical warehouse). Khách hàng muốn nói "inventory tracking" &mdash; theo dõi hàng hóa trong suốt supply chain, bao gồm cả khi hàng đang trên xe vận chuyển. Hai concept hoàn toàn khác nhau. Và sự khác biệt đó nằm trong MỘT TỪ mà chúng tôi đã không verify.
+        </p>
+        <p>
+            Kết quả: refactor 60% code. Team 8 người làm overtime 2 tuần liên tục, bao gồm cả thứ Bảy và Chủ Nhật. Pizza, cà phê, và nước mắt. Timeline delay 1 tháng. Khách hàng mất trust. Mất 3 tháng tiếp theo để rebuild trust.
+        </p>
+        <div class="story-lesson">
+            <div class="story-lesson-title">Bài Học</div>
+            <p>KHÔNG BAO GIỜ giả định bạn hiểu đúng requirement. Luôn verify bằng prototype/mockup trước khi code. Đặc biệt khi làm việc cross-language &mdash; MỘT TỪ hiểu sai có thể phá hủy 3 tháng effort.</p>
+        </div>
+    </div>
+
+    <!-- Story 2 -->
+    <div class="story-card">
+        <div class="story-number">02</div>
+        <div class="story-label">C&acirc;u Chuyện #2</div>
+        <div class="story-title">10,000 Users Nhận Notification Lúc 3 Giờ Sáng</div>
+        <p>
+            Năm 2018, dự án mobile app cho một chuỗi bán lẻ Hàn Quốc. App có tính năng push notification để gửi khuyến mãi. Team dev set timezone cho notification scheduler là UTC, vì "server đặt ở AWS Singapore, dùng UTC cho standard".
+        </p>
+        <p>
+            Đúng. Logic đúng. Nhưng business logic SAI: khi marketing team Hàn Quốc schedule notification lúc "9 giờ sáng", họ muốn 9 giờ sáng GIỜ HÀN QUỐC (KST, UTC+9). Hệ thống interpret là 9 giờ sáng UTC = 6 giờ chiều KST. Team dev fix bằng cách offset 9 giờ. Nhưng fix sai &mdash; offset theo hướng ngược lại.
+        </p>
+        <p>
+            Kết quả: 10,000 users nhận push notification về "Flash Sale 50%!" lúc 3 giờ sáng giờ Hàn Quốc. Inbox team support bùng nổ. Google Play Store ratings drop từ 4.2 xuống 3.1 trong 24 giờ vì users tức giận bị đánh thức giữa đêm. CEO chuỗi bán lẻ gọi điện trực tiếp cho CEO công ty tôi.
+        </p>
+        <p>
+            Tôi &mdash; PM của dự án &mdash; phải viết một email xin lỗi chính thức (bằng tiếng Hàn, nhờ translator) và đề xuất recovery plan gồm: hotfix trong 4 giờ, gửi apology notification đến tất cả affected users, và tặng mỗi user một coupon giảm giá 10% như thiện chí.
+        </p>
+        <div class="story-lesson">
+            <div class="story-lesson-title">Bài Học</div>
+            <p>Timezone không phải là vấn đề technical. Timezone là vấn đề BUSINESS. Mọi feature liên quan đến thời gian phải được test với đúng timezone của end user. Và luôn có một test case: "Nếu ai đó schedule cái này lúc X giờ ở timezone Y, user sẽ nhận được lúc mấy giờ?"</p>
+        </div>
+    </div>
+
+    <!-- Story 3 -->
+    <div class="story-card">
+        <div class="story-number">03</div>
+        <div class="story-label">C&acirc;u Chuyện #3</div>
+        <div class="story-title">Thay Đổi Requirement Tối Thứ Sáu, Demo Sáng Thứ Hai</div>
+        <p>
+            Năm 2019. Thứ Sáu, 5 giờ chiều (giờ Việt Nam), tức 7 giờ tối (giờ Hàn Quốc). Team đang chuẩn bị ra về. Điện thoại reo. 부장님 bên Hàn Quốc: "Anh ơi, <span class="kr">대표님</span> (CEO) vừa review demo thứ Hai. Ông ấy muốn thay đổi toàn bộ flow của trang Dashboard. Tôi gửi email specs mới bây giờ."
+        </p>
+        <p>
+            Specs mới: thay đổi layout dashboard từ 4 widgets thành 8 widgets, thêm 2 biểu đồ mới, thay đổi color scheme, và "UI phải giống hệ thống Bloomberg Terminal" (vâng, cái hệ thống tài chính trị giá hàng tỷ đô). Deadline: sáng thứ Hai, 10 giờ sáng KST.
+        </p>
+        <p>
+            Tôi có 2 ngày, bao gồm cuối tuần, để implement changes mà bình thường cần 2 tuần. Thời khắc đó, tôi có 3 lựa chọn: (1) Nói "không thể", (2) Ép team làm cuối tuần, (3) Tìm creative solution.
+        </p>
+        <p>
+            Tôi chọn option 3. Thay vì implement đầy đủ, tôi ask dev lead tạo một DEMO VERSION &mdash; UI hoàn chỉnh nhưng data là mock. Trang Dashboard trông đúng như CEO muốn, nhưng backend chưa kết nối. Trong demo thứ Hai, tôi trình bày: "Đây là prototype của Dashboard mới. UI đã finalize theo yêu cầu của 대표님. Backend integration sẽ hoàn thành trong sprint tiếp theo."
+        </p>
+        <p>
+            CEO hài lòng vì thấy vision của ông được hiện thực hóa. Team không phải sacrifice weekend. Và tôi learned: <span class="hl">đôi khi, khách hàng không cần FINISHED product. Họ cần thấy PROGRESS và DIRECTION.</span>
+        </p>
+        <div class="story-lesson">
+            <div class="story-lesson-title">Bài Học</div>
+            <p>Khi deadline bất khả thi, đừng ép brute force. Hiểu THỰC SỰ khách hàng cần gì ở thời điểm đó. Thường họ cần thấy direction, không phải finished product. Prototype/mockup có thể cứu bạn.</p>
+        </div>
+    </div>
+
+    <!-- Story 4 -->
+    <div class="story-card">
+        <div class="story-number">04</div>
+        <div class="story-label">C&acirc;u Chuyện #4</div>
+        <div class="story-title">Lỗi Dịch Thuật Suýt Giết Hợp Đồng $2M</div>
+        <p>
+            Năm 2020. Giai đoạn proposal cho một dự án ERP với tập đoàn sản xuất Hàn Quốc. Contract value: $2 triệu USD. Proposal dài 120 trang, viết bằng tiếng Anh, được dịch sang tiếng Hàn bởi một translator freelance.
+        </p>
+        <p>
+            Trong section "Project Timeline", có một câu: "The project will be delivered in <strong>12 months</strong>, with a <strong>3-month warranty period</strong>." Translator dịch thành: "프로젝트는 <strong>12개월</strong> 안에 납품되며, <strong>3개월의 보증 기간</strong>이 포함됩니다."
+        </p>
+        <p>
+            Vấn đề? Từ "포함됩니다" (included) khiến khách hàng hiểu rằng warranty 3 tháng ĐÃ BAO GỒM trong 12 tháng (tức development chỉ 9 tháng + 3 tháng warranty). Ý chúng tôi là: 12 tháng development + 3 tháng warranty SAU ĐÓ (tổng 15 tháng). Chênh lệch 3 tháng effort = chênh lệch khoảng $400K.
+        </p>
+        <p>
+            May mắn, chúng tôi phát hiện ra trong buổi negotiation khi khách hàng hỏi: "Vậy các bạn deliver toàn bộ trong 9 tháng phải không?" Tôi: "Dạ không, 12 tháng ạ." Khách hàng: "Nhưng proposal viết 12 tháng bao gồm warranty..."
+        </p>
+        <p>
+            30 phút awkward silence và giải thích. Cuối cùng chúng tôi clarify được, nhưng khách hàng đã mất trust vào độ chính xác của proposal. Mất thêm 2 tuần negotiate lại và phải giảm giá 10% như "goodwill gesture".
+        </p>
+        <div class="story-lesson">
+            <div class="story-lesson-title">Bài Học</div>
+            <p>Mọi document dịch sang tiếng Hàn phải được BACK-TRANSLATE (dịch ngược lại tiếng Anh bởi người khác) để verify. Đặc biệt contract, proposal, và spec documents. Một từ sai = hàng trăm ngàn đô mất.</p>
+        </div>
+    </div>
+
+    <!-- Story 5 -->
+    <div class="story-card">
+        <div class="story-number">05</div>
+        <div class="story-label">C&acirc;u Chuyện #5</div>
+        <div class="story-title">Go-live Bị Hoãn 4 Lần &mdash; Và Bài Học Cuối Cùng</div>
+        <p>
+            Năm 2021. Dự án IoT platform cho smart home. Timeline gốc: go-live tháng 6. Thực tế:
+        </p>
+        <ul class="wisdom-list" style="margin-bottom: 16px;">
+            <li><strong>Lần hoãn 1 (tháng 5):</strong> Hardware partner delay delivery IoT sensors 2 tháng. Go-live dời sang tháng 8.</li>
+            <li><strong>Lần hoãn 2 (tháng 7):</strong> Security audit phát hiện 3 critical vulnerabilities. Fix mất 3 tuần. Go-live dời sang tháng 9.</li>
+            <li><strong>Lần hoãn 3 (tháng 8):</strong> Khách hàng thay đổi CEO. CEO mới muốn review lại toàn bộ dự án. Pause 1 tháng. Go-live dời sang tháng 10.</li>
+            <li><strong>Lần hoãn 4 (tháng 9):</strong> Load test fail. Hệ thống chỉ handle 1000 devices thay vì 10,000. Architecture cần redesign. Go-live dời sang tháng 12.</li>
+        </ul>
+        <p>
+            6 tháng delay so với plan gốc. Budget overrun 40%. Team mệt mỏi, demoralized. Khách hàng mất kiên nhẫn. Tôi &mdash; PM &mdash; stress level: ∞.
+        </p>
+        <p>
+            Nhưng cuối cùng, dự án go-live thành công vào tháng 12. Và bạn biết điều gì thú vị không? 6 tháng sau go-live, hệ thống chạy ổn định, 0 critical bugs, user satisfaction 92%. CEO mới &mdash; người đã gây ra lần hoãn thứ 3 &mdash; trở thành advocate lớn nhất của chúng tôi và giới thiệu thêm 2 dự án mới.
+        </p>
+        <p>
+            Bài học tôi rút ra: <span class="hl">Delay không phải lúc nào cũng xấu. Delay vì đúng lý do (quality, security, scope alignment) tốt hơn nhiều so với go-live đúng hạn với sản phẩm tệ.</span> Nhưng &mdash; và đây là BUT lớn &mdash; bạn phải COMMUNICATE delay sớm, rõ ràng, với root cause và recovery plan. Đừng bao giờ để khách hàng bất ngờ.
+        </p>
+        <div class="story-lesson">
+            <div class="story-lesson-title">Bài Học</div>
+            <p>Quản lý kỳ vọng quan trọng hơn quản lý timeline. Khách hàng có thể chấp nhận delay nếu bạn transparent, proactive, và luôn có plan. Họ KHÔNG chấp nhận bất ngờ.</p>
+        </div>
+    </div>
+
+    <!-- Story 6 -->
+    <div class="story-card">
+        <div class="story-number">06</div>
+        <div class="story-label">C&acirc;u Chuyện #6</div>
+        <div class="story-title">20 Developers, 3 Timezones, 1 Korean Telecom Project</div>
+        <p>
+            Năm 2022. Dự án lớn nhất sự nghiệp tôi đến thời điểm đó: một nền tảng quản lý thuê bao cho một công ty telecom Hàn Quốc. Team: 8 developers Việt Nam (Hà Nội, UTC+7), 7 developers Ấn Độ (Bangalore, UTC+5:30), 5 developers Hàn Quốc (Seoul, UTC+9). Tổng 20 developers, 3 timezones, 2 ngôn ngữ chính (Anh + Hàn), và 1 PM &mdash; tôi.
+        </p>
+        <p>
+            Thách thức:
+        </p>
+        <ul class="wisdom-list" style="margin-bottom: 16px;">
+            <li><strong>Timezone overlap:</strong> Giữa Ấn Độ và Hàn Quốc chỉ overlap 4.5 giờ. Giữa Việt Nam và Ấn Độ overlap 6.5 giờ. Finding a time slot cho all-hands meeting? Gần như impossible.</li>
+            <li><strong>Code standard wars:</strong> Team VN dùng camelCase, team Ấn Độ dùng snake_case, team Hàn Quốc dùng PascalCase. Code review trở thành chiến trường.</li>
+            <li><strong>Communication breakdown:</strong> Team Ấn Độ nói tiếng Anh Indian accent. Team Hàn Quốc nói tiếng Anh Korean accent. Team VN nói tiếng Anh Vietnamese accent. Meeting trở thành "guess what they said" game.</li>
+            <li><strong>Cultural differences:</strong> Team Ấn Độ rất vocal trong meeting (nói nhiều, debate mạnh). Team Hàn Quốc reserved hơn. Team VN im lặng nhất. Ai cũng tưởng team VN không có ý kiến, thực ra họ ngại nói trước đông người.</li>
+        </ul>
+        <p>
+            Cách tôi giải quyết:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Sub-teams:</strong> Chia thành 3 sub-teams theo module, mỗi sub-team có ít nhất 1 người từ mỗi timezone. Sub-team sync daily trong overlap time của họ.</li>
+            <li><strong>Async-first:</strong> Mọi quyết định phải được document trên Confluence. Meeting chỉ để discuss, không phải để decide. Decision = phải có written record.</li>
+            <li><strong>Code standard unification:</strong> Dành sprint 0 (1 tuần) chỉ để align coding standards, linting rules, và PR review process. Mọi người phải follow, no exceptions.</li>
+            <li><strong>Written communication:</strong> Meeting recording + AI transcription. Meeting minutes gửi trong 1 giờ sau meeting. Mọi người có thể review lại nếu không hiểu real-time.</li>
+            <li><strong>Cultural bridge:</strong> 1-on-1 hàng tuần với tech lead mỗi team. Hỏi không chỉ về progress mà về morale, concerns, và "có gì bạn muốn nói mà chưa nói trong meeting không?"</li>
+        </ul>
+        <p>
+            Dự án kéo dài 10 tháng. Go-live đúng hạn (chỉ delay 2 tuần so với plan). Khách hàng rate 4.5/5. Và tôi &mdash; tôi mất 3kg vì stress nhưng gain được experience vô giá.
+        </p>
+        <div class="story-lesson">
+            <div class="story-lesson-title">Bài Học</div>
+            <p>Multi-timezone, multi-culture project đòi hỏi OVER-COMMUNICATION. Bạn nghĩ bạn đang communicate đủ? Communicate gấp đôi nữa. Và invest vào tooling: good documentation, good async communication tools, good code review process.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: PM TOOLS & FRAMEWORKS -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#128736;&#65039;</span>
+        <div class="section-number">Phần VI</div>
+        <h2 class="section-title">Công Cụ &amp; Framework Của Đại Sư</h2>
+        <p class="section-subtitle">Không phải tool tốt nhất &mdash; m&agrave; l&agrave; tool ph&ugrave; hợp nhất</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128202; Jira vs Linear vs Notion &mdash; Cái Nào Cho Khách Hàn Quốc?</div>
+
+        <table class="tool-table">
+            <thead>
+                <tr>
+                    <th>Tiêu Chí</th>
+                    <th>Jira</th>
+                    <th>Linear</th>
+                    <th>Notion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Khách Hàn Quốc quen dùng?</td>
+                    <td><span class="hl-green">Rất quen</span></td>
+                    <td><span class="hl-red">Ít biết</span></td>
+                    <td><span class="hl">Khá quen</span></td>
+                </tr>
+                <tr>
+                    <td>Enterprise features</td>
+                    <td><span class="hl-green">Đầy đủ</span></td>
+                    <td>Trung bình</td>
+                    <td>Hạn chế</td>
+                </tr>
+                <tr>
+                    <td>Reporting cho sếp KR</td>
+                    <td><span class="hl-green">Xuất sắc</span></td>
+                    <td>Tốt</td>
+                    <td>Tự customize</td>
+                </tr>
+                <tr>
+                    <td>Learning curve</td>
+                    <td><span class="hl-red">Cao</span></td>
+                    <td><span class="hl-green">Thấp</span></td>
+                    <td><span class="hl">Trung bình</span></td>
+                </tr>
+                <tr>
+                    <td>Tích hợp Confluence</td>
+                    <td><span class="hl-green">Native</span></td>
+                    <td>Không</td>
+                    <td>Tự built-in</td>
+                </tr>
+                <tr>
+                    <td>Recommendation</td>
+                    <td><span class="hl-green">Dự án lớn, KH enterprise</span></td>
+                    <td>Team nhỏ, startup</td>
+                    <td>Documentation + nhẹ PM</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <span class="hl">Verdict của Đại Sư:</span> Với khách Hàn Quốc enterprise (như Coway), dùng <strong>Jira</strong>. Không phải vì nó tốt nhất, mà vì khách hàng BIẾT DÙNG NÓ. Giảm friction = tăng adoption = giảm drama.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128200; Gantt Chart &mdash; Vũ Khí Bí Mật Với Sếp Hàn Quốc</div>
+        <p>
+            Trong thế giới Agile, Gantt chart bị coi là "old school". Nhưng bạn biết ai YÊU Gantt chart không? Executives Hàn Quốc. Họ muốn nhìn thấy TOÀN BỘ dự án trên MỘT trang. Họ muốn thấy dependencies, critical path, milestones. Và Gantt chart cho họ chính xác điều đó.
+        </p>
+        <p>
+            <span class="hl">Mẹo:</span> Maintain hai views: Kanban board cho team dev (Agile-friendly), Gantt chart cho executives (Executive-friendly). Cùng data, khác presentation. Đừng ép executives nhìn Kanban board &mdash; họ sẽ nghĩ dự án bạn hỗn loạn.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#9888;&#65039; Risk Matrix &mdash; Công Cụ Phòng Ngừa Thảm Họa</div>
+        <p>
+            Risk Matrix đơn giản nhưng powerful. Hai trục: Probability (Xác suất) và Impact (Tác động). 5 levels mỗi trục. Mỗi risk được plot vào matrix.
+        </p>
+        <ul class="wisdom-list">
+            <li><span class="hl-red">Red zone (High Prob + High Impact):</span> Cần mitigation plan NGAY. Review hàng tuần.</li>
+            <li><span class="hl">Amber zone (Medium):</span> Có plan, review hàng 2 tuần.</li>
+            <li><span class="hl-green">Green zone (Low):</span> Monitor, review hàng tháng.</li>
+        </ul>
+        <p>
+            <span class="hl">Thực tế:</span> Đa số PM tạo risk matrix lúc đầu dự án rồi... không bao giờ update. Risk matrix chỉ có giá trị khi được LIVING DOCUMENT &mdash; update mỗi sprint, review trong sprint review.
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128233; Template Status Report Cho Khách Hàn Quốc</div>
+        <p>
+            Sau 12 khách hàng Hàn Quốc, tôi đã tinh chỉnh template status report đến level "sếp Hàn đọc xong gật đầu hài lòng". Structure:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Executive Summary (3 dòng):</strong> Tuần này chúng tôi [achievements]. [Nếu có] Có [N] risks/issues cần attention. Cần quyết định từ phía khách hàng về [topic].</li>
+            <li><strong>Overall Status:</strong> Traffic light (🟢/🟡/🔴) + một câu giải thích</li>
+            <li><strong>Sprint Progress:</strong> Planned vs Completed story points. Burndown chart.</li>
+            <li><strong>Module Status Table:</strong> Mỗi module một dòng: Module name | Status | % Complete | Notes</li>
+            <li><strong>Risks & Issues:</strong> ID | Description | Severity | Owner | Mitigation | Due date</li>
+            <li><strong>Action Items from Last Week:</strong> Status update cho mỗi item</li>
+            <li><strong>Plan for Next Week:</strong> Top 5 priorities</li>
+            <li><strong>Decisions Needed:</strong> Liệt kê rõ ràng những gì cần khách hàng decide, kèm deadline</li>
+        </ul>
+        <p>
+            Gửi mỗi thứ Sáu, trước 3 giờ chiều KST. Consistency là key.
+        </p>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: GOLDEN RULES -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#127775;</span>
+        <div class="section-number">Phần VII</div>
+        <h2 class="section-title">15 Quy Tắc V&agrave;ng Của Đại Sư</h2>
+        <p class="section-subtitle">Mỗi quy tắc được viết bằng mồ hôi, nước mắt, và ít nhất một lần thất bại</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">01</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #1: Estimate Xong, Nhân Đôi</div>
+        <p>Developer nói "2 ngày" = thực tế 4 ngày. Developer nói "1 tuần" = thực tế 2 tuần. Không phải vì developer lười, mà vì họ estimate cho "happy path" &mdash; không tính đến bug, meeting, code review, và 47 lần bị interrupt bởi Slack messages.</p>
+        <p><em>Câu chuyện: Dự án đầu tiên tôi làm PM, developer nói "backend xong trong 3 tuần". 7 tuần sau vẫn chưa xong. Từ đó, tôi luôn nhân đôi và thêm buffer 20%.</em></p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">02</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #2: Tin Xấu Phải Đi Nhanh Hơn Tin Tốt</div>
+        <p>Khi có vấn đề, báo cho khách hàng NGAY. Không đợi. Không "hy vọng tự fix được". Không "chờ có solution rồi mới báo". Khách hàng có thể chấp nhận vấn đề, nhưng KHÔNG BAO GIỜ chấp nhận bị giấu thông tin. Đặc biệt khách Hàn Quốc &mdash; trust là currency quan trọng nhất, và giấu thông tin = bankrupt trust.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">03</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #3: Mọi Quyết Định Phải Có Văn Bản</div>
+        <p>Nói miệng trong meeting = không tồn tại. Nói trên KakaoTalk nhưng không có confirm email = sẽ bị deny. Mọi quyết định quan trọng phải được ghi lại bằng văn bản, gửi email, và có reply "confirmed" từ phía khách hàng.</p>
+        <p><em>Câu chuyện: Năm 2017, khách hàng confirm miệng trong meeting rằng "không cần feature X". 2 tháng sau, họ hỏi: "Feature X đâu?" Tôi không có bằng chứng written confirmation. Phải implement feature X miễn phí. Cost: $30K.</em></p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">04</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #4: Đừng Bao Giờ Nói "Không Có Vấn Đề"</div>
+        <p>Dự án nào cũng có vấn đề. Nếu bạn nói "không có vấn đề", khách hàng sẽ nghĩ một trong hai: (1) Bạn đang giấu, (2) Bạn không đủ giỏi để nhận ra vấn đề. Cả hai đều tệ. Thay vào đó, nói: "Hiện tại có 3 risks mà chúng tôi đang monitor, và đây là mitigation plan cho mỗi risk."</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">05</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #5: Protect Team Khỏi Chính Trị</div>
+        <p>Developer không cần biết rằng khách hàng đang threatening cancel contract. Họ cần biết: "Feature X cần xong trước thứ Sáu vì đây là priority cao nhất từ khách hàng." PM absorb political pressure và translate nó thành clear, actionable tasks cho team.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">06</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #6: Demo Thường Xuyên, Demo Sớm</div>
+        <p>Đừng đợi 2 tháng mới demo. Demo mỗi sprint. Demo mỗi tuần nếu có thể. Mỗi demo là cơ hội để catch misunderstanding sớm, manage expectations, và build confidence với khách hàng. Khách Hàn Quốc đặc biệt thích thấy progress visual.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">07</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #7: Scope Creep Là Chắc Chắn, Quản Lý Nó Thay Vì Chống Lại</div>
+        <p>Scope creep SẼ xảy ra. 100%. Đừng cố ngăn chặn nó hoàn toàn &mdash; bạn sẽ thua. Thay vào đó, có PROCESS để manage nó: Change Request form, impact analysis, re-estimation, approval flow. Biến scope creep từ "chaos" thành "controlled change".</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">08</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #8: 1-on-1 Quan Trọng Hơn All-hands</div>
+        <p>Trong all-hands meeting, dev sẽ nói "mọi thứ OK". Trong 1-on-1, dev sẽ nói "em đang struggle với module X và em nghĩ mình sẽ miss deadline." 1-on-1 hàng tuần với mỗi key member là investment tốt nhất của PM.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">09</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #9: Đừng Micromanage, Nhưng Đừng Macro Quá</div>
+        <p>Micromanage = team mất motivation. Macro quá = team đi sai hướng 2 tuần rồi mới phát hiện. Sweet spot: daily check-in (15 phút), sprint review, và trust-but-verify. Tin tưởng team nhưng vẫn kiểm tra output.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">10</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #10: Budget Buffer = Survival Insurance</div>
+        <p>Luôn giữ 15-20% budget buffer. Không nói cho khách hàng. Không nói cho team. Đó là "quỹ cứu hộ" cho những tình huống bất ngờ &mdash; và LUÔN có tình huống bất ngờ.</p>
+        <p><em>Câu chuyện: Năm 2019, 3 dev senior nghỉ việc cùng lúc. Cần thuê contractor gấp với rate cao gấp 2. Budget buffer đã cứu dự án.</em></p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">11</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #11: Code Freeze Trước Mọi Demo &amp; Release</div>
+        <p>Không push code trong 3 giờ trước demo. Không push code trong 24 giờ trước release. "Last minute fix" là nguồn gốc của 60% production incidents mà tôi đã chứng kiến.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">12</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #12: Retrospective Không Phải Blame Game</div>
+        <p>Retro phải focus vào PROCESS, không phải PEOPLE. "Process nào cho phép bug này lọt vào production?" chứ không phải "AI là người viết code bug?" Khi team sợ bị blame, họ sẽ giấu vấn đề. Khi team cảm thấy safe, họ sẽ proactive report issues.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">13</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #13: Đầu Tư Vào Automation Sớm</div>
+        <p>CI/CD pipeline, automated testing, automated deployment &mdash; set up từ sprint 1. "Chúng ta sẽ làm sau khi ổn định" = không bao giờ. Automation giảm 70% effort cho repetitive tasks và gần như eliminate human error trong deployment.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">14</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #14: Mối Quan Hệ &gt; Hợp Đồng</div>
+        <p>Với khách Hàn Quốc, relationship (관계 - gwangye) quan trọng hơn contract. Hợp đồng tốt nhưng relationship tệ = khách hàng tìm cách terminate. Hợp đồng bình thường nhưng relationship tốt = khách hàng flexible, forgiving, và giới thiệu dự án mới.</p>
+    </div>
+
+    <div class="golden-rule">
+        <div class="golden-rule-number">15</div>
+        <div class="golden-rule-title">&#127775; Quy Tắc #15: Chăm Sóc Bản Thân &mdash; PM Burn Out = Dự Án Burn Down</div>
+        <p>Bạn không thể manage dự án khi bạn đang kiệt sức. Ngủ đủ giấc. Tập thể dục. Có hobby ngoài công việc. Nói "không" khi cần. PM burn out không chỉ ảnh hưởng đến bạn &mdash; nó ảnh hưởng đến TOÀN BỘ team và dự án. Bạn là single point of failure &mdash; protect bản thân như protect production server.</p>
+        <p><em>Câu chuyện: Năm 2020, tôi burn out nặng sau 3 dự án liên tiếp. Mất ngủ, hay cáu gắt, quyết định kém. Tôi xin nghỉ 2 tuần. Khi quay lại, productivity tăng 50% và decision quality cải thiện rõ rệt. 2 tuần nghỉ đó là investment tốt nhất năm.</em></p>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: COMMON MISTAKES -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#128165;</span>
+        <div class="section-number">Phần VIII</div>
+        <h2 class="section-title">10 Sai L&acirc;m Ch&iacute; Mạng Của PM</h2>
+        <p class="section-subtitle">"Người khôn học từ sai lầm của người khác. Người dại học từ sai lầm của chính mình." &mdash; Đại Sư, sau khi mắc cả 10 sai lầm này</p>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #1</div>
+        <div class="mistake-title">&#128165; Nói "Yes" Với Mọi Yêu Cầu Của Khách Hàng</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Năm 2014, khách hàng yêu cầu thêm 5 features mới giữa dự án. Tôi &mdash; eager to please &mdash; nói "Vâng, chúng tôi sẽ làm" mà không re-estimate timeline hay budget. Kết quả: delay 2 tháng, team làm overtime 6 tuần liên tục, 2 người nghỉ việc vì burn out.</p>
+        <p><strong>Tại sao:</strong> Tôi sợ mất khách hàng. Tôi nghĩ nói "không" = unprofessional. Sai hoàn toàn.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Mọi yêu cầu mới phải qua Change Request process. Evaluate impact, re-estimate, present options (với trade-offs rõ ràng) cho khách hàng TRƯỚC KHI commit.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #2</div>
+        <div class="mistake-title">&#128165; Giấu Vấn Đề Và Hy Vọng Nó Tự Biến Mất</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Performance issue phát hiện ở sprint 3. Tôi nghĩ "chắc team sẽ fix được ở sprint sau". Sprint 4, 5, 6... vẫn chưa fix. Sprint 7, khách hàng chạy load test và phát hiện. Trust mất. Relationship damage.</p>
+        <p><strong>Tại sao:</strong> Sợ confrontation. Hy vọng vấn đề tự giải quyết. Spoiler: nó không bao giờ tự giải quyết.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Quy tắc 24 giờ: nếu một issue tồn tại hơn 24 giờ mà không có clear plan to resolve, escalate ngay. Lên khách hàng, lên management, lên bất cứ ai cần biết.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #3</div>
+        <div class="mistake-title">&#128165; Không Có Definition of Done Rõ Ràng</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Dev nói "done". QA test, tìm ra 15 bugs. Dev nói "done nghĩa là code xong, chưa test". QA nói "done nghĩa là không còn bug". PM (tôi) nhận ra mình chưa bao giờ define "done" là gì.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Definition of Done (DoD) phải rõ ràng, bằng văn bản, agreed by cả team: Code complete + Unit tests pass + Code reviewed + QA tested + No open bugs P1/P2 + Documentation updated = DONE.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #4</div>
+        <div class="mistake-title">&#128165; Skip Sprint Retrospective Vì "Không Có Thời Gian"</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Skip retro 4 sprint liên tục. Cùng những sai lầm lặp đi lặp lại. Team frustrated vì "đã nói rồi mà không ai nghe". Morale giảm. Turnover tăng.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Retro là MANDATORY, không optional. Nếu không có thời gian cho retro đầy đủ, làm "mini retro" 15 phút: 3 điều tốt, 3 điều cần cải thiện, 3 action items. Done.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #5</div>
+        <div class="mistake-title">&#128165; Hire Theo Số Lượng, Không Phải Chất Lượng</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Dự án cần thêm developers. Tôi hire 5 juniors thay vì 2 seniors vì "budget friendly". 5 juniors đó cần được mentor, reviewed, guided &mdash; tốn thời gian của senior developers hơn là tiết kiệm. Net productivity giảm.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>2 seniors > 5 juniors, gần như luôn luôn. Đặc biệt trong dự án tight deadline. Cost per hour cao hơn nhưng output per dollar tốt hơn nhiều.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #6</div>
+        <div class="mistake-title">&#128165; Không Test Với Data Thực Tế</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Test với 100 records: mọi thứ nhanh. Production có 5 triệu records: response time 30 giây. Go-live xong, users complain, CEO gọi điện.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Load test với data volume = production data volume (hoặc ít nhất 80%). Performance test phải là part of Definition of Done, không phải afterthought.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #7</div>
+        <div class="mistake-title">&#128165; Không Có Rollback Plan</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Go-live. Critical bug phát hiện sau 2 giờ. Muốn rollback. Không có plan. Không có backup database schema. Không có previous version deployment script. Stuck giữa hệ thống mới buggy và hệ thống cũ đã bị decommission.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Rollback plan phải là PART of go-live plan. Test rollback trước go-live. Nếu rollback fail, bạn KHÔNG ĐƯỢC go-live.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #8</div>
+        <div class="mistake-title">&#128165; Assume Developers Hiểu Business Context</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Developer implement "delete user" function bằng... xóa hoàn toàn khỏi database. Không soft delete. Không audit trail. Vì requirement chỉ nói "user can be deleted" mà không nói chi tiết. Developer hiểu theo nghĩa đen.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Spend time giải thích business context cho developers. "Tại sao" quan trọng hơn "cái gì". Khi dev hiểu WHY, họ sẽ implement WHAT tốt hơn nhiều.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #9</div>
+        <div class="mistake-title">&#128165; Ignore Technical Debt Cho Đến Khi Nó Explode</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> 6 tháng "chạy nhanh, fix sau". Technical debt tích lũy. Sprint velocity giảm dần: từ 40 points xuống 30, 25, 20. Mỗi feature mới mất gấp đôi thời gian vì phải navigate code legacy trong chính dự án đang chạy.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Allocate 15-20% capacity mỗi sprint cho tech debt reduction. Nó giống như maintenance cho xe ô tô &mdash; skip maintenance thì xe sẽ hỏng, và sửa xe hỏng đắt hơn nhiều so với bảo dưỡng định kỳ.</p>
+        </div>
+    </div>
+
+    <div class="mistake-card">
+        <div class="mistake-label">Sai Lầm #10</div>
+        <div class="mistake-title">&#128165; Một Mình Gánh Tất Cả</div>
+        <p><strong>Chuyện gì đã xảy ra:</strong> Tôi &mdash; PM duy nhất &mdash; manage 20 developers, communicate với 5 stakeholders, viết reports, attend 8 meetings/ngày, resolve conflicts, và cố gắng sleep 4 giờ/đêm. Kéo dài 3 tháng. Burn out nặng. Phải nghỉ phép 2 tuần để hồi phục.</p>
+        <div class="mistake-fix">
+            <div class="mistake-fix-label">Cách Phòng Tránh</div>
+            <p>Delegate. Train leads. Empower team members. PM không phải siêu nhân. Nếu dự án cần bạn làm mọi thứ, dự án đó thiếu structure, không phải thiếu bạn.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: PBX PROJECT SPECIFIC ADVICE -->
+<!-- ============================================================ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-icon">&#128222;</span>
+        <div class="section-number">Phần IX</div>
+        <h2 class="section-title">Lời Khuyên Cho Dự Án PBX Coway</h2>
+        <p class="section-subtitle">Cụ thể, thực tế, áp dụng ngay &mdash; vì deadline đang đếm ngược</p>
+    </div>
+
+    <!-- Deadline boxes -->
+    <div class="deadline-grid">
+        <div class="deadline-box">
+            <div class="deadline-date">15 / 05</div>
+            <div class="deadline-label">&#128308; Core Release &mdash; Hệ thống lõi phải hoạt động</div>
+        </div>
+        <div class="deadline-box">
+            <div class="deadline-date">18 / 05</div>
+            <div class="deadline-label">&#128308; Hệ Thống Cũ Dừng &mdash; Không có đường lui</div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 30px;">
+        <div class="card-title">&#9888;&#65039; Phân Tích Tình Hình: Hai Ngày Sống Còn</div>
+        <p>
+            Giữa ngày 15/05 (core release) và ngày 18/05 (hệ thống cũ dừng) chỉ có <span class="hl-red">3 NGÀY</span>. Ba ngày để đảm bảo hệ thống mới chạy ổn trước khi hệ thống cũ bị tắt. Đây không phải là deadline bình thường &mdash; đây là deadline "không có đường lui". Nếu hệ thống mới fail sau ngày 18/05, Coway Korea sẽ MẤT HỆ THỐNG LIÊN LẠC DOANH NGHIỆP.
+        </p>
+        <p>
+            Với vai trò PM, đây là nightmare scenario. Bạn phải plan cho:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Parallel running:</strong> Chạy song song hệ thống cũ và mới ít nhất 1-2 tuần TRƯỚC 15/05. Không phải chờ đến 15/05 mới bật hệ thống mới.</li>
+            <li><strong>Feature freeze:</strong> Code freeze cho core features ít nhất 1 tuần trước 15/05. Chỉ fix critical bugs sau đó.</li>
+            <li><strong>Rollback plan:</strong> Nếu hệ thống mới fail, có cách nào giữ hệ thống cũ thêm 1-2 tuần không? Negotiate với vendor hệ thống cũ TRƯỚC, không phải khi emergency.</li>
+            <li><strong>War room:</strong> Từ 15/05 đến 25/05, team phải ở trạng thái "war room" &mdash; available 24/7, response time < 30 phút cho critical issues.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128222; Asterisk / SIP Integration &mdash; Risk Analysis</div>
+        <p>
+            PBX systems (tổng đài doanh nghiệp) dựa trên Asterisk và SIP protocol. Đây là lĩnh vực CHUYÊN BIỆT &mdash; không phải web development thông thường. Risks đặc thù:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>SIP interoperability:</strong> Không phải mọi SIP phone/device đều "nói chuyện" giống nhau. Test với CHÍNH XÁC model IP phone mà Coway đang dùng, không phải emulator.</li>
+            <li><strong>Audio quality:</strong> Codec negotiation, jitter, packet loss &mdash; test trên network thực tế của Coway, không phải trên mạng lab.</li>
+            <li><strong>Call volume:</strong> Stress test với số lượng cuộc gọi đồng thời mà Coway thực tế sử dụng. Hỏi khách hàng: peak hour có bao nhiêu concurrent calls? Nhân 1.5 để có buffer.</li>
+            <li><strong>Failover:</strong> Nếu Asterisk server chết, cuộc gọi đang diễn ra sẽ ra sao? Có failover mechanism không?</li>
+            <li><strong>Recording compliance:</strong> Hàn Quốc có luật về call recording (cần consent). Đảm bảo hệ thống comply với 개인정보보호법 (Personal Information Protection Act).</li>
+            <li><strong>Emergency calls:</strong> 119 (cứu hỏa/cấp cứu) và 112 (cảnh sát) phải LUÔN hoạt động, bất kể trạng thái hệ thống. Test scenario: system partially down + emergency call = PHẢI connected.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#127760; Offshore Team Coordination &mdash; VN-KR Specific</div>
+        <p>
+            Team tại Việt Nam làm việc với khách hàng Coway Korea. Những lưu ý cụ thể:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Golden hours:</strong> 9:00-12:00 VN time (11:00-14:00 KR time) là khoảng overlap tốt nhất. Tất cả sync meetings phải nằm trong khung giờ này.</li>
+            <li><strong>On-site visits:</strong> Nếu có PM hoặc tech lead đang onsite ở Hàn Quốc, tận dụng tối đa. Họ là "mắt và tai" của team tại chỗ. Daily debrief với on-site person là MUST.</li>
+            <li><strong>Korean holidays tháng 5:</strong> 어린이날 (Children's Day, 5/5) &mdash; nếu rơi vào ngày làm việc, phía Hàn Quốc sẽ nghỉ. Plan cho việc không có response từ khách hàng vào ngày đó.</li>
+            <li><strong>Testing handoff:</strong> Team VN code xong cuối ngày VN, push lên staging. Team KR (hoặc on-site person) test sáng ngày hôm sau KR time. Feedback trước 12:00 KR = team VN nhận được lúc 10:00 VN, kịp fix trong ngày. Đây là "follow the sun" development.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128172; Giao Tiếp Với Coway &mdash; Enterprise Telecom Context</div>
+        <p>
+            Coway là tập đoàn LỚN. Giao tiếp với enterprise Hàn Quốc khác startup:
+        </p>
+        <ul class="wisdom-list">
+            <li><strong>Formal communication:</strong> Email format phải professional. Subject line phải clear: "[PBX Project] Weekly Status Report - Week 12" không phải "Hi, update here".</li>
+            <li><strong>Approval chain:</strong> Mọi quyết định lớn phải qua approval chain nội bộ của Coway. Factor thêm 2-3 ngày cho approval process vào timeline.</li>
+            <li><strong>Security requirements:</strong> Enterprise telecom = sensitive data. VPN access, data encryption, access control &mdash; không phải "nice to have" mà là "must have from day 1".</li>
+            <li><strong>SLA expectations:</strong> Khi hệ thống go-live, Coway sẽ kỳ vọng SLA: 99.9% uptime, response time < 5s, support response < 1 giờ. Đảm bảo team hiểu và có plan cho SLA.</li>
+            <li><strong>Escalation path:</strong> Define rõ escalation path: issue level 1 &rarr; dev team, level 2 &rarr; tech lead, level 3 &rarr; PM + CTO. Coway cần biết ai để liên hệ khi nào.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-title">&#128203; Checklist Countdown To May 15</div>
+        <p>Nếu hôm nay là tháng 3, bạn có khoảng 8 tuần đến core release. Đây là countdown checklist:</p>
+        <ul class="wisdom-list">
+            <li><strong>Tuần 1-2 (Tháng 3, tuần 3-4):</strong> Feature freeze cho core features. Bắt đầu integration testing intensive. Setup production environment.</li>
+            <li><strong>Tuần 3-4 (Tháng 4, tuần 1-2):</strong> Bug fixing sprint. Performance testing. Security audit. UAT round 1 với Coway team.</li>
+            <li><strong>Tuần 5-6 (Tháng 4, tuần 3-4):</strong> UAT round 2. Fix critical UAT bugs. Parallel running test. Data migration dry run.</li>
+            <li><strong>Tuần 7 (Tháng 5, tuần 1):</strong> Final bug fixes. Go-live rehearsal (full dry run). Training for Coway end users. Prepare rollback plan.</li>
+            <li><strong>Tuần 8 (Tháng 5, tuần 2):</strong> CODE FREEZE (May 12). Final regression test. Go-live (May 15). War room active. Monitor 24/7.</li>
+        </ul>
+
+        <div class="wisdom-box">
+            <p>8 tuần nghe thì dài, nhưng trừ đi meeting, holiday, unexpected issues &mdash; bạn có khoảng 30 ngày effective. 30 ngày để ensure một hệ thống telecom enterprise chạy ổn định. Không có margin for error. Plan like a general. Execute like a soldier. And pray like a saint.</p>
+            <div class="wisdom-author">&mdash; Đại Sư, nhìn vào calendar và thở dài</div>
+        </div>
+    </div>
+
+    <!-- Quote of the day (closing) -->
+    <div class="quote-of-day" style="margin-top: 60px;">
+        <div class="quote-of-day-label">&#128161; Lời Cuối Từ Đại Sư &#128161;</div>
+        <div class="quote-of-day-text">
+            "Dự án thành công không phải vì không có vấn đề. Mà vì có một PM đủ giỏi để biến vấn đề thành bài học, deadline thành động lực, và team thành gia đình."
+        </div>
+        <div class="quote-of-day-author">&mdash; Quản Dự Án Đại Sư, kết thúc dự án thứ 47, chuẩn bị cho dự án thứ 48</div>
+    </div>
+</section>
+
+</div><!-- end container -->
+
+<!-- Footer -->
+<div class="footer">
+    <div class="container">
+        <p style="color: var(--gold-500); font-size: 14px; margin-bottom: 8px;">
+            &#128081; Agent #00 &mdash; Quản Dự Án Đại Sư &mdash; Project Management Grand Master
+        </p>
+        <p>PBX Enterprise Communication System &bull; Coway Korea &bull; SotaTek Vietnam</p>
+        <p style="margin-top: 12px; font-size: 11px; color: var(--slate-700);">
+            "15 năm kinh nghiệm, 47 dự án, 3 lần suýt bỏ nghề &mdash; và vẫn đang đếm tiếp."
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

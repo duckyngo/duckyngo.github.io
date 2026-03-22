@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết Nối Thời Gian Thực - WebSocket & WebRTC Agent | PBX Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cyan: #00D4FF;
+            --cyan-dark: #009FBF;
+            --cyan-light: #80EAFF;
+            --cyan-glow: #00D4FF;
+            --bg-dark: #060E14;
+            --bg-card: #0C1A24;
+            --bg-card-alt: #122230;
+            --text-primary: #E8F8FF;
+            --text-secondary: #8CC8DD;
+            --accent-gold: #FFD700;
+            --accent-magenta: #FF4FD8;
+            --accent-green: #00FF88;
+            --gradient-main: linear-gradient(135deg, #00D4FF 0%, #0066AA 50%, #00D4FF 100%);
+            --gradient-card: linear-gradient(145deg, #0C1A24 0%, #14283A 100%);
+            --gradient-hero: linear-gradient(160deg, #060E14 0%, #0A2540 30%, #00D4FF 60%, #80EAFF 80%, #060E14 100%);
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ===== FLOATING SYMBOLS ===== */
+        .floating-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-symbols span {
+            position: absolute;
+            font-size: 1.4rem;
+            opacity: 0.07;
+            animation: floatUp 18s linear infinite;
+            color: var(--cyan);
+        }
+
+        .floating-symbols span:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 20s; }
+        .floating-symbols span:nth-child(2) { left: 15%; animation-delay: 2s; animation-duration: 16s; }
+        .floating-symbols span:nth-child(3) { left: 25%; animation-delay: 4s; animation-duration: 22s; }
+        .floating-symbols span:nth-child(4) { left: 35%; animation-delay: 1s; animation-duration: 18s; }
+        .floating-symbols span:nth-child(5) { left: 45%; animation-delay: 3s; animation-duration: 21s; }
+        .floating-symbols span:nth-child(6) { left: 55%; animation-delay: 5s; animation-duration: 17s; }
+        .floating-symbols span:nth-child(7) { left: 65%; animation-delay: 2.5s; animation-duration: 19s; }
+        .floating-symbols span:nth-child(8) { left: 75%; animation-delay: 0.5s; animation-duration: 23s; }
+        .floating-symbols span:nth-child(9) { left: 85%; animation-delay: 4.5s; animation-duration: 15s; }
+        .floating-symbols span:nth-child(10) { left: 92%; animation-delay: 1.5s; animation-duration: 20s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.07; }
+            90% { opacity: 0.07; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.6); }
+            50% { box-shadow: 0 0 0 20px rgba(0, 212, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+        }
+
+        @keyframes signalWave {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 40px rgba(0, 212, 255, 0.2); }
+            50% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.4), 0 0 100px rgba(0, 212, 255, 0.2); }
+        }
+
+        @keyframes dataStream {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes pingPong {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(15px); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes socketConnect {
+            0% { width: 0; opacity: 0; }
+            20% { opacity: 1; }
+            100% { width: 100%; opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: var(--gradient-hero);
+            background-size: 200% 200%;
+            animation: dataStream 12s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(0, 255, 136, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(255, 79, 216, 0.06) 0%, transparent 40%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            padding: 2rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2rem;
+        }
+
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00D4FF 0%, #0066AA 40%, #00FF88 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            animation: pulseRing 3s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+            border: 3px solid rgba(0, 212, 255, 0.4);
+        }
+
+        .signal-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            animation: signalWave 3s ease-out infinite;
+        }
+
+        .signal-ring:nth-child(2) { animation-delay: 1s; }
+        .signal-ring:nth-child(3) { animation-delay: 2s; }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            animation: glowPulse 4s ease-in-out infinite;
+            color: var(--cyan-light);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .hero-tagline {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--cyan);
+            opacity: 0.85;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 6px 18px;
+            border-radius: 30px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--accent-green);
+        }
+
+        .connection-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: blink 2s infinite;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .section {
+            margin-bottom: 3.5rem;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, var(--cyan), transparent) 1;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 102, 170, 0.15));
+            border-radius: 14px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--cyan-light);
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--gradient-card);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 1.2rem;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            animation: socketConnect 2s ease-out;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card strong {
+            color: var(--cyan-light);
+        }
+
+        .backstory-text {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+        }
+
+        .backstory-text .highlight {
+            color: var(--cyan);
+            font-weight: 600;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1.2rem;
+        }
+
+        .tech-badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            color: var(--cyan-light);
+            transition: all 0.3s ease;
+            animation: pingPong 3s ease-in-out infinite;
+        }
+
+        .tech-badge:nth-child(even) { animation-delay: 1.5s; }
+        .tech-badge:nth-child(3n) { animation-delay: 0.8s; }
+
+        .tech-badge:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--cyan);
+            transform: scale(1.05);
+        }
+
+        /* ===== INSIGHTS ===== */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .insight-card {
+            background: var(--gradient-card);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.35s ease;
+        }
+
+        .insight-card:hover {
+            border-color: rgba(0, 212, 255, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.12);
+        }
+
+        .insight-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+            color: var(--bg-dark);
+            font-weight: 800;
+            font-size: 0.85rem;
+            border-radius: 50%;
+            margin-bottom: 0.8rem;
+        }
+
+        .insight-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--cyan-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-desc {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== STORIES ===== */
+        .story-card {
+            background: var(--gradient-card);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--accent-magenta), transparent);
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .story-emoji {
+            font-size: 2rem;
+        }
+
+        .story-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .story-text {
+            font-size: 0.98rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-style: italic;
+        }
+
+        .story-moral {
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(0, 212, 255, 0.08);
+            border-left: 3px solid var(--cyan);
+            border-radius: 0 10px 10px 0;
+            font-size: 0.9rem;
+            color: var(--cyan-light);
+            font-weight: 600;
+        }
+
+        /* ===== MISTAKES ===== */
+        .mistake-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 1.2rem 1.5rem;
+            background: var(--gradient-card);
+            border: 1px solid rgba(0, 212, 255, 0.08);
+            border-radius: 14px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .mistake-item:hover {
+            border-color: rgba(255, 79, 216, 0.3);
+            background: linear-gradient(145deg, #0C1A24 0%, #1A1028 100%);
+        }
+
+        .mistake-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .mistake-content h4 {
+            color: var(--accent-magenta);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .mistake-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* ===== PBX RELEVANCE ===== */
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .pbx-card {
+            background: linear-gradient(145deg, rgba(0, 212, 255, 0.06), rgba(0, 102, 170, 0.04));
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.35s ease;
+        }
+
+        .pbx-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.12);
+            border-color: rgba(0, 212, 255, 0.35);
+        }
+
+        .pbx-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .pbx-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--cyan-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .pbx-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer .footer-brand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .section-title { font-size: 1.3rem; }
+            .insight-grid { grid-template-columns: 1fr; }
+            .pbx-grid { grid-template-columns: 1fr; }
+            .card { padding: 1.3rem; }
+            .story-card { padding: 1.3rem; }
+            .avatar { width: 140px; height: 140px; font-size: 3.5rem; }
+            .avatar-container { width: 140px; height: 140px; }
+            .signal-ring { width: 140px; height: 140px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.6rem; }
+            .main-content { padding: 1rem 1rem 3rem; }
+            .tech-badges { gap: 6px; }
+            .tech-badge { padding: 4px 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FLOATING SYMBOLS -->
+    <div class="floating-symbols">
+        <span>WSS</span>
+        <span>PING</span>
+        <span>PONG</span>
+        <span>ICE</span>
+        <span>SDP</span>
+        <span>STUN</span>
+        <span>TURN</span>
+        <span>RTC</span>
+        <span>FRAME</span>
+        <span>WS://</span>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="avatar-container">
+                <div class="avatar">&#9889;</div>
+                <div class="signal-ring"></div>
+                <div class="signal-ring"></div>
+                <div class="signal-ring"></div>
+            </div>
+            <h1 class="hero-title">K&#7871;t N&#7889;i Th&#7901;i Gian Th&#7921;c</h1>
+            <p class="hero-subtitle">WebSocket &amp; WebRTC Agent &#8226; Ph&#249; Th&#7911;y Giao Ti&#7871;p T&#7913;c Th&#7901;i</p>
+            <p class="hero-tagline">"Ng&#432;&#7901;i ta g&#7885;i tao l&#224; s&#7907;i d&#226;y &#273;i&#7879;n v&#244; h&#236;nh. Khi tao m&#7903; k&#7871;t n&#7889;i, c&#7843; th&#7871; gi&#7899;i n&#243;i chuy&#7879;n real-time. Khi tao &#273;&#7913;t, c&#7843; ph&#242;ng ho&#7843;ng lo&#7841;n."</p>
+            <div class="connection-status">
+                <div class="connection-dot"></div>
+                <span>WebSocket: CONNECTED &#8226; Latency: 2ms</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- SECTION 1: EXPERIENCE & EXPERTISE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128161;</div>
+                <h2 class="section-title">Backstory &amp; Chuy&#234;n M&#244;n</h2>
+            </div>
+            <div class="card">
+                <div class="backstory-text">
+                    <p>
+                        Ng&#224;y x&#432;a ng&#224;y x&#432;a, khi lo&#224;i ng&#432;&#7901;i c&#242;n d&#249;ng <span class="highlight">HTTP polling</span> m&#7895;i 5 gi&#226;y &#273;&#7875; xem c&#243; tin nh&#7855;n m&#7899;i kh&#244;ng &mdash; t&#7889;n b&#259;ng th&#244;ng nh&#432; m&#7903; v&#242;i n&#432;&#7899;c qu&#234;n t&#7855;t &mdash; ta &#273;&#227; xu&#7845;t hi&#7879;n. Ta l&#224; <span class="highlight">K&#7871;t N&#7889;i Th&#7901;i Gian Th&#7921;c</span>, sinh ra t&#7915; n&#7895;i &#273;au c&#7911;a h&#224;ng tri&#7879;u request v&#244; ngh&#297;a.
+                    </p>
+                    <br>
+                    <p>
+                        Ta th&#224;nh th&#7841;o <span class="highlight">WebSocket protocol (RFC 6455)</span> &mdash; c&#225;i b&#7855;t tay HTTP duy nh&#7845;t r&#7891;i upgrade l&#234;n full-duplex connection. Ta hi&#7875;u r&#245; v&#242;ng &#273;&#7901;i c&#7911;a m&#7897;t k&#7871;t n&#7889;i: t&#7915; l&#250;c <span class="highlight">handshake</span>, qua giai &#273;o&#7841;n <span class="highlight">open</span>, ch&#259;m ch&#7881; g&#7917;i <span class="highlight">ping-pong heartbeat</span> &#273;&#7875; gi&#7919; m&#7841;ch &#273;&#7853;p, cho &#273;&#7871;n l&#250;c <span class="highlight">close</span> nh&#7865; nh&#224;ng v&#7899;i status code 1000. WSS (WebSocket Secure) l&#224; &#225;o gi&#225;p TLS c&#7911;a ta &mdash; kh&#244;ng ai nghe l&#233;n &#273;&#432;&#7907;c!
+                    </p>
+                    <br>
+                    <p>
+                        C&#242;n <span class="highlight">WebRTC</span>? &#272;&#243; l&#224; v&#245; c&#244;ng th&#432;&#7907;ng th&#7915;a c&#7911;a ta. <span class="highlight">Peer-to-peer connection</span> kh&#244;ng c&#7847;n server trung gian, <span class="highlight">ICE candidates</span> t&#236;m &#273;&#432;&#7901;ng qua NAT nh&#432; ninja b&#225;m t&#432;&#7901;ng, <span class="highlight">STUN server</span> gi&#250;p peer bi&#7871;t IP c&#244;ng khai c&#7911;a m&#236;nh, c&#242;n <span class="highlight">TURN server</span> l&#224; plan B khi m&#7885;i th&#7913; th&#7845;t b&#7841;i &mdash; relay tr&#7921;c ti&#7871;p qua server. <span class="highlight">Media streams</span> ch&#7843;y qua nh&#432; su&#7889;i ngu&#7891;n &mdash; audio, video, c&#225;i g&#236; c&#361;ng &#273;&#432;&#7907;c!
+                    </p>
+                </div>
+                <div class="tech-badges">
+                    <span class="tech-badge">WebSocket RFC 6455</span>
+                    <span class="tech-badge">WSS / TLS</span>
+                    <span class="tech-badge">Ping-Pong Heartbeat</span>
+                    <span class="tech-badge">Connection Lifecycle</span>
+                    <span class="tech-badge">WebRTC</span>
+                    <span class="tech-badge">RTCPeerConnection</span>
+                    <span class="tech-badge">ICE Candidates</span>
+                    <span class="tech-badge">STUN / TURN</span>
+                    <span class="tech-badge">MediaStream API</span>
+                    <span class="tech-badge">SDP Negotiation</span>
+                    <span class="tech-badge">getUserMedia()</span>
+                    <span class="tech-badge">Data Channel</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: INSIGHTS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128220;</div>
+                <h2 class="section-title">B&#237; K&#237;p Th&#7901;i Gian Th&#7921;c</h2>
+            </div>
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-number">1</div>
+                    <div class="insight-title">Heartbeat l&#224; m&#7841;ch m&#225;u s&#7889;ng</div>
+                    <div class="insight-desc">WebSocket kh&#244;ng t&#7921; bi&#7871;t k&#7871;t n&#7889;i &#273;&#227; ch&#7871;t. Ph&#7843;i g&#7917;i ping-pong &#273;&#7883;nh k&#7923; (30-45 gi&#226;y) &#273;&#7875; ph&#225;t hi&#7879;n "zombie connection" &mdash; k&#7871;t n&#7889;i tr&#244;ng s&#7889;ng nh&#432;ng th&#7921;c ra &#273;&#227; &#273;i b&#225;n mu&#7889;i r&#7891;i.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">2</div>
+                    <div class="insight-title">Exponential Backoff khi reconnect</div>
+                    <div class="insight-desc">&#272;&#7913;t k&#7871;t n&#7889;i? &#272;&#7915;ng nh&#432; th&#7857;ng &#273;i&#234;n reconnect li&#234;n t&#7909;c! 1s, 2s, 4s, 8s... c&#7913; nh&#226;n &#273;&#244;i l&#234;n. Th&#234;m ch&#250;t jitter ng&#7851;u nhi&#234;n n&#7919;a &#273;&#7875; tr&#225;nh "thundering herd" &mdash; ngh&#236;n client &#273;&#7891;ng lo&#7841;t reconnect l&#224;m s&#7853;p server.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">3</div>
+                    <div class="insight-title">ICE Trickle l&#224; ch&#226;n l&#253;</div>
+                    <div class="insight-desc">&#272;&#7915;ng &#273;&#7907;i g&#7897;p h&#7871;t ICE candidates r&#7891;i m&#7899;i g&#7917;i. D&#249;ng trickle ICE &mdash; c&#243; candidate n&#224;o g&#7917;i candidate &#273;&#243;. T&#7889;c &#273;&#7897; k&#7871;t n&#7889;i peer nhanh h&#417;n g&#7845;p 3-5 l&#7847;n, ng&#432;&#7901;i d&#249;ng kh&#244;ng ph&#7843;i ng&#7891;i &#273;&#7907;i nh&#432; ch&#7901; b&#250;n b&#242;.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">4</div>
+                    <div class="insight-title">TURN server l&#224; b&#7843;o hi&#7875;m nh&#226;n th&#7885;</div>
+                    <div class="insight-desc">80% th&#7901;i gian STUN l&#224; &#273;&#7911;. Nh&#432;ng 20% c&#242;n l&#7841;i &mdash; corporate firewall, symmetric NAT &mdash; ch&#7881; c&#243; TURN m&#7899;i c&#7913;u &#273;&#432;&#7907;c. T&#7889;n bandwidth h&#417;n, nh&#432;ng c&#242;n h&#417;n l&#224; ng&#432;&#7901;i d&#249;ng ng&#7891;i nh&#236;n m&#224;n h&#236;nh &#273;en.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">5</div>
+                    <div class="insight-title">Binary frames nhanh h&#417;n text</div>
+                    <div class="insight-desc">WebSocket h&#7895; tr&#7907; c&#7843; text v&#224; binary frames. V&#7899;i d&#7919; li&#7879;u l&#7899;n ho&#7863;c audio chunks, d&#249;ng binary (ArrayBuffer) ti&#7871;t ki&#7879;m 30-40% b&#259;ng th&#244;ng so v&#7899;i Base64 encoded text.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">6</div>
+                    <div class="insight-title">Close code n&#243;i l&#234;n t&#7845;t c&#7843;</div>
+                    <div class="insight-desc">1000 = b&#236;nh th&#432;&#7901;ng, 1006 = m&#7845;t k&#7871;t n&#7889;i b&#7845;t th&#432;&#7901;ng (kh&#244;ng close frame), 1008 = vi ph&#7841;m policy, 1011 = server l&#7895;i. &#272;&#7885;c close code nh&#432; &#273;&#7885;c m&#7841;ch &mdash; bi&#7871;t ngay b&#7879;nh g&#236;!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: FUN STORIES -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128214;</div>
+                <h2 class="section-title">Chuy&#7879;n K&#7875; &#212;ng Gi&#224; Real-Time</h2>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128260;</span>
+                    <h3 class="story-title">V&#242;ng L&#7863;p Reconnect V&#244; T&#7853;n</h3>
+                </div>
+                <p class="story-text">
+                    Ng&#224;y &#273;&#243;, &#244;ng c&#243; th&#7857;ng &#273;&#7879; t&#7917; vi&#7871;t code WebSocket reconnect. N&#243; ngh&#297; &#273;&#417;n gi&#7843;n l&#7855;m: "&#273;&#7913;t th&#236; n&#7889;i l&#7841;i, n&#7889;i l&#7841;i li&#7873;n!" Kh&#244;ng delay, kh&#244;ng backoff, kh&#244;ng gi&#7899;i h&#7841;n. Server &#273;ang overload n&#234;n reject connection, client nh&#7853;n onclose li&#7873;n reconnect, server reject, client reconnect... c&#7913; th&#7871; loop v&#244; t&#7853;n nh&#432; con ch&#243; &#273;u&#7893;i &#273;u&#244;i m&#236;nh. CPU l&#234;n 100%, server l&#259;n ra ch&#7871;t, DevOps g&#7885;i &#273;i&#7879;n l&#250;c 3 gi&#7901; s&#225;ng. &#212;ng ph&#7843;i b&#242; d&#7853;y fix, t&#7915; &#273;&#243; kh&#7855;c s&#226;u: exponential backoff v&#7899;i max retry l&#224; t&#244;n gi&#225;o, kh&#244;ng ph&#7843;i option!
+                </p>
+                <div class="story-moral">&#128161; B&#224;i h&#7885;c: Reconnect kh&#244;ng c&#243; backoff nh&#432; g&#245; c&#7917;a nh&#224; ng&#432;&#7901;i ta li&#234;n t&#7909;c &mdash; s&#7899;m mu&#7897;n c&#361;ng b&#7883; &#273;u&#7893;i!</div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#127974;</span>
+                    <h3 class="story-title">ICE Candidate B&#7883; Firewall Nu&#7889;t</h3>
+                </div>
+                <p class="story-text">
+                    C&#243; l&#7847;n &#244;ng demo WebRTC softphone cho kh&#225;ch h&#224;ng t&#7853;p &#273;o&#224;n l&#7899;n. M&#7885;i th&#7913; ch&#7841;y ngon l&#224;nh &#7903; v&#259;n ph&#242;ng m&#236;nh. &#272;&#7871;n l&#250;c demo t&#7841;i ph&#242;ng h&#7885;p c&#7911;a h&#7885;, m&#224;n h&#236;nh hi&#7879;n "Connecting..." r&#7891;i &#273;&#417; m&#7863;t. ICE candidates &#273;&#432;&#7907;c thu th&#7853;p &#273;&#7847;y &#273;&#7911; nh&#432;ng... t&#7845;t c&#7843; &#273;&#7873;u l&#224; host candidates! Corporate firewall ch&#7863;n s&#7841;ch STUN request, c&#242;n TURN th&#236;... &#244;ng qu&#234;n deploy. Kh&#225;ch h&#224;ng ng&#7891;i nh&#236;n &#244;ng m&#7891; h&#244;i nh&#7887; gi&#7885;t, &#244;ng c&#432;&#7901;i tr&#7915;a: "&#272;&#226;y l&#224; b&#224;i test firewall c&#7911;a qu&#253; c&#244;ng ty, r&#7845;t ch&#7855;c ch&#7855;n!" T&#7915; &#273;&#243;, &#244;ng lu&#244;n deploy TURN server tr&#432;&#7899;c khi demo, nh&#432; mang d&#249; tr&#432;&#7899;c khi ra &#273;&#432;&#7901;ng v&#7853;y.
+                </p>
+                <div class="story-moral">&#128161; B&#224;i h&#7885;c: TURN server gi&#7889;ng nh&#432; b&#7843;o hi&#7875;m &mdash; l&#250;c kh&#244;ng c&#7847;n th&#236; t&#7889;n ti&#7873;n, l&#250;c c&#7847;n m&#224; kh&#244;ng c&#243; th&#236; kh&#243;c!</div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128227;</span>
+                    <h3 class="story-title">&#193;c M&#7897;ng Echo Cancellation</h3>
+                </div>
+                <p class="story-text">
+                    C&#226;u chuy&#7879;n kinh d&#7883; nh&#7845;t c&#7911;a &#244;ng l&#224; l&#7847;n l&#224;m softphone WebRTC &#273;&#7847;u ti&#234;n. M&#7885;i th&#7913; k&#7871;t n&#7889;i ho&#224;n h&#7843;o, &#226;m thanh r&#245; r&#224;ng... r&#245; qu&#225; m&#7913;c! Ng&#432;&#7901;i n&#243;i nghe th&#7845;y ch&#237;nh gi&#7885;ng m&#236;nh v&#7885;ng l&#7841;i sau 200ms, nh&#432; &#273;ang &#273;&#7913;ng trong hang &#273;&#7897;ng v&#7853;y. Kh&#225;ch h&#224;ng g&#7885;i n&#243;i: "Tui nghe ti&#7871;ng v&#7885;ng nh&#432; ma &#225;m!" &#212;ng debug 3 ng&#224;y, t&#7915; getUserMedia constraints &#273;&#7871;n echoCancellation, autoGainControl, noiseSuppression. Cu&#7889;i c&#249;ng ph&#225;t hi&#7879;n: th&#7857;ng dev test b&#7853;t loa ngo&#224;i, micro laptop h&#7913;ng &#226;m thanh t&#7915; loa r&#7891;i g&#7917;i ng&#432;&#7907;c l&#7841;i. &#212;ng su&#253;t &#273;&#7853;p b&#224;n ph&#237;m. T&#7915; &#273;&#243; &#244;ng lu&#244;n force echoCancellation: true v&#224; d&#7863;n dev d&#249;ng tai nghe khi test!
+                </p>
+                <div class="story-moral">&#128161; B&#224;i h&#7885;c: Echo cancellation kh&#244;ng ch&#7881; l&#224; code &mdash; c&#242;n l&#224; chi&#7871;c tai nghe 50 ngh&#236;n &#273;&#7891;ng!</div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128163;</span>
+                    <h3 class="story-title">WebSocket Message Queue T&#7855;c Ngh&#7869;n</h3>
+                </div>
+                <p class="story-text">
+                    Ng&#224;y n&#7885;, &#244;ng x&#226;y h&#7879; th&#7889;ng PBX real-time event. M&#7895;i cu&#7897;c g&#7885;i &#273;&#7871;n, Asterisk b&#7855;n event qua WebSocket cho t&#7845;t c&#7843; agent. V&#7845;n &#273;&#7873; l&#224;: gi&#7901; cao &#273;i&#7875;m c&#243; 500 cu&#7897;c g&#7885;i/ph&#250;t, m&#7895;i cu&#7897;c b&#7855;n 10 events, 200 agent online = 1 tri&#7879;u message/ph&#250;t. WebSocket buffer &#273;&#7847;y nh&#432; xe bu&#253;t gi&#7901; tan t&#7847;m. Browser tab b&#7855;t &#273;&#7847;u lag, m&#7897;t s&#7889; message b&#7883; drop, agent nh&#7853;n th&#244;ng b&#225;o cu&#7897;c g&#7885;i ch&#7853;m 30 gi&#226;y &mdash; l&#250;c nh&#7845;c m&#225;y kh&#225;ch &#273;&#227; c&#250;p! &#212;ng ph&#7843;i refactor sang pub/sub v&#7899;i topic filtering, ch&#7881; g&#7917;i event li&#234;n quan &#273;&#7871;n t&#7915;ng agent. T&#7915; 1 tri&#7879;u xu&#7889;ng 5 ngh&#236;n message/ph&#250;t. Server th&#7903; ph&#224;o!
+                </p>
+                <div class="story-moral">&#128161; B&#224;i h&#7885;c: Broadcast cho t&#7845;t c&#7843; l&#224; d&#226;n ch&#7911;, nh&#432;ng &#273;&#244;i khi c&#7847;n "ch&#7885;n l&#7885;c &#273;&#7889;i t&#432;&#7907;ng" &#273;&#7875; h&#7879; th&#7889;ng s&#7889;ng s&#243;t!</div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: COMMON MISTAKES -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#9888;&#65039;</div>
+                <h2 class="section-title">L&#7895;i Hay M&#7855;c (V&#224; C&#225;ch Tr&#225;nh)</h2>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>Kh&#244;ng x&#7917; l&#253; reconnect khi m&#7845;t k&#7871;t n&#7889;i</h4>
+                    <p>WebSocket &#273;&#7913;t l&#224; chuy&#7879;n b&#236;nh th&#432;&#7901;ng nh&#432; c&#417;m b&#7919;a: wifi ch&#7853;p ch&#7901;n, server restart, load balancer timeout. M&#224; dev c&#7913; t&#432;&#7903;ng k&#7871;t n&#7889;i l&#224; v&#297;nh c&#7917;u nh&#432; t&#236;nh y&#234;u trong phim H&#224;n!</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>Qu&#234;n g&#7917;i heartbeat / ping-pong</h4>
+                    <p>K&#7871;t n&#7889;i TCP c&#243; th&#7875; "ch&#7871;t l&#226;m s&#224;ng" &mdash; OS ngh&#297; v&#7851;n s&#7889;ng nh&#432;ng th&#7921;c t&#7871; g&#243;i tin &#273;&#227; &#273;i v&#224;o h&#7889; &#273;en. Kh&#244;ng c&#243; heartbeat, app c&#7913; hi&#7875;n th&#7883; "Connected" trong khi s&#7921; th&#7853;t l&#224; &#273;ang ngh&#7881; m&#225;t!</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>Hardcode STUN/TURN server URL</h4>
+                    <p>B&#7887; URL STUN/TURN v&#224;o code c&#7913;ng r&#7891;i build. &#272;&#7871;n l&#250;c STUN server ch&#7871;t, ph&#7843;i build l&#7841;i app &#273;&#7875; &#273;&#7893;i URL. Trong khi ch&#7881; c&#7847;n &#273;&#7875; trong config v&#224; fetch t&#7915; API l&#224; xong!</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>Kh&#244;ng x&#7917; l&#253; permission denied c&#7911;a getUserMedia</h4>
+                    <p>User ch&#7863;n micro, code throw exception, app crash im l&#7863;ng. User kh&#244;ng hi&#7875;u t&#7841;i sao kh&#244;ng g&#7885;i &#273;&#432;&#7907;c. L&#224;m &#417;n b&#7855;t l&#7895;i v&#224; hi&#7879;n th&#244;ng b&#225;o d&#7877; th&#432;&#417;ng ki&#7875;u: "B&#7841;n &#417;i, cho t&#244;i m&#432;&#7907;n micro v&#7899;i!"</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>G&#7917;i JSON kh&#7893;ng l&#7891; qua WebSocket</h4>
+                    <p>Serialize c&#7843; c&#225;i object 2MB r&#7891;i g&#7917;i qua WS. Frame b&#7883; fragment, browser parse ch&#7853;m, GC ch&#7841;y li&#234;n t&#7909;c. H&#227;y chia nh&#7887; message, d&#249;ng binary format (MessagePack, Protobuf) cho d&#7919; li&#7879;u l&#7899;n!</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>Qu&#234;n close connection khi component unmount</h4>
+                    <p>Navigate sang trang kh&#225;c m&#224; kh&#244;ng &#273;&#243;ng WebSocket. Connection v&#7851;n s&#7889;ng, event v&#7851;n &#273;&#7871;n, callback ch&#7841;y tr&#234;n component &#273;&#227; ch&#7871;t = memory leak v&#224; l&#7895;i kh&#244;ng &#273;&#7847;u kh&#244;ng &#273;u&#244;i. Nh&#432; ra kh&#7887;i nh&#224; m&#224; qu&#234;n t&#7855;t b&#7871;p gas v&#7853;y!</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-icon">&#128165;</span>
+                <div class="mistake-content">
+                    <h4>Test WebRTC ch&#7881; tr&#234;n localhost</h4>
+                    <p>Localhost th&#236; STUN/TURN/ICE &#273;&#7873;u kh&#244;ng c&#7847;n, m&#7885;i th&#7913; ch&#7841;y m&#432;&#7907;t nh&#432; l&#7909;a. &#272;&#7871;n l&#250;c deploy l&#234;n server th&#7853;t, qua NAT, qua firewall &mdash; m&#7899;i bi&#7871;t th&#7871; n&#224;o l&#224; &#273;au kh&#7893;!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: PBX PROJECT RELEVANCE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128222;</div>
+                <h2 class="section-title">Vai Tr&#242; Trong D&#7921; &#193;n PBX</h2>
+            </div>
+
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <p class="backstory-text">
+                    Trong h&#7879; th&#7889;ng PBX, <span class="highlight">WebSocket</span> v&#224; <span class="highlight">WebRTC</span> l&#224; hai tr&#7909; c&#7897;t kh&#244;ng th&#7875; thi&#7871;u. WebSocket (WSS) l&#224; "h&#7879; th&#7847;n kinh trung &#432;&#417;ng" &mdash; k&#7871;t n&#7889;i browser v&#7899;i Asterisk server &#273;&#7875; nh&#7853;n/g&#7917;i s&#7921; ki&#7879;n real-time. WebRTC l&#224; "thanh qu&#7843;n" &mdash; truy&#7873;n t&#7843;i &#226;m thanh tr&#7921;c ti&#7871;p trong softphone browser, kh&#244;ng c&#7847;n plugin hay ph&#7847;n m&#7873;m b&#234;n ngo&#224;i.
+                </p>
+            </div>
+
+            <div class="pbx-grid">
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128268;</div>
+                    <div class="pbx-card-title">WSS &#8596; Asterisk AMI/ARI</div>
+                    <div class="pbx-card-desc">WebSocket Secure k&#7871;t n&#7889;i browser v&#7899;i Asterisk qua gateway Node.js. M&#7885;i s&#7921; ki&#7879;n cu&#7897;c g&#7885;i (ring, answer, hangup, hold) &#273;&#432;&#7907;c push real-time &#273;&#7871;n agent &mdash; kh&#244;ng c&#7847;n refresh trang.</div>
+                </div>
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#127911;</div>
+                    <div class="pbx-card-title">WebRTC Softphone</div>
+                    <div class="pbx-card-desc">Agent s&#7917; d&#7909;ng softphone ngay trong browser Electron. WebRTC x&#7917; l&#253; media stream, echo cancellation, noise suppression. G&#7885;i/nh&#7853;n cu&#7897;c g&#7885;i m&#224; kh&#244;ng c&#7847;n IP phone v&#7853;t l&#253;.</div>
+                </div>
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128200;</div>
+                    <div class="pbx-card-title">Real-time Dashboard</div>
+                    <div class="pbx-card-desc">Queue status, s&#7889; cu&#7897;c g&#7885;i &#273;ang ch&#7901;, tr&#7841;ng th&#225;i agent &mdash; t&#7845;t c&#7843; c&#7853;p nh&#7853;t t&#7913;c th&#7901;i qua WebSocket. Supervisor nh&#236;n dashboard nh&#432; nh&#236;n b&#7843;n &#273;&#7891; chi&#7871;n tr&#432;&#7901;ng live!</div>
+                </div>
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128274;</div>
+                    <div class="pbx-card-title">B&#7843;o M&#7853;t WSS + SRTP</div>
+                    <div class="pbx-card-desc">T&#7845;t c&#7843; k&#7871;t n&#7889;i WebSocket d&#249;ng WSS (TLS encrypted). Media stream qua WebRTC &#273;&#432;&#7907;c m&#227; h&#243;a SRTP. Kh&#244;ng ai nghe l&#233;n &#273;&#432;&#7907;c cu&#7897;c g&#7885;i c&#7911;a agent!</div>
+                </div>
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128259;</div>
+                    <div class="pbx-card-title">Auto Reconnect &amp; Failover</div>
+                    <div class="pbx-card-desc">M&#7845;t k&#7871;t n&#7889;i? H&#7879; th&#7889;ng t&#7921; &#273;&#7897;ng reconnect v&#7899;i exponential backoff, sync l&#7841;i tr&#7841;ng th&#225;i, v&#224; kh&#244;i ph&#7909;c phi&#234;n l&#224;m vi&#7879;c. Agent kh&#244;ng m&#7845;t cu&#7897;c g&#7885;i n&#224;o!</div>
+                </div>
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#9889;</div>
+                    <div class="pbx-card-title">SIP over WebSocket</div>
+                    <div class="pbx-card-desc">SIP signaling &#273;&#432;&#7907;c truy&#7873;n qua WebSocket (SIP.js / JsSIP), cho ph&#233;p browser &#273;&#259;ng k&#253; v&#224; th&#7921;c hi&#7879;n cu&#7897;c g&#7885;i SIP tr&#7921;c ti&#7871;p v&#7899;i Asterisk m&#224; kh&#244;ng c&#7847;n SIP client truy&#7873;n th&#7889;ng.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-brand">&#9889; K&#7871;t N&#7889;i Th&#7901;i Gian Th&#7921;c &mdash; WebSocket &amp; WebRTC Agent</div>
+        <p>PBX Project &#8226; SotaTek &#8226; Agent Profile #17</p>
+        <p style="margin-top: 0.5rem; opacity: 0.6;">"K&#7871;t n&#7889;i kh&#244;ng bao gi&#7901; &#273;&#7913;t &mdash; ch&#7881; l&#224; ch&#432;a reconnect th&#244;i!"</p>
+    </footer>
+
+</body>
+</html>

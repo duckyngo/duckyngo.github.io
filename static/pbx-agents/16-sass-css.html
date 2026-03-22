@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 16 - Thẩm Mỹ Đại Sư | SASS/CSS Expert | PBX Project</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sass-pink: #CF649A;
+            --sass-dark: #B84A82;
+            --sass-light: #E8A0BF;
+            --sass-glow: #F5D0E0;
+            --bg-deep: #1A0A12;
+            --bg-card: #2A1420;
+            --bg-card-alt: #331A28;
+            --text-primary: #F5E6EE;
+            --text-secondary: #C9A0B5;
+            --accent-gold: #FFD700;
+            --accent-coral: #FF6B8A;
+            --accent-violet: #9B59B6;
+            --gradient-sass: linear-gradient(135deg, #CF649A, #B84A82, #9B59B6);
+            --gradient-warm: linear-gradient(135deg, #CF649A, #FF6B8A, #FFD700);
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(207, 100, 154, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(155, 89, 182, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 107, 138, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== FLOATING SASS SYMBOLS ===== */
+        .floating-braces {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .brace {
+            position: absolute;
+            font-family: 'Fira Code', monospace;
+            color: rgba(207, 100, 154, 0.06);
+            font-size: 4rem;
+            animation: floatBrace 20s infinite ease-in-out;
+        }
+
+        .brace:nth-child(1) { left: 5%; top: 10%; animation-delay: 0s; font-size: 3rem; }
+        .brace:nth-child(2) { left: 85%; top: 25%; animation-delay: -4s; font-size: 5rem; }
+        .brace:nth-child(3) { left: 15%; top: 60%; animation-delay: -8s; font-size: 3.5rem; }
+        .brace:nth-child(4) { left: 70%; top: 75%; animation-delay: -12s; font-size: 4.5rem; }
+        .brace:nth-child(5) { left: 45%; top: 40%; animation-delay: -6s; font-size: 3rem; }
+        .brace:nth-child(6) { left: 90%; top: 55%; animation-delay: -16s; font-size: 6rem; }
+
+        @keyframes floatBrace {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+            25% { transform: translateY(-30px) rotate(5deg); opacity: 0.7; }
+            50% { transform: translateY(-15px) rotate(-3deg); opacity: 0.5; }
+            75% { transform: translateY(-40px) rotate(8deg); opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HEADER / AVATAR ===== */
+        .agent-header {
+            text-align: center;
+            padding: 60px 30px 50px;
+            background: linear-gradient(180deg, rgba(207, 100, 154, 0.15) 0%, transparent 100%);
+            border-radius: 24px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-header::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient-sass);
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .avatar-container {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: var(--gradient-sass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            position: relative;
+            animation: avatarPulse 3s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(207, 100, 154, 0.4), 0 0 80px rgba(207, 100, 154, 0.15);
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(207, 100, 154, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(207, 100, 154, 0.6), 0 0 100px rgba(207, 100, 154, 0.2); }
+        }
+
+        .avatar-container::after {
+            content: 'Sass';
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            background: var(--sass-pink);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            box-shadow: 0 4px 15px rgba(207, 100, 154, 0.5);
+        }
+
+        .agent-name {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: var(--gradient-warm);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .agent-title {
+            font-size: 1.2rem;
+            color: var(--sass-light);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .agent-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .agent-id {
+            display: inline-block;
+            margin-top: 18px;
+            background: rgba(207, 100, 154, 0.15);
+            border: 1px solid rgba(207, 100, 154, 0.3);
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--sass-pink);
+        }
+
+        .sass-code-preview {
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 18px 24px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            color: var(--sass-light);
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(207, 100, 154, 0.2);
+        }
+
+        .sass-code-preview .kw { color: #CF649A; }
+        .sass-code-preview .vr { color: #FFD700; }
+        .sass-code-preview .vl { color: #FF6B8A; }
+        .sass-code-preview .cm { color: #666; font-style: italic; }
+
+        /* ===== SECTION STYLING ===== */
+        .section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(207, 100, 154, 0.12);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(207, 100, 154, 0.15);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-sass);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .section-icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--sass-pink);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .title-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(207, 100, 154, 0.3), transparent);
+        }
+
+        /* ===== BACKSTORY ===== */
+        .backstory {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(207, 100, 154, 0.05);
+            border-radius: 12px;
+            border-left: 3px solid var(--sass-pink);
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, rgba(207, 100, 154, 0.15), rgba(155, 89, 182, 0.1));
+            border: 1px solid rgba(207, 100, 154, 0.25);
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--sass-light);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: linear-gradient(135deg, rgba(207, 100, 154, 0.25), rgba(155, 89, 182, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(207, 100, 154, 0.2);
+        }
+
+        /* ===== NESTING DEMO ===== */
+        .nesting-demo {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(207, 100, 154, 0.15);
+        }
+
+        .nest-level {
+            padding: 8px 14px;
+            margin: 4px 0;
+            border-left: 3px solid;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            animation: nestFadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .nest-level:nth-child(2) { border-color: #CF649A; animation-delay: 0.2s; color: #CF649A; margin-left: 0; }
+        .nest-level:nth-child(3) { border-color: #E8A0BF; animation-delay: 0.6s; color: #E8A0BF; margin-left: 20px; }
+        .nest-level:nth-child(4) { border-color: #FF6B8A; animation-delay: 1.0s; color: #FF6B8A; margin-left: 40px; }
+        .nest-level:nth-child(5) { border-color: #FFD700; animation-delay: 1.4s; color: #FFD700; margin-left: 60px; }
+        .nest-level:nth-child(6) { border-color: #9B59B6; animation-delay: 1.8s; color: #9B59B6; margin-left: 80px; }
+
+        @keyframes nestFadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ===== INSIGHTS ===== */
+        .insight-card {
+            background: var(--bg-card-alt);
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(207, 100, 154, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            border-color: rgba(207, 100, 154, 0.3);
+            background: rgba(51, 26, 40, 0.9);
+        }
+
+        .insight-number {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--gradient-sass);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(207, 100, 154, 0.4);
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--sass-pink);
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            margin-left: 30px;
+        }
+
+        .insight-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .insight-code {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--sass-light);
+            border: 1px solid rgba(207, 100, 154, 0.15);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* ===== FUN STORIES ===== */
+        .story-card {
+            background: linear-gradient(135deg, var(--bg-card-alt), rgba(207, 100, 154, 0.08));
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(207, 100, 154, 0.15);
+            position: relative;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(207, 100, 154, 0.08), transparent);
+            border-radius: 0 0 16px 0;
+        }
+
+        .story-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .story-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-coral);
+            margin-bottom: 12px;
+        }
+
+        .story-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .story-moral {
+            margin-top: 14px;
+            padding: 10px 16px;
+            background: rgba(207, 100, 154, 0.1);
+            border-radius: 8px;
+            font-style: italic;
+            color: var(--sass-light);
+            font-size: 0.9rem;
+        }
+
+        /* ===== MISTAKES ===== */
+        .mistake-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            background: rgba(207, 100, 154, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(207, 100, 154, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .mistake-item:hover {
+            background: rgba(207, 100, 154, 0.1);
+            border-color: rgba(207, 100, 154, 0.2);
+        }
+
+        .mistake-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .mistake-content h4 {
+            color: var(--accent-coral);
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .mistake-content p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        /* ===== PBX RELEVANCE ===== */
+        .pbx-highlight {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .pbx-card {
+            background: linear-gradient(135deg, rgba(207, 100, 154, 0.1), rgba(155, 89, 182, 0.05));
+            border: 1px solid rgba(207, 100, 154, 0.2);
+            border-radius: 14px;
+            padding: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .pbx-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(207, 100, 154, 0.2);
+            border-color: rgba(207, 100, 154, 0.4);
+        }
+
+        .pbx-card-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .pbx-card h4 {
+            color: var(--sass-pink);
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        .pbx-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer .sass-mantra {
+            font-size: 1.1rem;
+            color: var(--sass-pink);
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .sass-animation-demo {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .sass-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+
+        .sass-dot:nth-child(1) { animation-delay: 0s; background: #CF649A; }
+        .sass-dot:nth-child(2) { animation-delay: 0.2s; background: #E8A0BF; }
+        .sass-dot:nth-child(3) { animation-delay: 0.4s; background: #FF6B8A; }
+        .sass-dot:nth-child(4) { animation-delay: 0.6s; background: #FFD700; }
+        .sass-dot:nth-child(5) { animation-delay: 0.8s; background: #9B59B6; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1.3); opacity: 1; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container { padding: 12px; }
+            .agent-header { padding: 40px 20px 35px; }
+            .agent-name { font-size: 1.9rem; }
+            .section { padding: 28px 22px; }
+            .skill-grid { grid-template-columns: repeat(2, 1fr); }
+            .pbx-highlight { grid-template-columns: 1fr; }
+            .avatar-container { width: 130px; height: 130px; font-size: 55px; }
+        }
+
+        @media (max-width: 480px) {
+            .agent-name { font-size: 1.5rem; }
+            .section-title { font-size: 1.3rem; }
+            .skill-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-braces">
+    <span class="brace">{ }</span>
+    <span class="brace">$var</span>
+    <span class="brace">@mixin</span>
+    <span class="brace">&amp;</span>
+    <span class="brace">@include</span>
+    <span class="brace">.class</span>
+</div>
+
+<div class="container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="agent-header">
+        <div class="avatar-container">
+            <span>🎨</span>
+        </div>
+        <h1 class="agent-name">Thẩm Mỹ Đại Sư</h1>
+        <div class="agent-title">Bác Sĩ Thẩm Mỹ Giao Diện ~ Phù Thủy Pixel</div>
+        <div class="agent-subtitle">"CSS không khó, khó là làm sao để không dùng !important"</div>
+        <div class="agent-id">Agent #16 &bull; SASS/CSS Specialist &bull; SASS 1.98</div>
+
+        <div class="sass-code-preview">
+            <span class="cm">// Phong cách của Đại Sư</span><br>
+            <span class="vr">$mau-hong-sass</span>: <span class="vl">#CF649A</span>;<br>
+            <span class="vr">$su-kien-nhan</span>: <span class="vl">infinite</span>;<br>
+            <span class="vr">$nam-kinh-nghiem</span>: <span class="vl">20</span>;<br><br>
+            <span class="kw">@mixin</span> lam-dep(<span class="vr">$component</span>) {<br>
+            &nbsp;&nbsp;beauty: <span class="vl">100%</span>;<br>
+            &nbsp;&nbsp;bugs: <span class="vl">0</span>;<br>
+            &nbsp;&nbsp;z-index: <span class="vl">không-cần-9999</span>;<br>
+            }
+        </div>
+    </header>
+
+    <!-- ===== THÂN THẾ & CHUYÊN MÔN ===== -->
+    <section class="section">
+        <span class="section-icon">📜</span>
+        <div class="section-title">
+            Thân Thế & Chuyên Môn
+            <span class="title-line"></span>
+        </div>
+
+        <div class="backstory">
+            Ngày xửa ngày xưa, ở một vùng đất xa xôi có một ông lão tên là <strong>Thẩm Mỹ Đại Sư</strong>.
+            Ông sinh ra trong thời kỳ CSS1, lớn lên cùng <code>float</code> và <code>clearfix</code>,
+            trưởng thành qua những cuộc chiến <code>table-layout</code> khốc liệt. Khi SASS ra đời,
+            ông như được khai sáng — <em>"À ha! Thế ra CSS cũng có thể viết đẹp như thơ!"</em>
+            <br><br>
+            Ông đã dành cả đời mình để làm đẹp cho mọi giao diện, từ những cái button nhỏ xíu đến
+            những trang dashboard phức tạp nhất. Với 20 năm kinh nghiệm "nhãn trần", ông chưa bao giờ
+            để một pixel nào bị lệch. Hiện tại ông đang phục vụ dự án PBX với sứ mệnh làm cho giao diện
+            enterprise đẹp như tranh vẽ, responsive như nước chảy.
+            <br><br>
+            Triết lý của ông rất đơn giản: <em>"Mỗi dòng CSS phải có lý do tồn tại. Không có dòng nào thừa,
+            không có !important nào vô nghĩa."</em>
+        </div>
+
+        <div class="skill-grid">
+            <div class="skill-tag">SASS Variables & Maps</div>
+            <div class="skill-tag">Mixins & Functions</div>
+            <div class="skill-tag">Nesting Thông Minh</div>
+            <div class="skill-tag">BEM Methodology</div>
+            <div class="skill-tag">Flexbox Master</div>
+            <div class="skill-tag">CSS Grid Architect</div>
+            <div class="skill-tag">CSS Custom Properties</div>
+            <div class="skill-tag">Animations & Transitions</div>
+            <div class="skill-tag">Responsive Design</div>
+            <div class="skill-tag">CSS Architecture (7-1)</div>
+            <div class="skill-tag">Theme Systems</div>
+            <div class="skill-tag">Performance CSS</div>
+        </div>
+
+        <div class="nesting-demo">
+            <div style="color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9rem; font-weight: 600;">
+                Minh hoạ Nesting — "Nghệ thuật xếp tầng" của Đại Sư:
+            </div>
+            <div class="nest-level">.pbx-dashboard {</div>
+            <div class="nest-level">&amp;__header {</div>
+            <div class="nest-level">&amp;--active {</div>
+            <div class="nest-level">color: $sass-pink;</div>
+            <div class="nest-level">// Dừng lại! 4 tầng là đủ rồi con ạ!</div>
+        </div>
+    </section>
+
+    <!-- ===== BÍ KÍP VÕ LÂM ===== -->
+    <section class="section">
+        <span class="section-icon">🔮</span>
+        <div class="section-title">
+            Bí Kíp Võ Lâm SASS/CSS
+            <span class="title-line"></span>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">1</div>
+            <div class="insight-title">SASS Variables — "Cái kho chứa chìa khoá vạn năng"</div>
+            <p class="insight-text">
+                Đừng bao giờ hardcode màu sắc hay font-size rải rác khắp nơi. Hãy dùng <code>$variable</code>
+                như một ông vua quản lý kho báu. Khi khách hàng nói "đổi màu xanh thành đỏ đi", bạn chỉ cần
+                thay một chỗ thay vì khóc thét với 500 file.
+            </p>
+            <div class="insight-code">$primary: #CF649A;
+$spacing-unit: 8px;
+$border-radius-base: 12px;
+
+// Một chỗ thay, cả hệ thống đổi. Tuyệt vời!</div>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">2</div>
+            <div class="insight-title">Mixins — "Bùa phép tái sử dụng"</div>
+            <p class="insight-text">
+                Mixin là bùa phép mạnh nhất của SASS. Viết một lần, dùng muôn nơi. Như bà ngoại
+                nấu nước mắm — một công thức, cả nhà đều dùng được. Nhưng nhớ: mixin quá nhiều
+                tham số thì cũng như nấu phở bò 47 loại gia vị — rối loạn!
+            </p>
+            <div class="insight-code">@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'desktop' {
+    @media (min-width: 1024px) { @content; }
+  }
+}
+
+// Responsive đơn giản, đời thay phức tạp</div>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">3</div>
+            <div class="insight-title">BEM — "Đặt tên cho đúng, làm việc cho sướng"</div>
+            <p class="insight-text">
+                Block__Element--Modifier không chỉ là quy tắc, mà là triết lý sống.
+                Khi bạn đặt tên <code>.card__title--highlighted</code>, bất kỳ ai đọc cũng hiểu ngay.
+                Còn đặt tên <code>.red-big-text-left-margin-20</code> thì... xin chia buồn.
+                Tên class phải nói lên ý nghĩa, không phải mô tả hình dáng!
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">4</div>
+            <div class="insight-title">Flexbox + Grid — "Bộ đôi hoàn hảo"</div>
+            <p class="insight-text">
+                Flexbox cho một chiều, Grid cho hai chiều. Như xe máy chạy trong hẻm và ô tô chạy trên
+                cao tốc — mỗi loại có sứ mệnh riêng. Đừng có ép Grid làm việc của Flexbox và ngược lại.
+                Hai anh em này mà hợp tác thì layout nào cũng xong trong nháy mắt.
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">5</div>
+            <div class="insight-title">CSS Custom Properties — "Biến số sống động"</div>
+            <p class="insight-text">
+                Khác với SASS variables biên dịch lúc build, CSS custom properties sống trong runtime.
+                Như sự khác biệt giữa viết thư tay và nhắn tin — một cái cố định, một cái thay đổi được
+                ngay lúc đó. Đặc biệt hữu ích cho dark mode và theming động.
+            </p>
+            <div class="insight-code">:root { --color-primary: #CF649A; }
+[data-theme="dark"] { --color-primary: #E8A0BF; }
+
+// Đổi theme chỉ cần thay attribute, CSS tự cập nhật!</div>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">6</div>
+            <div class="insight-title">Nesting — "Biết điểm dừng là biết sống"</div>
+            <p class="insight-text">
+                SASS cho phép nesting, nhưng không có nghĩa là bạn nên nest 10 tầng như đi xuống hang động.
+                Quy tắc vàng: tối đa 3-4 tầng. Nest quá sâu sẽ tạo ra selector dài như tiểu thuyết
+                và specificity cao như núi — debug như đi tìm kim dưới đáy biển.
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-number">7</div>
+            <div class="insight-title">Animation Performance — "Nhẹ nhàng mà sâu lắng"</div>
+            <p class="insight-text">
+                Chỉ animate <code>transform</code> và <code>opacity</code> — hai thuộc tính được GPU xử lý.
+                Animate <code>width</code>, <code>height</code>, <code>top</code>, <code>left</code> sẽ gây
+                reflow liên tục, trang web giật như đi xe trâu trên đường gồ ghề. Và luôn nhớ thêm
+                <code>prefers-reduced-motion</code> cho người dùng nhạy cảm với chuyển động.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== CHUYỆN ĐỜI TỰ SỰ ===== -->
+    <section class="section">
+        <span class="section-icon">📖</span>
+        <div class="section-title">
+            Chuyện Đời Tự Sự Của Đại Sư
+            <span class="title-line"></span>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">⚔️</span>
+            <div class="story-title">Cuộc Chiến Z-Index Huyền Thoại</div>
+            <p class="story-text">
+                Năm 2019, lão già ta nhận dự án từ một đội đã "bảo trì" 3 năm. Mở code ra, lão già ta
+                suýt ngất: z-index chạy từ 1 đến... <strong>2147483647</strong> (số nguyên lớn nhất của CSS).
+                Mỗi lần có bug overlap, dev cũ trước cứ tăng z-index lên. Modal có z-index 99999,
+                tooltip là 999999, dropdown là 9999999. Lão già ta ngồi đếm, phát hiện có tới
+                <strong>47 giá trị z-index khác nhau</strong> trong dự án.
+                <br><br>
+                Tooltip nằm dưới modal, modal nằm dưới dropdown, dropdown lại nằm dưới cái
+                banner quảng cáo. Tất cả đều là z-index 5 chữ số trở lên! Hỗn loạn như cái chợ chiều.
+                <br><br>
+                Lão già ta ngồi lại, pha trà, và tạo một hệ thống z-index chỉ có 5 bậc:
+                <code>$z-base: 1, $z-dropdown: 10, $z-sticky: 20, $z-modal: 30, $z-toast: 40</code>.
+                Đội trẻ cúi đầu phục vụ, từ đó hoà bình lập lại.
+            </p>
+            <div class="story-moral">
+                Bài học: Z-index không phải cuộc đấu giá. Không cần số lớn nhất, chỉ cần hệ thống rõ ràng.
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">🎯</span>
+            <div class="story-title">Sử Thi Căn Giữa Một Cái Div</div>
+            <p class="story-text">
+                Có một câu chuyện lưu truyền trong giới CSS: <em>"Làm sao để căn giữa một cái div?"</em>
+                Nghe đơn giản nhưng đây là câu hỏi đã phá nát bao nhiêu mối quan hệ giữa developer và designer.
+                <br><br>
+                Lão già ta còn nhớ năm 2005, để căn giữa dọc phải dùng hack
+                <code>position: absolute; top: 50%; margin-top: -nửa-chiều-cao</code>. Quên tính chiều cao
+                là lệch hết. Năm 2010, người ta dùng <code>display: table-cell; vertical-align: middle</code>
+                — biến div thành bảng, nghe đã thấy sai sai.
+                <br><br>
+                Năm 2015, Flexbox ra đời, mọi người reo hò:
+                <code>display: flex; justify-content: center; align-items: center</code> — chỉ 3 dòng!
+                Rồi năm 2023, chỉ cần <code>display: grid; place-items: center</code> — <strong>2 dòng!</strong>
+                <br><br>
+                Lão già ta rơi lệ: <em>"Chúng tôi đã chiến đấu 18 năm để đi từ 10 dòng xuống 2 dòng code.
+                Giới trẻ bây giờ sung sướng quá không biết quý!"</em>
+            </p>
+            <div class="story-moral">
+                Bài học: Hãy biết ơn Flexbox và Grid. Các tiền bối đã chịu khổ vì các cháu rồi.
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">💥</span>
+            <div class="story-title">Đại Chiến Specificity Và Vụ Án !important</div>
+            <p class="story-text">
+                Một ngày đẹp trời, junior dev bảo: <em>"Anh ơi, CSS em không chạy."</em> Lão già ta mở
+                code ra: <strong>mỗi dòng CSS đều có <code>!important</code></strong>. Màu nền? !important.
+                Font size? !important. Margin? !important. Thậm chí <code>cursor: pointer !important</code>.
+                <br><br>
+                Junior giải thích: <em>"Em thấy không có !important thì CSS không áp dụng, nên em thêm
+                vào hết."</em> Lão già ta thở dài, rồi nhẹ nhàng giải thích về specificity:
+                inline style (1000 điểm) > ID (100 điểm) > class (10 điểm) > element (1 điểm).
+                <br><br>
+                Hoá ra junior viết CSS trong file được load trước, và file khác ghi đè hết.
+                Sau khi sắp xếp lại thứ tự file và sử dụng BEM đúng cách — tất cả <strong>200 cái
+                !important</strong> được xoá sạch. Junior hỏi: <em>"Vậy khi nào dùng !important?"</em>
+                Lão già ta đáp: <em>"Khi nào con hết cách khác. Như thuốc kháng sinh — chỉ dùng khi
+                thật sự cần."</em>
+            </p>
+            <div class="story-moral">
+                Bài học: !important là con dao hai lưỡi. Hiểu specificity trước khi dùng nó, không thì sẽ tự cắt mình.
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-emoji">🌊</span>
+            <div class="story-title">Ngày Float Bị Lãng Quên</div>
+            <p class="story-text">
+                Thế hệ trẻ bây giờ nói <em>"float chỉ để bọc ảnh trong bài viết"</em>, nhưng lão già ta
+                nhớ rõ thời kỳ <code>float: left</code> là vũ khí duy nhất để làm layout. Mỗi lần float
+                xong phải <code>clearfix</code>, quên clear là layout vỡ như bánh tráng truyền.
+                <br><br>
+                Lão già ta đã từng mất <strong>3 ngày debug</strong> vì quên một cái <code>clear: both</code>.
+                Ba ngày! Cả team ngồi nhìn layout bị sụp, không ai biết tại sao cái footer lại chui lên
+                nằm cạnh sidebar. Cuối cùng phát hiện ra một cái div bé tẹo không có clearfix.
+                <br><br>
+                Bây giờ có Flexbox và Grid, float về hưu. Nhưng mỗi khi thấy <code>clearfix</code> trong
+                code cũ, lão già ta lại chảy nước mắt nhớ về một thời thanh xuân đã mất.
+            </p>
+            <div class="story-moral">
+                Bài học: Công nghệ thay đổi, nhưng ký ức về float clearfix sẽ mãi nằm trong tim mỗi frontend dev.
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== LỖI SAI KINH ĐIỂN ===== -->
+    <section class="section">
+        <span class="section-icon">🚨</span>
+        <div class="section-title">
+            Những Lỗi Sai "Kinh Điển" Mà Đại Sư Thường Thấy
+            <span class="title-line"></span>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">💀</span>
+            <div class="mistake-content">
+                <h4>!important khắp mọi nơi</h4>
+                <p>
+                    Dùng <code>!important</code> như rắc muối ăn — thêm tí cho vui. Nhưng khi mọi dòng
+                    CSS đều có !important thì chẳng dòng nào quan trọng cả. Như tất cả học sinh đều là
+                    "học sinh giỏi" — vậy ai là học sinh giỏi thật sự?
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">🏗️</span>
+            <div class="mistake-content">
+                <h4>Nesting sâu 7-8 tầng trong SASS</h4>
+                <p>
+                    SASS cho phép nesting không có nghĩa là bạn nên làm tổ chim 8 tầng.
+                    Selector <code>.app .page .content .card .body .text .span .em</code>
+                    dài hơn cả địa chỉ nhà ở Việt Nam. Debug xong thì tóc đã bạc hết.
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">📏</span>
+            <div class="mistake-content">
+                <h4>Dùng px cho mọi thứ</h4>
+                <p>
+                    Font-size <code>14px</code>, margin <code>20px</code>, width <code>350px</code>...
+                    Rồi khi cần responsive thì ngồi khóc. Hãy dùng <code>rem</code> cho font,
+                    <code>em</code> cho spacing tương đối, <code>%</code> và <code>vw/vh</code> cho layout.
+                    Pixel chỉ nên dùng cho border và shadow — những thứ "cứng" không cần co giãn.
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">🎭</span>
+            <div class="mistake-content">
+                <h4>Copy-paste CSS không hiểu specificity</h4>
+                <p>
+                    Copy từ Stack Overflow về, paste vào, không chạy, thêm !important, chạy rồi, commit.
+                    Một tháng sau, bug mới xuất hiện vì !important kia ghi đè style khác.
+                    Vòng xoáy bất tận. Hãy hiểu <em>tại sao</em> CSS hoạt động trước khi copy!
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">🌈</span>
+            <div class="mistake-content">
+                <h4>Hardcode màu sắc khắp nơi</h4>
+                <p>
+                    <code>#CF649A</code> xuất hiện 73 lần trong dự án nhưng không ai biết đó là màu gì.
+                    Khi cần đổi màu, phải Find &amp; Replace cả dự án và cầu trời không sót.
+                    Lão già ta xin các cháu: hãy dùng SASS variable hoặc CSS custom property!
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">📱</span>
+            <div class="mistake-content">
+                <h4>Làm responsive bằng cách ẩn đi mọi thứ</h4>
+                <p>
+                    <code>@media (max-width: 768px) { .sidebar { display: none; } }</code>
+                    — ẩn hết component thì còn gì mà responsive? Responsive là sắp xếp lại,
+                    không phải dẹp giấu! Như dọn nhà — bạn cất bớt đồ chứ không vứt hết đi.
+                </p>
+            </div>
+        </div>
+
+        <div class="mistake-item">
+            <span class="mistake-icon">⏱️</span>
+            <div class="mistake-content">
+                <h4>Animation quá nhiều, quá mạnh</h4>
+                <p>
+                    Mọi element đều bounce, spin, và fade-in thì trang web như vũ trường,
+                    không phải ứng dụng enterprise. Animation cần "nhẹ nhàng, tinh tế" như nước hoa —
+                    quá nhiều thì khó thở. Và nhớ dùng <code>transform</code> + <code>opacity</code>
+                    thay vì animate width/height để GPU xử lý.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== VAI TRÒ TRONG DỰ ÁN PBX ===== -->
+    <section class="section">
+        <span class="section-icon">📞</span>
+        <div class="section-title">
+            Vai Trò Trong Dự Án PBX
+            <span class="title-line"></span>
+        </div>
+
+        <div class="backstory">
+            Dự án PBX là hệ thống tổng đài doanh nghiệp chạy trên Electron desktop app. Với SASS 1.98,
+            Đại Sư chịu trách nhiệm làm cho giao diện trở nên chuyên nghiệp, thống nhất, và phản hồi
+            nhanh như chính các cuộc gọi điện thoại mà hệ thống xử lý. Mỗi pixel đều quan trọng khi
+            nhân viên tổng đài nhìn màn hình 8 tiếng mỗi ngày — mắt phải dễ chịu, layout phải rõ ràng,
+            và mọi thao tác phải trực quan. Không có chỗ cho CSS cẩu thả trong một ứng dụng enterprise!
+        </div>
+
+        <div class="pbx-highlight">
+            <div class="pbx-card">
+                <span class="pbx-card-icon">🏢</span>
+                <h4>Hệ Thống Theme Enterprise</h4>
+                <p>
+                    Xây dựng hệ thống theme với SASS variables và CSS custom properties. Hỗ trợ
+                    chuyển đổi giữa light/dark mode, tuỳ chỉnh màu sắc theo thương hiệu khách hàng.
+                    Mọi biến được tổ chức trong SASS maps để dễ quản lý và mở rộng.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-card-icon">🖥️</span>
+                <h4>Electron Desktop Layout</h4>
+                <p>
+                    Thiết kế layout tối ưu cho Electron app với CSS Grid — sidebar điều hướng,
+                    khu vực chính hiển thị thông tin cuộc gọi, panel trạng thái agent. Responsive
+                    theo kích thước cửa sổ, không phải theo thiết bị mobile.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-card-icon">🧩</span>
+                <h4>BEM Component Library</h4>
+                <p>
+                    Mọi component (button, card, modal, table, form) đều theo chuẩn BEM.
+                    SASS mixins giúp tạo component mới nhanh chóng mà vẫn đảm bảo tính nhất quán.
+                    Tất cả được tổ chức trong cấu trúc 7-1 pattern chuẩn chỉ.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-card-icon">📊</span>
+                <h4>Dashboard & Hiển Thị Dữ Liệu</h4>
+                <p>
+                    Style cho dashboard hiển thị thống kê cuộc gọi, biểu đồ, bảng dữ liệu.
+                    Sử dụng CSS Grid cho layout phức tạp, Flexbox cho alignment. Màu sắc
+                    được chọn kỹ lưỡng để phân biệt trạng thái: đang gọi, chờ, kết thúc.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-card-icon">🎬</span>
+                <h4>Micro-animations Tinh Tế</h4>
+                <p>
+                    Animation tinh tế cho trạng thái cuộc gọi — incoming ring pulse, active glow,
+                    hold blink nhẹ nhàng. Chỉ dùng transform và opacity để đảm bảo hiệu năng.
+                    Mọi animation đều có <code>prefers-reduced-motion</code> để hỗ trợ accessibility.
+                </p>
+            </div>
+
+            <div class="pbx-card">
+                <span class="pbx-card-icon">🎯</span>
+                <h4>Performance CSS Cho Desktop</h4>
+                <p>
+                    Tối ưu CSS cho ứng dụng desktop chạy liên tục 8+ giờ. Tránh selector quá
+                    phức tạp, giảm reflow/repaint, sử dụng <code>will-change</code> có chọn lọc.
+                    SASS giúp chia nhỏ file và chỉ import những gì cần thiết — không thừa byte nào.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="sass-mantra">"Viết CSS như làm thơ — mỗi dòng phải có ý nghĩa, mỗi selector phải có lý do."</div>
+        <p>Agent #16 &bull; Thẩm Mỹ Đại Sư &bull; SASS/CSS Specialist</p>
+        <p>PBX Project &bull; SotaTek &bull; SASS 1.98</p>
+
+        <div class="sass-animation-demo">
+            <div class="sass-dot"></div>
+            <div class="sass-dot"></div>
+            <div class="sass-dot"></div>
+            <div class="sass-dot"></div>
+            <div class="sass-dot"></div>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

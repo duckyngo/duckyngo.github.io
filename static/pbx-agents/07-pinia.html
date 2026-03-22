@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 07 — Quản Lý Trạng Thái Vương | Pinia Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pinia-gold: #ffd859;
+            --pinia-dark-gold: #e6b800;
+            --pinia-light-gold: #fff3c4;
+            --pinia-orange: #ff9f43;
+            --pinia-brown: #5c3d00;
+            --pinia-cream: #fffdf5;
+            --pinia-green: #42b883;
+            --bg-dark: #1a1205;
+            --card-bg: rgba(255, 248, 225, 0.95);
+            --text-dark: #3d2e00;
+            --text-light: #fff9e6;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #1a1205 0%, #2d1f00 25%, #1a1205 50%, #0d0a03 100%);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 216, 89, 0.06) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(255, 159, 67, 0.04) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(66, 184, 131, 0.03) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(2%, -1%) scale(1.02); }
+            66% { transform: translate(-1%, 2%) scale(0.98); }
+        }
+
+        /* Floating pineapple emojis (Pinia = pineapple) */
+        .floating-pineapple {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: floatUp 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-pineapple:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 22s; }
+        .floating-pineapple:nth-child(2) { left: 15%; animation-delay: 4s; animation-duration: 18s; }
+        .floating-pineapple:nth-child(3) { left: 30%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-pineapple:nth-child(4) { left: 50%; animation-delay: 6s; animation-duration: 20s; }
+        .floating-pineapple:nth-child(5) { left: 70%; animation-delay: 1s; animation-duration: 23s; }
+        .floating-pineapple:nth-child(6) { left: 85%; animation-delay: 3s; animation-duration: 19s; }
+        .floating-pineapple:nth-child(7) { left: 95%; animation-delay: 5s; animation-duration: 21s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.08; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* === MAIN CONTAINER === */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* === HERO HEADER === */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-bottom: 2.5rem;
+            background: linear-gradient(135deg, rgba(255, 216, 89, 0.12) 0%, rgba(255, 159, 67, 0.08) 50%, rgba(66, 184, 131, 0.06) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 216, 89, 0.2);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, var(--pinia-gold), var(--pinia-orange), var(--pinia-green), var(--pinia-gold));
+            background-size: 300% 300%;
+            z-index: -1;
+            animation: borderGlow 6s ease-in-out infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pinia-gold), var(--pinia-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            box-shadow: 0 0 40px rgba(255, 216, 89, 0.4), 0 0 80px rgba(255, 216, 89, 0.15);
+            animation: avatarPulse 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(255, 216, 89, 0.4), 0 0 80px rgba(255, 216, 89, 0.15); transform: scale(1); }
+            50% { box-shadow: 0 0 60px rgba(255, 216, 89, 0.6), 0 0 100px rgba(255, 216, 89, 0.25); transform: scale(1.03); }
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--pinia-gold);
+            border-right-color: var(--pinia-orange);
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .agent-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, var(--pinia-green), #36a374);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(66, 184, 131, 0.4);
+        }
+
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--pinia-gold), var(--pinia-orange), #ffeb99);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: none;
+            line-height: 1.3;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 216, 89, 0.7);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .hero-quote {
+            font-style: italic;
+            color: rgba(255, 248, 225, 0.6);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 1rem;
+            border-left: 3px solid rgba(255, 216, 89, 0.3);
+            text-align: left;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.2rem;
+        }
+
+        .tag {
+            background: rgba(255, 216, 89, 0.15);
+            color: var(--pinia-gold);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 216, 89, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: rgba(255, 216, 89, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* === SECTION CARDS === */
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(255, 216, 89, 0.05);
+            border: 1px solid rgba(255, 216, 89, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(255, 216, 89, 0.1);
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+        .section:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--pinia-brown);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .section-title .accent {
+            color: var(--pinia-dark-gold);
+        }
+
+        .section p, .section li {
+            line-height: 1.8;
+            color: #4a3a10;
+            font-size: 0.95rem;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        /* === BACKSTORY === */
+        .backstory {
+            background: linear-gradient(135deg, #fffdf5, #fff8e1);
+            border-left: 4px solid var(--pinia-gold);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .skill-item {
+            background: linear-gradient(135deg, #fff9e6, #fff3cc);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(230, 184, 0, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 16px rgba(255, 216, 89, 0.3);
+        }
+
+        .skill-item .skill-icon {
+            font-size: 2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .skill-item .skill-name {
+            font-weight: 700;
+            color: var(--pinia-brown);
+            font-size: 0.9rem;
+        }
+
+        .skill-item .skill-desc {
+            font-size: 0.78rem;
+            color: #7a6520;
+            margin-top: 0.3rem;
+        }
+
+        /* === INSIGHTS / BI KIP === */
+        .insight-card {
+            background: linear-gradient(135deg, #fffdf5, #fff8e1);
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--pinia-gold);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            border-left-color: var(--pinia-orange);
+            transform: translateX(5px);
+        }
+
+        .insight-card::before {
+            content: attr(data-num);
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: linear-gradient(135deg, var(--pinia-gold), var(--pinia-orange));
+            color: var(--pinia-brown);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--pinia-brown);
+            margin-bottom: 0.4rem;
+            font-size: 1rem;
+        }
+
+        .insight-desc {
+            font-size: 0.9rem;
+            color: #5c4a1a;
+            line-height: 1.7;
+        }
+
+        /* === STORIES === */
+        .story-card {
+            background: linear-gradient(135deg, #fffaf0, #fff5e0);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(255, 216, 89, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(255, 216, 89, 0.15) 0%, transparent 70%);
+            border-radius: 0 16px 0 80px;
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .story-emoji {
+            font-size: 2rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .story-title {
+            font-weight: 800;
+            color: var(--pinia-brown);
+            font-size: 1.1rem;
+        }
+
+        .story-body {
+            font-size: 0.92rem;
+            line-height: 1.8;
+            color: #4a3a10;
+        }
+
+        .story-moral {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(255, 216, 89, 0.15);
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--pinia-brown);
+            font-size: 0.88rem;
+        }
+
+        /* === MISTAKES === */
+        .mistake-list {
+            list-style: none;
+            counter-reset: mistake;
+        }
+
+        .mistake-item {
+            counter-increment: mistake;
+            padding: 1rem 1rem 1rem 3.5rem;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, #fff8e1, #fff3cc);
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid rgba(255, 216, 89, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mistake-item:hover {
+            background: linear-gradient(135deg, #fff3cc, #ffe999);
+            transform: translateX(4px);
+        }
+
+        .mistake-item::before {
+            content: counter(mistake);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        .mistake-title {
+            font-weight: 700;
+            color: #c0392b;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+
+        .mistake-desc {
+            font-size: 0.88rem;
+            color: #5c4a1a;
+            line-height: 1.6;
+        }
+
+        .mistake-fix {
+            margin-top: 0.4rem;
+            font-size: 0.85rem;
+            color: var(--pinia-green);
+            font-weight: 600;
+        }
+
+        /* === PBX RELEVANCE === */
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .pbx-card {
+            background: linear-gradient(135deg, #fffdf5, #f0faf4);
+            padding: 1.2rem;
+            border-radius: 14px;
+            border: 1px solid rgba(66, 184, 131, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .pbx-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(66, 184, 131, 0.15);
+        }
+
+        .pbx-card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pbx-card-title {
+            font-weight: 700;
+            color: var(--pinia-brown);
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .pbx-card-desc {
+            font-size: 0.88rem;
+            color: #4a3a10;
+            line-height: 1.6;
+        }
+
+        /* === CODE BLOCK === */
+        .code-block {
+            background: #1e1510;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin: 0.8rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: #ffd859;
+            border: 1px solid rgba(255, 216, 89, 0.15);
+        }
+
+        .code-block .comment { color: #6a5a30; }
+        .code-block .keyword { color: #ff9f43; }
+        .code-block .string { color: #42b883; }
+        .code-block .func { color: #ffd859; }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 216, 89, 0.4);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--pinia-gold);
+            text-decoration: none;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .hero { padding: 2rem 1.2rem; }
+            .hero-title { font-size: 1.8rem; }
+            .section { padding: 1.5rem; }
+            .skill-grid { grid-template-columns: repeat(2, 1fr); }
+            .pbx-grid { grid-template-columns: 1fr; }
+            .avatar { width: 120px; height: 120px; font-size: 3rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.5rem; }
+            .section-title { font-size: 1.2rem; }
+            .skill-grid { grid-template-columns: 1fr; }
+            .tag-row { gap: 0.3rem; }
+            .tag { font-size: 0.72rem; padding: 3px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating pineapples background -->
+    <div class="bg-animation"></div>
+    <div class="floating-pineapple">🍍</div>
+    <div class="floating-pineapple">🍍</div>
+    <div class="floating-pineapple">🍍</div>
+    <div class="floating-pineapple">🍍</div>
+    <div class="floating-pineapple">🍍</div>
+    <div class="floating-pineapple">🍍</div>
+    <div class="floating-pineapple">🍍</div>
+
+    <div class="container">
+
+        <!-- ============ HERO HEADER ============ -->
+        <header class="hero">
+            <div class="avatar-container">
+                <div class="avatar">🍍</div>
+                <div class="avatar-ring"></div>
+                <span class="agent-badge">Agent 07</span>
+            </div>
+            <h1 class="hero-title">Quản Lý Trạng Thái Vương</h1>
+            <p class="hero-subtitle">Bậc Thầy Pinia &bull; Người Giữ Kho Dữ Liệu &bull; Vua Reactive State</p>
+            <div class="hero-quote">
+                "Ngày xưa có anh Vuex, làm quản lý state thì giỏi nhưng mà hay bắt dev viết mutations dài dằng dặc. Rồi một ngày, Pinia ra đời &mdash; gọn nhẹ, dễ thương, TypeScript-first. Từ đó thiên hạ thái bình, store nào cũng reactive, getter nào cũng computed, dev nào cũng hạnh phúc."
+            </div>
+            <div class="tag-row">
+                <span class="tag">Pinia 2.3</span>
+                <span class="tag">defineStore()</span>
+                <span class="tag">Composable Stores</span>
+                <span class="tag">State Persistence</span>
+                <span class="tag">Devtools</span>
+                <span class="tag">Vue 3</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">HMR</span>
+            </div>
+        </header>
+
+        <!-- ============ EXPERIENCE & EXPERTISE ============ -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">📖</span>
+                <span>Thân Thế &amp; <span class="accent">Võ Công</span></span>
+            </h2>
+
+            <div class="backstory">
+                <p>
+                    Chào các đệ tử! Ta là <strong>Quản Lý Trạng Thái Vương</strong>, sinh ra từ thời nhà Vuex hỗn loạn, nơi mà muốn thay đổi một cái biến cũng phải viết mutation, commit, rồi dispatch action, rồi lại commit mutation... Vòng vo như đi chợ Bến Thành mặc cả.
+                </p>
+                <p>
+                    Ta đã tu luyện qua hàng ngàn dự án, từ cái todo app nhỏ xíu đến hệ thống PBX tổng đài khổng lồ. Ta biết rõ từng ngóc ngách của <strong>Pinia</strong> &mdash; từ <code>defineStore()</code> setup syntax cho đến options syntax, từ <code>storeToRefs()</code> cho đến custom plugins. Ta đã nhìn thấy mọi loại bug state management có thể gây ra, và ta đã sống sót để kể lại câu chuyện.
+                </p>
+            </div>
+
+            <div class="skill-grid">
+                <div class="skill-item">
+                    <div class="skill-icon">🏪</div>
+                    <div class="skill-name">Store Architecture</div>
+                    <div class="skill-desc">Thiết kế store theo module, composable, tái sử dụng cao</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">⚡</div>
+                    <div class="skill-name">Actions & Getters</div>
+                    <div class="skill-desc">Async actions, computed getters, chaining thuần thục</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">🔌</div>
+                    <div class="skill-name">Plugins System</div>
+                    <div class="skill-desc">Custom plugins cho logging, persistence, analytics</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">🧩</div>
+                    <div class="skill-name">Composable Stores</div>
+                    <div class="skill-desc">Store gọi store, chia sẻ logic, dependency injection</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">🔧</div>
+                    <div class="skill-name">Vue Devtools</div>
+                    <div class="skill-desc">Time-travel debugging, state inspection, action tracking</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon">💾</div>
+                    <div class="skill-name">State Persistence</div>
+                    <div class="skill-desc">LocalStorage, sessionStorage, custom serialization</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ INSIGHTS / BI KIP ============ -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🔮</span>
+                <span>Bí Kíp <span class="accent">Trấn Phái</span></span>
+            </h2>
+
+            <div class="insight-card" data-num="1">
+                <div class="insight-title">Setup Syntax là Chân Ái</div>
+                <div class="insight-desc">
+                    Dùng <code>defineStore('id', () => { ... })</code> thay vì options syntax. Tại sao? Vì nó giống hệt <code>setup()</code> trong component &mdash; dùng <code>ref()</code>, <code>computed()</code>, <code>watch()</code> thoải mái. TypeScript inference ngon lành, không cần khai báo type riêng. Ai đã quen Composition API thì chuyển sang setup store mượt như lụa.
+                </div>
+            </div>
+
+            <div class="insight-card" data-num="2">
+                <div class="insight-title">storeToRefs() &mdash; Đừng Quên Anh Ấy</div>
+                <div class="insight-desc">
+                    Khi destructure store, state và getters <strong>mất reactivity</strong> nếu không dùng <code>storeToRefs()</code>. Actions thì destructure bình thường. Đây là cái bẫy kinh điển mà 90% dev mới đều dính. Ta đã thấy cả team ngồi debug 3 tiếng chỉ vì quên cái này.
+                </div>
+            </div>
+
+            <div class="insight-card" data-num="3">
+                <div class="insight-title">Store Composition &mdash; Store Gọi Store</div>
+                <div class="insight-desc">
+                    Pinia cho phép store A import và sử dụng store B bên trong actions/getters. Nhưng cẩn thận! Chỉ gọi <code>useOtherStore()</code> <strong>bên trong</strong> action hoặc getter, không phải ở top-level. Và tuyệt đối tránh circular dependency &mdash; A gọi B gọi lại A thì hệ thống sẽ khóc.
+                </div>
+            </div>
+
+            <div class="insight-card" data-num="4">
+                <div class="insight-title">Plugin Persistence &mdash; Nhớ Lâu Như Ông Ngoại</div>
+                <div class="insight-desc">
+                    Dùng <code>pinia-plugin-persistedstate</code> để tự động sync state với localStorage/sessionStorage. Cấu hình chọn lọc field nào cần persist, serializer tùy chỉnh, và storage strategy. Đặc biệt hữu ích cho PBX: lưu user session, cài đặt giao diện, lịch sử cuộc gọi gần đây.
+                </div>
+            </div>
+
+            <div class="insight-card" data-num="5">
+                <div class="insight-title">$patch() &mdash; Cập Nhật Hàng Loạt Như Gió</div>
+                <div class="insight-desc">
+                    Thay vì gán từng property một, dùng <code>store.$patch({ ... })</code> hoặc <code>store.$patch((state) => { ... })</code> để cập nhật nhiều field cùng lúc. Pinia sẽ gom thành một lần update duy nhất, giảm re-render, devtools chỉ ghi nhận 1 mutation thay vì 10.
+                </div>
+            </div>
+
+            <div class="insight-card" data-num="6">
+                <div class="insight-title">$subscribe() &mdash; Theo Dõi Mọi Biến Động</div>
+                <div class="insight-desc">
+                    <code>store.$subscribe((mutation, state) => { ... })</code> cho phép lắng nghe mọi thay đổi state. Kết hợp với <code>{ detached: true }</code> để subscription tồn tại kể cả khi component unmount. Hoàn hảo cho logging, analytics, hoặc sync state giữa các tab.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ FUN STORIES ============ -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">📚</span>
+                <span>Chuyện Kể <span class="accent">Bên Bếp Lửa</span></span>
+            </h2>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">🔥</span>
+                    <div class="story-title">Cuộc Đại Di Cư Từ Vuex Sang Pinia</div>
+                </div>
+                <div class="story-body">
+                    Chuyện xảy ra vào mùa đông năm ngoái. Team có 47 cái Vuex modules, mỗi module có mutations, actions, getters, state &mdash; tổng cộng hơn 200 files. Sếp bảo: "Migrate sang Pinia đi, deadline tuần sau."
+                    <br><br>
+                    Anh lead nghe xong suýt ngất. Nhưng rồi khi bắt tay vào làm, mọi người mới nhận ra: mỗi Vuex module chuyển sang Pinia chỉ mất <em>15 phút</em>. Xóa hết mutations (vì Pinia cho phép modify state trực tiếp), gộp actions và getters vào <code>defineStore()</code>, bỏ hết <code>commit()</code> và <code>dispatch()</code>. Code giảm 40%. TypeScript tự suy luận type. Devtools vẫn hoạt động ngon lành.
+                    <br><br>
+                    Cuối cùng, team xong trước deadline 3 ngày. Anh lead đãi cả team trà sữa. Từ đó không ai nhắc đến Vuex nữa, như một ký ức đau thương đã được chữa lành.
+                </div>
+                <div class="story-moral">
+                    Bài học: Vuex mutations là thứ không cần thiết nhất trong lịch sử state management. Pinia đã chứng minh điều đó.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">🐛</span>
+                    <div class="story-title">Vụ Án State Mutation Bí Ẩn Lúc 3 Giờ Sáng</div>
+                </div>
+                <div class="story-body">
+                    Có một đêm, hệ thống PBX production báo lỗi: trạng thái cuộc gọi hiển thị "Đang kết nối" nhưng thực tế đã kết thúc từ 5 phút trước. User nhìn thấy mình đang gọi... nhưng bên kia đã cúp máy rồi.
+                    <br><br>
+                    Dev trực đêm mở Devtools lên, time-travel lại xem state thay đổi thế nào. Phát hiện ra: có 2 component cùng gọi <code>callStore.updateStatus()</code> nhưng với tham số ngược nhau &mdash; component A set "connected", component B set "ended", rồi component A lại set "connected"... Cứ thế đuổi nhau như Tom & Jerry.
+                    <br><br>
+                    Giải pháp? Thêm <code>$subscribe()</code> để log mọi mutation kèm stack trace, phát hiện component nào gọi sai. Rồi refactor lại để chỉ có <strong>một nguồn truth duy nhất</strong> cập nhật call status từ WebSocket event.
+                </div>
+                <div class="story-moral">
+                    Bài học: State chỉ nên có một nguồn cập nhật. Nhiều nguồn = nhiều drama. Cuộc đời và code đều thế.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">🔄</span>
+                    <div class="story-title">Vòng Xoáy Dependency &mdash; Store Gọi Store Gọi Store</div>
+                </div>
+                <div class="story-body">
+                    Một ngày đẹp trời, dev junior viết <code>useAuthStore()</code> bên trong <code>useCallStore()</code>, rồi lại viết <code>useCallStore()</code> bên trong <code>useAuthStore()</code>. Lý do? Auth cần biết user có đang trong cuộc gọi không, và Call cần biết user đã đăng nhập chưa. Nghe thì hợp lý...
+                    <br><br>
+                    Cho đến khi app chạy lên và... treo. Console hiện lỗi maximum call stack exceeded. Hai store cứ gọi nhau mãi mãi như hai người yêu nhau nhưng không ai chịu nhắn trước.
+                    <br><br>
+                    Ông ngoại (tức là ta) bèn chỉ: "Con ơi, hãy tạo một <code>useSharedStore()</code> làm trung gian. Hoặc tốt hơn, chỉ gọi store kia <strong>bên trong action</strong>, không phải ở top-level. Lazy evaluation, hiểu không?"
+                    <br><br>
+                    Dev junior nghe xong, sửa trong 10 phút, chạy ngon lành. Từ đó cậu ta khắc lên bàn dòng chữ: "Không bao giờ import store ở top-level."
+                </div>
+                <div class="story-moral">
+                    Bài học: Circular dependency là kẻ thù không đội trời chung của mọi kiến trúc. Hãy dùng lazy import hoặc mediator pattern.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ COMMON MISTAKES ============ -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">💀</span>
+                <span>Sai Lầm <span class="accent">Muôn Thuở</span></span>
+            </h2>
+
+            <ul class="mistake-list">
+                <li class="mistake-item">
+                    <div class="mistake-title">Destructure store mà quên storeToRefs()</div>
+                    <div class="mistake-desc">
+                        <code>const { count } = useCounterStore()</code> &mdash; <code>count</code> giờ chỉ là một số chết cứng, không reactive. UI sẽ không bao giờ cập nhật. Dev ngồi thắc mắc tại sao click nút mà số không tăng, rồi đổ thừa Vue bị bug.
+                    </div>
+                    <div class="mistake-fix">Sửa: const { count } = storeToRefs(useCounterStore())</div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-title">Gọi useStore() ngoài setup() hoặc component</div>
+                    <div class="mistake-desc">
+                        Pinia store cần Pinia instance đã được install. Gọi <code>useStore()</code> trong file utils thường hoặc ở top-level module sẽ nhận lỗi "getActivePinia was called with no active Pinia". Đau đớn lắm.
+                    </div>
+                    <div class="mistake-fix">Sửa: Truyền pinia instance hoặc gọi trong setup/action context</div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-title">Đặt store ID trùng nhau</div>
+                    <div class="mistake-desc">
+                        Hai store cùng ID <code>'main'</code>? Chúc mừng, bạn vừa tạo ra bug âm thầm nhất lịch sử. Store sau sẽ ghi đè store trước, dữ liệu lẫn lộn, và bạn sẽ mất cả ngày tìm nguyên nhân.
+                    </div>
+                    <div class="mistake-fix">Sửa: Dùng naming convention rõ ràng &mdash; 'auth', 'call', 'ui', 'org'</div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-title">Persist toàn bộ store vào localStorage</div>
+                    <div class="mistake-desc">
+                        Store có 50 fields, persist hết vào localStorage. User mở app lên, state cũ từ tuần trước load lên, conflict với API data mới. Kết quả: UI hiện thông tin sai, user confused, sếp gọi điện hỏi thăm sức khỏe.
+                    </div>
+                    <div class="mistake-fix">Sửa: Chỉ persist những gì cần thiết (settings, preferences), không persist data volatile</div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-title">Quên $reset() khi user logout</div>
+                    <div class="mistake-desc">
+                        User A logout, user B login &mdash; nhưng store vẫn giữ data của user A. User B thấy cuộc gọi, contacts, settings của người khác. Đây không chỉ là bug, đây là <strong>bảo mật incident</strong>.
+                    </div>
+                    <div class="mistake-fix">Sửa: Gọi store.$reset() cho TẤT CẢ stores khi logout. Hoặc viết plugin reset toàn bộ.</div>
+                </li>
+
+                <li class="mistake-item">
+                    <div class="mistake-title">Dùng store cho mọi thứ, kể cả local UI state</div>
+                    <div class="mistake-desc">
+                        "Modal đang mở hay đóng? Bỏ vào store!" &mdash; KHÔNG. Không phải mọi state đều cần global store. Modal state, form state, loading state riêng của một component thì dùng local <code>ref()</code> là đủ. Store chỉ dành cho shared state.
+                    </div>
+                    <div class="mistake-fix">Sửa: Hỏi "có component nào khác cần biết state này không?" &mdash; Không? Dùng ref().</div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ============ PBX PROJECT RELEVANCE ============ -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">📞</span>
+                <span>Pinia Trong <span class="accent">Dự Án PBX</span></span>
+            </h2>
+
+            <p>
+                Hệ thống PBX tổng đài sử dụng Pinia 2.3 làm trung tâm quản lý toàn bộ state. Mỗi khía cạnh của hệ thống đều có store riêng, được thiết kế theo nguyên tắc <strong>single responsibility</strong> và <strong>composability</strong>. Dưới đây là kiến trúc store cốt lõi:
+            </p>
+
+            <div class="pbx-grid">
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">📞</div>
+                    <div class="pbx-card-title">useCallStore</div>
+                    <div class="pbx-card-desc">
+                        Quản lý toàn bộ trạng thái cuộc gọi: incoming, outgoing, active, on-hold, transferring. Real-time sync qua WebSocket. State transition có validation chặt chẽ &mdash; không cho phép nhảy từ "idle" sang "on-hold" mà bỏ qua "active".
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">👤</div>
+                    <div class="pbx-card-title">useAuthStore</div>
+                    <div class="pbx-card-desc">
+                        User session, token management, role-based permissions. Persist token vào sessionStorage với encryption. Auto-refresh token trước khi hết hạn. Khi logout, trigger $reset() cascade cho toàn bộ stores.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">🏢</div>
+                    <div class="pbx-card-title">useOrgStore</div>
+                    <div class="pbx-card-desc">
+                        Dữ liệu tổ chức: departments, extensions, ring groups, call queues, IVR menus. Cache thông minh với TTL &mdash; chỉ fetch lại khi data đã cũ hoặc khi nhận được invalidation event từ server.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">🎨</div>
+                    <div class="pbx-card-title">useUIStore</div>
+                    <div class="pbx-card-desc">
+                        Theme (dark/light), sidebar state, notification preferences, language setting. Persist vào localStorage để user không phải setup lại mỗi lần mở app. Getters computed để các component lấy đúng giá trị cần thiết.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">📊</div>
+                    <div class="pbx-card-title">useRealtimeStore</div>
+                    <div class="pbx-card-desc">
+                        Dashboard realtime: số cuộc gọi đang diễn ra, agent availability, queue wait times, SLA metrics. Subscribe qua WebSocket, $patch() bulk updates mỗi giây để tối ưu rendering performance.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">📋</div>
+                    <div class="pbx-card-title">useHistoryStore</div>
+                    <div class="pbx-card-desc">
+                        Lịch sử cuộc gọi, recordings, CDR (Call Detail Records). Pagination với infinite scroll, filter theo ngày/agent/direction. Local cache 50 records gần nhất để UI hiển thị nhanh khi chuyển tab.
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <span class="comment">// Ví dụ: useCallStore trong PBX project</span><br>
+                <span class="keyword">export const</span> <span class="func">useCallStore</span> = <span class="func">defineStore</span>(<span class="string">'call'</span>, () => {<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> activeCall = <span class="func">ref</span>&lt;Call | <span class="keyword">null</span>&gt;(<span class="keyword">null</span>)<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> callQueue = <span class="func">ref</span>&lt;Call[]&gt;([])<br>
+                &nbsp;&nbsp;<span class="keyword">const</span> isOnCall = <span class="func">computed</span>(() => activeCall.value !== <span class="keyword">null</span>)<br>
+                <br>
+                &nbsp;&nbsp;<span class="keyword">async function</span> <span class="func">answerCall</span>(callId: <span class="keyword">string</span>) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> auth = <span class="func">useAuthStore</span>() <span class="comment">// lazy &mdash; trong action!</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span> api.<span class="func">answer</span>(callId, auth.token)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;activeCall.value = callQueue.value.<span class="func">find</span>(c => c.id === callId)<br>
+                &nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;<span class="keyword">return</span> { activeCall, callQueue, isOnCall, answerCall }<br>
+                })
+            </div>
+        </section>
+
+        <!-- ============ FOOTER ============ -->
+        <footer class="footer">
+            <p>
+                <strong>Agent 07 &mdash; Quản Lý Trạng Thái Vương</strong>
+                <br>
+                PBX Virtual Agent Team &bull; Pinia 2.3 Specialist
+                <br><br>
+                <em>"defineStore rồi, nhớ return đầy đủ nhé con."</em>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scroll animation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.animationPlayState = 'paused';
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

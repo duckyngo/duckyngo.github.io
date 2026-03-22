@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thầy Sharp - Bậc Thầy C# & .NET 8.0 | PBX Agent Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #0d0520 0%, #1a0a3e 30%, #12062e 60%, #0d0520 100%);
+            color: #e8dff5;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 15% 85%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(186, 85, 211, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(148, 103, 189, 0.04) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes floatBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(186, 85, 211, 0.6), 0 0 80px rgba(138, 43, 226, 0.2); }
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        /* ===== Floating Particles ===== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(186, 85, 211, 0.3);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-duration: 18s; animation-delay: 0s; width: 3px; height: 3px; }
+        .particle:nth-child(2) { left: 25%; animation-duration: 22s; animation-delay: 3s; width: 5px; height: 5px; }
+        .particle:nth-child(3) { left: 40%; animation-duration: 16s; animation-delay: 6s; }
+        .particle:nth-child(4) { left: 55%; animation-duration: 24s; animation-delay: 2s; width: 3px; height: 3px; }
+        .particle:nth-child(5) { left: 70%; animation-duration: 20s; animation-delay: 5s; width: 6px; height: 6px; }
+        .particle:nth-child(6) { left: 85%; animation-duration: 17s; animation-delay: 1s; }
+        .particle:nth-child(7) { left: 50%; animation-duration: 25s; animation-delay: 8s; width: 3px; height: 3px; }
+        .particle:nth-child(8) { left: 5%; animation-duration: 19s; animation-delay: 4s; width: 5px; height: 5px; }
+
+        /* ===== Hero / Avatar ===== */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 28px;
+        }
+
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7b2ff7, #9b59b6, #6c3483);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            box-shadow:
+                0 0 0 4px rgba(139, 92, 246, 0.3),
+                0 0 40px rgba(139, 92, 246, 0.25),
+                0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: avatarPulse 4s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #c471f5;
+            border-right-color: #9b59b6;
+            animation: spinRing 8s linear infinite;
+        }
+
+        .avatar-ring-2 {
+            position: absolute;
+            top: -16px;
+            left: -16px;
+            right: -16px;
+            bottom: -16px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-bottom-color: #b388d9;
+            border-left-color: #d4a5f5;
+            animation: spinRing 12s linear infinite reverse;
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: linear-gradient(135deg, #9b59b6, #6c3483);
+            border-radius: 12px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 {
+            font-size: 2.8em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #c471f5, #e8b4f8, #9b59b6);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.15em;
+            color: #b388d9;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .hero .tagline {
+            font-size: 0.95em;
+            color: rgba(196, 181, 253, 0.6);
+            font-style: italic;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 0.8em;
+            font-weight: 700;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            color: #d4a5f5;
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            background: rgba(139, 92, 246, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        /* ===== Sections ===== */
+        section {
+            margin-bottom: 56px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #7b2ff7, #6c3483);
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.65em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #d4a5f5, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== Cards ===== */
+        .card {
+            background: rgba(30, 20, 60, 0.6);
+            border: 1px solid rgba(139, 92, 246, 0.12);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(12px);
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
+        }
+
+        .card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(88, 28, 135, 0.25);
+        }
+
+        .card p {
+            color: rgba(226, 232, 240, 0.8);
+            line-height: 1.85;
+            font-size: 0.95em;
+        }
+
+        .card h3 {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            color: #c471f5;
+            font-weight: 700;
+        }
+
+        .code-inline {
+            background: rgba(139, 92, 246, 0.15);
+            color: #d4a5f5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.85em;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        /* ===== Backstory ===== */
+        .backstory-card {
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.3), rgba(30, 20, 60, 0.6));
+            position: relative;
+        }
+
+        .backstory-card::after {
+            content: '#';
+            position: absolute;
+            top: -30px;
+            right: -10px;
+            font-size: 200px;
+            font-weight: 900;
+            color: rgba(138, 43, 226, 0.04);
+            pointer-events: none;
+        }
+
+        .backstory-card p {
+            margin-bottom: 16px;
+            font-size: 1em;
+        }
+
+        .backstory-card p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* ===== Insights / Bi Kip Grid ===== */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .insight-card {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 24px;
+            animation: slideInLeft 0.6s ease-out backwards;
+        }
+
+        .insight-card:nth-child(2) { animation-delay: 0.1s; }
+        .insight-card:nth-child(3) { animation-delay: 0.15s; }
+        .insight-card:nth-child(4) { animation-delay: 0.2s; }
+        .insight-card:nth-child(5) { animation-delay: 0.25s; }
+        .insight-card:nth-child(6) { animation-delay: 0.3s; }
+        .insight-card:nth-child(7) { animation-delay: 0.35s; }
+
+        .insight-card:hover {
+            transform: translateX(6px) translateY(-3px);
+            border-color: rgba(139, 92, 246, 0.35);
+        }
+
+        .insight-number {
+            min-width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7b2ff7, #9b59b6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1em;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .insight-content h4 {
+            color: #d4a5f5;
+            font-size: 1.05em;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .insight-content p {
+            color: #b8a0d0;
+            font-size: 0.9em;
+            line-height: 1.75;
+        }
+
+        .insight-label {
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #9b7bc0;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        /* ===== Stories ===== */
+        .story-card {
+            border-left: 3px solid #7b2ff7;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 32px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #9b59b6;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+
+        .story-label {
+            font-size: 0.72em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #9b7bc0;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .story-card .moral {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            font-size: 0.88em;
+            color: #d4a5f5;
+            font-style: italic;
+        }
+
+        /* ===== Mistakes ===== */
+        .mistakes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .mistake-card {
+            padding: 24px;
+            border-top: 3px solid;
+            border-radius: 4px 4px 20px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .mistake-card:hover {
+            animation: shakeError 0.5s ease;
+        }
+
+        .mistake-card:nth-child(1) { border-top-color: #ef4444; }
+        .mistake-card:nth-child(2) { border-top-color: #f97316; }
+        .mistake-card:nth-child(3) { border-top-color: #eab308; }
+        .mistake-card:nth-child(4) { border-top-color: #ec4899; }
+        .mistake-card:nth-child(5) { border-top-color: #f43f5e; }
+        .mistake-card:nth-child(6) { border-top-color: #fb923c; }
+
+        .mistake-label {
+            font-size: 0.68em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .mistake-card:nth-child(1) .mistake-label { color: #ef4444; }
+        .mistake-card:nth-child(2) .mistake-label { color: #f97316; }
+        .mistake-card:nth-child(3) .mistake-label { color: #eab308; }
+        .mistake-card:nth-child(4) .mistake-label { color: #ec4899; }
+        .mistake-card:nth-child(5) .mistake-label { color: #f43f5e; }
+        .mistake-card:nth-child(6) .mistake-label { color: #fb923c; }
+
+        .mistake-card h3 {
+            font-size: 1em;
+        }
+
+        .mistake-card p {
+            font-size: 0.87em;
+        }
+
+        /* ===== PBX Section ===== */
+        .pbx-card {
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.25), rgba(109, 40, 217, 0.1), rgba(30, 20, 60, 0.6));
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .pbx-card > p:first-child {
+            margin-bottom: 20px;
+        }
+
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .pbx-item {
+            padding: 20px;
+            border-radius: 14px;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            transition: all 0.3s;
+        }
+
+        .pbx-item:hover {
+            background: rgba(139, 92, 246, 0.14);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(88, 28, 135, 0.2);
+        }
+
+        .pbx-item .pbx-emoji {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .pbx-item h4 {
+            font-size: 0.95em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .pbx-item p {
+            font-size: 0.85em;
+            color: rgba(226, 232, 240, 0.65);
+            line-height: 1.65;
+        }
+
+        .code-block {
+            background: rgba(10, 5, 25, 0.7);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 12px;
+            padding: 18px 22px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.82em;
+            color: #c8b8e0;
+            margin: 20px 0 0;
+            overflow-x: auto;
+            line-height: 1.7;
+        }
+
+        .code-block .kw { color: #c471f5; }
+        .code-block .tp { color: #66d9ef; }
+        .code-block .st { color: #a6e22e; }
+        .code-block .cm { color: #666; font-style: italic; }
+
+        /* ===== Footer ===== */
+        footer {
+            text-align: center;
+            padding: 44px 20px;
+            border-top: 1px solid rgba(139, 92, 246, 0.1);
+            margin-top: 20px;
+        }
+
+        footer p {
+            color: rgba(139, 92, 246, 0.4);
+            font-size: 0.82em;
+        }
+
+        footer .brand {
+            font-weight: 700;
+            color: rgba(139, 92, 246, 0.55);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 1.9em; }
+            .hero .subtitle { font-size: 1em; }
+            .avatar { width: 120px; height: 120px; font-size: 52px; }
+            .section-header h2 { font-size: 1.3em; }
+            .card { padding: 22px; }
+            .insights-grid, .mistakes-grid, .pbx-grid {
+                grid-template-columns: 1fr;
+            }
+            .container { padding: 12px; }
+            .insight-card { flex-direction: column; gap: 10px; }
+        }
+
+        /* ===== Entrance animation ===== */
+        .animate-in {
+            animation: fadeInUp 0.7s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+
+<div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="container">
+
+    <!-- ===== HERO ===== -->
+    <header class="hero animate-in">
+        <div class="avatar-wrapper">
+            <div class="avatar-ring-2"></div>
+            <div class="avatar-ring"></div>
+            <div class="avatar">&#128104;&#8205;&#128187;</div>
+            <span class="avatar-badge">.NET 8.0</span>
+        </div>
+        <h1>Th&#7847;y Sharp</h1>
+        <p class="subtitle">B&#7853;c Th&#7847;y C# &amp; .NET 8.0 &#8212; Cao Th&#7911; Dependency Injection</p>
+        <p class="tagline">
+            &#8220;Ng&#224;y x&#432;a, khi m&#224; Java c&#242;n &#273;ang lo&#7841;y ho&#7841;y vi&#7871;t getter/setter
+            th&#236; ta &#273;&#227; c&#243; auto-property r&#7891;i. H&#227;y ng&#7891;i xu&#7889;ng, pha &#7845;m tr&#224;,
+            &#273;&#7875; Th&#7847;y k&#7875; cho nghe v&#7873; con &#273;&#432;&#7901;ng tu luy&#7879;n C#.&#8221;
+        </p>
+        <div class="badge-row">
+            <span class="badge">&#9830; C# 12</span>
+            <span class="badge">&#128640; .NET 8.0</span>
+            <span class="badge">&#127760; ASP.NET Core</span>
+            <span class="badge">&#128272; JWT Auth</span>
+            <span class="badge">&#128230; DI Container</span>
+            <span class="badge">&#9889; Middleware</span>
+            <span class="badge">&#128218; Entity Framework</span>
+            <span class="badge">&#128225; SignalR</span>
+        </div>
+    </header>
+
+    <!-- ===== BACKSTORY ===== -->
+    <section class="animate-in delay-1">
+        <div class="section-header">
+            <div class="section-icon">&#128214;</div>
+            <h2>Th&#226;n Th&#7871; &amp; Lai L&#7883;ch</h2>
+        </div>
+        <div class="card backstory-card">
+            <p>
+                Thu&#7903; nh&#7887;, Th&#7847;y Sharp sinh ra t&#7841;i v&#249;ng &#273;&#7845;t Redmond xa x&#244;i,
+                &#273;&#432;&#7907;c nu&#244;i d&#432;&#7905;ng b&#7903;i d&#242;ng h&#7885; Microsoft danh gi&#225;.
+                Chuy&#7879;n k&#7875; r&#7857;ng, v&#224;o m&#7897;t ng&#224;y m&#432;a gi&#243; n&#259;m 2002,
+                khi c&#7843; th&#7871; gi&#7899;i c&#242;n &#273;ang lo&#7841;y ho&#7841;y v&#7899;i Java Applet,
+                ch&#224;ng trai tr&#7867; <span class="highlight">Sharp</span> t&#236;nh c&#7901; m&#7903; nh&#7847;m
+                Visual Studio thay v&#236; Notepad. T&#7915; gi&#226;y ph&#250;t &#7845;y, cu&#7897;c &#273;&#7901;i
+                ch&#224;ng r&#7869; sang m&#7897;t h&#432;&#7899;ng ho&#224;n to&#224;n kh&#225;c &#8212;
+                h&#432;&#7899;ng c&#7911;a nh&#7919;ng d&#7845;u ch&#7845;m ph&#7849;y v&#224; curly braces.
+            </p>
+            <p>
+                N&#259;m l&#234;n 8 tu&#7893;i (phi&#234;n b&#7843;n <span class="highlight">.NET 8.0</span>),
+                Th&#7847;y &#273;&#7841;t &#273;&#7871;n c&#7843;nh gi&#7899;i t&#7889;i th&#432;&#7907;ng &#8212;
+                nhanh h&#417;n, m&#7841;nh h&#417;n, v&#224; vi&#7871;t code s&#432;&#7899;ng h&#417;n bao gi&#7901; h&#7871;t.
+                Th&#7847;y t&#7915;ng tu luy&#7879;n qua nhi&#7873;u m&#244;n ph&#225;i:
+                <span class="highlight">ASP.NET Core</span> &#273;&#7875; x&#226;y d&#7921;ng API v&#7919;ng nh&#432; th&#224;nh tr&#236;,
+                <span class="highlight">Dependency Injection</span> &#273;&#7875; kh&#244;ng bao gi&#7901; ph&#7843;i
+                <span class="code-inline">new</span> object m&#7897;t c&#225;ch man r&#7907;,
+                <span class="highlight">Middleware Pipeline</span> &#273;&#7875; ki&#7875;m so&#225;t m&#7885;i request
+                nh&#432; ki&#7875;m tra gi&#7845;y th&#244;ng h&#224;nh qua t&#7915;ng c&#7917;a &#7843;i.
+            </p>
+            <p>
+                R&#7891;i Th&#7847;y l&#7841;i &#273;&#7855;c &#273;&#7841;o th&#234;m m&#244;n
+                <span class="highlight">JWT Authentication</span> &#8212;
+                ngh&#7879; thu&#7853;t c&#7845;p &#8220;th&#7867; ra v&#224;o&#8221; cho t&#7915;ng ng&#432;&#7901;i d&#249;ng,
+                ai c&#243; token h&#7907;p l&#7879; m&#7899;i &#273;&#432;&#7907;c b&#432;&#7899;c qua c&#7917;a.
+                K&#7871;t h&#7907;p v&#7899;i pattern <span class="highlight">Controller &#8594; Service &#8594; Repository</span>,
+                Th&#7847;y x&#226;y d&#7921;ng ki&#7871;n tr&#250;c backend s&#7841;ch &#273;&#7865;p nh&#432; l&#226;u &#273;&#224;i pha l&#234;.
+            </p>
+            <p>
+                Gi&#7901; &#273;&#226;y, Th&#7847;y Sharp gia nh&#7853;p d&#7921; &#225;n <span class="highlight">PBX</span> &#8212;
+                h&#7879; th&#7889;ng t&#7893;ng &#273;&#224;i doanh nghi&#7879;p &#8212;
+                v&#7899;i s&#7913; m&#7879;nh x&#226;y d&#7921;ng backend x&#7917; l&#253; h&#224;ng ng&#224;n cu&#7897;c g&#7885;i m&#7895;i ng&#224;y.
+                Th&#7847;y b&#7843;o: <em>&#8220;NullReferenceException? Ta &#273;&#227; v&#432;&#7907;t qua n&#243;
+                t&#7915; l&#226;u r&#7891;i... &#224; m&#224; th&#7921;c ra tu&#7847;n tr&#432;&#7899;c v&#7851;n g&#7863;p.&#8221;</em>
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== INSIGHTS / BI KIP ===== -->
+    <section class="animate-in delay-2">
+        <div class="section-header">
+            <div class="section-icon">&#128161;</div>
+            <h2>B&#237; K&#237;p Tuy&#7879;t H&#7885;c</h2>
+        </div>
+        <div class="insights-grid">
+            <div class="card insight-card">
+                <div class="insight-number">01</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; Nh&#7845;t</div>
+                    <h4>Dependency Injection l&#224; &#8220;T&#236;nh Y&#234;u&#8221; c&#7911;a .NET</h4>
+                    <p>
+                        &#272;&#7915;ng bao gi&#7901; t&#7921; <span class="code-inline">new</span> service trong controller.
+                        H&#227;y &#273;&#7875; DI Container lo &#8212; n&#243; nh&#432; m&#7897;t b&#224; m&#7889;i vi&#7879;c,
+                        lu&#244;n bi&#7871;t ai c&#7847;n ai. Khi b&#7841;n
+                        <span class="code-inline">AddScoped&lt;IService, Service&gt;()</span>,
+                        b&#7841;n &#273;ang n&#243;i v&#7899;i .NET: &#8220;Anh &#417;i, m&#7895;i request t&#7841;o gi&#250;p em
+                        m&#7897;t instance nh&#233;!&#8221; Singleton cho config, Scoped cho business logic, Transient cho utility nh&#7865;.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card insight-card">
+                <div class="insight-number">02</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; Hai</div>
+                    <h4>Middleware Pipeline &#8212; H&#224;ng R&#224;o An Ninh Nhi&#7873;u L&#7899;p</h4>
+                    <p>
+                        M&#7895;i request &#273;i qua pipeline nh&#432; &#273;i qua c&#7893;ng ki&#7875;m tra s&#226;n bay.
+                        Authentication h&#7887;i &#8220;anh c&#243; v&#233; kh&#244;ng?&#8221;, Authorization h&#7887;i
+                        &#8220;anh c&#243; quy&#7873;n v&#224;o khu VIP kh&#244;ng?&#8221;,
+                        Exception Handler &#273;&#7913;ng cu&#7889;i b&#7843;o &#8220;c&#243; g&#236; l&#7895;i th&#236; &#273;&#7875; anh lo.&#8221;
+                        Th&#7913; t&#7921; middleware C&#7920;C K&#7922; quan tr&#7885;ng &#8212; &#273;&#7863;t sai l&#224; c&#7843; h&#7879; th&#7889;ng lo&#7841;n.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card insight-card">
+                <div class="insight-number">03</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; Ba</div>
+                    <h4>async/await &#8212; Kh&#244;ng Ph&#7843;i Ma Thu&#7853;t, L&#224; K&#7927; Lu&#7853;t</h4>
+                    <p>
+                        Async kh&#244;ng l&#224;m code ch&#7841;y nhanh h&#417;n &#8212; n&#243; gi&#7843;i ph&#243;ng thread
+                        &#273;&#7875; l&#224;m vi&#7879;c kh&#225;c khi &#273;&#7907;i I/O. Nh&#432;ng qu&#234;n
+                        <span class="code-inline">await</span> th&#236; Task ch&#7841;y r&#7891;i... kh&#244;ng ai &#273;&#7907;i k&#7871;t qu&#7843;.
+                        G&#7885;i <span class="code-inline">.Result</span> hay <span class="code-inline">.Wait()</span>
+                        trong async context? Deadlock ngay l&#7853;p t&#7913;c. Quy t&#7855;c v&#224;ng: async all the way,
+                        t&#7915; Controller xu&#7889;ng t&#7899;i Repository.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card insight-card">
+                <div class="insight-number">04</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; T&#432;</div>
+                    <h4>JWT Token &#8212; &#8220;Gi&#7845;y Th&#244;ng H&#224;nh&#8221; S&#7889;</h4>
+                    <p>
+                        JWT g&#7891;m 3 ph&#7847;n: Header, Payload, Signature. &#272;&#7915;ng bao gi&#7901; b&#7887;
+                        th&#244;ng tin nh&#7841;y c&#7843;m v&#224;o Payload v&#236; ai c&#361;ng decode &#273;&#432;&#7907;c &#8212;
+                        ch&#7881; c&#243; Signature m&#7899;i &#273;&#7843;m b&#7843;o token kh&#244;ng b&#7883; s&#7917;a.
+                        Refresh token n&#234;n l&#432;u HttpOnly cookie, access token th&#236; ng&#7855;n th&#244;i (15-30 ph&#250;t).
+                        Gi&#7889;ng nh&#432; v&#233; xe bus &#8212; h&#7871;t h&#7841;n th&#236; ph&#7843;i mua l&#7841;i, kh&#244;ng ai cho &#273;i nh&#7901; m&#227;i.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card insight-card">
+                <div class="insight-number">05</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; N&#259;m</div>
+                    <h4>Entity Framework Core &#8212; B&#7841;n T&#7889;t Hay K&#7867; Th&#249;?</h4>
+                    <p>
+                        EF Core l&#224; b&#7841;n t&#7889;t khi b&#7841;n hi&#7875;u n&#243;. D&#249;ng
+                        <span class="code-inline">AsNoTracking()</span> cho query read-only,
+                        tr&#225;nh N+1 query b&#7857;ng <span class="code-inline">Include()</span>,
+                        v&#224; LU&#212;N ki&#7875;m tra SQL &#273;&#432;&#7907;c generate. Migration th&#236; commit v&#224;o Git &#8212;
+                        &#273;&#7915;ng bao gi&#7901; ch&#7841;y tay tr&#234;n production. Ai l&#224;m v&#7853;y Th&#7847;y cho v&#7873; v&#432;&#7901;n.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card insight-card">
+                <div class="insight-number">06</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; S&#225;u</div>
+                    <h4>Controller M&#7887;ng, Service D&#224;y</h4>
+                    <p>
+                        Controller ch&#7881; n&#234;n l&#224;m m&#7897;t vi&#7879;c: nh&#7853;n request, g&#7885;i service, tr&#7843; response.
+                        Controller m&#224; d&#224;y nh&#432; lu&#7853;n v&#259;n th&#7841;c s&#297; th&#236; ai m&#224; review n&#7893;i?
+                        M&#7885;i logic &#273;&#7873;u thu&#7897;c v&#7873; Service layer. Code &#273;&#7865;p th&#236; maintain d&#7877;,
+                        maintain d&#7877; th&#236; v&#7873; nh&#224; s&#7899;m. &#272;&#417;n gi&#7843;n v&#7853;y th&#244;i.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card insight-card">
+                <div class="insight-number">07</div>
+                <div class="insight-content">
+                    <div class="insight-label">B&#237; K&#237;p Th&#7913; B&#7843;y</div>
+                    <h4>Options Pattern &#8212; Config Kh&#244;ng Ph&#7843;i Hardcode</h4>
+                    <p>
+                        D&#249;ng <span class="code-inline">IOptions&lt;T&gt;</span> &#273;&#7875; bind configuration
+                        t&#7915; appsettings.json v&#224;o class POCO. C&#7847;n hot-reload? D&#249;ng
+                        <span class="code-inline">IOptionsMonitor&lt;T&gt;</span>. Ai c&#242;n &#273;&#7885;c config b&#7857;ng
+                        <span class="code-inline">Configuration["key"]</span> magic string th&#236; Th&#7847;y m&#7901;i ra ngo&#224;i.
+                        Gi&#7889;ng nh&#432; ghi s&#7889; &#273;i&#7879;n tho&#7841;i l&#234;n t&#432;&#7901;ng thay v&#236; l&#432;u v&#224;o danh b&#7841;
+                        &#8212; r&#7891;i s&#417;n l&#7841;i nh&#224; l&#224; m&#7845;t s&#7841;ch.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FUN STORIES ===== -->
+    <section class="animate-in delay-3">
+        <div class="section-header">
+            <div class="section-icon">&#128213;</div>
+            <h2>Chuy&#7879;n K&#7875; B&#234;n B&#7871;p L&#7917;a</h2>
+        </div>
+
+        <div class="card story-card">
+            <div class="story-label">Chuy&#7879;n th&#7913; nh&#7845;t</div>
+            <h3>&#128123; C&#225;i Ng&#224;y Qu&#234;n Await</h3>
+            <p>
+                N&#259;m &#7845;y, c&#243; m&#7897;t th&#7857;ng nh&#7887;c m&#7899;i v&#224;o ngh&#7873;, h&#259;m h&#7903;
+                vi&#7871;t API &#273;&#7847;u ti&#234;n trong &#273;&#7901;i. N&#243; vi&#7871;t
+                <span class="code-inline">async Task</span> &#273;&#7865;p l&#7855;m, nh&#432;ng qu&#234;n m&#7845;t c&#225;i
+                <span class="code-inline">await</span>. K&#7871;t qu&#7843;? API tr&#7843; v&#7873; tr&#432;&#7899;c khi database
+                k&#7883;p tr&#7843; l&#7901;i. Client nh&#7853;n &#273;&#432;&#7907;c response r&#7895;ng nh&#432; t&#250;i ti&#7873;n
+                cu&#7889;i th&#225;ng. Th&#7857;ng nh&#7887;c ng&#7891;i debug 3 ng&#224;y, thi&#7871;u ch&#250;t th&#236; b&#7887;
+                ngh&#7873; &#273;i b&#225;n ph&#7903;. Cu&#7889;i c&#249;ng, m&#7897;t anh senior &#273;i ngang, li&#7871;c m&#224;n h&#236;nh
+                m&#7897;t c&#225;i, n&#243;i nh&#7865; nh&#224;ng: &#8220;Em thi&#7871;u await k&#236;a.&#8221;
+                Th&#7857;ng nh&#7887;c mu&#7889;n &#273;&#7897;n th&#7893;.
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: Compiler c&#7843;nh b&#225;o CS4014 kh&#244;ng ph&#7843;i &#273;&#7875; l&#224;m c&#7843;nh. &#272;&#7885;c warning nh&#432; &#273;&#7885;c di ch&#250;c &#8212; t&#7915;ng ch&#7919; &#273;&#7873;u quan tr&#7885;ng.</div>
+        </div>
+
+        <div class="card story-card">
+            <div class="story-label">Chuy&#7879;n th&#7913; hai</div>
+            <h3>&#128128; &#272;&#234;m Kinh Ho&#224;ng V&#7899;i NullReferenceException</h3>
+            <p>
+                H&#7891;i &#7845;y, Th&#7847;y Sharp nh&#7853;n d&#7921; &#225;n g&#7845;p, deadline ng&#224;y mai.
+                M&#7885;i th&#7913; ch&#7841;y ngon l&#224;nh tr&#234;n m&#225;y local. Deploy l&#234;n staging &#8212; B&#217;M &#8212;
+                <span class="code-inline">NullReferenceException</span> bay t&#7913; tung. N&#7917;a &#273;&#234;m,
+                Th&#7847;y ng&#7891;i &#244;m laptop, m&#7855;t &#273;&#7887; nh&#432; m&#7855;t th&#7887;,
+                l&#7847;n t&#236;m xem &#273;&#7913;a n&#224;o null. H&#243;a ra, m&#7897;t c&#225;i
+                <span class="code-inline">appsettings.json</span> tr&#234;n staging thi&#7871;u m&#7897;t section.
+                Config null, service null, controller null, &#273;&#7901;i ta null theo.
+                T&#7915; &#273;&#243;, Th&#7847;y lu&#244;n d&#249;ng <span class="code-inline">?.</span> operator v&#224;
+                <span class="code-inline">?? throw</span> nh&#432; m&#7897;t t&#244;n gi&#225;o.
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: B&#7853;t <span class="code-inline">&lt;Nullable&gt;enable&lt;/Nullable&gt;</span> trong .csproj. Compiler s&#7869; la b&#7841;n tr&#432;&#7899;c khi production la b&#7841;n.</div>
+        </div>
+
+        <div class="card story-card">
+            <div class="story-label">Chuy&#7879;n th&#7913; ba</div>
+            <h3>&#127744; C&#417;n &#193;c M&#7897;ng Mang T&#234;n DI Container</h3>
+            <p>
+                M&#7897;t bu&#7893;i s&#225;ng &#273;&#7865;p tr&#7901;i, h&#7879; th&#7889;ng b&#7895;ng b&#225;o l&#7895;i:
+                <em>&#8220;Cannot consume scoped service from singleton.&#8221;</em> C&#7843; team nh&#236;n nhau ng&#417; ng&#225;c.
+                H&#243;a ra, b&#7841;n Minh &#273;&#259;ng k&#253; <span class="code-inline">CallService</span> l&#224; Scoped,
+                nh&#432;ng l&#7841;i inject n&#243; v&#224;o <span class="code-inline">CallNotificationHub</span> l&#224; Singleton.
+                Singleton &#244;m Scoped &#8212; nh&#432; &#244;ng n&#7897;i &#244;m ch&#225;u n&#7897;i kh&#244;ng ch&#7883;u tr&#7843;
+                &#8212; DbContext b&#7883; d&#249;ng &#273;i d&#249;ng l&#7841;i, data c&#361; m&#7899;i l&#7851;n l&#7897;n,
+                bug xu&#7845;t hi&#7879;n random v&#224; b&#237; &#7849;n. QA report &#8220;user A th&#7845;y cu&#7897;c g&#7885;i
+                c&#7911;a user B&#8221;. C&#7843; team t&#432;&#7903;ng b&#7883; hack, su&#253;t g&#7885;i c&#244;ng an.
+            </p>
+            <p style="margin-top: 10px;">
+                Gi&#7843;i ph&#225;p? Inject <span class="code-inline">IServiceScopeFactory</span> v&#224;o Singleton,
+                t&#7921; t&#7841;o scope khi c&#7847;n. B&#7841;n Minh t&#7915; &#273;&#243; v&#7869; s&#417; &#273;&#7891; DI lifetime
+                d&#225;n l&#234;n t&#432;&#7901;ng, nh&#236;n m&#7895;i ng&#224;y tr&#432;&#7899;c khi code.
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: Singleton kh&#244;ng &#273;&#432;&#7907;c inject Scoped. Lu&#7853;t s&#7855;t nh&#432; lu&#7853;t giao th&#244;ng &#8212; vi ph&#7841;m kh&#244;ng ch&#7871;t ngay, nh&#432;ng s&#7869; ch&#7871;t.</div>
+        </div>
+
+        <div class="card story-card">
+            <div class="story-label">Chuy&#7879;n th&#7913; t&#432;</div>
+            <h3>&#128274; JWT Token V&#224; N&#7895;i &#272;au Kh&#244;ng T&#234;n</h3>
+            <p>
+                L&#7847;n n&#7885;, c&#7843; team d&#224;nh hai ng&#224;y &#273;&#7875; t&#236;m hi&#7875;u t&#7841;i sao
+                authentication c&#7913; fail li&#234;n t&#7909;c. Token &#273;&#250;ng, claim &#273;&#7911;, validation pass &#8212;
+                nh&#432;ng <span class="code-inline">[Authorize]</span> c&#7913; tr&#7843; 401 &#273;&#7873;u &#273;&#7873;u nh&#432; &#273;&#7891;ng h&#7891;.
+                Cu&#7889;i c&#249;ng ph&#225;t hi&#7879;n: <span class="code-inline">UseAuthentication()</span>
+                &#273;&#432;&#7907;c &#273;&#7863;t SAU <span class="code-inline">UseAuthorization()</span>.
+                Ch&#7881; c&#7847;n &#273;&#7893;i th&#7913; t&#7921; hai d&#242;ng code, m&#7885;i th&#7913; s&#225;ng nh&#432; ban ng&#224;y.
+                Th&#7847;y Sharp ng&#7891;i nh&#236;n m&#224;n h&#236;nh, t&#7921; h&#7887;i c&#243; n&#234;n b&#7887; IT &#273;i nu&#244;i c&#225; kh&#244;ng.
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: Middleware order kh&#244;ng ph&#7843;i g&#7907;i &#253;, n&#243; l&#224; lu&#7853;t. Vi ph&#7841;m th&#236; kh&#244;ng c&#243; l&#7895;i r&#245; r&#224;ng &#8212; ch&#7881; c&#243; n&#432;&#7899;c m&#7855;t.</div>
+        </div>
+
+        <div class="card story-card">
+            <div class="story-label">Chuy&#7879;n th&#7913; n&#259;m</div>
+            <h3>&#128293; Migration Ch&#7841;y Tay Tr&#234;n Production</h3>
+            <p>
+                M&#7897;t &#273;&#234;m khuya, anh H&#249;ng c&#7847;n deploy g&#7845;p. Thay v&#236; ch&#7841;y migration qua pipeline,
+                anh m&#7903; terminal, SSH v&#224;o server production, g&#245;
+                <span class="code-inline">dotnet ef database update</span>. Migration ch&#7841;y th&#224;nh c&#244;ng...
+                nh&#432;ng anh qu&#234;n r&#7857;ng migration &#273;&#243; c&#243; l&#7879;nh <span class="code-inline">DropColumn</span>
+                x&#243;a c&#7897;t <span class="code-inline">PhoneNumber</span> trong b&#7843;ng Agent.
+            </p>
+            <p style="margin-top: 10px;">
+                S&#225;ng h&#244;m sau, t&#7893;ng &#273;&#224;i vi&#234;n &#273;&#259;ng nh&#7853;p &#8212; s&#7889; &#273;i&#7879;n tho&#7841;i
+                bi&#7871;n m&#7845;t s&#7841;ch. 500 agent, 500 s&#7889; &#273;i&#7879;n tho&#7841;i, bay m&#224;u.
+                May m&#224; DBA c&#243; backup &#273;&#234;m tr&#432;&#7899;c.
+                Anh H&#249;ng t&#7915; &#273;&#243; b&#7883; c&#7845;m SSH v&#224;o server production v&#297;nh vi&#7877;n.
+            </p>
+            <div class="moral">&#128161; B&#224;i h&#7885;c: Migration LU&#212;N ch&#7841;y qua CI/CD pipeline. Review migration nh&#432; review code. Backup tr&#432;&#7899;c khi migrate.</div>
+        </div>
+    </section>
+
+    <!-- ===== COMMON MISTAKES ===== -->
+    <section class="animate-in delay-4">
+        <div class="section-header">
+            <div class="section-icon">&#9888;&#65039;</div>
+            <h2>Sai L&#7847;m Mu&#244;n Thu&#7903;</h2>
+        </div>
+        <div class="mistakes-grid">
+            <div class="card mistake-card">
+                <div class="mistake-label">Sai L&#7847;m #1</div>
+                <h3>Qu&#234;n <span class="code-inline">await</span> Khi G&#7885;i Async</h3>
+                <p>
+                    G&#7885;i async method m&#224; kh&#244;ng await = b&#7855;n t&#234;n l&#7917;a m&#224; kh&#244;ng theo d&#245;i.
+                    Task ch&#7841;y r&#7891;i nh&#432;ng kh&#244;ng ai bi&#7871;t n&#243; th&#224;nh c&#244;ng hay th&#7845;t b&#7841;i.
+                    Exception b&#7883; nu&#7889;t trong im l&#7863;ng. Data kh&#244;ng l&#432;u m&#224; kh&#244;ng ai hay.
+                </p>
+            </div>
+            <div class="card mistake-card">
+                <div class="mistake-label">Sai L&#7847;m #2</div>
+                <h3>D&#249;ng <span class="code-inline">.Result</span> Thay V&#236; <span class="code-inline">await</span></h3>
+                <p>
+                    Ngh&#297; r&#7857;ng <span class="code-inline">.Result</span> v&#224;
+                    <span class="code-inline">await</span> gi&#7889;ng nhau? Sai b&#233;t.
+                    <span class="code-inline">.Result</span> block thread, g&#226;y deadlock, l&#224;m app ch&#7853;m nh&#432; r&#249;a.
+                    Async all the way m&#7899;i l&#224; con &#273;&#432;&#7901;ng ch&#237;nh &#273;&#7841;o.
+                </p>
+            </div>
+            <div class="card mistake-card">
+                <div class="mistake-label">Sai L&#7847;m #3</div>
+                <h3>B&#7887; Logic V&#224;o Controller</h3>
+                <p>
+                    Controller d&#224;i 500 d&#242;ng, nh&#7891;i nh&#233;t t&#7915; validation &#273;&#7871;n query database.
+                    Nh&#236;n nh&#432; b&#224;i v&#259;n l&#7899;p 5 vi&#7871;t kh&#244;ng xu&#7889;ng d&#242;ng.
+                    H&#227;y t&#225;ch ra Service v&#224; Repository cho &#273;&#7901;i b&#7899;t kh&#7893;.
+                </p>
+            </div>
+            <div class="card mistake-card">
+                <div class="mistake-label">Sai L&#7847;m #4</div>
+                <h3>Kh&#244;ng D&#249;ng <span class="code-inline">CancellationToken</span></h3>
+                <p>
+                    User &#273;&#243;ng tab, request b&#7883; cancel, nh&#432;ng server v&#7851;n c&#7855;m c&#250;i x&#7917; l&#253;.
+                    Gi&#7889;ng nh&#432; b&#7841;n &#273;&#227; r&#7901;i nh&#224; h&#224;ng nh&#432;ng &#273;&#7847;u b&#7871;p
+                    v&#7851;n n&#7845;u m&#243;n c&#7911;a b&#7841;n. Truy&#7873;n token xu&#7889;ng m&#7885;i t&#7847;ng!
+                </p>
+            </div>
+            <div class="card mistake-card">
+                <div class="mistake-label">Sai L&#7847;m #5</div>
+                <h3>Catch <span class="code-inline">Exception</span> R&#7891;i Nu&#7889;t</h3>
+                <p>
+                    <span class="code-inline">catch (Exception) { }</span> &#8212; block catch tr&#7889;ng r&#7895;ng.
+                    Bug x&#7843;y ra nh&#432;ng kh&#244;ng log, kh&#244;ng th&#244;ng b&#225;o. Nh&#432; b&#7883;t m&#7855;t
+                    kh&#244;ng nh&#236;n th&#7845;y l&#7917;a r&#7891;i b&#7843;o &#8220;kh&#244;ng c&#243; ch&#225;y.&#8221;
+                </p>
+            </div>
+            <div class="card mistake-card">
+                <div class="mistake-label">Sai L&#7847;m #6</div>
+                <h3>Hardcode Connection String</h3>
+                <p>
+                    Ghi th&#7859;ng connection string v&#224;o code, push l&#234;n GitHub public repo.
+                    C&#7843; th&#7871; gi&#7899;i bi&#7871;t password database c&#7911;a b&#7841;n. Hacker c&#432;&#7901;i rung c&#7843; gh&#7871;.
+                    D&#249;ng User Secrets + bi&#7871;n m&#244;i tr&#432;&#7901;ng cho &#273;&#224;ng ho&#224;ng.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PBX PROJECT ===== -->
+    <section class="animate-in delay-5">
+        <div class="section-header">
+            <div class="section-icon">&#128222;</div>
+            <h2>Vai Tr&#242; Trong D&#7921; &#193;n PBX</h2>
+        </div>
+        <div class="card pbx-card">
+            <p>
+                H&#7879; th&#7889;ng PBX (Private Branch Exchange) l&#224; tr&#225;i tim c&#7911;a m&#7885;i h&#7879; th&#7889;ng
+                li&#234;n l&#7841;c doanh nghi&#7879;p. V&#224; tr&#225;i tim &#7845;y &#273;&#432;&#7907;c x&#226;y d&#7921;ng
+                tr&#234;n n&#7873;n t&#7843;ng <span class="highlight">.NET 8.0</span> v&#7899;i
+                <span class="highlight">ASP.NET Core</span> &#8212; v&#7919;ng nh&#432; b&#224;n th&#7841;ch,
+                nhanh nh&#432; ch&#7899;p, v&#224; scale &#273;&#432;&#7907;c nh&#432; g&#7885;i th&#234;m to&#7885;i m&#243;ng h&#432;&#7899;ng.
+                Th&#7847;y Sharp &#273;&#243;ng vai tr&#242; trung t&#226;m trong m&#7885;i th&#224;nh ph&#7847;n c&#7889;t l&#245;i:
+            </p>
+            <div class="pbx-grid">
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#9889;</div>
+                    <h4>ASP.NET Core Web API</h4>
+                    <p>
+                        To&#224;n b&#7897; RESTful API cho h&#7879; th&#7889;ng: qu&#7843;n l&#253; agent, cu&#7897;c g&#7885;i,
+                        h&#224;ng &#273;&#7907;i, IVR menu. Controller nh&#7853;n request, Service x&#7917; l&#253; logic,
+                        Repository thao t&#225;c database.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#128272;</div>
+                    <h4>JWT Authentication</h4>
+                    <p>
+                        X&#225;c th&#7921;c m&#7885;i API call v&#7899;i JWT. Ph&#226;n quy&#7873;n theo role:
+                        Admin, Supervisor, Agent &#8212; m&#7895;i role ch&#7881; th&#7845;y v&#224; l&#224;m
+                        &#273;&#432;&#7907;c nh&#7919;ng g&#236; c&#7847;n thi&#7871;t. Kh&#244;ng token, kh&#244;ng n&#243;i chuy&#7879;n.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#128225;</div>
+                    <h4>SignalR Real-time</h4>
+                    <p>
+                        Th&#244;ng b&#225;o realtime khi c&#243; cu&#7897;c g&#7885;i &#273;&#7871;n, c&#7853;p nh&#7853;t
+                        tr&#7841;ng th&#225;i agent (Available, Busy, ACW), &#273;&#7891;ng b&#7897; dashboard supervisor.
+                        WebSocket l&#224; ch&#237;nh, Long Polling l&#224; fallback.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#128230;</div>
+                    <h4>Dependency Injection</h4>
+                    <p>
+                        M&#7885;i service &#273;&#432;&#7907;c &#273;&#259;ng k&#253; trong DI container:
+                        ICallService, IAgentService, IQueueService. D&#7877; test, d&#7877; mock,
+                        d&#7877; thay &#273;&#7893;i implementation.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#128736;</div>
+                    <h4>Middleware Pipeline</h4>
+                    <p>
+                        Request Logging ghi log m&#7885;i API call. Exception Handling b&#7855;t l&#7895;i global.
+                        Rate Limiting ch&#7889;ng spam. CORS &#273;&#432;&#7907;c c&#7845;u h&#236;nh chu&#7849;n ch&#7881;.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#128202;</div>
+                    <h4>Entity Framework Core</h4>
+                    <p>
+                        Qu&#7843;n l&#253; data: th&#244;ng tin agent, l&#7883;ch s&#7917; cu&#7897;c g&#7885;i (CDR),
+                        c&#7845;u h&#236;nh t&#7893;ng &#273;&#224;i. Migration qua CI/CD, query t&#7889;i &#432;u,
+                        kh&#244;ng vi&#7871;t SQL tay ch&#226;n.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#129520;</div>
+                    <h4>Background Services</h4>
+                    <p>
+                        IHostedService ch&#7841;y n&#7873;n: ki&#7875;m tra heartbeat agent,
+                        t&#7921; &#273;&#7897;ng logout agent kh&#244;ng ho&#7841;t &#273;&#7897;ng,
+                        &#273;&#7891;ng b&#7897; v&#7899;i Asterisk PBX, x&#7917; l&#253; queue timeout.
+                    </p>
+                </div>
+                <div class="pbx-item">
+                    <div class="pbx-emoji">&#127760;</div>
+                    <h4>Controller &amp; Service Pattern</h4>
+                    <p>
+                        M&#7895;i module (Call, Agent, Extension, Queue) c&#243; Controller ri&#234;ng,
+                        Service ri&#234;ng, DTO ri&#234;ng. R&#245; r&#224;ng nh&#432; s&#417; &#273;&#7891;
+                        t&#7893; ch&#7913;c c&#244;ng ty.
+                    </p>
+                </div>
+            </div>
+            <div class="code-block">
+                <span class="cm">// Program.cs &#8212; &#272;&#259;ng k&#253; services cho PBX</span><br>
+                <span class="kw">var</span> builder = WebApplication.<span class="tp">CreateBuilder</span>(args);<br><br>
+                builder.Services.<span class="tp">AddScoped</span>&lt;<span class="tp">ICallService</span>, <span class="tp">CallService</span>&gt;();<br>
+                builder.Services.<span class="tp">AddScoped</span>&lt;<span class="tp">IAgentService</span>, <span class="tp">AgentService</span>&gt;();<br>
+                builder.Services.<span class="tp">AddScoped</span>&lt;<span class="tp">IQueueService</span>, <span class="tp">QueueService</span>&gt;();<br>
+                builder.Services.<span class="tp">AddSingleton</span>&lt;<span class="tp">IAsteriskConnection</span>, <span class="tp">AsteriskConnection</span>&gt;();<br><br>
+                builder.Services.<span class="tp">AddAuthentication</span>().<span class="tp">AddJwtBearer</span>(opt =&gt; {<br>
+                &nbsp;&nbsp;opt.TokenValidationParameters = <span class="kw">new</span> <span class="tp">TokenValidationParameters</span> {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ValidateIssuer = <span class="kw">true</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ValidateLifetime = <span class="kw">true</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;IssuerSigningKey = <span class="kw">new</span> <span class="tp">SymmetricSecurityKey</span>(<span class="st">key</span>)<br>
+                &nbsp;&nbsp;};<br>
+                });<br><br>
+                builder.Services.<span class="tp">AddSignalR</span>();<br>
+                <span class="kw">var</span> app = builder.<span class="tp">Build</span>();<br><br>
+                app.<span class="tp">UseAuthentication</span>();<br>
+                app.<span class="tp">UseAuthorization</span>();<br>
+                app.<span class="tp">MapHub</span>&lt;<span class="tp">CallNotificationHub</span>&gt;(<span class="st">"/hubs/calls"</span>);<br>
+                app.<span class="tp">MapControllers</span>();<br>
+                app.<span class="tp">Run</span>();
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="container">
+        <p><span class="brand">PBX Agent Profiles</span> &bull; Th&#7847;y Sharp &bull; .NET 8.0 Specialist</p>
+        <p style="margin-top: 6px;">&#169; 2026 SotaTek &#8212; H&#7879; Th&#7889;ng T&#7893;ng &#272;&#224;i PBX</p>
+    </div>
+</footer>
+
+</body>
+</html>

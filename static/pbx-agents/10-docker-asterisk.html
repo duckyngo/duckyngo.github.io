@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Đại Vương - Docker & Asterisk PBX Agent</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --docker-blue: #2496ED;
+            --docker-dark: #1a6fb5;
+            --docker-deeper: #0e4d7f;
+            --whale-light: #e8f4fd;
+            --whale-accent: #66b8f5;
+            --bg-dark: #0a1628;
+            --bg-card: #111d33;
+            --bg-card-alt: #162440;
+            --text-primary: #e8f4fd;
+            --text-secondary: #8ab4d6;
+            --border-glow: rgba(36, 150, 237, 0.3);
+            --gradient-main: linear-gradient(135deg, #0a1628 0%, #0e2a4a 50%, #0a1628 100%);
+            --gradient-card: linear-gradient(145deg, #162440, #111d33);
+            --gradient-accent: linear-gradient(135deg, #2496ED, #1a6fb5);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated ocean background */
+        .ocean-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: -10%;
+            width: 200%;
+            height: 300px;
+            background: radial-gradient(ellipse at center, rgba(36,150,237,0.05) 0%, transparent 70%);
+            border-radius: 45%;
+            animation: waveFloat 8s ease-in-out infinite;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: -3s;
+            opacity: 0.5;
+            bottom: -5%;
+        }
+
+        .wave:nth-child(3) {
+            animation-delay: -5s;
+            opacity: 0.3;
+            bottom: 0;
+        }
+
+        @keyframes waveFloat {
+            0%, 100% { transform: translateX(-25%) rotate(0deg); }
+            50% { transform: translateX(-20%) rotate(2deg); }
+        }
+
+        /* Floating containers animation */
+        .floating-containers {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .float-box {
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            border: 2px solid rgba(36,150,237,0.15);
+            border-radius: 4px;
+            animation: floatUp 15s linear infinite;
+            opacity: 0;
+        }
+
+        .float-box::after {
+            content: '';
+            position: absolute;
+            top: -6px; left: 4px;
+            width: 10px; height: 4px;
+            border: 2px solid rgba(36,150,237,0.15);
+            border-bottom: none;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .float-box:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .float-box:nth-child(2) { left: 25%; animation-delay: 3s; }
+        .float-box:nth-child(3) { left: 45%; animation-delay: 6s; }
+        .float-box:nth-child(4) { left: 65%; animation-delay: 9s; }
+        .float-box:nth-child(5) { left: 80%; animation-delay: 12s; }
+        .float-box:nth-child(6) { left: 90%; animation-delay: 2s; }
+        .float-box:nth-child(7) { left: 35%; animation-delay: 7s; }
+        .float-box:nth-child(8) { left: 55%; animation-delay: 11s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(20deg); opacity: 0; }
+        }
+
+        /* Bubbles animation */
+        .bubbles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 1px solid rgba(36,150,237,0.2);
+            border-radius: 50%;
+            animation: bubbleRise 12s ease-in infinite;
+            opacity: 0;
+        }
+
+        .bubble:nth-child(1) { left: 15%; animation-delay: 1s; width: 6px; height: 6px; }
+        .bubble:nth-child(2) { left: 30%; animation-delay: 4s; width: 10px; height: 10px; }
+        .bubble:nth-child(3) { left: 50%; animation-delay: 2s; }
+        .bubble:nth-child(4) { left: 70%; animation-delay: 5s; width: 12px; height: 12px; }
+        .bubble:nth-child(5) { left: 85%; animation-delay: 3s; width: 5px; height: 5px; }
+        .bubble:nth-child(6) { left: 42%; animation-delay: 7s; }
+
+        @keyframes bubbleRise {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            15% { opacity: 0.5; }
+            85% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header / Avatar */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .avatar-ring {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #2496ED, #66b8f5, #0e4d7f, #2496ED);
+            padding: 5px;
+            animation: ringRotate 6s linear infinite;
+            position: relative;
+        }
+
+        @keyframes ringRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--gradient-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-inner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(36,150,237,0.2), transparent 60%);
+        }
+
+        .whale-icon {
+            animation: whaleBreath 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes whaleBreath {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            30% { transform: scale(1.1) rotate(5deg); }
+            60% { transform: scale(0.95) rotate(-3deg); }
+        }
+
+        .hero h1 {
+            font-size: 2.8em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #66b8f5, #2496ED, #e8f4fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .hero .subtitle {
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hero .tagline {
+            margin-top: 16px;
+            font-size: 1.05em;
+            color: var(--whale-accent);
+            font-style: italic;
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: rgba(36,150,237,0.12);
+            border: 1px solid var(--border-glow);
+            border-radius: 100px;
+            font-size: 0.85em;
+            color: var(--whale-accent);
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .badge:hover {
+            background: rgba(36,150,237,0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(36,150,237,0.2);
+        }
+
+        /* Section styling */
+        .section {
+            margin: 40px 0;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+        .section:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            font-weight: 900;
+            color: var(--docker-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .icon {
+            font-size: 1.2em;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--docker-blue), transparent);
+            border-radius: 2px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: var(--gradient-accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(36,150,237,0.15);
+            border-color: var(--docker-blue);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--whale-accent);
+            font-size: 1.15em;
+            margin-bottom: 12px;
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Backstory */
+        .backstory {
+            background: linear-gradient(145deg, #0e2a4a, #111d33);
+            border-left: 4px solid var(--docker-blue);
+            padding: 30px;
+            border-radius: 0 16px 16px 0;
+            margin-bottom: 20px;
+            font-size: 1.02em;
+        }
+
+        .backstory p {
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .backstory p:last-child { margin-bottom: 0; }
+
+        .backstory strong {
+            color: var(--whale-accent);
+        }
+
+        /* Insights (bi kip) */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 16px;
+        }
+
+        .insight-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 22px;
+            transition: all 0.3s;
+            position: relative;
+            counter-increment: insight;
+        }
+
+        .insight-card::before {
+            content: 'Bí Kíp #' counter(insight);
+            position: absolute;
+            top: 14px; right: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: rgba(36,150,237,0.4);
+            font-weight: 700;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(36,150,237,0.12);
+            border-color: var(--docker-blue);
+        }
+
+        .insight-card h4 {
+            color: var(--whale-accent);
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .insight-card p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        .insight-card .cmd {
+            display: block;
+            margin-top: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            color: #66b8f5;
+            overflow-x: auto;
+            border-left: 3px solid rgba(36,150,237,0.3);
+        }
+
+        /* Stories */
+        .story {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .story:hover {
+            border-color: var(--docker-blue);
+            box-shadow: 0 8px 30px rgba(36,150,237,0.1);
+        }
+
+        .story .story-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .story .story-num {
+            background: var(--gradient-accent);
+            color: white;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.95em;
+            flex-shrink: 0;
+        }
+
+        .story h3 {
+            color: var(--whale-accent);
+            font-size: 1.1em;
+        }
+
+        .story p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .story .moral {
+            background: rgba(36,150,237,0.1);
+            border-left: 3px solid var(--docker-blue);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 14px;
+            font-style: italic;
+            color: var(--whale-accent);
+            font-size: 0.95em;
+        }
+
+        .story code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em;
+            color: #66b8f5;
+        }
+
+        /* Mistakes */
+        .mistake-list {
+            list-style: none;
+            counter-reset: mistake;
+        }
+
+        .mistake-list li {
+            counter-increment: mistake;
+            background: var(--gradient-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 18px 22px 18px 60px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .mistake-list li::before {
+            content: counter(mistake);
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px; height: 30px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 0.85em;
+        }
+
+        .mistake-list li:hover {
+            transform: translateX(6px);
+            border-color: #e74c3c;
+            box-shadow: 0 4px 20px rgba(231,76,60,0.1);
+        }
+
+        .mistake-list li strong {
+            color: #f5a6a0;
+        }
+
+        .mistake-list li code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em;
+            color: #66b8f5;
+        }
+
+        /* PBX relevance */
+        .relevance-card {
+            background: linear-gradient(145deg, #0e2a4a, #162440);
+            border: 2px solid var(--docker-blue);
+            border-radius: 18px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .relevance-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -30%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(36,150,237,0.08), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .relevance-card h3 {
+            color: var(--docker-blue);
+            font-size: 1.3em;
+            margin-bottom: 16px;
+        }
+
+        .relevance-card p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .relevance-card ul {
+            list-style: none;
+            padding: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .relevance-card ul li {
+            padding: 8px 0 8px 28px;
+            position: relative;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .relevance-card ul li::before {
+            content: '>';
+            position: absolute;
+            left: 6px;
+            color: var(--docker-blue);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        .relevance-card ul li strong {
+            color: var(--whale-accent);
+        }
+
+        /* Architecture diagram ascii */
+        .arch-box {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .arch-box pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78em;
+            color: var(--whale-accent);
+            line-height: 1.5;
+            white-space: pre;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            border-top: 1px solid var(--border-glow);
+            margin-top: 60px;
+        }
+
+        .footer .whale {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 10px;
+            animation: whaleSwim 4s ease-in-out infinite;
+        }
+
+        @keyframes whaleSwim {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(10px) rotate(2deg); }
+            75% { transform: translateX(-10px) rotate(-2deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2em; }
+            .insight-grid { grid-template-columns: 1fr; }
+            .container { padding: 12px; }
+            .card, .story, .backstory { padding: 20px; }
+            .avatar-ring { width: 140px; height: 140px; }
+            .avatar-inner { font-size: 56px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.6em; }
+            .badge-row { gap: 6px; }
+            .badge { font-size: 0.78em; padding: 5px 12px; }
+            .section-title { font-size: 1.3em; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--docker-dark); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--docker-blue); }
+    </style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div class="ocean-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+</div>
+<div class="floating-containers">
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+    <div class="float-box"></div>
+</div>
+<div class="bubbles">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+</div>
+
+<div class="container">
+
+    <!-- ===== HEADER / AVATAR ===== -->
+    <header class="hero">
+        <div class="avatar-ring">
+            <div class="avatar-inner"><span class="whale-icon">&#x1F433;</span></div>
+        </div>
+        <h1>Container Đại Vương</h1>
+        <div class="subtitle">Docker & Asterisk PBX Master Agent</div>
+        <p class="tagline">"Ta là con cá voi xanh bơi giữa đại dương container, mang trên lưng cả hệ thống tổng đài PBX. Ai dám gọi ta là máy ảo? Ta là máy THẬT đấy, chỉ có điều ta sống trong cái hộp thôi!"</p>
+
+        <div class="badge-row">
+            <span class="badge">&#x1F40B; Docker</span>
+            <span class="badge">&#x2693; docker-compose</span>
+            <span class="badge">&#x260E;&#xFE0F; Asterisk PBX</span>
+            <span class="badge">&#x1F4DE; SIP Trunks</span>
+            <span class="badge">&#x1F3AF; Dialplan</span>
+            <span class="badge">&#x1F916; AMI</span>
+            <span class="badge">&#x1F399;&#xFE0F; IVR</span>
+            <span class="badge">&#x1F465; Conference Bridge</span>
+        </div>
+    </header>
+
+    <!-- ===== BACKSTORY ===== -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon">&#x1F4D6;</span> Thân Thế & Lai Lịch</h2>
+
+        <div class="backstory">
+            <p>Ngày xửa ngày xưa, ở một vùng đất xa xôi nơi các server vật lý nằm xếp chồng lên nhau như núi, có một thanh niên trẻ tên là <strong>Container Đại Vương</strong>. Chàng sinh ra trong thời đại mà người ta còn phải cài Asterisk bằng tay lên từng server, mỗi lần upgrade là một lần "đổi đời" — theo nghĩa đen, vì hệ thống sập thì ai cũng phải đổi nghề.</p>
+
+            <p>Một ngày đẹp trời, chàng phát hiện ra Docker — một con cá voi xanh có thể nuốt trọn mọi thứ vào trong bụng và chạy mọi nơi. Từ đó, chàng bắt đầu cuộc hành trình đóng gói Asterisk PBX vào container, viết docker-compose như viết thơ tình cho server, và điều khiển AMI (Asterisk Manager Interface) như một vị tướng chỉ huy ba quân.</p>
+
+            <p>Với hơn <strong>10 năm kinh nghiệm</strong> vật lộn với SIP trunks không chịu kết nối, dialplan dài như ruột ngựa, IVR nói "nhấn phím 1 để gặp tương lai, nhấn phím 2 để nghe nhạc chờ đến khi tóc bạc", và conference bridge bị echo như đang nói chuyện trong hang động — Container Đại Vương đã trở thành một huyền thoại trong giới DevOps-VoIP.</p>
+
+            <p>Hiện tại, chàng là trụ cột của dự án PBX, nơi mà mọi cuộc gọi đều đi qua những container Docker được tinh chỉnh cẩn thận. Mỗi dòng cấu hình đều là một tác phẩm nghệ thuật, mỗi cái <code>docker-compose up</code> là một lần khai thiên lập địa.</p>
+        </div>
+    </section>
+
+    <!-- ===== INSIGHTS (BÍ KÍP) ===== -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon">&#x1F4A1;</span> Bí Kíp Võ Lâm</h2>
+
+        <div class="insight-grid" style="counter-reset: insight;">
+            <div class="insight-card">
+                <h4>&#x1F433; Multi-stage Build cho Asterisk</h4>
+                <p>Dùng multi-stage build để giảm kích thước image Asterisk từ 1.5GB xuống còn 300MB. Build stage cài đặt mọi thứ như tiệc buffet, production stage chỉ copy những gì cần thiết — ăn xong dọn bàn sạch sẽ. Nhẹ như lông hồng!</p>
+                <code class="cmd">FROM debian:bookworm AS builder<br>RUN apt-get install asterisk-dev ...<br>FROM debian:bookworm-slim<br>COPY --from=builder /usr/sbin/asterisk .</code>
+            </div>
+
+            <div class="insight-card">
+                <h4>&#x1F310; Network Mode: Host vs Bridge</h4>
+                <p>Asterisk cần RTP ports (10000-20000). Nếu dùng bridge network, phải map từng port một — điên! Dùng <code>network_mode: host</code> cho production, hoặc chỉ định RTP port range hẹp hơn trong rtp.conf. Đừng để cá voi bơi trong bể cá vàng!</p>
+                <code class="cmd">rtpstart=10000<br>rtpend=10100<br># Rồi map: ports: "10000-10100:10000-10100/udp"</code>
+            </div>
+
+            <div class="insight-card">
+                <h4>&#x1F4BE; Volume Mount cho Config</h4>
+                <p>KHÔNG BAO GIỜ hardcode config vào image. Mount volume cho /etc/asterisk để thay đổi dialplan, SIP config mà không cần rebuild. Đổi là ăn liền, không đổi lại đợi!</p>
+                <code class="cmd">volumes:<br>  - ./asterisk-config:/etc/asterisk<br>  - ./sounds:/var/lib/asterisk/sounds<br>  - asterisk-logs:/var/log/asterisk</code>
+            </div>
+
+            <div class="insight-card">
+                <h4>&#x2764;&#xFE0F; Health Check cho Container Asterisk</h4>
+                <p>Container chạy mà Asterisk bên trong chết thì cũng như vỏ. Giống cái vỏ dưa hấu rỗng ruột — nhìn bên ngoài tươi tắn mà bên trong trống rỗng. Thêm healthcheck bằng lệnh kiểm tra Asterisk core!</p>
+                <code class="cmd">healthcheck:<br>  test: ["CMD", "asterisk", "-rx", "core show version"]<br>  interval: 30s<br>  timeout: 10s<br>  retries: 3</code>
+            </div>
+
+            <div class="insight-card">
+                <h4>&#x1F50C; AMI qua Docker Network</h4>
+                <p>AMI (Asterisk Manager Interface) mặc định lắng nghe port 5038. Khi chạy trong Docker, nhớ cấu hình <code>bindaddr=0.0.0.0</code> trong manager.conf, không thì chỉ có container tự nói chuyện với chính nó — cô đơn như Robinson trên đảo hoang.</p>
+                <code class="cmd">[general]<br>enabled = yes<br>bindaddr = 0.0.0.0<br>port = 5038</code>
+            </div>
+
+            <div class="insight-card">
+                <h4>&#x1F504; Docker Compose Override cho Dev</h4>
+                <p>Dùng docker-compose.override.yml cho development: thêm debug mode, mount code trực tiếp, bật verbose logging. Production thì dùng file gốc, sạch sẽ như áo mới đi lễ chùa. Hai bộ mặt, một con người!</p>
+                <code class="cmd"># docker-compose.override.yml (dev only)<br>services:<br>  asterisk:<br>    command: asterisk -cvvvvv<br>    volumes:<br>      - ./dev-dialplan:/etc/asterisk/extensions.conf</code>
+            </div>
+
+            <div class="insight-card">
+                <h4>&#x1F512; SIP TLS trong Container</h4>
+                <p>SIP không mã hóa thì như gửi thư không dán phong bì — ai cũng đọc được. Mount certificate vào container và cấu hình PJSIP transport với TLS. Let's Encrypt + certbot container là bộ đôi hoàn hảo hơn cả... cơm và nước mắm!</p>
+                <code class="cmd">volumes:<br>  - /etc/letsencrypt:/etc/asterisk/keys:ro<br>  # PJSIP transport config:<br>  # type=transport<br>  # protocol=tls</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FUN STORIES ===== -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon">&#x1F4DA;</span> Chuyện Đời Xưa — Kiểu Ông Nội Kể</h2>
+
+        <div class="story">
+            <div class="story-header">
+                <div class="story-num">1</div>
+                <h3>&#x1F571;&#xFE0F; Đêm Kinh Hoàng của Container Networking</h3>
+            </div>
+            <p>Hồi đó, ông còn trẻ, mới vào nghề. Ông nghe người ta nói Docker hay lắm, đóng gói Asterisk vào container là xong — dễ như ăn cháo. Ông tin, ông làm. Chạy lên, SIP REGISTER thành công, ông mừng hú. Mở champagne ăn mừng luôn (nước suối, vì lương thấp).</p>
+            <p>Nhưng mà... gọi điện vào thì có tiếng một bên, mà bên kia im lặng như tờ. Một bên nói, một bên im như thịt. Ông debug 3 ngày 3 đêm. Wireshark bắt packet như bắt cá ngoài ao. Mắt thâm quầng, râu mọc dài, đồng nghiệp tưởng ông đi tu.</p>
+            <p>Hóa ra RTP traffic bị kẹt trong Docker bridge network. SIP signaling đi được nhưng media stream thì... bị tường lửa chặn hết. Container nó như ở trong phòng kín, la hét mà bên ngoài không ai nghe. Giống mấy anh hát karaoke trong phòng cách âm vậy đó.</p>
+            <p>Tới 3 giờ sáng, ông gõ <code>network_mode: host</code>, restart container. Tiếng nói vang lên trong đêm thanh vắng như nhạc thiên thai. Ông khóc. Thật sự khóc. Vừa khóc vừa cười. Đồng nghiệp trực đêm tưởng ông điên.</p>
+            <div class="moral">&#x1F3AF; Bài học: RTP là giao thức bí ẩn, nó cần nhìn thấy mạng như con cá cần nhìn thấy biển. Đừng nhốt nó trong cái chậu! Và đừng quên ngủ.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-header">
+                <div class="story-num">2</div>
+                <h3>&#x1F35D; Mì Ý Dialplan — Món Ăn Kinh Dị</h3>
+            </div>
+            <p>Có một thời, ông được giao viết dialplan cho tổng đài 500 máy nhánh. Ông nghĩ đơn giản thôi mà — ngồi xuống viết. Extension 100 gọi 101, 101 chuyển 102, 102 có IVR, IVR chuyển hàng đợi, hàng đợi rỗng thì quay lại 100. Dễ mà! Ông tự tin phẩy tay.</p>
+            <p>Hai tuần sau, file <code>extensions.conf</code> dài 3000 dòng. Ông nhìn lại mà không nhận ra chính mình đã viết cái gì. Goto nhảy lung tung như con cua say rượu. Macro gọi macro, macro gọi lại macro — recursion vô hạn. Giống mấy bà đi chợ hỏi đường: "Chị ơi chợ ở đâu?" - "Hỏi chị kia!" - "Chị kia bảo hỏi chị!"</p>
+            <p>Khách hàng gọi vào, nghe nhạc chờ 30 giây rồi bị... disconnect. Không ai biết tại sao. Asterisk CLI log tràn ngập như sông Hồng mùa lũ. Ông mất 1 tuần để gỡ rối, như gỡ mì Ý bị rối trong nồi.</p>
+            <p>Cuối cùng ông quyết định: xóa hết, viết lại từ đầu với ARI (Asterisk REST Interface) và xử lý logic bên ngoài Asterisk. Từ đó cuộc đời ông tươi sáng hơn, tóc mọc lại, da sáng hơn hai tông.</p>
+            <div class="moral">&#x1F3AF; Bài học: Dialplan chỉ nên làm những việc đơn giản. Logic phức tạp thì đẩy ra ngoài cho ứng dụng xử lý. Đừng biến dialplan thành món mì Ý — vì không ai muốn debug lúc 2 giờ sáng!</div>
+        </div>
+
+        <div class="story">
+            <div class="story-header">
+                <div class="story-num">3</div>
+                <h3>&#x1F4A5; Cuộc Chiến Port — Ai Chiếm Trước Người Đó Thắng</h3>
+            </div>
+            <p>Một buổi sáng đẹp trời, ông chạy <code>docker-compose up</code> cho hệ thống PBX. Báo lỗi. Port 5060 đã bị chiếm. Ông kiểu: "Ai? AI dám chiếm port của ta? Ta là Container Đại Vương, port 5060 là lãnh thổ thiêng liêng!"</p>
+            <p>Ông chạy <code>lsof -i :5060</code>. Hóa ra container cũ ông quên <code>docker-compose down</code> tối hôm qua vẫn đang sống nhăn nhở như zombie. Nó chết mà không chịu chết hẳn. Giống ông hàng xóm, mời đi về mà cứ ngồi nán lại uống thêm.</p>
+            <p>Ông docker kill, docker rm. Chạy lại. Port 5060 VẪN bị chiếm. Lúc này ông phát hiện... Ubuntu 22.04 nó có cái service <code>ofonod</code> tự nhiên nghe port 5060. Một service điện thoại mà ông chưa bao giờ dùng, chưa bao giờ cần, nhưng nó cứ ở đó như người giữ cửa không mời mà đến. Giống cái app bloatware trên điện thoại — không xóa được, không dùng được.</p>
+            <p>Ông <code>systemctl disable ofono</code>, reboot, chạy lại. Thành công. Nhưng thì đã mất cả buổi sáng. Cà phê nguội ngắt, bụng đói meo. Cả phòng văn phòng nhìn ông với ánh mắt thương cảm — kiểu "lại bị port bắt nạt rồi".</p>
+            <div class="moral">&#x1F3AF; Bài học: Luôn kiểm tra port trước khi deploy. Và luôn chạy <code>docker-compose down</code> trước khi về nhà. Container zombie đáng sợ hơn ma thực — vì ma thực không chiếm port của bạn!</div>
+        </div>
+
+        <div class="story">
+            <div class="story-header">
+                <div class="story-num">4</div>
+                <h3>&#x1F3A4; Conference Bridge và Tiếng Vọng Bí Ẩn</h3>
+            </div>
+            <p>Khách hàng yêu cầu làm conference bridge cho 20 người họp. Ông setup ConfBridge trong Asterisk, chạy trong Docker, test 2 người ngon lành cành đào. Ông tự tin deploy lên production như một vị tướng ra trận.</p>
+            <p>Ngày họp, 15 người vào phòng. Bắt đầu nói chuyện. Nhưng mọi người đều nghe thấy tiếng mình vọng lại sau 0.5 giây. Nói "Xin chào" thì nghe "Xin chào... xin chào... xin chào...". Cuộc họp biến thành buổi hòa nhạc echo. Sếp tưởng gặp ma, thư ký tưởng bị nghe lén. Cả phòng họp hỗn loạn.</p>
+            <p>Hóa ra container không đủ CPU và jitter buffer chưa được tinh chỉnh. Docker mặc định không giới hạn CPU, nhưng khi 15 luồng RTP cùng xử lý một lúc, Asterisk bắt đầu "thở dốc" và delay sinh ra echo. Giống lúc ông chạy marathon — về đích thì ổn, nhưng mà thở như ông già hen suyễn.</p>
+            <p>Ông thêm <code>cpus: '2.0'</code> và <code>mem_limit: 1g</code> vào docker-compose, chỉnh lại jitter buffer. Từ đó phòng họp yên tĩnh như thư viện quốc gia.</p>
+            <div class="moral">&#x1F3AF; Bài học: Luôn giới hạn và đảm bảo tài nguyên cho container Asterisk. Realtime audio không phải trò đùa — thiếu CPU một chút là thành phòng thu echo! Và đừng bao giờ chỉ test với 2 người rồi deploy cho 20 người.</div>
+        </div>
+    </section>
+
+    <!-- ===== COMMON MISTAKES ===== -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon">&#x26A0;&#xFE0F;</span> Những Sai Lầm Kinh Điển</h2>
+
+        <ol class="mistake-list">
+            <li>
+                <strong>Chạy Asterisk bằng user root trong container:</strong> Nhiều người lười, cứ root cho nhanh. Nhưng Asterisk có lỗi bảo mật là hacker vào thẳng bằng quyền root. Giống như để chìa khóa nhà ngoài cửa rồi đi ngủ — tiện thì có tiện nhưng mà mất nhà luôn! Tạo user riêng, chạy bằng user đó. An toàn là trên hết!
+            </li>
+            <li>
+                <strong>Không set restart policy:</strong> Container chết lúc 3h sáng, không ai biết, không ai restart. Sáng ra cả công ty không gọi được, tưởng nhà mạng sập. Chỉ cần thêm <code>restart: unless-stopped</code> là ngủ ngon giấc đẹp! Đơn giản mà hiệu quả hơn uống trà tâm sen.
+            </li>
+            <li>
+                <strong>Lưu CDR (Call Detail Records) trong container:</strong> Container bị xóa là mất hết lịch sử cuộc gọi. Khách hàng hỏi "tháng trước tôi gọi bao nhiêu?" mà trả lời "dạ... em không biết ạ, container em nó... bay rồi". Mount volume hoặc đẩy CDR ra database bên ngoài!
+            </li>
+            <li>
+                <strong>Dùng latest tag cho Docker image:</strong> Hôm nay chạy ngon, mai kia ai đó pull latest về thì Asterisk upgrade từ 18 lên 21, config cũ không tương thích, hệ thống sập như domino. Giống mua vé số — không biết ngày mai được gì! <strong>Luôn chỉ định version cụ thể!</strong>
+            </li>
+            <li>
+                <strong>Quên mở port UDP cho RTP:</strong> Mở port 5060 TCP/UDP cho SIP rồi tưởng là xong, vỗ tay ăn mừng. Nhưng quên mất 10000-20000 UDP cho RTP. Kết quả: cuộc gọi kết nối thành công nhưng... im lặng tuyệt đối. Hai bên nhìn màn hình như đang thiền. Zen quá!
+            </li>
+            <li>
+                <strong>Không backup volume trước khi update:</strong> "Em chỉ update thôi mà, có gì đâu." — Câu nói cuối cùng trước khi mất toàn bộ cấu hình dialplan, voicemail, và recording. Giống câu "Anh chỉ nhìn thôi mà" — hậu quả luôn nặng nề hơn dự tính!
+            </li>
+            <li>
+                <strong>Hardcode IP trong SIP config:</strong> Container mỗi lần restart có thể đổi IP (trong bridge network). Mà SIP config ghi cứng IP cũ. Kết quả: "Server not found". Container mới, IP mới, nhưng config cũ — giống gửi thư cho người yêu cũ nhưng cô ấy đã dọn nhà. Dùng hostname hoặc DNS của Docker network!
+            </li>
+        </ol>
+    </section>
+
+    <!-- ===== PBX PROJECT RELEVANCE ===== -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon">&#x1F3D7;&#xFE0F;</span> Vai Trò Trong Dự Án PBX</h2>
+
+        <div class="relevance-card">
+            <h3>&#x1F433; Docker + Asterisk = Trái Tim Của Hệ Thống PBX</h3>
+            <p>Trong dự án PBX của chúng ta, Docker không chỉ là công cụ — nó là <strong>nền tảng sống còn</strong>. Toàn bộ hệ thống tổng đài Asterisk chạy trong các Docker container, được quản lý bởi docker-compose. Nói nôm na thì Docker là cái nhà, Asterisk là người sống trong nhà, còn docker-compose là bản thiết kế. Đây là cách nó hoạt động:</p>
+
+            <ul>
+                <li><strong>Asterisk Container:</strong> Core của hệ thống PBX, xử lý mọi cuộc gọi SIP, định tuyến qua dialplan, và quản lý các máy nhánh (extensions). Giống bộ não của cả hệ thống — không có nó thì ai cũng "mất liên lạc".</li>
+                <li><strong>AMI Interface:</strong> Ứng dụng backend kết nối với Asterisk qua AMI (port 5038) để điều khiển cuộc gọi theo thời gian thực — chuyển cuộc gọi, theo dõi trạng thái, originate call. Như một sợi dây thần kinh nối não với tay chân.</li>
+                <li><strong>SIP Trunks:</strong> Kết nối với nhà mạng bên ngoài qua SIP trunks, cấu hình trong PJSIP, cho phép gọi ra/gọi vào từ mạng PSTN. Đây là "cánh cổng" nối thế giới container với thế giới thực.</li>
+                <li><strong>IVR System:</strong> Hệ thống trả lời tự động "Nhấn phím 1 để gặp bộ phận kinh doanh, nhấn phím 2 để gặp kỹ thuật, nhấn phím 9 để nghe bài hát chờ..." — tất cả chạy trong container Asterisk, mượt mà như lụa.</li>
+                <li><strong>Conference Bridge:</strong> Phòng họp trực tuyến qua điện thoại, sử dụng ConfBridge của Asterisk, hỗ trợ nhiều người cùng lúc. Miễn là đừng quên cấp đủ CPU (đọc lại câu chuyện echo ở trên)!</li>
+                <li><strong>Dev Environment:</strong> Mỗi developer chỉ cần chạy <code>docker-compose up</code> là có toàn bộ hệ thống PBX chạy local. Không cần cài đặt gì thêm, không "máy anh chạy được máy em không chạy được". Công bằng như chia bánh!</li>
+                <li><strong>Deployment:</strong> Từ dev lên staging lên production, chỉ cần thay đổi file environment. Container nào cũng như nhau, môi trường nào cũng nhất quán. Đi đâu cũng như ở nhà!</li>
+            </ul>
+
+            <div class="arch-box">
+                <pre>
+    +--------------------------------------------------+
+    |              DOCKER HOST (Production)              |
+    |                                                    |
+    |  +-------------------+   +-------------------+    |
+    |  |  asterisk-pbx     |   |  postgres-db      |    |
+    |  |  +-----------+    |   |  +-------------+  |    |
+    |  |  | Asterisk  |    |   |  | CDR / Config|  |    |
+    |  |  | PBX Core  |<---+-->|  | Database    |  |    |
+    |  |  +-----------+    |   |  +-------------+  |    |
+    |  |  :5060 SIP        |   |  :5432            |    |
+    |  |  :5038 AMI        |   +-------------------+    |
+    |  |  :10000-10100 RTP |                            |
+    |  +-------------------+   +-------------------+    |
+    |          ^               |  pbx-backend      |    |
+    |          |               |  +-------------+  |    |
+    |          +--AMI--------->|  | Node.js API |  |    |
+    |                          |  | + WebSocket |  |    |
+    |                          |  +-------------+  |    |
+    |                          |  :3000             |    |
+    |                          +-------------------+    |
+    |                                                    |
+    |  +----------------------------------------------+ |
+    |  |           docker-compose.yml                  | |
+    |  |  Quản lý services, networks, volumes          | |
+    |  +----------------------------------------------+ |
+    +--------------------------------------------------+
+         |              |                |
+     SIP Trunks     WebRTC          Admin Panel
+     (Nhà mạng)    (Browser)       (Dashboard)
+                </pre>
+            </div>
+
+            <p style="margin-top: 20px; color: var(--whale-accent); font-style: italic;">
+                "Mỗi container là một viên gạch, docker-compose là bản vẽ, và Asterisk là linh hồn của tòa nhà PBX. Container Đại Vương sẽ đảm bảo mọi cuộc gọi đều được truyền tải hoàn hảo — hoặc ít nhất là ông sẽ cố gắng hết sức, rồi debug đến 3 giờ sáng nếu cần!"
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <span class="whale">&#x1F433;</span>
+        <p><strong>Container Đại Vương</strong> &mdash; Docker & Asterisk PBX Agent</p>
+        <p style="margin-top: 6px; opacity: 0.6;">Dự án PBX &bull; Agent #10 &bull; "Đóng gói thế giới vào container, truyền tải mọi cuộc gọi"</p>
+        <p style="margin-top: 10px; opacity: 0.4; font-size: 0.8em;">&#x1F40B; docker pull container-dai-vuong:latest &mdash; À không, đừng dùng latest!</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
