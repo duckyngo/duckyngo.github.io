@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Cảnh Báo Đại Sư - Chuyên Gia PagerDuty, OpsGenie & Alertmanager</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a0a 30%, #2a0a0a 60%, #3a1a0a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #f87171; text-shadow: 0 0 20px #f8717140; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #f87171; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #f87171; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #f87171; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f8717130; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #f87171; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #f87171; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🔔</span><h1>Cảnh Báo Đại Sư</h1><div class="title">Chuyên Gia PagerDuty, OpsGenie & Alertmanager</div><div class="quote">"Alert fatigue: khi bạn nhận 500 alerts mỗi đêm, bạn sẽ bắt đầu ignore tất cả. Kể cả cái alert thực sự quan trọng lúc 3 giờ sáng."</div></div>
+        <div class="badges">            <span class="badge">🔔 Alertmanager</span>
+            <span class="badge">📟 PagerDuty</span>
+            <span class="badge">👁️ OpsGenie</span>
+            <span class="badge">🔇 Alert Fatigue</span>
+            <span class="badge">📋 Routing Rules</span>
+            <span class="badge">🔄 Escalation</span>
+            <span class="badge">👥 On-Call</span>
+            <span class="badge">📊 SLO-Based Alerting</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Cảnh Báo Đại Sư từng on-call với 500 alerts mỗi đêm. Phone vibrate liên tục. 95% false positives. 4% informational. 1% actual problems. Nhưng cái 1% đó nằm trong đống 500 alerts và Đại Sư phải tìm nó như tìm kim trong bể cỏ.</p><p>"Alert fatigue is real," chàng ta nói sau 6 tháng on-call. "Tôi bắt đầu ignore alerts. Rồi production sập và tôi ngủ qua alert vì đã conditioned để ignore." Giác ngộ: better alerts > more alerts.</p><p>Giờ chàng ta thiết kế alerting systems theo triết lý: "Every alert should be ACTIONABLE. If you don't need to do something about it RIGHT NOW, it's not an alert — it's a notification."</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Alert Design Philosophy:</strong> Every alert = someone needs to take action NOW. If no action needed: dashboard, not alert. If action can wait: ticket, not page. Actionable: alert includes what happened, why it matters, how to fix (runbook link). Urgency levels: page (immediate), ticket (business hours), notification (FYI).</div>
+            <div class="tip"><strong>2. Alertmanager — Prometheus Alerting:</strong> Group related alerts (reduce noise). Inhibit: suppress child alerts when parent fires. Silence: temporary mute during maintenance. Route: different teams, different channels. Templates cho alert messages. Integration: PagerDuty, Slack, email, webhooks.</div>
+            <div class="tip"><strong>3. On-Call Best Practices:</strong> Rotation schedule: weekly, balanced. Handoff procedures: document active issues. Escalation policies: if not acknowledged in 10 min, escalate. Follow-the-sun cho global teams. Compensation cho on-call duty. Maximum on-call hours/month. On-call should not be punishment.</div>
+            <div class="tip"><strong>4. SLO-Based Alerting:</strong> Alert when error budget burning too fast. Multi-window multi-burn rate alerts. 1-hour window: 14.4× burn rate = page immediately. 6-hour window: 6× burn rate = page. This catches both sudden spikes and slow degradation. Based on Google SRE book practices.</div>
+            <div class="tip"><strong>5. Alert Routing:</strong> Team-based routing: database alerts → DBA team. Service-based: payment service → payments team. Severity-based: critical → page, warning → Slack. Business hours routing: page off-hours only cho critical. Deduplication: same alert once, not 100 times.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📟 Chuyện 500 Alerts Lúc 3 Giờ Sáng</h3><p>Network switch failure → 50 services lose connectivity → 50 services throw errors → each service has 10 alert rules → 500 alerts fire simultaneously. On-call engineer phone: 500 PagerDuty notifications. Cannot identify root cause in noise. Spends 30 minutes ack-ing alerts before investigating.</p><p>Fix: alert grouping (by cluster, by failure domain). Inhibition rules: network alert inhibits service alerts. Root cause detection: alert on symptoms (network connectivity) not effects (individual service errors). Post-fix: 500 alerts → 3 alerts cho same scenario.</p><div class="lesson">💡 Bài học: Alert grouping và inhibition CRITICAL cho operational sanity. Group by failure domain. Inhibit downstream alerts khi upstream alert fires. Root cause alerts > symptom alerts. Less is more — 3 actionable alerts > 500 noise alerts.</div></div>
+            <div class="story"><h3>🔇 Chuyện Alert Storm Từ Một Failure</h3><p>Deployment introduces memory leak. Memory grows slowly over 4 hours. Hit 80% → alert. 85% → alert. 90% → alert. 95% → alert. OOM → restart → healthy → memory grows again → repeat. On-call engineer receives 15 alerts over 4 hours for SAME issue. 'I know! I'm working on it!' — but each alert still pages.</p><div class="lesson">💡 Bài học: Alert deduplication: don't re-fire same alert until resolved. Alertmanager group_wait, group_interval, repeat_interval tuning. Acknowledge = stop re-paging. Snooze/silence cho known issues under investigation. Alert should have clear resolution criteria.</div></div>
+            <div class="story"><h3>👥 Chuyện On-Call Burnout</h3><p>Team 3 người, on-call rotation mỗi tuần. 100+ alerts/đêm on-call. 2 người nghỉ việc vì burnout. 1 người còn lại: on-call MỌI ĐÊM. Quality giảm, response time tăng, incidents longer. CTO hỏi: 'Why is reliability getting worse?'</p><p>Fix: hire 2 more engineers. Reduce alert noise (500 → 30 per night). Automate common fixes (self-healing). On-call compensation. Mental health support. On-call cap: max 1 week per month.</p><div class="lesson">💡 Bài học: On-call burnout = reliability risk. Minimum team size cho sustainable on-call: 4-5 people. Reduce alert noise FIRST. Automate common responses. Compensate on-call fairly. Monitor on-call health: alert volume trends, response times, pages per person.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Alert without runbook:</strong> Alert fires. Engineer: 'What do I do?' Runbook link in EVERY alert. Step-by-step response procedure.</div>
+            <div class="mistake"><strong>2. Too sensitive thresholds:</strong> CPU > 50% alert. Server normally runs 60%. 100 false alerts/day. Set thresholds based on actual baselines + SLOs.</div>
+            <div class="mistake"><strong>3. No escalation:</strong> Alert fires, nobody responds, nobody knows. Escalation: 5 min → primary, 15 min → secondary, 30 min → manager.</div>
+            <div class="mistake"><strong>4. Alert on every metric:</strong> 500 alert rules. Most never fire, some fire constantly. Audit alert rules quarterly. Delete unused, tune noisy.</div>
+            <div class="mistake"><strong>5. Same severity for everything:</strong> Everything is critical. Nothing is critical. Severity levels matter: critical (page), warning (Slack), info (dashboard).</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #118</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

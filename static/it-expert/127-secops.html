@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An Ninh Vận Hành Đại Sư - SecOps Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 25%, #250a1a 50%, #1a0a1a 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #c084fc, #e879f9, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #d8b4fe; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(236,72,153,0.2)); border: 1px solid rgba(168,85,247,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #d8b4fe; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; } .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(168,85,247,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(168,85,247,0.2); box-shadow: 0 8px 40px rgba(168,85,247,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #d8b4fe; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(168,85,247,0.06); border-left: 3px solid #c084fc; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #d8b4fe; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(236,72,153,0.06)); border: 1px solid rgba(168,85,247,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #e879f9; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #d8b4fe; font-weight: 600; }
+        code { background: rgba(168,85,247,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #d8b4fe; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🕵️</span>
+            <h1>An Ninh Vận Hành Đại Sư</h1>
+            <p class="subtitle">Võ Tòng Diệt Hổ — Thợ Săn Mối Đe Dọa</p>
+            <p class="quote">"Hacker chỉ cần đúng MỘT lần. Chúng ta phải đúng MỌI lần. Nhưng khi chúng ta sai, chúng ta phải BIẾT ngay."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">SIEM (Splunk/ELK)</span>
+            <span class="skill-tag">SOC Operations</span>
+            <span class="skill-tag">Incident Response</span>
+            <span class="skill-tag">Threat Hunting</span>
+            <span class="skill-tag">Penetration Testing</span>
+            <span class="skill-tag">Red/Blue/Purple Team</span>
+            <span class="skill-tag">Digital Forensics</span>
+            <span class="skill-tag">MITRE ATT&CK</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Võ Tòng Diệt Hổ — tên thật Võ Văn Tòng — lớn lên ở vùng quê, từ nhỏ đã nổi tiếng với khả năng phát hiện ai ăn trộm ổi trong vườn chỉ bằng cách quan sát dấu chân và cành gãy. Tài năng "threat hunting" bẩm sinh này đưa ông vào ngành an ninh mạng, nơi ông chuyển từ "theo dấu trộm ổi" sang "theo dấu APT groups".</p>
+            <p>Kiếp nạn đầu: "Alert Fatigue Địa Ngục" — khi SOC nhận 50,000 alerts/ngày, 99.9% là false positives, và true positive nằm trong 0.1% còn lại như kim trong đống cỏ khô. Kiếp hai: "Incident Response Lúc Giao Thừa" — khi ransomware encrypt toàn bộ file server đúng 0h00 ngày 1 tháng 1 và ông phải chọn giữa champagne và command line. Kiếp ba: "Purple Team Khai Ngộ" — khi ông nhận ra Red Team và Blue Team cãi nhau không giải quyết được gì, phải ngồi lại làm việc cùng nhau.</p>
+            <p>Ông nổi tiếng với câu nói: "Log mà không ai đọc thì chỉ là rác chiếm ổ cứng. Alert mà không ai xử lý thì chỉ là tiếng ồn. Detection phải dẫn đến action."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: SIEM — Trung Tâm Thần Kinh An Ninh</h3>
+                <p>SIEM (Security Information and Event Management) thu thập, correlate, và analyze logs từ mọi nguồn. Splunk cho enterprise (mạnh nhưng đắt — "Splunk: where data goes to cost money"), ELK Stack cho budget-conscious (Elasticsearch + Logstash + Kibana + Sigma rules). Key: ingest đúng logs (auth logs, firewall, DNS, endpoint), write detection rules theo MITRE ATT&CK framework, tune để giảm false positives. Retention: 90 ngày hot, 1 năm warm, 7 năm cold (tùy compliance). Và SIEM chỉ hiệu quả khi có người ĐỌC alerts — automation giúp nhưng không thay thế analyst.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Incident Response — Khi Mọi Thứ Cháy</h3>
+                <p>IR process theo NIST: Preparation -> Detection & Analysis -> Containment -> Eradication -> Recovery -> Post-Incident Activity. Preparation: IR plan documented, communication templates ready, war room setup, tools pre-installed. Containment: isolate affected systems NGAY (network isolation, disable accounts), preserve evidence (forensic image TRƯỚC khi clean). Key: đừng panic, follow the playbook. Và LUÔN có blameless post-mortem — incident là learning opportunity, không phải witch hunt.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Threat Hunting — Chủ Động Tìm Kẻ Thù</h3>
+                <p>Threat hunting khác với alert monitoring: thay vì chờ alert, chủ động tìm kiếm indicators of compromise (IOC) và tactics, techniques, procedures (TTP). Hypothesis-driven: "Nếu attacker đã vào network, họ sẽ làm gì?" -> hunt for those behaviors. Data sources: EDR telemetry, DNS logs, network flow, authentication logs. Tools: Velociraptor, OSQuery, YARA rules. MITRE ATT&CK framework là bản đồ — mỗi technique là một hypothesis để hunt. Regular hunting cadence: weekly hunts cho high-priority threats.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Red/Blue/Purple Team</h3>
+                <p>Red Team: simulate real attackers, test defenses end-to-end. Khác với pentest (scope-limited), red team has broader scope và longer duration. Blue Team: defenders, detection & response. Purple Team: red + blue collaborate — red team attacks, blue team detects, cùng nhau improve detection rules. Purple team exercises hiệu quả nhất: red team share TTPs, blue team build detections, iterate. Atomic Red Team: library of tests mapped to MITRE ATT&CK — run specific technique, verify detection works.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Penetration Testing — Tấn Công Chính Mình</h3>
+                <p>Pentest types: black box (no info), grey box (partial info), white box (full access). Scope: network, web app, mobile, social engineering, physical. Methodology: OWASP Testing Guide cho web, PTES cho general. Tools: Burp Suite (web), Metasploit (exploitation), Nmap (recon), BloodHound (AD). Key: pentest report phải có clear remediation steps với priority. Retest after fix. Và pentest không phải one-time — quarterly hoặc after major changes. Bug bounty programs cho continuous testing.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Digital Forensics — CSI Cyber</h3>
+                <p>Forensics khi cần hiểu: what happened, when, how, và who. Chain of custody: preserve evidence integrity — forensic image (bit-for-bit copy), hash verification, documented handling. Memory forensics (Volatility): analyze RAM dump cho malware, encryption keys, network connections. Disk forensics (Autopsy, FTK): file recovery, timeline analysis, artifact extraction. Network forensics: PCAP analysis với Wireshark. Cloud forensics: CloudTrail logs, VM snapshots. Và luôn nhớ: forensics evidence có thể dùng trong legal proceedings — chain of custody là sacred.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #7: MITRE ATT&CK Framework</h3>
+                <p>ATT&CK là knowledge base of adversary TTPs — từ Initial Access đến Exfiltration. Dùng cho: threat modeling (attacker sẽ dùng techniques nào?), detection engineering (viết rules cho specific techniques), gap analysis (techniques nào chưa có detection?), red team planning (simulate specific threat actors). ATT&CK Navigator: visual map coverage. Mỗi detection rule nên map to ATT&CK technique ID. Regular gap assessment: so sánh detection coverage vs threat landscape. Đây là ngôn ngữ chung giữa offense và defense.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: SOC Analyst Bắt APT Nhờ DNS Logs</h3>
+                <p>Junior SOC analyst review DNS logs cuối tuần — thấy pattern lạ: workstation của finance department query domain <code>upd4te-srv.xyz</code> mỗi 30 phút, response là TXT record chứa chuỗi Base64. Google domain = zero results. VirusTotal = clean. Nhưng pattern quá đều đặn cho human behavior.</p>
+                <p>Escalate lên senior analyst, deep dive: đây là DNS tunneling — C2 (Command & Control) communication ẩn trong DNS queries. Malware nằm im 3 tháng, slowly exfiltrate financial data qua DNS TXT records. APT group đã bypass firewall, antivirus, email gateway — nhưng không bypass được DNS monitoring.</p>
+                <p>Containment: isolate workstation, block domain, hunt for lateral movement. Forensics: malware vào qua spear phishing email 3 tháng trước. Eradication mất 2 tuần vì attacker đã plant backdoors ở 4 machines khác.</p>
+                <div class="lesson">💡 Bài học: DNS logs là goldmine cho threat detection. DNS tunneling, DGA domains, fast flux — nhiều attack techniques rely on DNS. Monitor DNS queries, baseline normal behavior, alert on anomalies. Và đừng underestimate junior analysts — fresh eyes catch things experienced eyes miss.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: Pentest Tìm Thấy Admin Panel Mở Toang</h3>
+                <p>External pentest, red team recon: subdomain enumeration phát hiện <code>admin-legacy.company.com</code> — trang admin cũ từ 2018, chạy PHP, không require authentication, kết nối trực tiếp tới production database. Trang này "đã decommission" theo documentation nhưng DNS record và server vẫn chạy.</p>
+                <p>Qua admin panel này: full database access (read/write), file upload (webshell potential), server info disclosure. Tất cả không cần credentials. Impact: Critical. Time to discover: 15 phút recon.</p>
+                <div class="lesson">💡 Bài học: "Decommissioned" không có nghĩa là "removed". Asset inventory phải accurate và verified regularly. Subdomain enumeration nên là phần bắt buộc của security assessment. Và legacy systems là favorite target của attackers — nếu nó còn chạy, nó cần security.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: Ransomware Đêm Giao Thừa</h3>
+                <p>0h05 ngày 1 tháng 1, SIEM alert: mass file rename events trên file server — extension đổi thành <code>.encrypted</code>. SOC analyst on-call (đang countdown với gia đình) nhận alert, verify: ransomware đang encrypt. Containment trong 12 phút: isolate file server, block lateral movement, kill malicious processes.</p>
+                <p>Damage: 30% files encrypted trước khi containment. Recovery: restore từ backup (tested monthly, thank god). Root cause: phishing email 2 tuần trước, attacker persistence qua scheduled task, detonation timed cho holiday khi staffing minimal.</p>
+                <div class="lesson">💡 Bài học: Attackers chọn timing — holidays, weekends, 3AM. SOC phải 24/7/365 coverage. Automated containment actions (isolate host on ransomware detection) giảm response time từ phút xuống giây. Và backup testing là KHÔNG negotiable — backup không test = backup không tồn tại.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Thu thập mọi log nhưng không có detection rules</h3>
+                <p>Terabytes of logs, zero detections. Logs mà không có correlation rules, alerts, dashboards = expensive storage. Start with use cases (brute force, lateral movement, data exfiltration), build detections, then tune.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Alert fatigue — 50,000 alerts/ngày</h3>
+                <p>SOC analysts ignore alerts vì quá nhiều false positives. Tune detection rules aggressively. Prioritize by risk score. Automate triage for known-benign patterns. Quality over quantity.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Pentest xong rồi quên fix</h3>
+                <p>Pentest report 50 findings, 6 tháng sau retest: 48 findings vẫn open. Pentest without remediation is waste of money. Track findings, set SLAs, verify fixes. Pentest -> Fix -> Retest -> Repeat.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Incident response plan chưa từng test</h3>
+                <p>IR plan đẹp trên giấy nhưng chưa ai diễn tập. Tabletop exercises quarterly, full simulation annually. Plan mà không practice = panic khi real incident xảy ra.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Blame game sau incident</h3>
+                <p>"Ai đã click phishing email?" — sai câu hỏi. Đúng: "Tại sao phishing email bypass email gateway? Tại sao không có detection? Tại sao user không báo?" Blameless post-mortems improve systems, blame destroys trust.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Red team vs Blue team thù địch</h3>
+                <p>Red team flex findings, blue team defensive. Cả hai miss the point: mục tiêu là IMPROVE SECURITY, không phải win argument. Purple team collaboration > adversarial relationship.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Võ Tòng Diệt Hổ</span> — An Ninh Vận Hành Đại Sư</p>
+            <p>🕵️ "Detect fast. Respond faster. Learn from everything." 🕵️</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Công Nghiệp Đại Sư - Industrial IoT Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a0a 25%, #2e2a0a 50%, #1a1a0a 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(245,158,11,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(234,179,8,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fde68a; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(234,179,8,0.2), rgba(245,158,11,0.2)); border: 1px solid rgba(234,179,8,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fde68a; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; } .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(234,179,8,0.4), rgba(245,158,11,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(234,179,8,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(234,179,8,0.2); box-shadow: 0 8px 40px rgba(234,179,8,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fde68a; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(234,179,8,0.06); border-left: 3px solid #fbbf24; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fde68a; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(234,179,8,0.06), rgba(217,119,6,0.06)); border: 1px solid rgba(234,179,8,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #fbbf24; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fde68a; font-weight: 600; }
+        code { background: rgba(234,179,8,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fde68a; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🏭</span>
+            <h1>IoT Công Nghiệp Đại Sư</h1>
+            <p class="subtitle">Kỹ Sư Nhà Máy — Người Nói Chuyện Với Máy Móc</p>
+            <p class="quote">"Trong nhà máy, downtime tính bằng triệu đồng mỗi phút. Bug trong IT hệ thống gây bực mình. Bug trong OT hệ thống gây thương vong."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">SCADA</span>
+            <span class="skill-tag">OPC UA</span>
+            <span class="skill-tag">PLC Programming</span>
+            <span class="skill-tag">Digital Twin</span>
+            <span class="skill-tag">Modbus</span>
+            <span class="skill-tag">Predictive Maintenance</span>
+            <span class="skill-tag">Safety Systems (SIS)</span>
+            <span class="skill-tag">ISA-95 / Purdue Model</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Kỹ Sư Nhà Máy — tên thật Đặng Văn Bánh Răng — lớn lên trong khu công nghiệp, nghe tiếng máy dập kim loại thay cho tiếng chim hót. Bố là thợ cơ khí, mẹ làm QC (kiểm tra chất lượng). DNA công nghiệp chảy trong huyết quản — anh có thể nghe tiếng động cơ và biết nó đang khỏe hay sắp "đi bác sĩ".</p>
+            <p>Kiếp nạn đầu: "IT vs OT War" — khi IT team muốn "connect nhà máy lên cloud" và OT team nói "KHÔNG AI ĐƯỢC CHẠM VÀO NETWORK CỦA TÔI". Hai thế giới — IT (Information Technology) và OT (Operational Technology) — nói khác ngôn ngữ, có khác priorities, và không tin nhau. Kiếp hai: "PLC Firmware Update Sự Cố" — khi firmware update cho PLC dừng dây chuyền sản xuất 8 giờ, thiệt hại $400,000. Kiếp ba: "Digital Twin Enlightenment" — khi anh xây digital twin của nhà máy và predict machine failure 2 tuần trước khi xảy ra, saving $2 triệu/năm.</p>
+            <p>Triết lý: "Trong IIoT, safety first, availability second, everything else third. Một dòng code sai có thể kill someone — đó không phải metaphor."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: SCADA — Supervisor Của Nhà Máy</h3>
+                <p>SCADA (Supervisory Control And Data Acquisition): hệ thống monitor và control industrial processes. Components: RTU/PLC (field controllers), HMI (Human-Machine Interface), SCADA server (data historian, alarm management), communication network. Modern SCADA: web-based HMI, SQL historian (thay vì proprietary), OPC UA integration, cloud-connected (cẩn thận!). Security: SCADA network PHẢI isolated từ IT network (air-gapped hoặc DMZ). ICS-CERT advisories: monitor regularly. Và SCADA system có lifecycle 15-25 năm — plan for long-term supportability, not latest tech trends.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: OPC UA — Universal Translator Của Nhà Máy</h3>
+                <p>OPC UA (Unified Architecture): platform-independent, service-oriented protocol cho industrial communication. Tại sao OPC UA? Trước đó: Modbus (simple nhưng limited), Profinet (Siemens-specific), EtherNet/IP (Rockwell-specific), OPC DA (Windows-only). OPC UA: cross-platform, built-in security (encryption, authentication, authorization), information modeling (structured data, not just tag values), pub/sub mode (scalable). OPC UA over MQTT: combine OPC UA data model với MQTT transport — best of both worlds. Ignition SCADA excellent OPC UA support. Và luôn nhớ: OPC UA address space browsing cho phép discover available data — self-documenting protocol.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: PLC — Brain Của Dây Chuyền</h3>
+                <p>PLC (Programmable Logic Controller): real-time controller cho industrial processes. Scan cycle: read inputs -> execute logic -> update outputs, mỗi 1-10ms. Languages (IEC 61131-3): Ladder Diagram (LD — electricians love it), Structured Text (ST — programmers love it), Function Block Diagram (FBD), Sequential Function Chart (SFC). Major vendors: Siemens (S7-1500), Allen-Bradley (ControlLogix), Mitsubishi, Omron. Programming: TIA Portal (Siemens), Studio 5000 (Allen-Bradley). Key: PLC code PHẢI deterministic — no garbage collection, no unexpected delays. Safety PLC (SIL-rated): cho safety-critical functions (emergency stop, pressure relief).</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Digital Twin — Bản Sao Số Của Nhà Máy</h3>
+                <p>Digital Twin: virtual replica of physical asset/process, synchronized via real-time data. Levels: (1) Component twin (single machine), (2) Asset twin (production line), (3) System twin (entire factory), (4) Process twin (end-to-end workflow). Use cases: simulation (test changes trước khi apply), predictive maintenance (detect anomalies, predict failure), optimization (find optimal operating parameters), training (operators practice trên virtual plant). Platforms: Azure Digital Twins, AWS IoT TwinMaker, Siemens MindSphere. Data foundation: accurate 3D model + real-time sensor data + historical data + physics models. ROI: typically 10-30% reduction in unplanned downtime.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Predictive Maintenance — Biết Trước Hỏng</h3>
+                <p>Maintenance evolution: reactive (fix khi hỏng), preventive (thay định kỳ — waste nếu part còn tốt), predictive (data-driven, thay khi CẦN). Data sources: vibration sensors (bearing wear), temperature (overheating), current draw (motor health), oil analysis (lubrication), acoustic (ultrasonic leak detection). ML models: classification (healthy/degraded/failed), regression (remaining useful life — RUL prediction). Challenge: labeled failure data scarce — machines don't fail often (good!). Approaches: unsupervised anomaly detection, physics-informed models, transfer learning. Edge deployment: inference tại device/gateway, cloud cho training. ROI case: prevent ONE unplanned shutdown ($500K) pays cho toàn bộ PdM system.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: ISA-95 / Purdue Model — Kiến Trúc An Toàn</h3>
+                <p>Purdue Model: network segmentation cho industrial environments. Level 0-1: physical process + sensors/actuators. Level 2: control systems (PLC, DCS). Level 3: site operations (MES, historian). Level 3.5: DMZ (security boundary). Level 4-5: enterprise network (ERP, cloud). KEY: traffic ONLY flows through defined paths between levels. Level 2 NEVER directly connects to Level 5. DMZ hosts: data diode, jump server, OPC UA aggregator. IT/OT convergence: don't flatten the network — maintain segmentation, enable controlled data flow. Zero trust principles apply: verify mọi communication, log mọi access.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: PLC Firmware Update Dừng Nhà Máy 8 Giờ</h3>
+                <p>Vendor khuyến cáo firmware update cho PLC — "security patch, critical". OT engineer schedule update vào maintenance window (Chủ Nhật 2AM). Update process: download firmware -> flash PLC -> reboot -> verify. Flash thành công. Reboot: PLC start, load program... ERROR. Firmware mới không compatible với program version hiện tại. PLC vào fault mode. Dây chuyền sản xuất dừng.</p>
+                <p>Rollback: previous firmware backup? Có, nhưng restore process mất 2 giờ (download qua serial connection — PLC network interface bị disable trong fault mode). Restore thành công, verify program, restart. Total downtime: 8 giờ. Monday morning production shift starts late. Revenue impact: $400,000 (8 giờ x $50,000/giờ production value).</p>
+                <p>Root cause: không test firmware update trên identical PLC với identical program trong lab environment trước. Vendor release notes có note nhỏ: "Program re-upload may be required after update." Không ai đọc.</p>
+                <div class="lesson">💡 Bài học: NEVER update production PLC without testing trên identical lab setup first. Read ALL vendor release notes. Have rollback plan + tested rollback procedure. PLC downtime = production downtime = money. Và maintenance windows cho OT systems phải LONGER than IT systems — rollback mất giờ, không phải phút.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: Digital Twin Saves $2 Triệu/Năm</h3>
+                <p>Chemical plant: 3 large compressors, each worth $500K, critical for production. Historical data: mỗi compressor hỏng unexpected 2-3 lần/năm, mỗi lần dừng 24-48 giờ (chờ spare parts + repair). Cost: $200K/lần (downtime + repair + product waste). Total: ~$1.5-2M/năm unplanned downtime.</p>
+                <p>Digital twin project: install vibration sensors (8 per compressor), temperature sensors, pressure sensors, oil quality sensors. Build physics-informed ML model: learn normal operating patterns, detect anomalies 2-4 tuần trước failure. Dashboard: real-time health score per compressor, predicted remaining useful life, recommended maintenance date.</p>
+                <p>Year 1 result: predicted 5/6 failures trước 2+ tuần. Scheduled maintenance during planned downtime. Unplanned downtime reduced 85%. Cost savings: $1.7M. Digital twin project cost: $300K. ROI: 467% year 1.</p>
+                <div class="lesson">💡 Bài học: Predictive maintenance ROI là real và massive cho critical industrial assets. Start với most expensive failure modes. Combine physics knowledge (domain expertise) với data-driven models (ML). Và sensor data quality matters — garbage data = garbage predictions. Invest in proper sensor installation and calibration.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: IT Team "Giúp" OT Network — Ransomware Reaches PLCs</h3>
+                <p>IT team setup VPN tunnel giữa corporate network và plant network "for remote monitoring". No DMZ, no segmentation, direct connectivity. 3 tháng sau: ransomware enters corporate network qua phishing email, spreads laterally, reaches plant network qua VPN tunnel, encrypts SCADA historian server. HMI screens show ransomware note thay vì process data.</p>
+                <p>PLCs vẫn chạy (autonomous), nhưng operators KHÔNG THẤY process data — blind operation. Emergency: switch to manual mode, operators monitor processes physically (đi bộ kiểm tra gauges). 48 giờ để restore historian từ backup (offline backup, thank god). Nhưng 48 giờ manual operation = 3 safety incidents (minor, nhưng scary).</p>
+                <div class="lesson">💡 Bài học: IT/OT convergence PHẢI qua DMZ với strict controls. Direct VPN = handing ransomware a highway to your plant floor. Purdue Model exists for a reason. Data diodes cho one-way data flow (plant -> IT, NEVER reverse). Và always have manual operation procedures — digital systems CAN fail.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Treat OT network like IT network</h3>
+                <p>IT: patch Tuesday, reboot servers, 99.9% uptime acceptable. OT: patching requires plant shutdown, reboot = production stop, 99.999% uptime required. Different worlds, different rules. Respect OT constraints.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Connect PLCs directly to internet</h3>
+                <p>Shodan search finds thousands of exposed PLCs. PLC accessible from internet = attackable. SCADA/PLC network MUST be air-gapped or behind strict DMZ. No exceptions.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: No testing environment for OT</h3>
+                <p>Test updates trên production PLC? Recipe for disaster. Maintain lab with identical PLC hardware + program. Test EVERY change in lab first. Cost of lab << cost of one production incident.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Ignore safety systems</h3>
+                <p>SIS (Safety Instrumented System) là last line of defense. SIS phải independent từ BPCS (Basic Process Control System). Never bypass safety interlock "vì production pressure". People die when safety systems fail.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Cloud-first for critical control</h3>
+                <p>Cloud latency + internet reliability ≠ real-time control requirements. Control logic stays on-premises (PLC/DCS). Cloud cho analytics, monitoring, optimization — NOT for real-time control. Edge computing bridges the gap.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Kỹ Sư Nhà Máy</span> — IoT Công Nghiệp Đại Sư</p>
+            <p>🏭 "Safety first. Availability second. Everything else third." 🏭</p>
+        </div>
+    </div>
+</body>
+</html>

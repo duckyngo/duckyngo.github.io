@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Biên Cương Đại Sư - Edge AI / TinyML Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(139,195,74,0.12) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #aed581; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(174,213,129,0.3); }
+        .header .title { font-size: 1.2em; color: #c5e1a5; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(139,195,74,0.1); }
+        .card h2 { color: #aed581; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(139,195,74,0.3), rgba(100,150,50,0.2)); border: 1px solid rgba(174,213,129,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #c5e1a5; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(139,195,74,0.5), rgba(100,150,50,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(139,195,74,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #8bc34a, #aed581); border-radius: 50%; color: #1a1a2e; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #8bc34a; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">📱</span>
+            <h1>AI Biên Cương Đại Sư</h1>
+            <div class="title">Edge AI / TinyML Expert</div>
+            <div class="quote">"Fit neural network vào 256KB RAM? Easy. Fit vào 64KB? Challenge. Fit vào 16KB? Art."</div>
+            <div class="badge-container">
+                <span class="badge">📦 Model Compression</span>
+                <span class="badge">⚡ Quantization</span>
+                <span class="badge">✂️ Pruning</span>
+                <span class="badge">🎓 Knowledge Distillation</span>
+                <span class="badge">🔧 TensorRT</span>
+                <span class="badge">📱 TFLite</span>
+                <span class="badge">🤖 Arduino</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>AI Biên Cương Đại Sư tên thật là <strong>Vi Tiểu Mô</strong>, embedded engineer chuyển sang AI. "Đồng nghiệp AI train model 7B parameters. Tôi deploy model 70K parameters. Họ cần 8 GPU. Tôi cần 1 Arduino. Chúng tôi không giống nhau."</p>
+            <p>Anh bắt đầu khi có người hỏi: "Có thể chạy AI trên microcontroller $2 không?" Anh: "Không nên." Boss: "Nhưng khách hàng muốn." Và thế là anh dành 2 năm tiếp theo nén model từ 500MB xuống 200KB mà vẫn "chấp nhận được."</p>
+            <p>Hiện anh chuyên deploy AI cho IoT devices, drones, và wearables. Phương châm: "Cloud AI cho kẻ giàu. Edge AI cho kẻ khôn. Và đôi khi cho kẻ điên — ai lại chạy NN trên ESP32?"</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Edge AI</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Model Compression — Nhỏ hơn, nhanh hơn, rẻ hơn</h3>
+                    <p>4 techniques: (1) <strong>Quantization</strong>: FP32 → INT8 → INT4 (4-8x smaller). (2) <strong>Pruning</strong>: remove unnecessary weights/neurons (2-10x smaller). (3) <strong>Knowledge Distillation</strong>: train small model mimic large model. (4) <strong>Architecture Design</strong>: MobileNet, EfficientNet — designed for edge. Combine: distill + prune + quantize = 50-100x smaller. Workflow: train full model → distill → prune → quantize → deploy.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Quantization cho Edge</h3>
+                    <p><strong>Post-training quantization (PTQ)</strong>: quantize sau training, dễ nhưng quality loss. <strong>Quantization-aware training (QAT)</strong>: simulate quantization during training, better quality. <strong>INT8</strong>: standard cho edge GPU (Jetson, phone). <strong>INT4</strong>: microcontrollers. TFLite: <code>converter.optimizations = [tf.lite.Optimize.DEFAULT]</code>. TensorRT: INT8 calibration tự động. ONNX Runtime: INT8/INT4 support. Luôn compare quantized vs original trên your eval set.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Knowledge Distillation — Teacher-Student</h3>
+                    <p>Large model (teacher) → train small model (student) to mimic teacher outputs. Student learns "soft targets" (probability distributions) thay vì hard labels → richer learning signal. Temperature: T=3-5 soften teacher outputs. Loss: α × distillation_loss + (1-α) × student_loss, α ≈ 0.7. Results: student 3-10x smaller, retain 90-98% teacher performance. Dùng cho: deploy BERT on mobile, deploy YOLO on Jetson.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Edge Hardware Landscape</h3>
+                    <p><strong>NVIDIA Jetson</strong> (Orin Nano/AGX): GPU-accelerated, TensorRT, best cho vision. <strong>Raspberry Pi 5</strong>: versatile, cheap, good cho prototyping. <strong>ESP32</strong>: $3 microcontroller, TinyML, keyword detection. <strong>Coral (Google)</strong>: Edge TPU, fast inference, limited model support. <strong>Apple Neural Engine</strong>: Core ML, on-device LLM. <strong>Qualcomm AI Hub</strong>: mobile AI. Choose: compute budget → hardware → model compression target.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>TinyML — AI trên microcontroller</h3>
+                    <p>Constraints: 256KB RAM, 1MB Flash, no OS, no floating point. Tools: <strong>TensorFlow Lite Micro</strong>, <strong>Edge Impulse</strong> (no-code TinyML platform). Models: keyword spotting (2-3 keywords), gesture recognition, anomaly detection (vibration, sound). Trick: feature engineering quan trọng hơn model complexity ở edge. Mel spectrogram cho audio, simple CNN cho images. Target: < 100ms inference, < 100KB model.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">📦 Chuyện 1: Fitting model vào 256KB</div>
+                <p>IoT device cần detect 3 loại tiếng (glass break, smoke alarm, baby cry). RAM: 256KB. Flash: 1MB. Anh Vi Tiểu Mô bắt đầu với model 5MB: accuracy 96%. Prune: 2MB, 94%. Quantize INT8: 500KB, 93%. Vẫn quá lớn.</p>
+                <p>Redesign architecture: 3 depthwise separable conv layers, 1 dense layer. Params: 15K. Size: 60KB. Accuracy: 88%. Đủ tốt? Client: "Detect thêm 2 loại tiếng nữa." Anh: "... 256KB vẫn là 256KB."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Edge AI = constant battle against constraints. Process: start với accuracy target → design lightest model that meets it → compress further. Don't start với large model rồi compress — design cho edge từ đầu. 88% accuracy on device > 96% accuracy cần cloud.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🤖 Chuyện 2: Inference on Arduino — art of impossible</div>
+                <p>Intern hỏi: "Chạy image classification trên Arduino Uno (2KB RAM) được không?" Anh: "Không." Intern: "Challenge accepted."</p>
+                <p>3 tuần sau, intern demo: 8x8 pixel grayscale image → 3-class classifier (circle, square, triangle). Model: 5 neurons, 200 bytes. Accuracy: 91%. Arduino Uno inference: 2ms. "Technically, đó là image classification trên Arduino," anh acknowledge. "Nhưng 8x8 pixels thì... hơi thách thức cho real-world applications."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> TinyML possible nhưng requires extreme constraints acceptance. Match expectations với hardware: Arduino = simple patterns (audio keywords, vibration). Jetson = real vision tasks. Don't try to fit elephant vào matchbox — chọn đúng hardware cho task.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">⚡ Chuyện 3: TensorRT tăng tốc 10x — nhưng...</div>
+                <p>YOLO trên Jetson Orin: PyTorch = 8 FPS. Export ONNX: 15 FPS. TensorRT FP16: 45 FPS. TensorRT INT8: 85 FPS. 10x speedup! Deploy production.</p>
+                <p>1 tuần sau: customer report model không detect objects nhỏ. Investigation: INT8 quantization lost precision cho small objects. TensorRT calibration data không include small objects sufficiently. Fix: better calibration dataset + mixed precision (INT8 backbone, FP16 detection head). Result: 65 FPS, detect small objects correctly.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Quantization speedup impressive nhưng LUÔN validate quality trên YOUR test set, đặc biệt edge cases (small objects, rare classes). Calibration data phải representative. Mixed precision (some layers FP16, some INT8) cho best accuracy-speed tradeoff.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Train large model rồi mới nghĩ đến edge:</strong> Design cho edge từ đầu (MobileNet, EfficientNet-Lite). Compress 500MB → 500KB hiếm khi work.
+            </div>
+            <div class="mistake">
+                <strong>❌ Chỉ test accuracy, bỏ qua latency:</strong> 95% accuracy nhưng 500ms inference = useless cho real-time. Measure both.
+            </div>
+            <div class="mistake">
+                <strong>❌ Quantize mà không calibrate:</strong> INT8 cần calibration data. Random calibration → bad quantization → bad accuracy.
+            </div>
+            <div class="mistake">
+                <strong>❌ Ignore power consumption:</strong> Battery device chạy GPU model = pin hết trong 1 giờ. Measure power/inference.
+            </div>
+            <div class="mistake">
+                <strong>❌ Prototype trên PC, deploy trên edge mà không benchmark:</strong> "Chạy tốt trên laptop" ≠ "chạy được trên Raspberry Pi."
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📱 AI Biên Cương Đại Sư — "256KB RAM, 1 triệu possibilities. Hoặc 3 possibilities, tùy model."</p>
+            <p>Section 3: AI & Machine Learning · Expert #75</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Artifact Đại Sư - Chuyên Gia Nexus, Artifactory & Harbor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a1a 30%, #0a1a1a 60%, #1a2a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #2dd4bf; text-shadow: 0 0 20px #2dd4bf40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #2dd4bf; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #2dd4bf; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #2dd4bf; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #2dd4bf30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #2dd4bf; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #2dd4bf; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">📦</span><h1>Quản Lý Artifact Đại Sư</h1><div class="title">Chuyên Gia Nexus, Artifactory & Harbor</div><div class="quote">"Artifact management giống như quản lý kho: biết cái gì ở đâu, version nào, ai đưa vào, và quan trọng nhất — dọn dẹp kho định kỳ trước khi hết chỗ."</div></div>
+        <div class="badges">            <span class="badge">📦 Nexus Expert</span>
+            <span class="badge">🏗️ Artifactory Pro</span>
+            <span class="badge">⚓ Harbor Registry</span>
+            <span class="badge">🔐 Image Signing</span>
+            <span class="badge">🗑️ Cleanup Policies</span>
+            <span class="badge">📋 Versioning</span>
+            <span class="badge">🔍 Vulnerability Scan</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư nhớ thời "artifact storage" là shared NFS mount. Build artifacts: jar files, Docker images, npm packages — tất cả trên NFS. No versioning, no access control, no cleanup. "ai xóa artifact của tôi?!" — hàng ngày.</p><p>Khi Nexus/Artifactory ra đời, chàng ta thấy ánh sáng: repository management, access control, proxy caching, vulnerability scanning. "Mọi artifact cần một nhà," chàng ta nói.</p><p>Harbor cho container images đặc biệt powerful: vulnerability scanning built-in, image signing, replication, garbage collection. "If Docker Hub is your only registry, you are one outage away from no deployments," chàng ta cảnh báo.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Container Registry — Harbor:</strong> Open-source, CNCF graduated. Vulnerability scanning (Trivy integrated). Image signing (Cosign/Notary). Replication (multi-registry sync). Robot accounts cho CI/CD. Tag retention policies. Garbage collection cho disk space. Quotas per project.</div>
+            <div class="tip"><strong>2. Nexus Repository:</strong> Support multiple formats: Maven, npm, Docker, PyPI, NuGet, Helm. Proxy repositories cache upstream packages. Hosted repositories cho internal artifacts. Group repositories combine proxy + hosted. Cleanup policies cho disk management. RBAC cho access control.</div>
+            <div class="tip"><strong>3. Artifactory — Enterprise Grade:</strong> Universal repository manager. Build info integration. Smart remote repositories (cache + metadata). Virtual repositories. Xray cho security scanning. Build promotion workflows. Multi-site replication. Enterprise features: access federation, HA.</div>
+            <div class="tip"><strong>4. Versioning Strategy:</strong> Semantic versioning (semver): MAJOR.MINOR.PATCH. Immutable versions: never overwrite published version. Snapshot/development versions cho pre-release. Tag conventions: v1.2.3, latest (mutable), sha-abc123. Container image tags: version + git SHA cho traceability.</div>
+            <div class="tip"><strong>5. Cleanup Policies:</strong> Retention: keep last N versions. Age-based: delete artifacts older than X days. Usage-based: delete unused artifacts. Docker: tag retention + garbage collection. Automated cleanup policies prevent disk exhaustion. BUT: never auto-delete production-referenced artifacts.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>💾 Chuyện Harbor Storage Full</h3><p>Harbor registry running 2 năm without cleanup policy. Storage: 2TB Docker images. Disk 95% full. New image pushes fail. CI/CD pipelines break. Developers cannot deploy. Emergency: delete old images manually — nhưng which images are still in use?</p><p>Fix: audit running containers (kubectl get pods -o jsonpath image references). Tag retention policy: keep 10 tags per repository. Garbage collection (Harbor built-in). Result: 2TB → 400GB. Set up automated cleanup schedule.</p><div class="lesson">💡 Bài học: Container registries need cleanup policies from DAY ONE. Tag retention: keep last N tags. Garbage collection schedule (weekly). Monitor disk usage với alerts. Know which images are deployed (don't delete active images). Automation prevents disk full emergencies.</div></div>
+            <div class="story"><h3>📦 Chuyện Wrong Artifact Deployed</h3><p>CI/CD pipeline build artifact, tag as 'latest', push to registry. Two teams building same image name simultaneously. Race condition: Team A pushes, Team B overwrites 5 seconds later. Team A deploys: gets Team B's image. Feature mismatch. Users confused. 2 giờ debugging 'why is my code not deployed?'</p><p>Fix: immutable tags (version + git SHA). Never overwrite tags. CI/CD use unique tags: v1.2.3-abc1234. Deployment references exact tag, not 'latest'.</p><div class="lesson">💡 Bài học: NEVER use mutable tags (latest) cho production deployments. Immutable tags: version-gitsha. Registry immutable tag setting prevent overwrites. CI/CD pipeline generate unique tags. Traceability: image tag → git commit → build log.</div></div>
+            <div class="story"><h3>🔍 Chuyện Vulnerability Scan Block Deployment</h3><p>Harbor integrated Trivy scanning. New policy: block deployment of images with CRITICAL CVEs. Monday morning: ALL deployments blocked. Every image has CRITICAL CVE — base image (ubuntu:20.04) has new critical CVE published over weekend.</p><p>Entire engineering team cannot deploy. Exception process takes 2 giờ approval. Fix: update base images. But lesson: scan policies need exception handling, not blanket blocks.</p><div class="lesson">💡 Bài học: Vulnerability scan policies need nuance. Block CRITICAL for new deployments, alert for existing. Exception process for false positives and accepted risks. Base image update strategy (automated rebuild). Don't let perfect be enemy of good — accept-risk with documentation vs block everything.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. No cleanup policy:</strong> Registry grows indefinitely. Disk full = deployments stopped. Cleanup policies from day one.</div>
+            <div class="mistake"><strong>2. Using Docker Hub for everything:</strong> Rate limits, outages, no vulnerability scanning. Private registry (Harbor, ECR, GCR) cho production images.</div>
+            <div class="mistake"><strong>3. Mutable tags:</strong> latest tag overwrites = unpredictable deployments. Immutable, versioned tags only.</div>
+            <div class="mistake"><strong>4. No image signing:</strong> Anyone can push to registry. Unsigned images in production. Cosign/Notary cho image verification.</div>
+            <div class="mistake"><strong>5. Single registry:</strong> Registry outage = no deployments. Multi-site replication cho HA. Cache registries in CI/CD.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #114</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

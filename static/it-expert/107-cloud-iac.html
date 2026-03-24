@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud IaC Đại Sư - Chuyên Gia CloudFormation, CDK & Bicep</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a1a 30%, #0a2a1a 60%, #1a3a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #2dd4bf; text-shadow: 0 0 20px #2dd4bf40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #2dd4bf; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #2dd4bf; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #2dd4bf; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #2dd4bf30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #2dd4bf; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #2dd4bf; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">☁️</span><h1>Cloud IaC Đại Sư</h1><div class="title">Chuyên Gia CloudFormation, CDK & Bicep</div><div class="quote">"CloudFormation template 2000 dòng YAML. CDK generate nó từ 200 dòng TypeScript. Bicep từ 300 dòng. Kết quả cuối cùng? Same cloud resources, different levels of pain."</div></div>
+        <div class="badges">            <span class="badge">📋 CloudFormation</span>
+            <span class="badge">🏗️ AWS CDK</span>
+            <span class="badge">💪 Bicep/ARM</span>
+            <span class="badge">🔄 Stack Management</span>
+            <span class="badge">📦 Constructs/Modules</span>
+            <span class="badge">🔍 Drift Detection</span>
+            <span class="badge">🚀 Deployment</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Cloud IaC Đại Sư sống trong thế giới vendor-specific IaC. CloudFormation cho AWS, ARM/Bicep cho Azure, Deployment Manager cho GCP. "Tại sao không dùng Terraform?" — "Vì CloudFormation tích hợp native, support mọi AWS feature ngay ngày ra mắt, và change sets cho safe deployments."</p><p>Chàng ta viết CloudFormation YAML cho 5 năm. 2000 dòng cho một VPC + ECS cluster. Rồi CDK ra đời: same infrastructure, 200 dòng TypeScript. "Tại sao tôi viết YAML suốt 5 năm?!" CDK generates CloudFormation behind the scenes — best of both worlds.</p><p>Bên Azure, chàng ta dùng ARM templates (JSON horror) rồi Bicep (human-readable Azure IaC). "Bicep là điều ARM templates nên là từ đầu," chàng ta nói.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. CloudFormation — AWS Native:</strong> YAML/JSON templates. Stack = deployment unit. Change Sets cho safe updates. Nested stacks cho modularity. Drift detection. Rollback on failure. StackSets cho multi-account deployment. Custom resources (Lambda-backed) cho missing features. Intrinsic functions: !Ref, !GetAtt, !Sub, Fn::ImportValue.</div>
+            <div class="tip"><strong>2. AWS CDK — Infrastructure as Code++:</strong> TypeScript, Python, Go, Java, C#. Higher-level constructs: L1 (CloudFormation), L2 (opinionated defaults), L3 (patterns). cdk synth generates CloudFormation. cdk diff cho change preview. Construct library cho reusable patterns. cdk watch cho hot-deploy during development.</div>
+            <div class="tip"><strong>3. Bicep — Azure's Better ARM:</strong> Domain-specific language for Azure. Transpiles to ARM JSON. Simpler syntax, type safety, modules. Bicep Registry cho shared modules. What-if deployment cho preview. Deployments scoped to resource group, subscription, or management group. VS Code extension excellent.</div>
+            <div class="tip"><strong>4. Stack Management:</strong> Environment separation: dev/staging/prod stacks. Parameter files per environment. Outputs cho cross-stack references. Import/export values. Stack policies cho production protection. Automatic rollback on failure.</div>
+            <div class="tip"><strong>5. CDK Constructs — Reusable Patterns:</strong> L3 constructs encapsulate complex patterns. Projen cho project management. CDK Pipelines cho self-mutating CI/CD. cdk-nag cho security/compliance checks. Construct Hub cho community constructs. Versioned, published as npm/pip packages.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔄 Chuyện CloudFormation Rollback Stuck</h3><p>CloudFormation stack update: add new RDS instance. Creation takes 15 minutes. During creation, Lambda function in same stack fails health check. CloudFormation initiates rollback. Rollback tries to delete RDS — takes 10 minutes. During deletion, another resource timeout. Rollback stuck in UPDATE_ROLLBACK_FAILED state.</p><p>Manual intervention required: skip failing resources (ContinueUpdateRollback with resources to skip). Fix underlying issue. Re-attempt update. Total time: 3 giờ cho what should be 20-minute deployment.</p><div class="lesson">💡 Bài học: CloudFormation rollbacks can get stuck. DependsOn carefully designed. Separate stateful resources (RDS) from stateless (Lambda). Small, incremental changes. ContinueUpdateRollback cho stuck rollbacks. Stack policies prevent accidental deletion of critical resources.</div></div>
+            <div class="story"><h3>🏗️ Chuyện CDK Synth Surprise</h3><p>CDK code: const bucket = new s3.Bucket(this, 'MyBucket'). Developer expects 1 S3 bucket. cdk synth output: S3 bucket + bucket policy + CloudFormation custom resource cho auto-delete + Lambda function cho custom resource. Total: 4 CloudFormation resources từ 1 dòng CDK code. Developer confused: 'I only wanted a bucket!'</p><p>L2 constructs add 'sensible defaults' — sometimes more than expected. Solution: cdk diff ALWAYS before deploy. Understand L2 construct behavior. Use L1 constructs (CfnBucket) cho explicit control khi needed.</p><div class="lesson">💡 Bài học: CDK L2 constructs create more resources than visible in code. ALWAYS cdk diff before deploy. Understand construct documentation. L1 constructs cho explicit control. cdk synth cho full CloudFormation review. Surprises = tech debt nếu không understood.</div></div>
+            <div class="story"><h3>💪 Chuyện Bicep Module Saves Hours</h3><p>Team managing 50 Azure App Services. ARM template per service: 500 lines JSON. Total: 25,000 lines JSON. Maintenance nightmare. Bug fix = update 50 files.</p><p>Đại Sư create Bicep module: appService.bicep (100 lines). Each service: 20-line Bicep file referencing module. Total: 1,100 lines. Bug fix = update 1 module. Deployment time unchanged. Maintenance time: -90%. Team happiness: +200%.</p><div class="lesson">💡 Bài học: Modules/constructs cho DRY infrastructure code. Single source of truth cho common patterns. Pin module versions cho stability. Test modules independently. Shared module registry cho organization-wide reuse.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. 2000-line single template:</strong> Monolith CloudFormation = blast radius everything. Split into nested stacks or separate stacks. Microservice-like infrastructure.</div>
+            <div class="mistake"><strong>2. CDK without cdk diff:</strong> Deploy without reviewing generated CloudFormation. Surprises in production. ALWAYS review changes.</div>
+            <div class="mistake"><strong>3. ARM templates khi Bicep available:</strong> JSON ARM templates painful to write and read. Bicep transpiles to ARM — better syntax, same result. Migrate.</div>
+            <div class="mistake"><strong>4. No deletion protection:</strong> Production RDS in CloudFormation without DeletionPolicy: Retain. Stack delete = data loss. Set DeletionPolicy cho stateful resources.</div>
+            <div class="mistake"><strong>5. Hardcoded AMI IDs:</strong> AMI IDs region-specific. Use SSM Parameter Store cho latest AMI. Or CDK/CFN constructs that auto-resolve.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #107</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

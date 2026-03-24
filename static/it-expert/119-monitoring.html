@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Giám Sát Toàn Diện Đại Sư - Chuyên Gia APM, RUM, SLI/SLO/SLA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a1a 30%, #1a0a1a 60%, #2a1a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #c084fc; text-shadow: 0 0 20px #c084fc40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #c084fc; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #c084fc; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #c084fc; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #c084fc30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #c084fc; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #c084fc; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">👁️</span><h1>Giám Sát Toàn Diện Đại Sư</h1><div class="title">Chuyên Gia APM, RUM, SLI/SLO/SLA</div><div class="quote">"SLO 99.9% có vẻ tuyệt vời cho đến khi bạn tính: 0.1% downtime = 8.76 giờ/năm = đủ để mất 1 khách hàng lớn và 3 cuộc họp phòng giám đốc."</div></div>
+        <div class="badges">            <span class="badge">👁️ APM Expert</span>
+            <span class="badge">👤 RUM Master</span>
+            <span class="badge">📊 SLI/SLO/SLA</span>
+            <span class="badge">💰 Error Budgets</span>
+            <span class="badge">🔍 Synthetic Monitoring</span>
+            <span class="badge">🏥 Health Checks</span>
+            <span class="badge">📈 Capacity Planning</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Giám Sát Toàn Diện Đại Sư tin rằng: "You can not improve what you do not measure. But measuring wrong things gives you false confidence." Chàng ta đã thấy dashboards toàn xanh trong khi users khóc vì slow performance.</p><p>Chàng ta phát minh ra "3 pillars + 1": Metrics (what), Logs (why), Traces (where) + RUM (how users actually experience). Server-side metrics nói hệ thống healthy. RUM nói users experience 5-second page loads vì JavaScript bundle 2MB. "Server fast, frontend fat," chàng ta summarize.</p><p>SLI/SLO/SLA là ngôn ngữ chung giữa engineering và business. "99.9% availability" = 43 minutes downtime/tháng. Error budget = how much failure allowed. Burn rate = how fast you are using error budget. "SLOs turn reliability into a business conversation," chàng ta nói.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. SLI/SLO/SLA Framework:</strong> SLI (Indicator): measurable metric (e.g., request latency p99, error rate, availability). SLO (Objective): target for SLI (e.g., p99 latency < 200ms, error rate < 0.1%). SLA (Agreement): contractual commitment with consequences (e.g., 99.9% uptime or credits). SLI ⊂ SLO ⊂ SLA. Define SLIs first, set SLOs, then SLAs.</div>
+            <div class="tip"><strong>2. Error Budgets:</strong> Error budget = 100% - SLO. 99.9% SLO = 0.1% error budget = 43 minutes/month. If error budget exhausted: freeze deployments, focus on reliability. If error budget remaining: deploy fast, experiment. Error budget creates balance between velocity and reliability. Track burn rate: how fast budget consumed.</div>
+            <div class="tip"><strong>3. APM — Application Performance Monitoring:</strong> Server-side instrumentation: response times, throughput, error rates. Transaction tracing: end-to-end request flow. Code-level visibility: slow methods, exceptions. Database query performance. External call monitoring. Tools: New Relic, Datadog APM, Elastic APM, OpenTelemetry.</div>
+            <div class="tip"><strong>4. RUM — Real User Monitoring:</strong> Client-side JavaScript monitoring. Actual user experience: page load time, interaction delay, visual stability. Core Web Vitals: LCP, FID/INP, CLS. Geographic distribution of performance. Browser/device breakdown. Real data > synthetic data cho user experience.</div>
+            <div class="tip"><strong>5. Synthetic Monitoring:</strong> Automated tests from external locations. Uptime monitoring: is site accessible? Transaction monitoring: can users complete workflows? Performance monitoring: baseline response times. Available when no real users (off-hours). Complement to RUM, not replacement. Tools: Grafana Synthetic Monitoring, Datadog, Checkly.</div>
+            <div class="tip"><strong>6. Capacity Planning:</strong> Current usage trends → future capacity needs. Headroom: 30-40% buffer cho spikes. Growth projections: user growth → resource growth. Load testing validates capacity model. Auto-scaling helps but needs limits. Regular capacity reviews: monthly for fast-growth, quarterly for stable.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📊 Chuyện SLO Vi Phạm Mà Không Ai Biết</h3><p>SLO: 99.9% availability. Actual: 99.7% cho 3 tháng liên tiếp. Nobody noticed vì: (1) no SLO monitoring dashboard, (2) no error budget tracking, (3) no automated alerts on SLO burn. Customers noticed — 3 enterprise customers escalate complaints. CTO finds out from CUSTOMERS, not engineering.</p><p>Fix: SLO dashboard visible to all. Error budget burn rate alerting. Weekly SLO review meetings. Automated reports to stakeholders. Engineering priorities adjusted based on error budget remaining.</p><div class="lesson">💡 Bài học: SLOs without monitoring = meaningless numbers on paper. Dashboard + alerts + regular reviews. Error budget tracking automates reliability prioritization. SLO violations should be detected by engineering BEFORE customers complain.</div></div>
+            <div class="story"><h3>👤 Chuyện RUM Phát Hiện Thực Tế User</h3><p>Server metrics: p99 latency 50ms. Dashboard: green. But support tickets: 'Site is slow!' RUM deployed → discovery: actual page load time p99 = 8 seconds. Root causes: 3MB JavaScript bundle (2 seconds parse), 15 API calls per page load (waterfall), unoptimized images (1.5 seconds). Server fast, frontend performance terrible.</p><p>Fix: code splitting (lazy loading), API call batching, image optimization. Page load p99: 8s → 1.5s. Customer satisfaction improved dramatically.</p><div class="lesson">💡 Bài học: Server-side metrics ≠ user experience. RUM captures REAL user performance including network, browser, frontend. Core Web Vitals cho UX metrics. Frontend optimization often bigger impact than backend. Measure what users experience, not what servers experience.</div></div>
+            <div class="story"><h3>💰 Chuyện Error Budget Cứu Velocity</h3><p>Engineering team working hard on new features but SLO 99.9% thường xuyên bị vi phạm (99.5% actual). Management: 'Freeze all feature work, fix reliability!' Engineers frustrated: 6 tháng chỉ fix bugs, no new features, product stagnant.</p><p>Đại Sư implement error budget policy: if error budget remaining (>50%): prioritize features. If error budget low (20-50%): balance features/reliability. If error budget exhausted (<20%): reliability sprint. Result: data-driven prioritization. Teams self-manage reliability vs velocity tradeoff.</p><div class="lesson">💡 Bài học: Error budgets give teams AUTONOMY to balance velocity and reliability. Data-driven, not emotion-driven decisions. Error budget policy documented and agreed by engineering + product. Sustainable pace: neither always features nor always reliability. SRE culture enabler.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. SLOs without buy-in:</strong> Engineering sets SLOs alone. Product/business doesn't know or care. SLOs must be agreed by engineering + product + business. Shared ownership.</div>
+            <div class="mistake"><strong>2. 100% availability SLO:</strong> Unrealistic and counterproductive. 100% = no deployments, no changes. 99.9% or 99.95% reasonable cho most services. Error budget enables velocity.</div>
+            <div class="mistake"><strong>3. Only synthetic monitoring:</strong> Synthetic tests pass, real users fail. Synthetic ≠ real user conditions. Use both synthetic (baseline) and RUM (reality).</div>
+            <div class="mistake"><strong>4. Ignore frontend performance:</strong> Backend optimized, frontend 5-second load. Users don't care about server response time — they care about page load time.</div>
+            <div class="mistake"><strong>5. Monitoring as afterthought:</strong> Build → deploy → 'oh we should add monitoring.' Monitoring in design phase. Observability as first-class requirement.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #119</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

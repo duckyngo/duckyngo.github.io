@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tam Thánh Web - HTML/CSS/JavaScript</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15));
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .hero-emoji {
+            font-size: 80px;
+            display: block;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2em;
+            color: #a5b4fc;
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .quote {
+            font-style: italic;
+            color: #94a3b8;
+            margin-top: 16px;
+            font-size: 1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2));
+            border: 1px solid rgba(139,92,246,0.3);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            color: #c4b5fd;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; }
+        .skill-tag:nth-child(2) { animation-delay: 0.15s; }
+        .skill-tag:nth-child(3) { animation-delay: 0.2s; }
+        .skill-tag:nth-child(4) { animation-delay: 0.25s; }
+        .skill-tag:nth-child(5) { animation-delay: 0.3s; }
+        .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        .skill-tag:nth-child(7) { animation-delay: 0.4s; }
+        .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .skill-tag:hover {
+            background: linear-gradient(135deg, rgba(99,102,241,0.4), rgba(168,85,247,0.4));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139,92,246,0.3);
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 36px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(139,92,246,0.2);
+            box-shadow: 0 8px 40px rgba(139,92,246,0.1);
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            color: #a5b4fc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 .icon {
+            font-size: 1.3em;
+        }
+
+        .tip {
+            background: rgba(99,102,241,0.06);
+            border-left: 3px solid #818cf8;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .tip h3 {
+            color: #a5b4fc;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .tip p {
+            color: #cbd5e1;
+        }
+
+        .story {
+            background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(236,72,153,0.06));
+            border: 1px solid rgba(168,85,247,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .story h3 {
+            color: #e879f9;
+            font-size: 1.15em;
+            margin-bottom: 12px;
+        }
+
+        .story p {
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .story .lesson {
+            background: rgba(250,204,21,0.08);
+            border: 1px solid rgba(250,204,21,0.15);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            color: #fde68a;
+            font-weight: 500;
+        }
+
+        .mistake {
+            background: rgba(239,68,68,0.06);
+            border-left: 3px solid #f87171;
+            padding: 14px 20px;
+            margin: 12px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .mistake h3 {
+            color: #fca5a5;
+            font-size: 1em;
+            margin-bottom: 6px;
+        }
+
+        .mistake p {
+            color: #d1d5db;
+            font-size: 0.95em;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .footer .author {
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        code {
+            background: rgba(99,102,241,0.15);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: #c4b5fd;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8em; }
+            .card { padding: 24px; }
+            .container { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🕸️</span>
+            <h1>Tam Thánh Web</h1>
+            <p class="subtitle">Trần Văn Thẻ Đóng — Bậc Thầy HTML, CSS & JavaScript</p>
+            <p class="quote">"HTML là xương, CSS là da thịt, JavaScript là linh hồn. Thiếu một thứ là thành zombie."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Semantic HTML5</span>
+            <span class="skill-tag">CSS Specificity</span>
+            <span class="skill-tag">Flexbox & Grid</span>
+            <span class="skill-tag">JavaScript ES2024</span>
+            <span class="skill-tag">Event Loop</span>
+            <span class="skill-tag">Closures</span>
+            <span class="skill-tag">Prototypal Inheritance</span>
+            <span class="skill-tag">DOM Manipulation</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Văn Thẻ Đóng sinh ra vào thuở hồng hoang của Internet, khi mà người ta còn dùng <code>&lt;table&gt;</code> để layout cả trang web và nghĩ rằng <code>&lt;marquee&gt;</code> là đỉnh cao nghệ thuật. Thời niên thiếu, ông từng viết trang web bằng Notepad trên Windows 98, mỗi lần F5 refresh là tim đập như trống trận.</p>
+            <p>Ông tu luyện qua ba đại kiếp nạn: Kiếp đầu là "Cuộc chiến IE6" — khi mà CSS viết cho Chrome chạy đẹp nhưng sang IE6 thì vỡ tan như gương. Kiếp hai là "Thời kỳ jQuery thống trị" — khi mà ai không biết <code>$(document).ready()</code> thì bị coi là dân ngoại đạo. Kiếp ba là "Khai ngộ ES6" — khi arrow function xuất hiện và ông ngộ ra rằng <code>this</code> không phải lúc nào cũng là cái mình nghĩ.</p>
+            <p>Ngày nay, Thẻ Đóng là bậc trưởng lão được kính trọng trong giới web, nổi tiếng với câu nói: "Nếu trang web của anh không chạy được khi tắt JavaScript, thì anh chưa hiểu HTML."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Semantic HTML — Viết cho máy đọc, không chỉ cho người đọc</h3>
+                <p>Đừng bao giờ biến trang web thành "div soup". Mỗi thẻ HTML đều có ý nghĩa riêng: <code>&lt;article&gt;</code> cho bài viết, <code>&lt;nav&gt;</code> cho điều hướng, <code>&lt;aside&gt;</code> cho sidebar, <code>&lt;main&gt;</code> cho nội dung chính. Khi bạn dùng đúng thẻ, screen reader hiểu được cấu trúc trang, Google bot index tốt hơn, và developer sau bạn không muốn resign. Quy tắc vàng: Nếu có thẻ HTML native làm được việc đó, đừng tự tạo bằng <code>&lt;div&gt;</code> + JavaScript.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: CSS Specificity — Cuộc chiến độ ưu tiên</h3>
+                <p>CSS specificity là hệ thống tính điểm: inline style (1000 điểm) > ID (100) > class/attribute/pseudo-class (10) > element/pseudo-element (1). Khi hai rule xung đột, rule có specificity cao hơn thắng. Đừng bao giờ dùng <code>!important</code> trừ khi đang ghi đè CSS của thư viện bên thứ ba — nó giống như dùng búa tạ để đóng đinh treo tranh. Thay vào đó, hãy nắm vững specificity và viết selector đủ cụ thể. Mẹo: Dùng BEM naming convention (<code>.block__element--modifier</code>) để giữ specificity phẳng và dễ quản lý.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: JavaScript Event Loop — Hiểu để không bị "async" đánh bại</h3>
+                <p>JavaScript là single-threaded nhưng non-blocking nhờ event loop. Khi bạn gọi <code>setTimeout(fn, 0)</code>, fn không chạy ngay lập tức — nó được đẩy vào task queue và chờ call stack trống. Microtask queue (Promise callbacks) luôn được xử lý trước macrotask queue (setTimeout, setInterval). Đây là lý do tại sao <code>Promise.resolve().then(() => console.log('B'))</code> luôn chạy trước <code>setTimeout(() => console.log('A'), 0)</code>. Nắm vững event loop là chìa khóa để debug async code mà không phát điên.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Closures — Hàm nhớ lâu hơn người yêu cũ</h3>
+                <p>Closure xảy ra khi một hàm "nhớ" được scope nơi nó được tạo ra, ngay cả khi hàm đó được thực thi ở nơi khác. Đây là nền tảng của module pattern, data privacy, và factory functions. Cẩn thận với closures trong vòng lặp — cái bẫy kinh điển khi dùng <code>var</code> trong <code>for</code> loop với <code>setTimeout</code>. Giải pháp: dùng <code>let</code> (block-scoped) thay vì <code>var</code> (function-scoped), hoặc dùng IIFE để tạo scope mới cho mỗi iteration.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Prototypal Inheritance — Thừa kế kiểu JavaScript</h3>
+                <p>Không giống class-based OOP trong Java/C#, JavaScript dùng prototype chain. Mọi object đều có <code>[[Prototype]]</code> link tới object khác. Khi truy cập property không tồn tại trên object, engine tìm ngược lên prototype chain. <code>class</code> syntax trong ES6 chỉ là syntactic sugar — bên dưới vẫn là prototype. Hiểu điều này giúp bạn debug được những bug kỳ lạ khi method "biến mất" hoặc <code>instanceof</code> cho kết quả bất ngờ.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: CSS Layout — Flexbox cho hàng, Grid cho lưới</h3>
+                <p>Quy tắc đơn giản: Flexbox cho layout 1 chiều (hàng HOẶC cột), Grid cho layout 2 chiều (hàng VÀ cột). Đừng cố ép Flexbox làm grid layout phức tạp — bạn sẽ kết thúc với <code>flex-wrap</code> + <code>calc()</code> hack xấu xí. Grid Template Areas (<code>grid-template-areas</code>) là công cụ mạnh nhất mà ít ai dùng — nó cho phép bạn "vẽ" layout bằng tên, dễ đọc và dễ thay đổi. Kết hợp <code>container queries</code> (thay vì chỉ media queries) để component tự responsive theo container chứ không phải viewport.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #7: Modern JavaScript Patterns — Viết ít, làm nhiều</h3>
+                <p>Nắm vững destructuring, optional chaining (<code>?.</code>), nullish coalescing (<code>??</code>), và <code>structuredClone()</code> cho deep copy. Dùng <code>AbortController</code> để cancel fetch requests — đừng để request zombie ám ảnh app. <code>Proxy</code> và <code>Reflect</code> là công cụ meta-programming mạnh mẽ cho reactivity system (Vue 3 dùng nó). Và nhớ: <code>Array.from({length: n}, (_, i) => i)</code> tạo mảng số thứ tự nhanh hơn bạn nghĩ.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Cơn Ác Mộng z-index</h3>
+                <p>Năm 2019, team tôi nhận dự án redesign một trang thương mại điện tử. Mọi thứ đẹp lung linh cho đến khi tester report: "Modal xuất hiện ĐẰNG SAU dropdown menu." OK đơn giản, tăng z-index lên. Nhưng dropdown có z-index 999. Modal tăng lên 9999. Rồi tooltip cần lên trên modal: 99999. Rồi ai đó thêm notification overlay: 999999.</p>
+                <p>Chỉ sau 2 tuần, chúng tôi có một "cuộc chạy đua z-index" với giá trị cao nhất là <code>z-index: 2147483647</code> — đúng, giá trị integer max! Và khi hai element cùng z-index max, chúng tôi ngồi đó nhìn nhau, không biết làm gì.</p>
+                <p>Vấn đề thực sự? Chúng tôi không hiểu stacking context. Mỗi khi element có <code>position: relative/absolute</code> + <code>z-index</code>, hoặc <code>transform</code>, <code>opacity &lt; 1</code>, <code>filter</code>, nó tạo ra stacking context MỚI. Z-index chỉ có ý nghĩa TRONG cùng stacking context. Con z-index 999999 trong stacking context cha z-index 1 vẫn thua con z-index 2 trong stacking context cha z-index 2.</p>
+                <div class="lesson">💡 Bài học: Đừng chạy đua z-index. Hãy hiểu stacking context. Tạo một file z-index tokens với các layer có tên rõ ràng (base: 1, dropdown: 10, modal: 20, toast: 30). Ít level hơn = ít đau đầu hơn.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: Callback Hell — Hành Trình Xuống Địa Ngục</h3>
+                <p>Thời chưa có Promise, tôi từng viết một feature upload ảnh: đọc file → resize → upload → lưu URL vào DB → gửi notification. Mỗi bước là một callback lồng nhau. Code trông như "pyramid of doom" — thụt lề sâu đến mức phải scroll ngang.</p>
+                <p>Nhưng kinh hoàng thực sự là error handling. Mỗi level callback cần try-catch riêng. Quên bắt error ở bất kỳ level nào → error biến mất vào hư không, silent failure. Debug như tìm kim trong đống rơm — mà đống rơm đang cháy.</p>
+                <p>Khi junior hỏi "callback hell là gì", tôi chỉ mở file đó ra. Cậu ta im lặng 10 giây rồi nói: "Anh ơi, cái này là code hay là nghệ thuật trừu tượng?" 250 dòng code, 15 level callback lồng nhau, 3 nơi error bị nuốt im lặng. Sau đó tôi refactor sang Promise rồi async/await — file giảm từ 250 dòng xuống 45 dòng.</p>
+                <div class="lesson">💡 Bài học: Async/await không chỉ là syntactic sugar — nó cứu mạng developer. Luôn dùng try-catch với async/await, và đừng quên handle rejection ở top level. <code>Promise.allSettled()</code> khi cần chạy nhiều async tasks song song mà không muốn một failure làm sập tất cả.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: Keyword "this" — Kẻ Phản Bội Thầm Lặng</h3>
+                <p>Senior developer mới join team, 10 năm Java, tự tin viết JavaScript class. Code trông sạch, logic rõ ràng. Nhưng khi pass method làm callback cho event listener — BÙM — <code>this</code> là <code>undefined</code>.</p>
+                <p>"Nhưng tôi đang gọi <code>this.handleClick</code> mà!" — anh ta la lên. Đúng, nhưng khi JavaScript tách method ra khỏi object và pass nó như callback, <code>this</code> binding bị mất. Trong Java, <code>this</code> luôn là instance. Trong JavaScript, <code>this</code> phụ thuộc vào CÁCH hàm được gọi, không phải NƠI hàm được định nghĩa.</p>
+                <p>Anh ta mất 2 ngày debug, thử đủ cách: <code>.bind(this)</code>, <code>self = this</code>, arrow function trong constructor. Cuối cùng ngộ ra rằng arrow function không có <code>this</code> riêng — nó "inherit" <code>this</code> từ enclosing scope. Từ đó, mọi class method dùng làm callback đều viết dạng arrow function: <code>handleClick = () => { ... }</code>.</p>
+                <div class="lesson">💡 Bài học: Trong JavaScript, <code>this</code> được xác định lúc runtime bởi cách gọi hàm (call site), không phải lúc viết code. 4 quy tắc theo thứ tự ưu tiên: new binding → explicit binding (call/apply/bind) → implicit binding (method call) → default binding (global/undefined). Arrow function là ngoại lệ — luôn dùng <code>this</code> của scope cha.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 4: Khi CSS Animation Giết Chết Performance</h3>
+                <p>Marketing yêu cầu homepage "sống động hơn" — mỗi card phải có hiệu ứng parallax, mỗi button phải pulse, background phải có particles bay. Tôi — đầy nhiệt huyết — dùng <code>setInterval</code> thay đổi <code>left</code> và <code>top</code> cho 200 particles.</p>
+                <p>Kết quả: 3 FPS trên điện thoại. Fan quay vù vù. Pin tụt từ 80% xuống 20% trong 5 phút. Trang web đẹp tuyệt vời — nếu bạn nhìn screenshot. Còn trên thiết bị thật, nó giống slideshow hơn là animation.</p>
+                <p>Vấn đề: <code>left</code>, <code>top</code>, <code>width</code>, <code>height</code> trigger layout recalculation (reflow). Mỗi frame, browser phải tính lại vị trí của TẤT CẢ element. Giải pháp: dùng <code>transform: translate()</code> và <code>opacity</code> — hai property duy nhất được GPU accelerate, chạy trên compositor thread, không trigger reflow.</p>
+                <div class="lesson">💡 Bài học: Chỉ animate <code>transform</code> và <code>opacity</code>. Dùng <code>will-change</code> để hint browser chuẩn bị GPU layer. <code>requestAnimationFrame</code> thay vì <code>setInterval</code> cho animation. Và nhớ: animation đẹp nhất là animation mà user không nhận ra — smooth 60fps, subtle, purposeful.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Dùng <code>==</code> thay vì <code>===</code></h3>
+                <p><code>0 == ""</code> là <code>true</code>. <code>null == undefined</code> là <code>true</code>. <code>[] == false</code> là <code>true</code>. JavaScript type coercion là cánh cửa dẫn đến dimension khác. Luôn dùng strict equality <code>===</code> trừ khi bạn có lý do RẤT cụ thể.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Quên rằng CSS class order không quyết định priority</h3>
+                <p><code>class="red blue"</code> hay <code>class="blue red"</code> không khác nhau. Thứ tự trong STYLESHEET mới quyết định. Nếu <code>.blue</code> được define SAU <code>.red</code> trong CSS file, <code>.blue</code> thắng — bất kể thứ tự trong HTML.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: <code>innerHTML</code> cho user input — mở cửa cho XSS</h3>
+                <p>Bạn <code>element.innerHTML = userInput</code>? Chúc mừng, bạn vừa cho hacker inject <code>&lt;script&gt;</code> tag vào trang web. Dùng <code>textContent</code> cho text thuần, hoặc sanitize HTML trước khi render.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Viết CSS selector quá cụ thể</h3>
+                <p><code>body div.container div.content article.post div.text p span.highlight</code> — specificity cao chót vót, không ai override được, và khi HTML structure thay đổi một chút thì CSS vỡ toàn bộ. Giữ selector phẳng, tối đa 2-3 level.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Không hiểu hoisting</h3>
+                <p><code>var</code> declarations được hoist lên đầu function nhưng GIÁ TRỊ thì không. <code>function</code> declarations được hoist hoàn toàn. <code>let</code>/<code>const</code> có temporal dead zone — truy cập trước khi declare sẽ throw ReferenceError thay vì cho <code>undefined</code>. Khác nhau tinh tế nhưng gây bug khó tìm.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Dùng <code>for...in</code> cho array</h3>
+                <p><code>for...in</code> iterate qua enumerable properties — bao gồm cả prototype chain! Dùng <code>for...of</code> cho arrays, hoặc tốt hơn: <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code> cho functional approach. <code>for...in</code> chỉ nên dùng cho object (và kèm <code>hasOwnProperty</code> check).</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #7: Nghĩ rằng <code>margin: auto</code> center mọi thứ</h3>
+                <p><code>margin: 0 auto</code> chỉ center theo chiều ngang, và chỉ khi element có width cố định. Muốn center cả hai chiều? <code>display: grid; place-items: center;</code> — 2 dòng, xong. Đừng struggle với margin-top 50% minus half-height hack nữa.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Văn Thẻ Đóng</span> — Tam Thánh Web</p>
+            <p>🕸️ "Hãy viết HTML như thể người đọc code của bạn là một kẻ giết người biết địa chỉ nhà bạn."</p>
+        </div>
+    </div>
+</body>
+</html>

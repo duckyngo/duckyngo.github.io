@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mây Google Đại Sư - Chuyên Gia GCP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a0a 30%, #1a2a0a 60%, #0a3a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(52,168,83,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(52,168,83,0.2); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(52,168,83,0.1); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #34a853; text-shadow: 0 0 20px #34a85340; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #34a853; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(52,168,83,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(52,168,83,0.2); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #34a853; transition: all 0.3s; }
+        .badge:hover { background: rgba(52,168,83,0.15); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #34a853; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(52,168,83,0.3); }
+        .tip { background: rgba(52,168,83,0.03); border-left: 4px solid #34a853; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #34a853; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🟢</span>
+            <h1>Mây Google Đại Sư</h1>
+            <div class="title">Chuyên Gia Google Cloud Platform | Người Lo Sợ Dịch Vụ Bị Khai Tử</div>
+            <div class="quote">"Tôi yêu GCP. Tôi cũng biết Google có thể kill bất kỳ dịch vụ nào bất cứ lúc nào. Tình yêu và nỗi sợ — chính là GCP."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">📊 BigQuery Master</span>
+            <span class="badge">⚓ GKE Expert</span>
+            <span class="badge">🏃 Cloud Run Pro</span>
+            <span class="badge">🔥 Firebase Wizard</span>
+            <span class="badge">🧠 Vertex AI</span>
+            <span class="badge">🗄️ Cloud Spanner</span>
+            <span class="badge">📡 Pub/Sub</span>
+            <span class="badge">🌐 Cloud CDN</span>
+            <span class="badge">🔐 IAM Expert</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Đại Sư bắt đầu sự nghiệp như một data engineer yêu thích BigQuery đến mức đặt tên con gái là "Quyri" (vợ không đồng ý, cuối cùng thỏa hiệp đặt tên con mèo). Chàng ta đến với GCP vì một lý do đơn giản: BigQuery scan petabytes trong vài giây mà không cần quản lý infrastructure.</p>
+            <p>Nhưng sống trong thế giới Google nghĩa là sống với nỗi sợ: Google Reader — killed. Google Stadia — killed. Google Domains — bán cho Squarespace. Mỗi khi đọc tin "Google discontinues...", chàng ta lại kiểm tra xem BigQuery còn sống không.</p>
+            <p>Dù vậy, GCP có sức mạnh thực sự: networking của Google (private fiber optic backbone), Kubernetes sinh ra từ Borg của Google, và các dịch vụ AI/ML hàng đầu. Đại Sư đã giúp hàng chục công ty leverage sức mạnh này — miễn là họ chấp nhận rằng console UX sẽ luôn thua AWS và Azure.</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. BigQuery — Data Warehouse Thần Thánh:</strong> Serverless, auto-scaling, column-oriented storage. Nhưng pricing theo data scanned — SELECT * trên bảng 10TB sẽ tốn $50/query. LUÔN dùng column selection, partitioned tables, clustered tables. Slot reservations cho predictable costs. Query dry-run để estimate chi phí trước.
+            </div>
+            <div class="tip">
+                <strong>2. GKE — Kubernetes Tốt Nhất:</strong> Google sinh ra Kubernetes, nên GKE là best-in-class. Autopilot mode: Google quản lý nodes, bạn chỉ lo pods. Standard mode cho full control. GKE Enterprise cho multi-cluster management. Tích hợp tốt với Cloud Build cho CI/CD.
+            </div>
+            <div class="tip">
+                <strong>3. Cloud Run — Serverless Containers:</strong> Deploy container image, tự động scale, trả tiền theo request. Tuyệt vời cho microservices, APIs, web apps. Scale-to-zero tiết kiệm chi phí. Min instances để tránh cold start. Kết hợp với Cloud Build cho CI/CD hoàn chỉnh.
+            </div>
+            <div class="tip">
+                <strong>4. Firebase — Mobile/Web Backend:</strong> Authentication, Firestore, Realtime Database, Hosting, Cloud Functions. Tuyệt vời cho MVPs và prototypes. Nhưng cẩn thận: Firestore pricing theo reads/writes — viral app có thể tốn $10K/ngày nếu không optimize queries.
+            </div>
+            <div class="tip">
+                <strong>5. IAM & Organization — Hierarchy Matters:</strong> Organization → Folders → Projects → Resources. IAM policies inherited downward. Dùng Folders để organize theo team/environment. Service accounts cho workloads, không phải cho people. Workload Identity Federation thay thế service account keys.
+            </div>
+            <div class="tip">
+                <strong>6. Networking — Google's Superpower:</strong> Premium Tier networking dùng Google's private backbone — traffic đi qua internet càng ít càng tốt. Shared VPC cho multi-project networking. Private Google Access cho GCP services. Cloud NAT cho outbound internet access từ private instances.
+            </div>
+            <div class="tip">
+                <strong>7. AI/ML Platform — Vertex AI:</strong> Training, serving, MLOps trong một platform. AutoML cho non-ML engineers. Custom training cho flexibility. Model monitoring, feature store, pipelines. Tích hợp BigQuery ML cho SQL-based ML — data analysts cũng có thể train models.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>📊 Chuyện BigQuery Scan 10TB "Vô Tình"</h3>
+                <p>Một junior data analyst mới join team, được giao quyền BigQuery. Ngày đầu tiên, anh ta chạy: SELECT * FROM production.user_events. Bảng này chứa 3 năm event data — 10TB. Chi phí: $50 cho MỘT query.</p>
+                <p>Anh ta chạy query này 5 lần vì "kết quả tải chậm quá, chắc bị lỗi". Tổng: $250 trong 30 phút. Manager nhận billing alert, chạy sang hỏi: "Em đang làm gì vậy?!" Anh ta trả lời: "Dạ em đang explore data."</p>
+                <p>Từ đó, team implement: custom quota limits per user, required column selection trong query template, partitioned tables, và bắt buộc dùng query dry-run trước khi chạy query thật.</p>
+                <div class="lesson">💡 Bài học: BigQuery charges by data scanned. PARTITION tables theo date. CLUSTER theo frequently filtered columns. Set custom quotas per user/project. Query dry-run trước khi execute. SELECT * là tội ác trên BigQuery.</div>
+            </div>
+            <div class="story">
+                <h3>💀 Chuyện GCP Service Bị Khai Tử</h3>
+                <p>Năm 2020, một startup xây dựng toàn bộ IoT platform trên Google Cloud IoT Core. 2 năm development, 50+ khách hàng doanh nghiệp, hàng triệu devices. Mọi thứ hoàn hảo — cho đến khi Google announce: "Cloud IoT Core will be discontinued."</p>
+                <p>CTO gọi điện cho Đại Sư lúc 2 giờ sáng: "Google vừa kill service chính của chúng tôi!" Phải migrate sang MQTT broker tự quản lý + Pub/Sub. Mất 6 tháng, tốn $200K engineering effort. Khách hàng mất niềm tin.</p>
+                <div class="lesson">💡 Bài học: Killedbygoogle.com không phải đùa. Khi dùng GCP niche service, luôn có exit strategy. Prefer open-source components trên GCP compute hơn proprietary managed services cho critical path. Google Kubernetes Engine an toàn vì Kubernetes là open-source.</div>
+            </div>
+            <div class="story">
+                <h3>🔥 Chuyện Firebase Bill Tăng 100x</h3>
+                <p>Một indie developer build social app với Firebase. Free tier, chi phí $5/tháng. App lên trending trên TikTok. Overnight: 500K users. Firestore reads tăng từ 50K/ngày lên 50M/ngày. Bill tháng đó: $12,000.</p>
+                <p>Developer gọi điện khóc cho Đại Sư. Vấn đề: mỗi lần user mở app, query ALL posts (không có pagination), mỗi post trigger separate read cho author info (N+1 query problem). Fix: implement pagination, denormalize author info vào post document, client-side caching.</p>
+                <div class="lesson">💡 Bài học: Firestore charges per read/write operation. Denormalize data, implement pagination, cache client-side. Set billing alerts và budget caps. Understand pricing model TRƯỚC khi build, không phải sau khi viral.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. SELECT * trên BigQuery production tables:</strong> Mỗi query scan full table. Tốn tiền, tốn thời gian, tốn hồn. Partition, cluster, và chỉ select cột cần thiết.
+            </div>
+            <div class="mistake">
+                <strong>2. Dùng service account keys thay vì Workload Identity:</strong> Keys cần rotate, dễ leak. Workload Identity Federation cho phép authenticate mà không cần keys. Đây là best practice từ 2022.
+            </div>
+            <div class="mistake">
+                <strong>3. Đặt mọi thứ vào default project:</strong> Không tách environments, không tách billing, không có isolation. Dùng Organization + Folders + Projects hierarchy đúng cách.
+            </div>
+            <div class="mistake">
+                <strong>4. Bỏ qua VPC Service Controls:</strong> Cho phép data exfiltration từ BigQuery, GCS. VPC Service Controls tạo security perimeter quanh GCP resources — must-have cho enterprise.
+            </div>
+            <div class="mistake">
+                <strong>5. Không enable Cloud Audit Logs:</strong> Admin Activity logs enabled mặc định, nhưng Data Access logs thì không. Enable cho compliance và forensics. Chi phí log storage có thể cao — plan retention policy.
+            </div>
+            <div class="mistake">
+                <strong>6. Build trên GCP-only services cho core logic:</strong> Cloud IoT Core đã bị kill. App Engine flex thì đắt hơn Cloud Run. Giữ core logic portable, dùng GCP managed services cho infrastructure layer.
+            </div>
+            <div class="mistake">
+                <strong>7. Firestore security rules để open:</strong> Default Firestore rules allow all reads/writes. Đây là invite hackers. Write proper security rules TRƯỚC khi deploy. Test rules với Firebase Emulator.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #79</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

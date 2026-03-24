@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhận Diện Hình Ảnh Đại Sư - Image Classification & Detection Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(63,81,181,0.12) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.4em; color: #9fa8da; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(159,168,218,0.3); }
+        .header .title { font-size: 1.2em; color: #c5cae9; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(63,81,181,0.1); }
+        .card h2 { color: #9fa8da; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(63,81,181,0.3), rgba(48,63,159,0.2)); border: 1px solid rgba(159,168,218,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #c5cae9; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(63,81,181,0.5), rgba(48,63,159,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(63,81,181,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #3f51b5, #9fa8da); border-radius: 50%; color: white; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #3f51b5; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">👁️‍🗨️</span>
+            <h1>Nhận Diện Hình Ảnh Đại Sư</h1>
+            <div class="title">Classification, YOLO, DETR Expert</div>
+            <div class="quote">"YOLO không chỉ là 'You Only Look Once' — đó còn là triết lý sống: nhìn một lần, quyết định ngay."</div>
+            <div class="badge-container">
+                <span class="badge">🎯 YOLO</span>
+                <span class="badge">🔍 DETR</span>
+                <span class="badge">📦 Anchor Boxes</span>
+                <span class="badge">🏷️ Classification</span>
+                <span class="badge">📊 mAP</span>
+                <span class="badge">✂️ NMS</span>
+                <span class="badge">🖼️ Object Detection</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Nhận Diện Hình Ảnh Đại Sư tên thật là <strong>Mắt Thần Quang</strong>, cựu nhiếp ảnh gia chuyển sang Computer Vision. "Tôi chụp ảnh 10 năm, giờ tôi dạy máy nhìn ảnh. Khác biệt: máy nhìn nhanh hơn, nhưng đôi khi thấy 'person' ở chỗ có cái cây."</p>
+            <p>Anh bắt đầu với HOG + SVM (thời kỳ đồ đá của CV), trải qua R-CNN (chậm chết), Fast R-CNN (khá hơn), Faster R-CNN (decent), và cuối cùng YOLO (real-time!). "Mỗi thế hệ nhanh hơn thế hệ trước 10x. Tôi thì già đi 10x mỗi thế hệ."</p>
+            <p>Hiện anh deploy YOLO cho nhà máy sản xuất (phát hiện sản phẩm lỗi) và hệ thống giao thông (đếm xe). Khi model detect sai, anh nói: "Không phải model sai, đó là creative interpretation."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Nhận Diện</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>YOLO Family — Từ v1 đến v11</h3>
+                    <p>YOLO = single-stage detector: predict bounding boxes + classes in one pass. <strong>YOLOv8/v11</strong> (Ultralytics): state-of-art, easy to use, nhiều sizes (nano → xlarge). <strong>RT-DETR</strong>: real-time transformer-based, tốt khi cần accuracy. Chọn model size theo deployment: <code>yolov8n</code> (edge/mobile, 3.2M params), <code>yolov8m</code> (balanced), <code>yolov8x</code> (max accuracy, GPU). Training: <code>yolo train data=custom.yaml model=yolov8m.pt epochs=100 imgsz=640</code>.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>DETR — Transformer cho Object Detection</h3>
+                    <p>DETR: end-to-end, không cần anchor boxes, không cần NMS. Set prediction: predict N objects (thường 100), match với ground truth bằng Hungarian algorithm. Pros: elegant, no hand-crafted components. Cons: chậm converge (500 epochs vs YOLO 100), chậm inference. <strong>Co-DETR</strong>, <strong>DINO-DETR</strong>: improved versions, converge nhanh hơn. Dùng DETR khi accuracy quan trọng hơn speed.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Metrics — mAP và bạn bè</h3>
+                    <p><strong>mAP@0.5</strong>: IoU threshold 0.5, lenient. <strong>mAP@0.5:0.95</strong>: average over IoU 0.5 đến 0.95, strict hơn, COCO standard. <strong>Precision</strong>: trong các detection, bao nhiêu đúng? <strong>Recall</strong>: trong các objects thật, detect được bao nhiêu? Trade-off: confidence threshold cao → precision cao, recall thấp. Chọn threshold dựa trên use case: safety-critical → recall cao, spam filter → precision cao.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Data Annotation & Augmentation</h3>
+                    <p>Annotation tools: <strong>CVAT</strong> (free, self-hosted), <strong>Label Studio</strong> (versatile), <strong>Roboflow</strong> (managed + augmentation). Quality: 1 annotator check + 1 reviewer. Minimum: 500-1000 instances per class. Augmentation: <strong>Mosaic</strong> (4 images combined), random scale, HSV jitter, horizontal flip. Cẩn thận: không flip nếu left/right matters, không rotate 180° nếu gravity matters.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Tiny Object Detection — Bài toán khó</h3>
+                    <p>Objects < 32×32 pixels khó detect. Solutions: (1) Higher resolution input (1280 thay vì 640). (2) <strong>SAHI</strong>: Slicing Aided Hyper Inference — cắt ảnh thành patches, detect trên mỗi patch, merge results. (3) Multi-scale training. (4) Feature Pyramid Network (FPN) — built-in trong YOLO. (5) Tiled training data. Năm 2026: SAHI + YOLOv8 là combo standard cho tiny object detection.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">6</span>
+                <div class="tip-content">
+                    <h3>NMS — Non-Maximum Suppression</h3>
+                    <p>Khi model detect cùng 1 object nhiều lần → cần NMS loại bỏ duplicate boxes. Standard NMS: giữ box confidence cao nhất, loại boxes IoU > threshold. <strong>Soft-NMS</strong>: giảm confidence thay vì loại hoàn toàn → tốt hơn cho overlapping objects. NMS threshold: 0.5-0.7. Quá thấp → miss overlapping objects. Quá cao → duplicate detections.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">👤 Chuyện 1: YOLO detect mọi thứ là "person"</div>
+                <p>Deploy YOLO cho hệ thống đếm khách trong cửa hàng. Ngày đầu: "200 khách/giờ!" Sếp vui mừng. Thực tế: 50 khách + 150 mannequins + poster quảng cáo có người + phản chiếu trong gương.</p>
+                <p>Model detect mannequin là "person" confidence 0.87. Detect poster là "person" confidence 0.72. Detect reflection là "person" confidence 0.65. Anh Mắt Thần phải thêm logic: filter theo kích thước (mannequin to hơn), vị trí (poster ở trên cao), và movement (tracking để loại objects tĩnh).</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Object detection trong lab khác trong real-world. Cần: (1) Domain-specific training data (bao gồm edge cases), (2) Post-processing logic, (3) Tracking để filter false positives, (4) Test trong actual environment, không chỉ trên benchmark. Model chỉ tốt bằng data và context bạn cho nó.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🔬 Chuyện 2: Tiny object detection fail</div>
+                <p>Khách hàng cần detect ốc vít bị lỗi trên dây chuyền. Ốc vít: 8×8 pixels trong ảnh 1920×1080. YOLO mAP: 12%. Anh tăng input size lên 1280: mAP 28%. Vẫn tệ.</p>
+                <p>Solution: dùng camera zoom gần hơn (tăng object size) + SAHI (sliced inference). mAP: 78%. Cuối cùng thêm custom augmentation giả lập lighting conditions nhà máy: mAP 89%. "Đôi khi giải pháp tốt nhất không phải AI tốt hơn, mà là camera tốt hơn."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Tiny object detection cần approach khác: (1) Better hardware (camera resolution, zoom), (2) SAHI for sliced inference, (3) Higher input resolution, (4) Domain-specific augmentation. Đừng blame model khi input data không đủ tốt — garbage resolution in, garbage detection out.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">📊 Chuyện 3: mAP cao nhưng production tệ</div>
+                <p>Model detect sản phẩm trên kệ siêu thị: mAP@0.5 = 92% trên test set. Deploy vào camera thực: performance cảm giác chỉ 60%. Tại sao?</p>
+                <p>Test set: ảnh chụp studio, sáng đẹp, sản phẩm xếp gọn. Production: camera góc xiên, ánh sáng fluorescent, sản phẩm bị che, reflection. Domain gap kinh điển. Fix: thu thập data từ camera thực, fine-tune, thêm augmentation giả lập conditions thực tế.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> mAP trên benchmark ≠ performance production. Luôn test trên data representative cho production. Thu thập "failure cases" từ production, thêm vào training data, và iterate. ML không phải "train once, deploy forever" — đó là continuous improvement.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Dùng mAP@0.5 rồi claim "92% accuracy":</strong> mAP@0.5 lenient. Report mAP@0.5:0.95 cho realistic assessment.
+            </div>
+            <div class="mistake">
+                <strong>❌ Ít data per class:</strong> 50 images/class không đủ. Tối thiểu 500-1000 instances per class.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không test trên production environment:</strong> Studio ≠ real-world. Test với camera, lighting, và conditions thực tế.
+            </div>
+            <div class="mistake">
+                <strong>❌ NMS threshold cố định:</strong> Different use cases cần different NMS thresholds. Tune theo application.
+            </div>
+            <div class="mistake">
+                <strong>❌ Quên confidence threshold:</strong> Default 0.25 cho demo, production cần tune cho precision/recall trade-off phù hợp.
+            </div>
+            <div class="mistake">
+                <strong>❌ Model quá lớn cho edge:</strong> YOLOv8x trên Jetson Nano = 2 FPS. Chọn model size phù hợp với hardware.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>👁️‍🗨️ Nhận Diện Hình Ảnh Đại Sư — "Nhìn một lần, biết tất cả. Nhìn lần hai để chắc chắn."</p>
+            <p>Section 3: AI & Machine Learning · Expert #65</p>
+        </div>
+    </div>
+</body>
+</html>

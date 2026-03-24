@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiệu Năng Đại Sư - Chuyên Gia Performance Tuning | Người Đếm Từng Nanosecond</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a0a 30%, #2a2a0a 60%, #3a3a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #eab308; text-shadow: 0 0 20px #eab30840; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #eab308; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #eab308; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+        .section h2 { color: #eab308; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eab30830; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #eab308; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #eab308; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } .section { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🏎️</span>
+            <h1>Hiệu Năng Đại Sư</h1>
+            <div class="title">Chuyên Gia Performance Tuning | Người Đếm Từng Nanosecond</div>
+            <div class="quote">"Performance tuning giống như giảm cân: mọi người muốn kết quả nhanh, nhưng thực tế cần kiên nhẫn, đo lường, và thay đổi lối sống."</div>
+        </div>
+        <div class="badges">
+            <span class="badge">⚡ CPU Scheduling</span>
+            <span class="badge">🧠 Memory Management</span>
+            <span class="badge">💾 Disk I/O Tuning</span>
+            <span class="badge">🌐 Network Optimization</span>
+            <span class="badge">📊 Profiling</span>
+            <span class="badge">🔍 Bottleneck Analysis</span>
+            <span class="badge">📈 Benchmarking</span>
+            <span class="badge">🎯 Latency Expert</span>
+        </div>
+        <div class="section">
+            <h2>📚 Thân Thế &amp; Lai Lịch</h2>
+            <p>Hiệu Năng Đại Sư từng là developer viết code "chạy được là được." Cho đến khi ứng dụng chàng ta viết serve 100 users thì mượt, 1000 users thì lag, 10000 users thì sập. CTO hỏi: "Tại sao?" Chàng ta trả lời: "Hệ thống cần upgrade?" CTO: "Không, code cần optimize."</p><p>Từ đó, chàng ta bắt đầu hành trình giác ngộ: perf, strace, flamegraph, htop, vmstat, iostat — những tools mà trước đây chàng ta chưa bao giờ nghe. Chàng ta nhận ra rằng performance tuning là detective work: tìm bottleneck, measure, optimize, repeat.</p><p>Sau 15 năm, chàng ta có thể nhìn vào htop output 3 giây và nói: "Database server, IOwait cao, cần SSD. Team dùng SELECT * phải không?" — đúng 95% thời gian.</p>
+        </div>
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. CPU — Scheduling & Optimization:</strong> mpstat cho per-CPU stats. top/htop cho realtime monitoring. Context switches cao = quá nhiều processes competing. CPU steal > 5% trên VM = noisy neighbor. NUMA awareness cho multi-socket servers. CPU pinning (taskset/cgroups) cho latency-sensitive workloads. irqbalance cho interrupt distribution.
+            </div>
+            <div class="tip">
+                <strong>2. Memory — Hiểu Để Tối Ưu:</strong> free -h là bước đầu tiên. Buffer/cache là TỐT — kernel tận dụng RAM. vm.swappiness=10 cho database servers (giảm swapping). Transparent Huge Pages (THP) — disable cho databases (fragmentation issues). OOM killer: tune oom_score_adj cho critical processes. Memory leaks: valgrind, address sanitizer.
+            </div>
+            <div class="tip">
+                <strong>3. Disk I/O — Thường Là Bottleneck:</strong> iostat -x 1 cho per-disk stats. await > 10ms = slow disk. %util > 80% = saturated. Scheduler: noop/none cho SSD, mq-deadline cho HDD. readahead tuning cho sequential workloads. Direct I/O cho databases. noatime,nodiratime mount options. NVMe > SSD > HDD — hardware matters.
+            </div>
+            <div class="tip">
+                <strong>4. Network — Tuning Cho Throughput:</strong> netstat/ss cho connection stats. TIME_WAIT sockets quá nhiều = cần tcp_tw_reuse. TCP window scaling cho WAN. MTU optimization (jumbo frames trong datacenter). Socket buffer sizes (net.core.rmem_max, wmem_max). BBR congestion control cho WAN. Interrupt coalescing cho high-throughput.
+            </div>
+            <div class="tip">
+                <strong>5. Application Profiling:</strong> CPU profiling: perf record + flamegraph. Memory profiling: valgrind, heaptrack. Database: EXPLAIN ANALYZE mọi slow query. Connection pooling cho database connections. Async I/O cho I/O-bound applications. Caching: Redis/Memcached cho repeated computations. Profile TRƯỚC khi optimize — đừng guess.
+            </div>
+            <div class="tip">
+                <strong>6. Benchmarking — Đo Đúng Cách:</strong> fio cho disk benchmarks. iperf3 cho network benchmarks. wrk/ab cho HTTP benchmarks. sysbench cho database benchmarks. Benchmark trước và sau optimization. Kiểm soát variables: cùng data, cùng conditions. Benchmark production-like workload, không phải synthetic. 3 runs minimum, report p50/p95/p99.
+            </div>
+        </div>
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>😰 Chuyện Swappiness Giết Chết Database</h3>
+                <p>PostgreSQL server chạy trên VM 32GB RAM, database buffer pool 24GB. Sau 2 tháng, performance degrade dần. Queries chậm gấp 10x. Team tăng RAM lên 64GB — vẫn chậm. Tăng lên 128GB — hơi khá hơn nhưng vẫn chậm so với ban đầu.</p><p>Đại Sư SSH vào, chạy free -h: swap usage 40GB. vm.swappiness=60 (default). Kernel swap out database buffer pool ra disk để cache file system data. Database read từ swap = disk I/O = chậm kinh khủng. Fix: vm.swappiness=10, restart PostgreSQL, performance trở lại bình thường. Mất 5 phút diagnostic, tiết kiệm 128GB RAM upgrade không cần thiết.</p>
+                <div class="lesson">💡 Bài học: Database servers: vm.swappiness=10 hoặc thấp hơn. Monitor swap usage — nếu database server đang swap, performance sẽ terrible. RAM upgrade không giúp nếu kernel swap out useful data. Understand Linux memory management trước khi throw hardware at problem.</div>
+            </div>
+            <div class="story">
+                <h3>🔧 Chuyện ulimit Quá Thấp</h3>
+                <p>Application server bắt đầu refuse connections lúc peak hour. Error: 'Too many open files.' Server có 128GB RAM, 32 cores, load average 0.5 — resources dồi dào. Nhưng ulimit -n: 1024. Mỗi connection = 1 file descriptor. Application cần 5000+ connections peak = hit limit.</p><p>Fix nhanh: ulimit -n 65535 trong service file. Permanent: /etc/security/limits.conf. Nhưng root cause: application không close connections properly — connection leak. Fix leak + tăng ulimit = problem solved. Nếu chỉ tăng ulimit mà không fix leak, limit sẽ hit lại ở number cao hơn.</p>
+                <div class="lesson">💡 Bài học: Default ulimits quá thấp cho servers. Check và tune: nofile (65535), nproc (65535). Nhưng tăng limits không phải always the answer — fix resource leaks trước. lsof | wc -l cho biết đang dùng bao nhiêu file descriptors.</div>
+            </div>
+            <div class="story">
+                <h3>📊 Chuyện Flamegraph Phát Hiện 1 Dòng Code</h3>
+                <p>API response time p99: 2 giây. Team optimize database queries, add caching, upgrade hardware — p99 giảm từ 2s xuống 1.5s. Vẫn chưa đạt target 500ms. 3 sprint tốn cho optimization mà kết quả minimal.</p><p>Đại Sư chạy perf record 60 giây, generate flamegraph. Phát hiện: 70% CPU time trong 1 function — JSON serialization. Developer dùng reflection-based JSON library (slow) thay vì code-generated serializer. Thay JSON library: p99 giảm từ 1.5s xuống 200ms. 1 dòng code thay đổi > 3 sprint optimization.</p>
+                <div class="lesson">💡 Bài học: PROFILE trước khi optimize. Flamegraph cho thấy WHERE time is spent. 80/20 rule: 80% performance gain từ 20% (thường ít hơn) code changes. Đừng optimize blind — measure, identify bottleneck, fix, measure again.</div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Optimize mà không measure:</strong> Guessing bottleneck = waste time. Profile first. Measure baseline, set target, optimize, measure result.
+            </div>
+            <div class="mistake">
+                <strong>2. Premature optimization:</strong> Code chưa có users đã optimize for millions. Ship first, optimize khi có real traffic data. 'Premature optimization is the root of all evil.' — Knuth.
+            </div>
+            <div class="mistake">
+                <strong>3. Throw hardware at problem:</strong> Server chậm → thêm RAM, thêm CPU. Nhưng problem là slow query scan full table. Hardware không fix bad algorithms.
+            </div>
+            <div class="mistake">
+                <strong>4. Copy sysctl.conf từ blog:</strong> Blog nói 'optimal Linux tuning' cho MySQL. Bạn chạy PostgreSQL trên NVMe. Different workload, different tuning needed.
+            </div>
+            <div class="mistake">
+                <strong>5. Benchmark trên dev machine:</strong> i9 laptop benchmark: 100K requests/sec! Production c5.large: 5K requests/sec. Benchmark trên production-like environment.
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #90</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

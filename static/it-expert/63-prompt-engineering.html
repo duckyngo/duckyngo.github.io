@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kỹ Sư Câu Hỏi Đại Sư - Prompt Engineering & RAG Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,188,212,0.12) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #4dd0e1; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(77,208,225,0.3); }
+        .header .title { font-size: 1.2em; color: #80deea; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(0,188,212,0.1); }
+        .card h2 { color: #4dd0e1; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(0,188,212,0.3), rgba(0,150,170,0.2)); border: 1px solid rgba(77,208,225,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #80deea; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(0,188,212,0.5), rgba(0,150,170,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(0,188,212,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #00bcd4, #4dd0e1); border-radius: 50%; color: white; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #00bcd4; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">💬</span>
+            <h1>Kỹ Sư Câu Hỏi Đại Sư</h1>
+            <div class="title">Prompt Engineering & RAG Expert</div>
+            <div class="quote">"Viết prompt hay là nghệ thuật — nghệ thuật nói chuyện với kẻ biết mọi thứ nhưng cần được hỏi đúng cách."</div>
+            <div class="badge-container">
+                <span class="badge">🧠 Chain of Thought</span>
+                <span class="badge">📝 Few-shot</span>
+                <span class="badge">🔍 RAG</span>
+                <span class="badge">✂️ Chunking</span>
+                <span class="badge">🔗 Retrieval</span>
+                <span class="badge">📊 Evaluation</span>
+                <span class="badge">🎯 System Prompts</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Kỹ Sư Câu Hỏi Đại Sư tên thật là <strong>Hỏi Đáp Minh</strong>, cựu phóng viên chuyển sang AI. "Nghề phóng viên dạy tôi: hỏi đúng câu hỏi quan trọng hơn tìm đúng câu trả lời. Hóa ra skill này cũng apply cho AI."</p>
+            <p>Anh là người đầu tiên trong công ty nhận ra: thay đổi MỘT TỪ trong prompt có thể thay đổi kết quả 180 độ. "Tôi thêm chữ 'step by step' và accuracy tăng từ 45% lên 89%. Cả team nhìn tôi như phù thủy."</p>
+            <p>Hiện anh chuyên xây dựng RAG systems và đào tạo prompt engineering cho doanh nghiệp. Câu nói nổi tiếng: "Prompt engineering không phải magic — đó là communication skills với AI. Và giống như communication skills với người, hầu hết mọi người đều nghĩ mình giỏi nhưng thực ra tệ."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Câu Hỏi</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Prompt Structure — Framework CRISPE</h3>
+                    <p><strong>C</strong>apacity (role): "You are a senior tax accountant." <strong>R</strong>equest (task): "Analyze this invoice." <strong>I</strong>nput (data): The actual data. <strong>S</strong>pecifics (constraints): "Output in JSON, max 200 words." <strong>P</strong>ersonalization (tone): "Explain like I'm 5." <strong>E</strong>xamples (few-shot): 2-3 input/output examples. Luôn explicit — LLM không đọc ý bạn.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Chain of Thought — Buộc LLM suy nghĩ</h3>
+                    <p>"Let's think step by step" tăng accuracy trên reasoning tasks 20-40%. Variations: (1) <strong>Zero-shot CoT</strong>: thêm "Think step by step." (2) <strong>Few-shot CoT</strong>: cho ví dụ có reasoning steps. (3) <strong>Self-consistency</strong>: generate nhiều CoT paths, majority vote. (4) <strong>Tree of Thought</strong>: explore multiple reasoning branches. Khi dùng: math, logic, multi-step problems. Khi KHÔNG dùng: simple extraction, translation — CoT chỉ tốn tokens.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>RAG Architecture — Ground LLM trong facts</h3>
+                    <p>RAG pipeline: (1) <strong>Chunk</strong> documents (500-1000 tokens, overlap 100-200). (2) <strong>Embed</strong> chunks (sentence-transformers, OpenAI embeddings). (3) <strong>Store</strong> trong vector DB (Pinecone, Weaviate, Qdrant, pgvector). (4) <strong>Retrieve</strong> top-K relevant chunks (K=3-5). (5) <strong>Generate</strong> answer grounded trong retrieved context. Key insight: retrieval quality >> generation quality. Bad retrieval → LLM hallucinate dù prompt perfect.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Chunking Strategy — Chia nhỏ đúng cách</h3>
+                    <p>Chunk size matters enormously. Quá nhỏ: mất context. Quá lớn: noise dilutes signal. Best practices: (1) <strong>Semantic chunking</strong>: split at paragraph/section boundaries, không mid-sentence. (2) <strong>Recursive splitting</strong>: try section → paragraph → sentence. (3) <strong>Overlap</strong>: 10-20% overlap giữa chunks để không mất info ở boundaries. (4) <strong>Metadata</strong>: giữ source, page number, section title cùng với chunk. Test different chunk sizes trên your data — không có one-size-fits-all.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Advanced RAG — Beyond basic retrieval</h3>
+                    <p><strong>Hybrid search</strong>: combine vector search + BM25 keyword search (0.7 semantic + 0.3 keyword). <strong>Re-ranking</strong>: retrieve 20 chunks, re-rank bằng cross-encoder, keep top 5. <strong>Query transformation</strong>: rewrite user query trước khi search (HyDE: generate hypothetical answer → embed answer → search). <strong>Multi-step retrieval</strong>: first retrieval → identify gaps → second retrieval. <strong>Parent document retrieval</strong>: embed small chunks, retrieve parent documents.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">6</span>
+                <div class="tip-content">
+                    <h3>Evaluation — Đo lường quality</h3>
+                    <p>RAG evaluation 3 components: (1) <strong>Retrieval quality</strong>: precision@K, recall@K, MRR — retrieved đúng chunks không? (2) <strong>Generation quality</strong>: faithfulness (không hallucinate ngoài context), relevance, completeness. (3) <strong>End-to-end</strong>: answer correctness. Tools: <strong>RAGAS</strong> framework (automated metrics), <strong>LangSmith</strong> (tracing + eval). Luôn có human eval set bên cạnh automated metrics.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">🎯 Chuyện 1: Một từ thay đổi mọi thứ</div>
+                <p>Team anh Hỏi Đáp build classification system. Prompt: "Classify this text as positive, negative, or neutral." Accuracy: 67%. Sau 2 tuần thử 200 variations, anh thay prompt thành: "Classify this text. Before answering, analyze the sentiment indicators step by step. Then output ONLY one of: positive, negative, neutral."</p>
+                <p>Accuracy: 91%. Sếp: "2 tuần chỉ để sửa câu hỏi?" Anh: "2 tuần để tìm ra CÂU HỎI ĐÚNG. Einstein mất 20 năm cho E=mc². Tôi mới mất 2 tuần."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Prompt engineering là iterative process. Mỗi từ matters. Specific > vague. Structured output instructions > open-ended. Step-by-step reasoning > direct answer. Và luôn test trên eval set, không chỉ thử 1-2 examples.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🔍 Chuyện 2: RAG retrieves tài liệu sai — nhưng LLM vẫn trả lời</div>
+                <p>RAG chatbot cho nội bộ công ty. Nhân viên hỏi: "Chính sách nghỉ phép 2025?" RAG retrieve: document về chính sách 2020 (chunk tương tự semantic). LLM confidently trả lời dựa trên chính sách CŨ. Nhân viên nghỉ phép theo thông tin sai, HR gọi.</p>
+                <p>Root cause: chunk metadata không có year, embeddings không distinguish 2020 vs 2025 vì content tương tự. Fix: thêm metadata filtering (year), hybrid search (keyword "2025"), và instruction "If the retrieved context doesn't mention 2025, say you don't have current information."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> RAG garbage in → LLM garbage out (nhưng confident garbage). Retrieval quality là bottleneck #1. Luôn: (1) Metadata filtering, (2) Hybrid search, (3) Instruct LLM to acknowledge when context insufficient, (4) Test retrieval independently trước khi test end-to-end.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">💰 Chuyện 3: Prompt quá dài tốn hết budget</div>
+                <p>Anh Hỏi Đáp build system prompt 3,000 tokens với đủ rules, examples, formatting. Mỗi API call: 3,000 (system) + 500 (user) + 1,000 (response) = 4,500 tokens. 100,000 requests/ngày × 4,500 tokens = 450M tokens/ngày. GPT-4: $4,500/ngày chỉ riêng system prompt.</p>
+                <p>Optimize: tách system prompt thành core (500 tokens) + dynamic parts (chỉ inject khi cần). Dùng few-shot examples chỉ khi task phức tạp. Kết quả: average 1,500 tokens/request. Bill giảm 3x.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> System prompt tokens tính cho MỌI request. Optimize prompt length: (1) Chỉ include instructions cần thiết, (2) Dynamic injection based on query type, (3) Move examples sang few-shot chỉ khi cần. Mỗi token trong system prompt nhân với total requests = big cost.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Prompt vague:</strong> "Summarize this" → kết quả inconsistent. "Summarize in 3 bullet points, each under 20 words, focusing on financial impact" → consistent.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không test trên eval set:</strong> Thử 2-3 examples, thấy OK → deploy. Production: 40% failure rate. Cần 50+ diverse test cases.
+            </div>
+            <div class="mistake">
+                <strong>❌ RAG chunk size one-size-fits-all:</strong> FAQ cần chunks nhỏ (200 tokens). Legal documents cần chunks lớn (1000+). Test different sizes.
+            </div>
+            <div class="mistake">
+                <strong>❌ Chỉ dùng vector search cho RAG:</strong> Semantic search miss exact matches. Hybrid (vector + keyword) luôn tốt hơn pure vector.
+            </div>
+            <div class="mistake">
+                <strong>❌ Few-shot examples không representative:</strong> Examples bias output. Chọn diverse examples covering edge cases, không chỉ happy path.
+            </div>
+            <div class="mistake">
+                <strong>❌ Tin LLM trả lời "I don't know" khi không biết:</strong> LLM thường hallucinate thay vì thừa nhận. Cần explicit instruction + retrieval grounding.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💬 Kỹ Sư Câu Hỏi Đại Sư — "Hỏi đúng câu hỏi, được đúng câu trả lời. Hỏi sai? AI vẫn trả lời — nhưng sai."</p>
+            <p>Section 3: AI & Machine Learning · Expert #63</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao Thức Đại Sư - Chuyên Gia TCP, UDP, HTTP/1-3, DNS & BGP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 30%, #2a0a2a 60%, #3a1a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #d946ef; text-shadow: 0 0 20px #d946ef40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #d946ef; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #d946ef; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+        .section h2 { color: #d946ef; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #d946ef30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #d946ef; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #d946ef; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } .section { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">📡</span>
+            <h1>Giao Thức Đại Sư</h1>
+            <div class="title">Chuyên Gia TCP, UDP, HTTP/1-3, DNS & BGP</div>
+            <div class="quote">"TCP bắt tay 3 bước trước khi nói chuyện. UDP không bắt tay, nói luôn. Giống như người Việt Nam: SYN (Anh ơi!), SYN-ACK (Gì em?), ACK (Cho em hỏi...)."</div>
+        </div>
+        <div class="badges">
+            <span class="badge">🤝 TCP Expert</span>
+            <span class="badge">📨 UDP/QUIC</span>
+            <span class="badge">🌐 HTTP/1.1-3</span>
+            <span class="badge">🔍 DNS Deep Dive</span>
+            <span class="badge">🛣️ BGP Routing</span>
+            <span class="badge">🔒 TLS/SSL</span>
+            <span class="badge">📧 SMTP/IMAP</span>
+            <span class="badge">🔌 WebSocket</span>
+        </div>
+        <div class="section">
+            <h2>📚 Thân Thế &amp; Lai Lịch</h2>
+            <p>Giao Thức Đại Sư nhớ thời dial-up modem — tiếng kêu "bíp bíp bò bò" của modem handshake là nhạc chuông thời thơ ấu. Chàng ta bắt đầu hiểu protocols khi phải debug tại sao download file qua FTP mất 2 giờ — hóa ra modem chạy ở 14.4 Kbps thay vì 56 Kbps.</p><p>Chàng ta đã chứng kiến sự tiến hóa: HTTP/1.0 → HTTP/1.1 (keep-alive!) → HTTP/2 (multiplexing!) → HTTP/3 (QUIC, goodbye TCP!). Mỗi version giải quyết problems của version trước và tạo ra problems mới.</p><p>BGP là ngôn ngữ của internet — và cũng là nguồn gốc của nhiều "internet outage" nổi tiếng. Khi Facebook sập năm 2021, Đại Sư biết ngay: "BGP withdrawal. Again."</p>
+        </div>
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. TCP Deep Dive:</strong> Connection: SYN → SYN-ACK → ACK. Termination: FIN → ACK → FIN → ACK. Window sizing: controls flow, enables throughput. Congestion control algorithms: Cubic (default Linux), BBR (Google, better for WAN). TIME_WAIT: 2*MSL (usually 60s) — high connection rate = many TIME_WAIT sockets. TCP_NODELAY disable Nagle's algorithm cho latency-sensitive apps.
+            </div>
+            <div class="tip">
+                <strong>2. HTTP Evolution:</strong> HTTP/1.1: keep-alive, chunked transfer, nhưng head-of-line blocking. HTTP/2: binary protocol, multiplexing, header compression, server push. Nhưng TCP head-of-line blocking vẫn tồn tại. HTTP/3: QUIC over UDP, giải quyết TCP HOL blocking, built-in TLS 1.3, faster connection setup (0-RTT). Deploy HTTP/3 cho modern web apps.
+            </div>
+            <div class="tip">
+                <strong>3. DNS Resolution:</strong> Client → Local resolver → Root (.) → TLD (.com) → Authoritative (example.com). Caching ở mỗi level. TTL controls cache duration. CNAME vs A vs AAAA vs MX vs TXT records. DNS amplification attack: small query → large response, IP spoofing. DNSSEC: chain of trust từ root, prevent spoofing.
+            </div>
+            <div class="tip">
+                <strong>4. BGP — Glue of the Internet:</strong> eBGP giữa autonomous systems, iBGP trong AS. Path vector protocol — routes based on AS path. BGP hijacking: announce someone else's prefix = steal traffic. RPKI (Resource Public Key Infrastructure) cho route origin validation. BGP leak can take down portions of internet — happened multiple times.
+            </div>
+            <div class="tip">
+                <strong>5. TLS/SSL — Encryption Layer:</strong> TLS 1.3: faster handshake (1-RTT), removed weak ciphers. Certificate management: Let's Encrypt cho free certs, auto-renewal. HSTS headers enforce HTTPS. Certificate pinning cho mobile apps. Monitor certificate expiry — expired cert = site down.
+            </div>
+            <div class="tip">
+                <strong>6. QUIC — The Future:</strong> UDP-based, built-in TLS 1.3, multiplexed streams without HOL blocking. 0-RTT connection resumption. Connection migration (change IP without reconnect — mobile friendly). Used by Google, Facebook, Cloudflare. HTTP/3 = HTTP over QUIC. Adoption growing rapidly.
+            </div>
+        </div>
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>🌍 Chuyện BGP Leak Gây Sập Internet</h3>
+                <p>Năm 2019, một ISP nhỏ ở Pennsylvania misconfigure BGP — announce routes cho hàng nghìn prefixes qua uplink. Traffic meant cho Cloudflare, Amazon, và hàng trăm networks bị re-route qua ISP nhỏ này. Result: latency spike, packet loss, nhiều services inaccessible. ISP nhỏ không có bandwidth handle traffic → packets dropped.</p><p>Fix: ISP's upstream provider nhận ra anomaly sau 2 giờ, filter routes. RPKI + ROV (Route Origin Validation) sẽ prevent nhưng adoption vẫn thấp.</p>
+                <div class="lesson">💡 Bài học: BGP is trust-based — thay đổi 1 router config có thể ảnh hưởng toàn cầu. RPKI adoption quan trọng cho internet security. Monitor BGP announcements cho your prefixes. Have relationship với upstream providers cho quick response.</div>
+            </div>
+            <div class="story">
+                <h3>🔄 Chuyện HTTP/2 Head-of-Line Blocking</h3>
+                <p>Team upgrade từ HTTP/1.1 lên HTTP/2 mong đợi performance boost. Kết quả: mobile users ở 3G/4G connection CHẬM HƠN với HTTP/2! Why? HTTP/2 multiplexing trên single TCP connection. Packet loss trên mobile → TCP retransmission blocks ALL streams. HTTP/1.1 với 6 parallel connections: 1 connection loss chỉ block 1/6 requests.</p><p>Solution: upgrade lên HTTP/3 (QUIC/UDP) — mỗi stream independent, packet loss chỉ ảnh hưởng affected stream.</p>
+                <div class="lesson">💡 Bài học: HTTP/2 better trên reliable connections. Trên lossy connections (mobile, satellite), HTTP/2 có thể worse hơn HTTP/1.1 do TCP HOL blocking. HTTP/3/QUIC giải quyết vấn đề này. Test performance trên diverse network conditions, không chỉ fast Wi-Fi.</div>
+            </div>
+            <div class="story">
+                <h3>🔒 Chuyện Certificate Expired Ngày Chủ Nhật</h3>
+                <p>SSL certificate expired Sunday 2am. Automated monitoring? Không có. Auto-renewal? Không có. Website shows 'Your connection is not private.' Users report Monday morning. Revenue loss: $50K cho e-commerce site.</p><p>Fix: install new cert, enable auto-renewal (certbot renew). Thêm: certificate expiry monitoring (check 30/14/7 days trước), automated renewal via Let's Encrypt + certbot cron, alert nếu renewal fails.</p>
+                <div class="lesson">💡 Bài học: Certificate management phải automated. Let's Encrypt + certbot = free + auto-renewal. Monitor certificate expiry dates — multiple alerts trước khi expire. Never rely on manual renewal. Calendar reminders KHÔNG ĐỦ — automation is the only way.</div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Không hiểu TCP tuning:</strong> Default TCP settings cho general purpose. High-throughput, low-latency, high-connection workloads cần tuning. Measure first, tune specific parameters.
+            </div>
+            <div class="mistake">
+                <strong>2. HTTP/1.1 cho modern web:</strong> HTTP/2 minimum cho modern web apps. HTTP/3 cho best mobile experience. Upgrade web server và CDN config.
+            </div>
+            <div class="mistake">
+                <strong>3. DNS single point of failure:</strong> 1 DNS server = 1 failure point. Minimum 2 DNS servers, different networks. Use managed DNS (Route 53, Cloudflare DNS) cho reliability.
+            </div>
+            <div class="mistake">
+                <strong>4. TLS 1.0/1.1 vẫn enabled:</strong> Deprecated, insecure. Disable TLS 1.0/1.1, require TLS 1.2 minimum, prefer TLS 1.3. Test với SSL Labs.
+            </div>
+            <div class="mistake">
+                <strong>5. Không monitor BGP:</strong> Your prefixes could be hijacked and you won't know. BGP monitoring services (RIPE RIS, BGPStream) alert on anomalies.
+            </div>
+            <div class="mistake">
+                <strong>6. Hardcode DNS TTL quá cao:</strong> TTL 86400 (24h) cho records that change = 24h outage during migration. Use appropriate TTLs for each record type.
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #92</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

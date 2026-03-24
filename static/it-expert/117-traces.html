@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Truy Vết Đại Sư - Chuyên Gia Jaeger, Zipkin, Tempo & OpenTelemetry</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a2a 30%, #0a1a3a 60%, #0a2a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #818cf8; text-shadow: 0 0 20px #818cf840; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #818cf8; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #818cf8; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #818cf8; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #818cf830; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #818cf8; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #818cf8; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🔎</span><h1>Truy Vết Đại Sư</h1><div class="title">Chuyên Gia Jaeger, Zipkin, Tempo & OpenTelemetry</div><div class="quote">"Distributed tracing: vì khi request đi qua 30 microservices, bạn cần biết service nào chậm. Spoiler: thường là database query."</div></div>
+        <div class="badges">            <span class="badge">🔎 Jaeger Expert</span>
+            <span class="badge">📡 OpenTelemetry</span>
+            <span class="badge">🎵 Tempo Master</span>
+            <span class="badge">🔗 Span Context</span>
+            <span class="badge">📊 Sampling</span>
+            <span class="badge">🔍 Root Cause Analysis</span>
+            <span class="badge">📋 Trace Analysis</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Truy Vết Đại Sư nhớ thời monolith: 1 request → 1 server → 1 log file. Debug: grep error log. Done. Rồi microservices: 1 request → 30 services → 30 log files. Debug: grep 30 log files, correlate timestamps, guess which service failed. "I miss my monolith," chàng ta thở dài.</p><p>Distributed tracing thay đổi game: mỗi request có unique trace ID, propagated qua tất cả services. Jaeger/Zipkin visualize entire request journey. "Service A → Service B (50ms) → Service C (2000ms) → Database (1950ms)." Found bottleneck in 10 seconds thay vì 10 hours.</p><p>OpenTelemetry unify tracing, metrics, logs thành 1 standard. "One instrumentation to rule them all." Đại Sư adopt OTel và never look back.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. OpenTelemetry — The Standard:</strong> Vendor-neutral observability framework. APIs, SDKs, Collector. Auto-instrumentation cho popular frameworks. Traces, metrics, logs — unified. Collector: receive, process, export to any backend. OTLP protocol standard. Adopt OTel = future-proof instrumentation.</div>
+            <div class="tip"><strong>2. Trace Structure:</strong> Trace = collection of spans. Span = single operation (HTTP request, DB query, function call). Parent-child span relationships. Span attributes: service name, operation, status, custom tags. Span events: logs within span context. Baggage: key-value pairs propagated across services.</div>
+            <div class="tip"><strong>3. Sampling Strategies:</strong> Head-based: decide at trace start (percentage). Tail-based: decide after trace complete (based on outcome). Always sample: 100% traces (expensive). Rate-based: X traces per second. Best practice: 100% cho errors, sample cho success. Tail-based sampling catches interesting traces (slow, error)</div>
+            <div class="tip"><strong>4. Jaeger vs Tempo:</strong> Jaeger: self-hosted, Elasticsearch/Cassandra backend, mature. Tempo: Grafana project, object storage backend (cheap), no indexing required. Tempo: search by trace ID, TraceQL cho querying. Choose Tempo nếu already using Grafana stack. Jaeger cho standalone deployment.</div>
+            <div class="tip"><strong>5. Best Practices:</strong> Instrument all services — gaps in tracing = blind spots. Propagate trace context (W3C TraceContext standard). Add business context as span attributes. Trace database queries (slow queries visible). Set span status cho error detection. Service map từ traces cho dependency visualization.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔍 Chuyện Trace Phát Hiện 30 Microservice Hops</h3><p>API response time: 3 seconds. Team cannot identify bottleneck. Each service team: 'Our service is fast!' Đại Sư enable distributed tracing. Trace visualization shows: request goes through 30 services. No single service slow — but 30 × 100ms overhead = 3 seconds total. N+1 service call problem: Service A calls Service B 15 times sequentially instead of batch.</p><p>Fix: batch API calls (15 sequential → 1 batch). Cache frequently accessed data. Reduce service hops (combine related services). Result: 3 seconds → 400ms.</p><div class="lesson">💡 Bài học: Distributed tracing reveals SYSTEMIC problems invisible to individual service monitoring. N+1 service call pattern common in microservices. Batch API calls, cache, reduce hops. Trace visualization: the most powerful debugging tool cho microservices.</div></div>
+            <div class="story"><h3>👻 Chuyện Missing Spans</h3><p>Trace shows: Service A → [gap] → Service C. Service B traces missing. Investigation: Service B not instrumented (new service, team forgot). Service B actually has 2-second latency — invisible without tracing. Users blame Service C (last visible span) while Service B is the real culprit.</p><p>Fix: mandatory tracing instrumentation cho ALL services. CI/CD check: verify OTel SDK configured. Service onboarding checklist includes tracing. 100% service coverage cho meaningful traces.</p><div class="lesson">💡 Bài học: Incomplete tracing = misleading conclusions. ALL services must be instrumented. Gaps in traces = blame wrong service. Service onboarding checklist: logging, metrics, tracing. CI/CD enforcement of instrumentation. Context propagation verification tests.</div></div>
+            <div class="story"><h3>📊 Chuyện Sampling Saves $50K</h3><p>100% trace sampling cho all services. Trace storage: 500GB/day. Jaeger + Elasticsearch: 5 nodes × 32GB RAM. Monthly cost: $8,000. Review: 99% traces are successful, routine requests. Only 1% are interesting (errors, slow, anomalies).</p><p>Implement tail-based sampling: 100% cho errors, 100% cho slow (>1s), 1% cho normal. Trace storage: 15GB/day. Infrastructure reduced to 2 nodes. Monthly cost: $2,500. Savings: $66K/year.</p><div class="lesson">💡 Bài học: 100% sampling is expensive and mostly unnecessary. Tail-based sampling: keep interesting traces, sample routine. 100% error traces, sample success. Cost savings 60-80% with smart sampling. OTel Collector supports tail-based sampling. Quality over quantity cho traces.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. No tracing in production:</strong> Tracing only in staging. Production = where real problems happen. Enable tracing everywhere with appropriate sampling.</div>
+            <div class="mistake"><strong>2. Trace ID not in logs:</strong> Logs and traces disconnected. Include trace_id in structured logs. Correlate logs ↔ traces ↔ metrics.</div>
+            <div class="mistake"><strong>3. 100% sampling forever:</strong> Expensive, unnecessary. Start with head-based 10%, add tail-based cho errors/slow. Adjust based on needs.</div>
+            <div class="mistake"><strong>4. No span attributes:</strong> Generic spans without context. Add: user_id, order_id, feature_flag — business context cho debugging.</div>
+            <div class="mistake"><strong>5. Vendor lock-in instrumentation:</strong> Vendor-specific SDK. Use OpenTelemetry for vendor-neutral instrumentation. Switch backends without code changes.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #117</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

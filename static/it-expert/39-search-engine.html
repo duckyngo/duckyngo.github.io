@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Thần Nhãn — Search Engine Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #080a18;
+            --card-bg: rgba(12, 15, 35, 0.85);
+            --card-border: rgba(255, 213, 79, 0.2);
+            --accent: #ffd54f;
+            --accent2: #ffecb3;
+            --accent3: #ff8a65;
+            --text: #f5f0e0;
+            --text-muted: #bbaa88;
+            --glow: rgba(255, 213, 79, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 30% 30%, rgba(255,213,79,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 70%, rgba(255,138,101,0.06) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote {
+            margin-top: 1.5rem; padding: 1rem 2rem;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            font-style: italic; color: var(--accent2); display: inline-block;
+        }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge {
+            padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--card-border); background: var(--card-bg);
+            backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent); }
+        .tip {
+            padding: 1rem 1.5rem; margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+            background: rgba(255,213,79,0.05); border-radius: 0 8px 8px 0;
+        }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story {
+            padding: 1.5rem; margin: 1rem 0;
+            background: rgba(255,138,101,0.05); border-radius: 12px;
+            border: 1px solid rgba(255,138,101,0.1);
+        }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(255,213,79,0.1); border-radius: 8px; font-weight: 600; color: var(--accent); }
+        .mistake {
+            padding: 1rem 1.5rem; margin: 0.75rem 0;
+            background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757;
+            border-radius: 0 8px 8px 0;
+        }
+        .mistake strong { color: #ff6b81; }
+        .footer {
+            text-align: center; padding: 3rem 2rem; margin-top: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--card-border);
+        }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">🔍</span>
+        <h1>Tìm Kiếm Thần Nhãn</h1>
+        <p class="subtitle">Người Tìm Kim Trong Đống Rơm — Và Tìm Được Trong 50ms</p>
+        <div class="quote">"Google tìm được mọi thứ trên internet. Tôi tìm được mọi thứ trong hệ thống của bạn — nhanh hơn."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge" style="color:#FEC514;border-color:#FEC514;">🟡 Elasticsearch</span>
+        <span class="badge" style="color:#005EB8;border-color:#005EB8;">🔵 OpenSearch</span>
+        <span class="badge" style="color:#FF5CAA;border-color:#FF5CAA;">🔎 Meilisearch</span>
+        <span class="badge" style="color:#5468FF;border-color:#5468FF;">⚡ Typesense</span>
+        <span class="badge">📑 Inverted Index</span>
+        <span class="badge">🔤 Analyzers</span>
+        <span class="badge">📊 Relevance Scoring</span>
+        <span class="badge">🏗️ Cluster Management</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Tìm Kiếm Thần Nhãn, tên thật là <strong>Bùi Minh Soi</strong>, hồi nhỏ là đứa trẻ "hỏi tại sao" khét tiếng. Mẹ giấu kẹo ở đâu cũng tìm ra. Bố cất rượu trong gầm bếp, lão tìm trong 30 giây. Cô giáo nói: <em>"Em Soi có radar trong đầu hay sao?"</em></p>
+        <p>Năm 2012, lão được giao xây search cho sàn e-commerce: 5 triệu sản phẩm, search phải < 100ms, phải hỗ trợ typo tolerance, tiếng Việt có dấu và không dấu. MySQL LIKE '%keyword%' cho kết quả sau... 12 giây. Lão khóc rồi tìm đến Elasticsearch.</p>
+        <p>Từ đó, lão đã xây search systems cho e-commerce, job portals, news platforms, và internal knowledge bases. Lão nói: <em>"Search tốt là search mà user không nhận ra — họ nghĩ hệ thống đọc được ý nghĩ của mình."</em></p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Inverted Index — Bí Mật Đằng Sau Tốc Độ</strong>
+            <p>Thay vì scan mọi document tìm keyword (forward search), inverted index tạo mapping: keyword → list of documents chứa nó. Giống mục lục sách. "Elasticsearch" → [doc1, doc5, doc99]. Query chỉ cần lookup index, không scan data. Đây là lý do search engine nhanh hơn SQL LIKE millions of times.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Analyzers — Nghệ Thuật Xử Lý Văn Bản</strong>
+            <p>Analyzer = Character Filters + Tokenizer + Token Filters. Ví dụ: "Điện thoại Samsung Galaxy S24" → lowercase → "điện thoại samsung galaxy s24" → remove diacritics → "dien thoai samsung galaxy s24" → tokenize → ["dien", "thoai", "samsung", "galaxy", "s24"]. Custom analyzer cho tiếng Việt: ICU analyzer + ASCII folding + synonym filter.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Relevance Scoring — TF-IDF & BM25</strong>
+            <p>BM25 (default trong Elasticsearch): Term Frequency (từ xuất hiện nhiều = relevant hơn) × Inverse Document Frequency (từ hiếm = quan trọng hơn) × Field Length (document ngắn chứa keyword = relevant hơn document dài). Tune bằng: boosting fields (<code>title^3</code>), function_score, decay functions cho recency.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Cluster Architecture — Shard & Replica</strong>
+            <p>Primary shards: phân tán data (set lúc tạo index, không đổi được). Replicas: bản sao cho HA và read throughput. Quy tắc: mỗi shard 20-40GB. Index 200GB → 5-10 primary shards. Số replicas tùy availability requirement. 3 data nodes minimum cho production. Dedicated master nodes khi cluster > 5 nodes.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Meilisearch & Typesense — Search Cho Mortals</strong>
+            <p>Không phải ai cũng cần Elasticsearch cluster 20 nodes. Meilisearch: instant search, typo-tolerant, zero config, perfect cho small-medium apps. Typesense: similar nhưng có geo-search và faceting tốt hơn. Cả hai deploy single binary, dễ hơn Elasticsearch 100 lần. Dưới 10 triệu documents? Xem xét nghiêm túc.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>OpenSearch — Elasticsearch Nhưng Tự Do</strong>
+            <p>Fork từ Elasticsearch 7.10 khi Elastic đổi license. AWS managed service. Community-driven, Apache 2.0 license. Feature tương đương Elasticsearch cho hầu hết use cases. Nếu dùng AWS, OpenSearch managed service là lựa chọn hợp lý. Nếu tự host, cả hai đều OK.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">🔴 Chuyện 1: Elasticsearch Cluster Red — Đúng Lúc Black Friday</div>
+            <p>E-commerce, Elasticsearch cluster 5 nodes. Black Friday, traffic search tăng x8. Cluster status chuyển từ Green → Yellow → <strong>RED</strong>. Search trả error 503. 80% revenue đến từ search — mất search = mất tiền.</p>
+            <p>Root cause: index "products" có 1 primary shard (default cũ). 1 shard = 1 node xử lý mọi search request. Node đó quá tải, shard bị unassigned, cluster red. Lão phải reindex toàn bộ 5 triệu products sang index mới với 5 shards. Reindex mất 2 tiếng. 2 tiếng Black Friday mất search = mất $500K revenue.</p>
+            <p>Từ đó, lão luôn plan shard count trước: <code>planned_data_size / 30GB = number_of_primary_shards</code>. Và load test trước mỗi sale event.</p>
+            <div class="lesson">💡 Bài học: Số shards quyết định khả năng scale. 1 shard = bottleneck. Plan shard count dựa trên expected data size. Load test trước peak events. Có runbook cho cluster recovery.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">💣 Chuyện 2: Mapping Explosion — Index Chết Vì Quá Nhiều Fields</div>
+            <p>Team log mọi thứ vào Elasticsearch. Mỗi log entry có dynamic mapping — Elasticsearch tự detect field type. Vấn đề: mỗi microservice log với schema khác nhau. Service A: <code>{"user_id": 123}</code>. Service B: <code>{"userId": "abc"}</code>. Service C: <code>{"user": {"id": 123, "name": "An"}}</code>.</p>
+            <p>Sau 3 tháng: index có <strong>50,000 fields</strong>. Mỗi field có mapping metadata. Cluster state size: 2GB. Master node OOM khi load cluster state. Mỗi new document indexing phải check 50,000 field mappings → slow to crawl.</p>
+            <p>Lão phải: disable dynamic mapping, define strict mapping, normalize log format, set <code>index.mapping.total_fields.limit</code>. Migration mất 1 tuần.</p>
+            <div class="lesson">💡 Bài học: KHÔNG BAO GIỜ dùng dynamic mapping cho logs. Define explicit mapping. Set total_fields.limit. Normalize log schema trước khi index. Mapping explosion kills clusters slowly then suddenly.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🇻🇳 Chuyện 3: Tiếng Việt Search — Có Dấu, Không Dấu, Cả Hai</div>
+            <p>User search "dien thoai" phải tìm được "điện thoại". Search "áo dài" phải tìm được "ao dai". Và ngược lại. Elasticsearch mặc định không hiểu tiếng Việt.</p>
+            <p>Lão xây custom analyzer: ICU tokenizer cho Unicode normalization + ASCII folding filter (bỏ dấu) + synonym filter + lowercase. Index mỗi field 2 lần: 1 bản có dấu, 1 bản không dấu. Search dùng <code>multi_match</code> trên cả 2 fields. Kết quả: "dien thoai", "điện thoại", "Điện Thoại", "DIEN THOAI" — đều tìm được. User hạnh phúc, lão tự hào.</p>
+            <div class="lesson">💡 Bài học: Search tiếng Việt cần custom analyzer: ICU + ASCII folding + synonym. Index cả dạng có dấu và không dấu. Test với real user queries, không phải test data lý tưởng.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Dùng Elasticsearch làm primary database</strong>
+            <p>Elasticsearch không có transactions, eventual consistency cho reads, document updates = delete + re-index. Dùng cho search/analytics, source of truth vẫn phải là RDBMS hoặc document store.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ 1 shard cho index lớn</strong>
+            <p>1 shard = 1 Lucene index = 1 thread xử lý. Index 100GB trên 1 shard = bottleneck. Nhưng quá nhiều shards cũng chết (mỗi shard tốn ~50MB heap). Sweet spot: 20-40GB per shard.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Dynamic mapping cho production</strong>
+            <p>Ai đó log field "price" là string, rồi number → mapping conflict → document bị reject. Define explicit mapping, set <code>dynamic: strict</code>.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Query everything, filter nothing</strong>
+            <p>Query context tính relevance score (tốn CPU). Filter context không tính score (nhanh, cacheable). Dùng <code>filter</code> cho exact matches (status, date range), <code>query</code> cho full-text search.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Deep pagination (from: 10000, size: 10)</strong>
+            <p>Elasticsearch phải sort tất cả matching documents trên tất cả shards để lấy page 1001. Giới hạn mặc định: 10,000. Dùng <code>search_after</code> cho deep pagination, hoặc <code>scroll</code> API cho export.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không monitor cluster health</strong>
+            <p>Cluster Yellow = có unassigned replicas. Yellow lâu → node chết → Red → data loss. Monitor cluster health, shard allocation, JVM heap, disk usage. Grafana + Prometheus exporter là minimum.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">🔍 Tìm Kiếm Thần Nhãn — Bùi Minh Soi</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Tìm 1 document trong 1 tỷ documents, trong 50ms. Đó không phải phép thuật — đó là inverted index."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

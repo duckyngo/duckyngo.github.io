@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chất Lượng Dữ Liệu Quan — Data Quality & Catalog Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root { --bg: #0a0a14; --card-bg: rgba(15, 15, 28, 0.85); --card-border: rgba(76, 175, 80, 0.2); --accent: #4caf50; --accent2: #81c784; --accent3: #ffb74d; --text: #e8f5e9; --text-muted: #88aa88; --glow: rgba(76, 175, 80, 0.3); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 30% 30%, rgba(76,175,80,0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(255,183,77,0.06) 0%, transparent 50%); z-index: -1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 5s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote { margin-top: 1.5rem; padding: 1rem 2rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; backdrop-filter: blur(10px); font-style: italic; color: var(--accent2); display: inline-block; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--card-border); background: var(--card-bg); backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default; }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip { padding: 1rem 1.5rem; margin: 1rem 0; border-left: 3px solid var(--accent); background: rgba(76,175,80,0.05); border-radius: 0 8px 8px 0; }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story { padding: 1.5rem; margin: 1rem 0; background: rgba(255,183,77,0.05); border-radius: 12px; border: 1px solid rgba(255,183,77,0.1); }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(76,175,80,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake { padding: 1rem 1.5rem; margin: 0.75rem 0; background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757; border-radius: 0 8px 8px 0; }
+        .mistake strong { color: #ff6b81; }
+        .footer { text-align: center; padding: 3rem 2rem; margin-top: 2rem; color: var(--text-muted); border-top: 1px solid var(--card-border); }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">✅</span>
+        <h1>Chất Lượng Dữ Liệu Quan</h1>
+        <p class="subtitle">Thanh Tra Viên Của Vương Quốc Dữ Liệu</p>
+        <div class="quote">"Garbage in, garbage out — nhưng tệ hơn là: garbage in, executive decisions out."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge">📋 Data Contracts</span>
+        <span class="badge">✔️ Validation Rules</span>
+        <span class="badge">📖 Metadata</span>
+        <span class="badge" style="color:#FF6B6B;border-color:#FF6B6B;">🎯 Great Expectations</span>
+        <span class="badge" style="color:#4FC3F7;border-color:#4FC3F7;">📚 DataHub</span>
+        <span class="badge">🏷️ Data Catalog</span>
+        <span class="badge">🔍 Profiling</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Chất Lượng Dữ Liệu Quan, tên thật là <strong>Kiểm Tra Nghiêm</strong>, sinh ra trong gia đình QC (Quality Control) nhà máy. Mẹ kiểm tra chất lượng ở nhà máy may, bố kiểm tra ở nhà máy điện tử. Bữa cơm gia đình thường xuyên có các cuộc thảo luận như: <em>"Hôm nay tỷ lệ lỗi 0.3%, giảm từ 0.5% tuần trước."</em></p>
+        <p>Vào ngành data, lão áp dụng tinh thần QC: mọi data phải qua kiểm tra trước khi "xuất xưởng". Đồng nghiệp ban đầu ghét lão vì lão block pipeline khi data không đạt chuẩn. Nhưng sau khi lão chặn được 1 batch data sai gây sai report gửi cho investor, mọi người bắt đầu tôn trọng.</p>
+        <p>Giờ lão là người mà team data gọi khi có vấn đề: <em>"Anh Nghiêm ơi, data hôm nay trông... lạ."</em> Và lão luôn trả lời: <em>"Data không bao giờ 'lạ'. Chỉ có bạn chưa hiểu nó thôi."</em></p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Data Contracts — Hợp Đồng Giữa Producer Và Consumer</strong>
+            <p>Data contract = thỏa thuận formal: schema (tên, type, nullable), SLA (freshness, completeness), ownership. Producer cam kết data đúng contract. Consumer biết expect gì. Khi contract bị break → alert, không phải "surprise" lúc 3 giờ sáng. Implement bằng JSON Schema, Protobuf, hoặc YAML spec.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>6 Dimensions Của Data Quality</strong>
+            <p><strong>Completeness</strong>: thiếu data không? <strong>Accuracy</strong>: data đúng không? <strong>Consistency</strong>: data nhất quán giữa systems? <strong>Timeliness</strong>: data fresh không? <strong>Uniqueness</strong>: có duplicates không? <strong>Validity</strong>: data tuân theo rules/format? Measure cả 6, không chỉ 1-2.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Great Expectations — Framework Test Data</strong>
+            <p>Viết "expectations" như unit tests cho data: <code>expect_column_values_to_not_be_null("email")</code>, <code>expect_column_values_to_be_between("age", 0, 150)</code>, <code>expect_column_pair_values_to_be_in_set("country", "currency", {...})</code>. Chạy trong pipeline, fail = stop pipeline. Data Docs tự generate documentation.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Data Catalog — Bản Đồ Kho Báu</strong>
+            <p>DataHub, Amundsen, OpenMetadata, Atlan. Catalog lưu: table descriptions, column descriptions, ownership, lineage, quality scores, usage statistics. Analyst tự tìm data mà không cần hỏi. Lineage: biết data đến từ đâu, ảnh hưởng downstream nào. Investement sớm, return lâu dài.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Data Profiling — Hiểu Data Trước Khi Dùng</strong>
+            <p>Profile data mới: distribution (mean, median, mode, outliers), null rate, cardinality, patterns. Phát hiện anomaly sớm: "Ủa, cột age có giá trị -5 và 999?" hoặc "Tại sao 40% emails là NULL?" Profile định kỳ detect drift: "Tháng này null rate tăng từ 2% lên 30% — có gì đó sai ở source."</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Anomaly Detection — Biết Trước Khi Stakeholder Biết</strong>
+            <p>Row count giảm 50% so với yesterday? Average order value tăng 10x? NULL rate tăng đột ngột? Automated anomaly detection catch issues trước khi CEO mở dashboard và thấy số lạ. Tools: Monte Carlo, Soda, hoặc custom checks dùng statistical thresholds.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">🤯 Chuyện 1: NULL vs Empty String — Cơn Ác Mộng Triền Miên</div>
+            <p>System A lưu "no phone" là NULL. System B lưu là empty string "". System C lưu là "N/A". System D lưu là "0000000000". Warehouse merge 4 systems: cột phone_number có 4 representations khác nhau cho cùng 1 meaning.</p>
+            <p>Report "% customers có phone": System A = 60%, System B = 100% (empty string ≠ NULL), tổng hợp = 78%. Marketing gọi campaign cho "customers có phone" → gọi vào "", "N/A", "0000000000". Kết quả: 30% failed calls, waste $50K. Lão phải tạo standardization layer: tất cả biến thể → NULL or valid phone format. Regex validation. 2 tuần cleanup.</p>
+            <div class="lesson">💡 Bài học: NULL, empty string, "N/A", "0", "none" — đều khác nhau trong database nhưng cùng ý nghĩa business. Standardize representation trong pipeline. Validate data types và patterns. Data contracts giữa systems phải specify how "missing" is represented.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">📋 Chuyện 2: Undocumented Columns — "Ai Biết Cột Này Là Gì?"</div>
+            <p>Warehouse có 500 tables, 8000 columns. Không có documentation. Analyst mới vào, mở table <code>fact_transactions</code>: cột <code>flag_1</code>, <code>flag_2</code>, <code>status_cd</code>, <code>type_x</code>. Hỏi team: không ai biết. DBA cũ đã nghỉ việc 2 năm trước. Codebase không có comment.</p>
+            <p>Analyst dùng <code>flag_1</code> (nghĩ là "active flag") trong report. Hóa ra <code>flag_1</code> = "test transaction flag". Report bao gồm test data → số liệu sai 20%. CEO ra quyết định dựa trên report sai. Hậu quả: sai strategy 1 quý.</p>
+            <p>Lão bắt buộc: mọi column phải có description trong dbt YAML, DataHub catalog enrichment, weekly data catalog review sessions.</p>
+            <div class="lesson">💡 Bài học: Undocumented columns are landmines. Invest in documentation: column descriptions, business definitions, data lineage. Nếu bạn không biết column nghĩa gì — ĐỪNG dùng nó trong report. Hỏi trước, dùng sau.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">📊 Chuyện 3: Data Quality Score — Từ Cảm Tính Đến Định Lượng</div>
+            <p>Mỗi tuần meeting stakeholders: <em>"Data quality hôm nay thế nào?"</em> Team data: <em>"Ờ... tốt?"</em> Không ai đo, không ai biết cụ thể. Cho đến khi CEO hỏi: <em>"Tôi có thể tin 100% vào số liệu trên dashboard không?"</em> Im lặng.</p>
+            <p>Lão xây Data Quality Score: mỗi table có score 0-100 dựa trên: freshness (data mới nhất bao lâu), completeness (null rate), uniqueness (duplicate rate), validity (pass business rules). Dashboard hiển thị score mỗi table. Weekly report: <em>"Data quality score: 94/100. 3 issues detected, 2 resolved."</em> CEO hài lòng. Trust tăng.</p>
+            <div class="lesson">💡 Bài học: "Trust" trong data phải measurable, không phải cảm tính. Build data quality scorecard. Track trends. Report regularly. Khi score giảm → investigate immediately. Quality score = trust currency.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Validate chỉ ở cuối pipeline</strong>
+            <p>Data sai từ source → transform sai → load sai → phát hiện ở dashboard = quá muộn. Validate ở mỗi layer: source, after extract, after transform, after load.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không track data lineage</strong>
+            <p>Bug trong report, không biết data đến từ đâu, qua mấy transformations, ảnh hưởng bao nhiêu downstream tables. Lineage = debugging superpower.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ "Data quality là việc của data team"</strong>
+            <p>Sai. Data quality là responsibility của EVERYONE: source systems, application devs, data engineers, analysts. Data contracts enforce shared responsibility.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Quá strict validation = block everything</strong>
+            <p>Reject toàn bộ batch vì 1 row lỗi? 999,999 rows đúng bị stuck. Tiered approach: critical rules = block, warning rules = flag + proceed, info rules = log.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không có data ownership</strong>
+            <p>Table <code>dim_customers</code> — ai own? Ai fix khi sai? Khi "mọi người" own = không ai own. Assign clear ownership per table/domain.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">✅ Chất Lượng Dữ Liệu Quan — Kiểm Tra Nghiêm</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Tôi không phải người gác cổng — tôi là người đảm bảo mọi thứ đi qua cổng đều xứng đáng."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử Lý Hàng Loạt Đại Sư — Batch Processing Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #0c0a18;
+            --card-bg: rgba(18, 15, 38, 0.85);
+            --card-border: rgba(233, 30, 99, 0.2);
+            --accent: #e91e63;
+            --accent2: #f06292;
+            --accent3: #ce93d8;
+            --text: #f5e8f0;
+            --text-muted: #bb88aa;
+            --glow: rgba(233, 30, 99, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 30% 30%, rgba(233,30,99,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 70%, rgba(206,147,216,0.06) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote {
+            margin-top: 1.5rem; padding: 1rem 2rem;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            font-style: italic; color: var(--accent2); display: inline-block;
+        }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge {
+            padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--card-border); background: var(--card-bg);
+            backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip {
+            padding: 1rem 1.5rem; margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+            background: rgba(233,30,99,0.05); border-radius: 0 8px 8px 0;
+        }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story {
+            padding: 1.5rem; margin: 1rem 0;
+            background: rgba(206,147,216,0.05); border-radius: 12px;
+            border: 1px solid rgba(206,147,216,0.1);
+        }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(233,30,99,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake {
+            padding: 1rem 1.5rem; margin: 0.75rem 0;
+            background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757;
+            border-radius: 0 8px 8px 0;
+        }
+        .mistake strong { color: #ff6b81; }
+        .footer {
+            text-align: center; padding: 3rem 2rem; margin-top: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--card-border);
+        }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">⚙️</span>
+        <h1>Xử Lý Hàng Loạt Đại Sư</h1>
+        <p class="subtitle">Người Thuần Phục Terabyte — Biến Núi Data Thành Tri Thức</p>
+        <div class="quote">"1 triệu records? Tôi ăn sáng. 1 tỷ records? Tôi ăn trưa. 1 nghìn tỷ records? OK, cho tôi uống cà phê trước."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge" style="color:#E25A1C;border-color:#E25A1C;">🔥 Apache Spark</span>
+        <span class="badge" style="color:#FFD700;border-color:#FFD700;">🐘 Hadoop</span>
+        <span class="badge" style="color:#FF694B;border-color:#FF694B;">🔧 dbt</span>
+        <span class="badge">📊 Distributed Computing</span>
+        <span class="badge">🔀 Shuffle</span>
+        <span class="badge">💾 Parquet</span>
+        <span class="badge">🗃️ Partitioning</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Xử Lý Hàng Loạt Đại Sư, tên thật là <strong>Trương Trăm Triệu</strong>, từ nhỏ đã có tài chia việc. Lúc lớp trưởng phải chấm 50 bài kiểm tra, lão chia cho 5 bạn, mỗi người 10 bài, cuối cùng gom lại. Cô giáo khen: <em>"Em Triệu sau này làm quản lý giỏi lắm."</em> Không ai ngờ lão sẽ "quản lý" hàng nghìn CPU cores.</p>
+        <p>Sự nghiệp bắt đầu với Hadoop MapReduce năm 2011. Viết Java, compile jar, submit job, chờ 4 tiếng. Debug bằng cách đọc log trên 200 nodes. Lão gọi đó là "thời kỳ đen tối". Rồi Spark ra đời — nhanh hơn 100x, API dễ hơn 10x. Lão cảm giác như từ thời kỳ đồ đá bước vào kỷ nguyên công nghiệp.</p>
+        <p>Giờ lão sống trong thế giới dbt, Spark, và Parquet files. Và lão vẫn chia việc — chỉ khác là chia cho 10,000 CPU cores thay vì 5 bạn lớp trưởng.</p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Spark Architecture — Driver, Executor, Shuffle</strong>
+            <p>Driver: chương trình chính, tạo execution plan. Executors: worker processes xử lý data. Shuffle: redistribute data giữa executors (tốn nhất!). Narrow transformations (map, filter) = không shuffle = nhanh. Wide transformations (groupBy, join) = shuffle = chậm. Giảm shuffle = giảm runtime.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Partition Strategy — Nghệ Thuật Cắt Bánh</strong>
+            <p>Quá ít partitions = ít parallelism, có executor ngồi chơi. Quá nhiều partitions = overhead scheduling. Rule of thumb: 2-4 partitions per CPU core. Data skew: 1 partition có 90% data = 1 executor làm hết = chậm. Repartition bằng <code>salted key</code> để phân tán đều.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>dbt — SQL Đã Đủ</strong>
+            <p>dbt (data build tool): viết transformations bằng SQL, dbt lo compilation, dependency, testing. Models: SELECT statements biến thành tables/views. Refs: <code>{{ ref('model_name') }}</code> tạo dependency graph. Tests: unique, not_null, accepted_values, relationships. dbt giúp data engineers có software engineering practices: version control, CI/CD, documentation.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>File Formats — Parquet Là Vua</strong>
+            <p>CSV: human-readable, terrible cho performance. JSON: flexible, terrible cho analytics. <strong>Parquet</strong>: columnar, compressed, predicate pushdown, perfect cho analytics. 1TB CSV → 200GB Parquet (compression) → query chỉ đọc cột cần thiết (column pruning). ORC: tương tự Parquet, phổ biến trong Hive ecosystem.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Spark OOM — Hiểu Memory Management</strong>
+            <p>Spark memory = Execution (shuffle, join, sort) + Storage (cached data) + User (UDFs). OOM thường do: data skew (1 partition quá lớn), cartesian join (vô tình), collect() large dataset về driver. Fix: tăng partitions, broadcast small tables, tránh collect(), tăng <code>spark.sql.shuffle.partitions</code>.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Incremental Models — Đừng Rebuild Mọi Thứ</strong>
+            <p>dbt incremental model: chỉ process data mới từ lần chạy cuối. <code>{{ config(materialized='incremental') }}</code> + <code>{% if is_incremental() %} WHERE updated_at > (SELECT max(updated_at) FROM {{ this }}) {% endif %}</code>. Giảm runtime từ giờ xuống phút. Nhưng phải handle late-arriving data và dedup.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">💥 Chuyện 1: Spark Job OOM Trên 1TB Data</div>
+            <p>Team cần JOIN bảng orders (500GB) với bảng products (2GB). Spark job chạy 20 executors, mỗi executor 8GB RAM. After shuffle: OOM. Tại sao? Default shuffle partitions = 200. 500GB / 200 = 2.5GB per partition. Mỗi executor xử lý vài partitions → memory boom.</p>
+            <p>Lão fix 3 bước: <strong>1)</strong> Tăng <code>spark.sql.shuffle.partitions</code> từ 200 lên 2000. <strong>2)</strong> Broadcast bảng products (2GB < broadcast threshold): <code>broadcast(products_df)</code> — eliminate shuffle hoàn toàn. <strong>3)</strong> Cache intermediate results. Runtime giảm từ "crash after 2 hours" xuống 15 phút.</p>
+            <div class="lesson">💡 Bài học: Broadcast join khi 1 bảng nhỏ (< 10GB). Tăng shuffle partitions cho large data. Monitor Spark UI: check shuffle read/write size, GC time, spill to disk. Hiểu execution plan bằng <code>.explain()</code>.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔥 Chuyện 2: Hadoop Cluster Fire — Yarn Queue Chaos</div>
+            <p>Hadoop cluster 100 nodes, shared giữa 5 teams. Không ai config YARN queue properly — mọi job submit vào default queue. Một ngày đẹp trời, team ML submit training job chiếm 80% cluster resources. 4 teams còn lại: tất cả jobs queued. ETL pipeline delay 8 tiếng. Daily reports không có data. Stakeholders nổi điên.</p>
+            <p>Lão dọn dẹp: tạo YARN capacity scheduler với 5 queues, mỗi queue có min/max resources. Team ML queue max 30%. ETL queue guaranteed 25%. Preemption enabled: nếu ETL queue cần resources mà ML không dùng hết → lấy lại. Hòa bình được lập lại.</p>
+            <div class="lesson">💡 Bài học: Shared cluster PHẢI có resource management. YARN queues, Kubernetes resource quotas, Spark fair scheduler. Không governance = 1 team chiếm hết resources = mọi team khổ.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🧱 Chuyện 3: dbt Model Dependencies — 500 Models Spaghetti</div>
+            <p>Data team 8 người, dùng dbt, mỗi người thoải mái tạo models. 2 năm sau: 500 models, dependency graph nhìn như bản đồ metro Tokyo. <code>dbt run</code> mất 4 giờ vì dependencies chain dài 15 levels. Thay đổi 1 staging model → cascade rebuild 200 downstream models.</p>
+            <p>Lão áp dụng dbt best practices: tách thành layers (staging → intermediate → marts), naming conventions (<code>stg_</code>, <code>int_</code>, <code>fct_</code>, <code>dim_</code>), tags cho grouping, selectors cho partial runs. Refactor mất 2 tháng nhưng <code>dbt run</code> giảm xuống 30 phút.</p>
+            <div class="lesson">💡 Bài học: dbt project cần architecture từ đầu. Medallion/layered approach: staging → intermediate → marts. Naming conventions. Documentation. Code review cho SQL models cũng quan trọng như application code.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ collect() large DataFrame về driver</strong>
+            <p><code>df.collect()</code> trên 10 triệu rows = OOM driver. Dùng <code>.take(n)</code>, <code>.show(n)</code>, hoặc write to file thay vì collect.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ UDF thay vì built-in functions</strong>
+            <p>Python UDF trong Spark = serialize data → Python process → deserialize. 10-100x chậm hơn built-in Catalyst functions. Dùng <code>pyspark.sql.functions</code> built-in, tránh UDF khi có thể.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Small files problem</strong>
+            <p>1 triệu files 1MB thay vì 1000 files 1GB. Mỗi file = 1 Spark task = scheduling overhead. HDFS namenode OOM. Coalesce/repartition output files. Target file size: 128MB-1GB.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không partition output data</strong>
+            <p>Write 1TB Parquet không partition = mọi query scan 1TB. Partition by date: query 1 ngày chỉ scan 3GB. Nhưng đừng partition by high-cardinality column (user_id) → triệu folders.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ dbt models quá complex</strong>
+            <p>1 model SQL 500 dòng với 12 CTEs và 8 JOINs. Impossible to test, impossible to debug. Chia thành multiple models, mỗi model 1 transformation logic.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">⚙️ Xử Lý Hàng Loạt Đại Sư — Trương Trăm Triệu</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Cho tôi đủ nodes và đúng partition strategy, tôi có thể xử lý dữ liệu của cả thế giới."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

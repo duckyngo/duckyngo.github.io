@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điện Tử Đại Sư - Bậc Thầy Desktop Development</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(79,70,229,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #6366f1, #4f46e5, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5b4fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(79,70,229,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #a5b4fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5b4fc; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #6366f1; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5b4fc; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #4f46e5; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5b4fc; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #a5b4fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🖥️</span>
+            <h1>Điện Tử Đại Sư</h1>
+            <p class="subtitle">Trương Điện Tử — Bậc Thầy Desktop Development</p>
+            <p class="quote">"Desktop app chưa chết — nó chỉ evolve thành Electron eating 2GB RAM."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">Electron</span>
+            <span class="skill-tag">Tauri</span>
+            <span class="skill-tag">WPF</span>
+            <span class="skill-tag">WinUI</span>
+            <span class="skill-tag">Qt</span>
+            <span class="skill-tag">GTK</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Trương Điện Tử bắt đầu desktop development với Visual Basic 6.0 — kéo thả button, double click để viết event handler. Simple, productive, wonderful. Rồi .NET ra đời, WPF/XAML thay Windows Forms, rồi UWP thất bại, rồi WinUI 3.
+
+Khi Electron xuất hiện (VS Code, Slack, Discord), ông vừa mừng (cross-platform desktop!) vừa buồn (Chrome + Node.js + app = 500MB installer, 2GB RAM cho todo app). Tauri ra đời như giải pháp: web frontend + Rust backend, 10x nhỏ hơn Electron.
+
+Ông đã ship apps bằng Electron, Tauri, WPF, và Qt. Mỗi stack có vị trí riêng. Motto: 'Electron cho speed-to-market, Tauri cho performance-conscious, native cho platform-specific perfection.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Electron vs Tauri — Battle of Web-based Desktop</h3>
+                <p>Electron: Chromium + Node.js bundled. Ưu: Chrome DevTools, npm ecosystem, mature (VS Code, Slack, Figma). Nhược: 150MB+ app size, 200MB+ RAM idle, Chromium updates = security patches needed. Tauri: system WebView + Rust backend. Ưu: 2-10MB app size, 20-50MB RAM, Rust performance cho backend, smaller attack surface. Nhược: WebView inconsistency (WebKit trên macOS, WebView2 trên Windows), Rust learning curve, smaller ecosystem. Choose: Electron cho rapid development + large team. Tauri cho performance + small binary.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: WPF / WinUI — Windows Native</h3>
+                <p>WPF: mature, XAML-based, rich controls, data binding powerful. Still relevant cho enterprise Windows apps. WinUI 3: modern Windows UI framework, Fluent Design, WinAppSDK. XAML Islands: host WinUI controls trong WPF app (gradual migration). .NET 8 improves performance significantly. MSIX packaging cho modern deployment. Windows-only nhưng: 80% enterprise users dùng Windows.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Qt — True Cross-platform Native</h3>
+                <p>C++ framework, native look-and-feel trên Windows/macOS/Linux. QML cho modern declarative UI. Signal/Slot mechanism cho event handling. Massive control library. Qt for Python (PySide6) cho Python developers. Commercial license $$ nhưng LGPL option available. Dùng cho: desktop apps cần native performance + cross-platform + custom widgets (video editors, CAD, embedded UI).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Auto-update — Giữ App Luôn Mới</h3>
+                <p>Electron: electron-updater, auto-download + install. Tauri: built-in updater, signed updates. Windows: MSIX auto-update, ClickOnce, Squirrel.Windows. macOS: Sparkle framework. Strategy: check update on app start, download background, prompt restart. Silent update (apply on next launch) vs prompted update. Delta updates: chỉ download changed files — faster, less bandwidth.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: System Integration</h3>
+                <p>System tray: persistent background app (notifications, quick actions). File associations: double-click .myapp file → open in your app. Deep links: protocol handler (myapp://open). Global shortcuts: keyboard shortcuts hoạt động kể cả khi app không focus. Native notifications: OS-level notifications (Action Center Windows, Notification Center macOS). Auto-start: launch on system startup (user opt-in only).</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Electron RAM Eating — Khi Todo App Cần 2GB</h3>
+                <p>Team build project management tool bằng Electron. MVP: 200MB installer, 800MB RAM khi mở. Manager: 'Tại sao todo app cần RAM nhiều hơn Photoshop?' Answer: Chromium runtime.
+
+Optimize: lazy load windows, offscreen rendering for non-visible content, shared process cho multiple windows. RAM giảm từ 800MB → 400MB. Vẫn nhiều hơn native app equivalent (50MB). Team accept trade-off: development speed + cross-platform > memory efficiency.
+
+Rival team build similar app bằng Tauri: 8MB installer, 60MB RAM. Feature parity. Performance comparable. Development time: 30% longer (Rust learning curve). Long-term: lower infrastructure cost, happier users.</p>
+                <div class="lesson">💡 Bài học: Electron memory overhead = Chromium runtime (~150MB base). Optimization: 1) Minimize window count, 2) Offload heavy computation to Node.js process (not renderer), 3) Lazy load features, 4) Use Chrome DevTools Memory profiler. If memory is critical: Tauri, native, hoặc Qt.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Tauri Bundle Size Win — 8MB vs 200MB</h3>
+                <p>App cần desktop distribution: installer download từ website. Electron build: 200MB installer. Tauri build: 8MB installer. CDN cost: Electron = 200MB × 100,000 downloads = 20TB bandwidth. Tauri = 8MB × 100,000 = 800GB. Cost difference: significant ở scale.
+
+User experience: 200MB download trên slow connection = 5 phút wait. 8MB = 10 seconds. Installation abandonment rate: Electron 15%, Tauri 2%.
+
+Trade-off: Tauri development cần Rust cho backend logic. Frontend (React/Vue/Svelte) giống nhau. Team invest 2 tháng học Rust, ROI positive sau 6 tháng.</p>
+                <div class="lesson">💡 Bài học: Bundle size matters cho distribution: download time, CDN cost, installation abandonment, disk usage. Tauri: 10-20x smaller than Electron. Native: similar size to Tauri. Consider distribution channel: web download (size matters), enterprise deployment (IT manages), app store (size limits).</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Cross-platform WebView Inconsistency</h3>
+                <p>Tauri app: macOS dùng WebKit (Safari engine), Windows dùng WebView2 (Edge/Chromium). CSS <code>backdrop-filter</code>: hoạt động trên macOS, không trên Windows WebView2 old version. <code>CSS container queries</code>: supported trên WebView2, KHÔNG trên older WebKit. Result: app trông khác nhau trên mỗi OS.
+
+Fix: 1) Feature detection thay vì UA sniffing, 2) CSS fallbacks cho unsupported features, 3) Minimum WebView version requirements, 4) Test trên TẤT CẢ target OS. Lesson: Tauri's 'use system WebView' = lighter weight nhưng inconsistency risk.</p>
+                <div class="lesson">💡 Bài học: Tauri system WebView = lighter but inconsistent. Electron bundled Chromium = heavier but consistent. If UI consistency critical: Electron (or enforce minimum WebView versions). If bundle size critical: Tauri + thorough cross-OS testing + CSS fallbacks.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Ship debug build</h3>
+                <p>Debug build: no code optimization, verbose logging, larger size, slower. Electron: development mode bundles source maps + DevTools. LUÔN build production + test production build trước release.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Không sign application</h3>
+                <p>Unsigned app: 'Unknown developer' warning (macOS Gatekeeper), SmartScreen blocking (Windows). Users scared → don't install. Code signing certificate: Apple Developer ($99/year), Windows Authenticode (varies). Sign MỌII release.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Memory leak trong long-running app</h3>
+                <p>Desktop apps run ngày/tuần — memory leaks accumulate. Monitor memory over time, profile DOM nodes count, detached elements. Electron: BrowserWindow closed but renderer process leaked references. Test: run app 24 hours, monitor memory trend.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Ignore system integration</h3>
+                <p>Desktop app that doesn't integrate with OS = glorified web page. Add: system tray, file associations, native notifications, drag-and-drop, keyboard shortcuts. These make app feel NATIVE.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Auto-update without rollback</h3>
+                <p>Bad update deployed → users stuck → manual reinstall needed. Implement rollback: keep previous version, detect crash-on-start → auto-rollback, manual rollback option in settings.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trương Điện Tử</span> — Điện Tử Đại Sư</p>
+            <p>🖥️ "Desktop app chưa chết — nó chỉ evolve thành Electron eating 2GB RAM."</p>
+        </div>
+    </div>
+</body>
+</html>

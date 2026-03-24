@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô Hình Mạng Tổ Sư - Chuyên Gia OSI & TCP/IP | Người Đếm 7 Tầng Mỗi Sáng</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a2a 30%, #0a1a3a 60%, #1a2a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #6366f1; text-shadow: 0 0 20px #6366f140; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #6366f1; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #6366f1; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+        .section h2 { color: #6366f1; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #6366f130; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #6366f1; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #6366f1; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } .section { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🔢</span>
+            <h1>Mô Hình Mạng Tổ Sư</h1>
+            <div class="title">Chuyên Gia OSI & TCP/IP | Người Đếm 7 Tầng Mỗi Sáng</div>
+            <div class="quote">"OSI model có 7 layers. Nhưng vấn đề thực sự thường ở Layer 8 — the user layer."</div>
+        </div>
+        <div class="badges">
+            <span class="badge">📡 Layer 1-2 Physical/Data Link</span>
+            <span class="badge">🌐 Layer 3 Network</span>
+            <span class="badge">🔗 Layer 4 Transport</span>
+            <span class="badge">💬 Layer 5-7 Session/Presentation/App</span>
+            <span class="badge">📦 Encapsulation</span>
+            <span class="badge">🔍 Packet Analysis</span>
+            <span class="badge">📋 ARP/ICMP/DHCP</span>
+        </div>
+        <div class="section">
+            <h2>📚 Thân Thế &amp; Lai Lịch</h2>
+            <p>Tổ Sư là người hiếm hoi có thể giải thích OSI model mà không làm sinh viên ngủ gật. Bí quyết: dùng pizza delivery analogy. Layer 1 là bánh xe xe máy (physical), Layer 2 là biển số xe (MAC address), Layer 3 là địa chỉ nhà (IP), Layer 4 là số phòng (port), Layer 7 là pizza (application data).</p><p>Chàng ta bắt đầu sự nghiệp bằng việc kéo cáp mạng (Layer 1) và debug ARP tables (Layer 2). Dần dần leo lên: routing (Layer 3), TCP troubleshooting (Layer 4), và cuối cùng HTTP debugging (Layer 7). "Đời networking là leo thang — theo nghĩa đen," chàng ta nói.</p><p>Bây giờ chàng ta có thể nhìn vào Wireshark capture và đọc packets như đọc tiểu thuyết — với đầy plot twists, conflicts, và occasional happy endings.</p>
+        </div>
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. Layer 1-2 Physical & Data Link:</strong> Ethernet frames, MAC addresses, switches. ARP (Address Resolution Protocol): IP → MAC mapping. ARP spoofing là attack vector phổ biến. Spanning Tree Protocol (STP) prevent loops — nhưng cũng cause outages nếu misconfigured. VLAN trunking, 802.1Q tagging. MTU mismatch causes fragmentation — check end-to-end.
+            </div>
+            <div class="tip">
+                <strong>2. Layer 3 Network — IP & Routing:</strong> IPv4 subnetting: CIDR notation, subnet masks, broadcast addresses. IPv6: 128-bit, SLAAC, dual-stack. Routing: static routes cho simple, OSPF/BGP cho complex. ICMP: ping, traceroute — đừng block hoàn toàn (break path MTU discovery). NAT: necessary evil, break end-to-end connectivity.
+            </div>
+            <div class="tip">
+                <strong>3. Layer 4 Transport — TCP & UDP:</strong> TCP: reliable, ordered, connection-oriented. Three-way handshake: SYN → SYN-ACK → ACK. Window sizing cho throughput. Congestion control (slow start, congestion avoidance). UDP: unreliable, fast, connectionless. Dùng cho: DNS, VoIP, gaming, streaming. QUIC: UDP-based, multiplexed, encrypted — future of HTTP.
+            </div>
+            <div class="tip">
+                <strong>4. Encapsulation — Data Wrapping:</strong> Application data → TCP/UDP header → IP header → Ethernet frame. Mỗi layer thêm header. MTU 1500 bytes (Ethernet) — IP fragmentation nếu packet lớn hơn. Jumbo frames (9000 bytes) trong datacenter cho throughput. Wireshark dissect từng layer — essential debugging tool.
+            </div>
+            <div class="tip">
+                <strong>5. DNS — Layer 7 Nhưng Core Infrastructure:</strong> Recursive resolver → Root servers → TLD servers → Authoritative servers. Caching ở mỗi level (TTL). DNS over HTTPS (DoH), DNS over TLS (DoT) cho privacy. DNSSEC cho integrity. DNS is single point of failure — redundant DNS servers bắt buộc.
+            </div>
+            <div class="tip">
+                <strong>6. Troubleshooting Methodology:</strong> Start từ Layer 1 đi lên. Cable connected? (Layer 1). Link up? (Layer 2). IP assigned? (Layer 3). Port open? (Layer 4). Application responding? (Layer 7). Hoặc start từ Layer 7 đi xuống nếu application-level problem. Wireshark + tcpdump là essential tools.
+            </div>
+        </div>
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>👤 Chuyện Layer 8 (User) Problem</h3>
+                <p>Help desk ticket: 'Mạng chậm lắm, không vào được gì hết!' Network team kiểm tra: bandwidth OK, latency OK, packet loss 0%. 4 giờ debug mọi layer. Cuối cùng đến bàn user: monitor tắt. 'Em tưởng nó bật, nhưng thực ra em đang nhìn vào màn hình screensaver.'</p><p>Lần khác: 'VPN không kết nối!' Network team check VPN server, firewall, certificates — tất cả OK. Hóa ra: user type password sai vì Caps Lock. 3 giờ investigation cho Caps Lock.</p>
+                <div class="lesson">💡 Bài học: Layer 8 (user) issues chiếm 40-60% network tickets. Verify basics trước khi deep dive: is it plugged in? Is Caps Lock off? Can you access anything? Đừng assume problem phức tạp — start simple.</div>
+            </div>
+            <div class="story">
+                <h3>🔍 Chuyện Packet Capture Phát Hiện Sự Thật</h3>
+                <p>Application team khẳng định: 'Server response time 5 giây, backend quá chậm!' Backend team khẳng định: 'Response time 50ms, frontend quá chậm!' Debate kéo dài 2 tuần. Đại Sư setup packet capture ở cả hai phía.</p><p>Phát hiện: backend response 50ms (đúng), nhưng TCP window size quá nhỏ cho large response payload. Client nhận data từng chunk nhỏ qua nhiều round trips. Total transfer time: 4.9 giây. Fix: tăng TCP window size, enable window scaling. Response time giảm xuống 200ms. Cả hai team đều đúng — và cả hai đều sai.</p>
+                <div class="lesson">💡 Bài học: Packet capture là source of truth. Khi teams disagree, capture traffic ở cả hai endpoints. TCP tuning (window size, Nagle's algorithm, delayed ACK) có thể ảnh hưởng lớn đến performance. Wireshark skill là must-have cho any network engineer.</div>
+            </div>
+            <div class="story">
+                <h3>📡 Chuyện ARP Storm Trong Data Center</h3>
+                <p>Mạng data center bỗng nhiên chậm bất thường. Switch CPU 100%. tcpdump cho thấy: hàng triệu ARP requests per second. Nguyên nhân: VM misconfigured gửi ARP requests cho IP không tồn tại — broadcast storm. Mỗi ARP request broadcast tới TẤT CẢ hosts trong VLAN. VLAN chứa 2000 hosts. Result: network meltdown.</p><p>Fix: rate limit ARP trên switch (storm control). Segment VLANs nhỏ hơn (max 250 hosts). Dynamic ARP Inspection (DAI) enable.</p>
+                <div class="lesson">💡 Bài học: Large Layer 2 domains = large broadcast domains = large blast radius. Segment VLANs theo function/team. Storm control trên switches. Monitor broadcast traffic. ARP issues thường là symptom của deeper network design problem.</div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Block tất cả ICMP:</strong> ICMP cần cho Path MTU Discovery, traceroute, ping diagnostics. Block ICMP = break things silently. Chỉ block ICMP redirect, không block echo/unreachable.
+            </div>
+            <div class="mistake">
+                <strong>2. Flat network — mọi thứ 1 VLAN:</strong> 2000 hosts trong 1 VLAN = broadcast storm waiting to happen. Segment theo function, security zone. Smaller VLANs = smaller blast radius.
+            </div>
+            <div class="mistake">
+                <strong>3. Ignore IPv6:</strong> IPv6 đã enabled mặc định trên hầu hết OS. Nếu bạn không manage IPv6, attacker sẽ exploit nó. Dù không dùng IPv6, hãy secure nó.
+            </div>
+            <div class="mistake">
+                <strong>4. Không monitor DNS:</strong> DNS failure = everything fails. Monitor DNS response time, NXDOMAIN rate, query volume. DNS is often the first thing to check.
+            </div>
+            <div class="mistake">
+                <strong>5. MTU mismatch:</strong> 1500 ở server, 1400 ở VPN tunnel, 9000 ở datacenter. Fragmentation, performance issues, mysterious connection drops. Test MTU end-to-end.
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #91</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

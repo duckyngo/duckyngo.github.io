@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mây Xanh Microsoft Đại Sư - Chuyên Gia Azure</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #0a1628 30%, #0d2137 60%, #1a3a5c 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center; padding: 40px 20px;
+            background: rgba(0,120,212,0.05); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid rgba(0,120,212,0.2);
+            margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,120,212,0.1);
+        }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #0078d4; text-shadow: 0 0 20px #0078d440; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #0078d4; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(0,120,212,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(0,120,212,0.2); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #0078d4; transition: all 0.3s; }
+        .badge:hover { background: rgba(0,120,212,0.15); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #0078d4; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(0,120,212,0.3); }
+        .tip { background: rgba(0,120,212,0.03); border-left: 4px solid #0078d4; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #0078d4; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🔷</span>
+            <h1>Mây Xanh Microsoft Đại Sư</h1>
+            <div class="title">Chuyên Gia Microsoft Azure | Người Sống Sót Qua 5 Lần Đổi Tên Dịch Vụ</div>
+            <div class="quote">"Azure AD giờ là Microsoft Entra ID. Tuần sau có khi lại đổi tên nữa. Tôi đã ngừng in business card."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">🔷 Azure Solutions Architect</span>
+            <span class="badge">🔐 Entra ID Expert</span>
+            <span class="badge">🚀 App Service Pro</span>
+            <span class="badge">⚓ AKS Master</span>
+            <span class="badge">💾 Azure SQL</span>
+            <span class="badge">📊 Azure Monitor</span>
+            <span class="badge">🏗️ ARM/Bicep</span>
+            <span class="badge">🌐 Azure Front Door</span>
+            <span class="badge">🔑 Key Vault</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Đại Sư từng là một .NET developer thuần túy, sống trong thế giới Visual Studio và IIS. Một ngày đẹp trời, sếp bảo: "Chuyển hết lên Azure đi." Chàng ta hỏi: "Azure là gì?" Sếp trả lời: "Cloud của Microsoft." Chàng ta mừng rỡ: "Microsoft thì dễ rồi, cứ Next Next Finish thôi!"</p>
+            <p>Oh, chàng ta đã sai. Azure Portal có hơn 600 dịch vụ, mỗi dịch vụ có khoảng 47 tabs cấu hình, và naming convention thì... Azure SQL Database, Azure SQL Managed Instance, Azure SQL Server, SQL Server on Azure VMs — đều khác nhau hoàn toàn!</p>
+            <p>Sau 10 năm chiến đấu, 6 lần đổi tên Azure AD (giờ là Entra ID), và vô số lần giải thích cho khách hàng rằng "Azure DevOps" và "Azure DevOps Server" là hai thứ khác nhau, chàng ta đã giác ngộ: Azure mạnh nhất khi bạn đã ở trong hệ sinh thái Microsoft.</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. Entra ID (Azure AD) — Trung Tâm Vũ Trụ Microsoft:</strong> Conditional Access policies là vũ khí mạnh nhất. MFA bắt buộc, device compliance, location-based access. PIM (Privileged Identity Management) cho just-in-time admin access. Hiểu rõ sự khác biệt giữa Application Registration và Enterprise Application — hai khái niệm nghe giống nhau nhưng khác hoàn toàn.
+            </div>
+            <div class="tip">
+                <strong>2. Resource Groups & Subscriptions — Tổ Chức Đúng Từ Đầu:</strong> Mỗi subscription là một billing boundary. Dùng Management Groups để áp policies. Resource Groups theo lifecycle, không theo resource type. Tag mọi thứ: Environment, Owner, CostCenter, Application.
+            </div>
+            <div class="tip">
+                <strong>3. App Service — Web Hosting Đơn Giản Nhất:</strong> Tuyệt vời cho .NET, Java, Python web apps. Deployment slots cho zero-downtime deployments. Auto-scaling rules dựa trên metrics. Nhưng nhớ: App Service Plan chia sẻ resources giữa các apps — đừng nhồi 20 apps vào 1 plan rồi thắc mắc sao chậm.
+            </div>
+            <div class="tip">
+                <strong>4. AKS — Kubernetes Của Microsoft:</strong> Managed control plane miễn phí. Tích hợp tốt với Entra ID cho RBAC. Azure CNI cho networking. Nhưng cẩn thận: node pool sizing ảnh hưởng lớn đến chi phí. Dùng Virtual Nodes cho burst workloads, Spot Node Pools cho batch jobs.
+            </div>
+            <div class="tip">
+                <strong>5. Azure Policy & Blueprints — Governance Tự Động:</strong> Enforce naming conventions, allowed regions, required tags. Deny creation of public IP addresses. Audit compliance. Azure Policy là guardrails, không phải rào cản — thiết kế policies hợp lý để dev vẫn làm việc được.
+            </div>
+            <div class="tip">
+                <strong>6. Networking — Hub-Spoke Topology:</strong> Hub VNet chứa firewall, VPN gateway, shared services. Spoke VNets cho workloads. VNet Peering kết nối. Azure Firewall hoặc NVA ở hub. Private Endpoints cho PaaS services — đừng để database accessible qua public internet.
+            </div>
+            <div class="tip">
+                <strong>7. Cost Management — Theo Dõi Từng Đồng:</strong> Azure Cost Management + Billing free to use. Set budgets và alerts. Advisor recommendations cho right-sizing. Reserved Instances cho predictable workloads. Dev/Test pricing cho non-production — tiết kiệm đáng kể.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>🌍 Chuyện Azure Region Outage Ngày Thứ Sáu</h3>
+                <p>Thứ Sáu, 4 giờ chiều. Team chuẩn bị nghỉ cuối tuần thì nhận alert: toàn bộ ứng dụng ở Southeast Asia region không accessible. Azure Status page vẫn xanh lè. "Chắc mình bị lỗi gì đó" — team nghĩ vậy và bắt đầu debug.</p>
+                <p>2 giờ sau, Azure Status page mới cập nhật: "We are investigating reports of issues with multiple services in Southeast Asia." Toàn bộ App Services, SQL Databases, và Storage Accounts ở region đó bị ảnh hưởng. Khách hàng gọi điện liên tục. CEO hỏi: "Tại sao không có backup?"</p>
+                <p>Câu trả lời đau lòng: mọi thứ đều ở single region. Không có geo-replication, không có traffic manager, không có failover plan. Mất 8 giờ để Azure khôi phục. Mất 3 tháng để team thiết lập multi-region architecture đúng chuẩn.</p>
+                <div class="lesson">💡 Bài học: Availability Zones cho HA trong region. Paired Regions cho DR. Azure Traffic Manager hoặc Front Door cho global load balancing. Đừng đợi outage mới nghĩ đến resilience.</div>
+            </div>
+            <div class="story">
+                <h3>😵 Chuyện Naming Convention Hỗn Loạn</h3>
+                <p>Một công ty dùng Azure 3 năm mà không có naming convention. Kết quả: "vm1", "test-db", "prod-something", "john-webapp", "DO-NOT-DELETE", "DELETE-ME-MAYBE". Có 847 resources mà không ai biết cái nào thuộc project nào.</p>
+                <p>Đại Sư được mời vào để "dọn dẹp". Mất 2 tuần chỉ để identify và tag resources. Phát hiện 127 resources không ai nhận là của mình. 34 resources đang chạy mà không serve bất kỳ mục đích nào. Chi phí lãng phí: $4,200/tháng.</p>
+                <div class="lesson">💡 Bài học: Naming convention ngay từ ngày đầu. Azure Policy enforce required tags. Microsoft Cloud Adoption Framework có guidance chuẩn. Đừng để "tạm" trở thành "vĩnh viễn".</div>
+            </div>
+            <div class="story">
+                <h3>🔑 Chuyện Key Vault Cứu Mạng</h3>
+                <p>Một team lưu connection strings trong App Service Configuration — dạng plain text. Một ngày, developer mới join team, export configuration để "hiểu hệ thống", rồi commit file vào public repo. Database credentials exposed.</p>
+                <p>Đại Sư được gọi vào lúc nửa đêm. Rotate tất cả credentials, enable Key Vault references cho App Service, setup Managed Identity để không cần credentials trong config. Từ đó, không ai trong team biết password database — chỉ Key Vault biết, và chỉ cho phép apps có Managed Identity đúng truy cập.</p>
+                <div class="lesson">💡 Bài học: Key Vault cho MỌI secrets. Managed Identities thay thế credentials. Key Vault references trong App Service config. Secrets KHÔNG BAO GIỜ ở plain text, KHÔNG BAO GIỜ trong source code.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Nhầm lẫn Azure AD B2C và Azure AD B2B:</strong> B2C cho customer identity (external users), B2B cho partner/guest access. Dùng sai cái sẽ rất khó migration sau này.
+            </div>
+            <div class="mistake">
+                <strong>2. Không dùng Availability Zones:</strong> Đặt mọi thứ vào 1 zone duy nhất. Khi zone đó có vấn đề, toàn bộ hệ thống down. AZ là miễn phí cho hầu hết services — không có lý do để không dùng.
+            </div>
+            <div class="mistake">
+                <strong>3. Over-provisioning resources:</strong> Chọn Standard_D16s_v5 cho web app chạy WordPress. Azure Advisor sẽ suggest right-sizing — hãy lắng nghe nó.
+            </div>
+            <div class="mistake">
+                <strong>4. Bỏ qua Network Security Groups:</strong> Tạo VM mà không configure NSG đúng. Default rules cho phép traffic trong VNet — có thể không phải điều bạn muốn.
+            </div>
+            <div class="mistake">
+                <strong>5. Không enable Defender for Cloud:</strong> Free tier đã cung cấp security recommendations tốt. Paid tier cho advanced threat protection. Bỏ qua security recommendations là tự đào hố chôn mình.
+            </div>
+            <div class="mistake">
+                <strong>6. Lock-in vào Azure-specific services:</strong> Azure Functions Durable Functions, Logic Apps, Power Automate — powerful nhưng không portable. Cân nhắc trade-off giữa productivity và portability.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #78</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

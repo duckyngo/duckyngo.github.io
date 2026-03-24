@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Actions Đại Sư - Chuyên Gia GitHub Actions | Người Viết YAML Workflow</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a1a 30%, #0a1a2a 60%, #0a2a3a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #60a5fa; text-shadow: 0 0 20px #60a5fa40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #60a5fa; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #60a5fa; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #60a5fa; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #60a5fa30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #60a5fa; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #60a5fa; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🔄</span><h1>GitHub Actions Đại Sư</h1><div class="title">Chuyên Gia GitHub Actions | Người Viết YAML Workflow</div><div class="quote">"GitHub Actions: vì viết YAML cho Kubernetes chưa đủ, bạn cần viết YAML cho CI/CD nữa. Ít nhất syntax highlighting tốt hơn."</div></div>
+        <div class="badges">            <span class="badge">🔄 Workflow Expert</span>
+            <span class="badge">🔁 Reusable Workflows</span>
+            <span class="badge">🏃 Self-Hosted Runners</span>
+            <span class="badge">🔐 Secrets Management</span>
+            <span class="badge">📦 Artifacts/Cache</span>
+            <span class="badge">🏷️ Matrix Builds</span>
+            <span class="badge">🤖 Composite Actions</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư nhớ thời Jenkins — Groovy pipelines, plugin hell, "works on my Jenkins." Khi GitHub Actions ra đời, chàng ta thở phào: "CI/CD native trong GitHub? YAML workflow? Marketplace actions? Yes please!"</p><p>Chàng ta migrate 50 Jenkins pipelines sang GitHub Actions trong 2 tháng. Most pipelines simpler, faster, và không cần maintain Jenkins server nữa. "I deleted our Jenkins server and nobody complained," chàng ta tự hào.</p><p>Nhưng GitHub Actions cũng có pitfalls: workflow chạy 2 giờ costs $$$, secrets leaked trong logs, self-hosted runners security risks. "Every CI/CD system has its own special brand of pain," chàng ta philosophical.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Workflow Syntax:</strong> on: push, pull_request, schedule, workflow_dispatch. jobs → steps → uses/run. Matrix strategy cho multi-version testing. Concurrency groups prevent duplicate runs. Permissions cho GITHUB_TOKEN scoping. Environment protection rules cho production.</div>
+            <div class="tip"><strong>2. Reusable Workflows:</strong> workflow_call cho shared workflows. Inputs và secrets parameters. Central repository cho organization workflows. Version pinning (uses: org/workflow@v1). DRY principle cho CI/CD. Composite actions cho reusable step groups.</div>
+            <div class="tip"><strong>3. Self-Hosted Runners:</strong> Own infrastructure cho builds. Cost savings cho heavy CI/CD. Custom software/hardware (GPU builds). Security: runner compromise = code access risk. Ephemeral runners cho security. Runner groups cho organization management. Auto-scaling runners (actions-runner-controller cho K8s).</div>
+            <div class="tip"><strong>4. Secrets & Security:</strong> Repository secrets, environment secrets, organization secrets. GITHUB_TOKEN scoped permissions. Third-party actions audit (pin to commit SHA, not tag). Dependabot cho action updates. OIDC cho cloud provider authentication (no long-lived credentials). Secret scanning prevent commit.</div>
+            <div class="tip"><strong>5. Performance Optimization:</strong> Cache action cho dependencies (node_modules, pip cache). Artifact upload/download cho cross-job data. Concurrency groups cancel redundant runs. Matrix strategy cho parallel testing. Self-hosted runners cho custom hardware. Timeout settings prevent runaway jobs.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>💸 Chuyện Workflow 2 Giờ Cost $$$</h3><p>CI pipeline: build → test → deploy. Build: 15 minutes. Test suite: 1 giờ 45 phút (integration tests hit real database). Cost: $0.008/minute × 120 minutes = $0.96/run. 50 PRs/day × 3 runs each = 150 runs/day. Monthly: $4,320. CTO: 'CI costs more than our cloud infrastructure!'</p><p>Optimization: parallelize test suites (matrix strategy). Cache dependencies. Skip unchanged modules. Move integration tests to nightly run. PR tests: unit tests only (10 minutes). Result: $0.08/run, monthly: $360. 92% reduction.</p><div class="lesson">💡 Bài học: CI costs scale with team size and frequency. Monitor GitHub Actions usage. Parallelize tests. Cache aggressively. Right-size test scope per trigger (PR = fast, main = full). Self-hosted runners cho heavy workloads. Timeout cho runaway jobs.</div></div>
+            <div class="story"><h3>🔐 Chuyện Secret Bị Lộ Trong Logs</h3><p>Workflow step: echo $DATABASE_URL cho debugging. GitHub masks secrets in logs — nhưng chỉ exact match. DATABASE_URL chứa password URL-encoded. URL-decoded version NOT masked. Attacker reading workflow logs extract password.</p><p>Worse: third-party action logs environment variables verbosely. Secrets in env vars exposed. Fix: audit all workflow logs. Remove debug outputs. Use add-mask cho custom secrets. Audit third-party actions cho logging behavior.</p><div class="lesson">💡 Bài học: GitHub masks exact secret values in logs, NOT transformations. Don't echo secrets. Don't pass secrets as command arguments (visible in process listing). Use step environment variables instead of workflow-level. Audit third-party actions. Minimize secret exposure.</div></div>
+            <div class="story"><h3>🏃 Chuyện Self-Hosted Runner Compromise</h3><p>Self-hosted runner trên shared VM. Developer A's workflow installs malicious dependency. Dependency persists on runner. Developer B's workflow runs on same runner — malicious code executes in context of different repository. Cross-repository contamination.</p><p>Fix: ephemeral runners (destroy after each job). Containerized runners. Dedicated runners per repository/team. Runner groups with access control. Regular security audits.</p><div class="lesson">💡 Bài học: Shared self-hosted runners = shared security context. Ephemeral runners (recreate each job) cho security. Container-based runners cho isolation. actions-runner-controller cho Kubernetes-based auto-scaling ephemeral runners. NEVER share runners between different trust levels.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Pin actions to tag (not SHA):</strong> uses: actions/checkout@v3 — tag có thể bị overwrite. Pin to SHA: uses: actions/checkout@abc123. Dependabot update SHAs automatically.</div>
+            <div class="mistake"><strong>2. GITHUB_TOKEN với quá nhiều permissions:</strong> Default permissions broad. Set permissions: read-all + specific writes needed. Principle of least privilege cho tokens.</div>
+            <div class="mistake"><strong>3. No concurrency control:</strong> PR push 5 commits = 5 workflow runs. Concurrency group cancel redundant runs. Save time and money.</div>
+            <div class="mistake"><strong>4. Large artifacts:</strong> Upload 2GB artifact each run. Storage costs accumulate. Retention days: 1-90 (default 90). Set appropriate retention.</div>
+            <div class="mistake"><strong>5. No timeout:</strong> Workflow hung → runs until 6-hour default timeout. Set timeout-minutes per job. 30 minutes reasonable for most builds.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #109</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

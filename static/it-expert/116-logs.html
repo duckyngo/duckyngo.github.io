@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nhật Ký Đại Sư - Chuyên Gia ELK, Loki, Fluentd & Vector</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a0a 30%, #1a2a0a 60%, #1a2a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #a3e635; text-shadow: 0 0 20px #a3e63540; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #a3e635; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #a3e635; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #a3e635; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #a3e63530; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #a3e635; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #a3e635; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">📝</span><h1>Nhật Ký Đại Sư</h1><div class="title">Chuyên Gia ELK, Loki, Fluentd & Vector</div><div class="quote">"Logs giống như nhật ký cá nhân: viết thì dễ, tìm lại thì khó, và luôn chứa những bí mật mà bạn không muốn ai đọc (như passwords trong error logs)."</div></div>
+        <div class="badges">            <span class="badge">📝 ELK Stack</span>
+            <span class="badge">🔍 Loki Expert</span>
+            <span class="badge">🔀 Fluentd/Fluent Bit</span>
+            <span class="badge">🚀 Vector</span>
+            <span class="badge">📋 Structured Logging</span>
+            <span class="badge">💾 Retention</span>
+            <span class="badge">🔍 Log Analysis</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Nhật Ký Đại Sư nhớ thời grep log files trên production servers. tail -f /var/log/application.log | grep ERROR. Mỗi server SSH riêng. 20 servers = 20 terminal windows. "Distributed grep," chàng ta gọi.</p><p>ELK Stack (Elasticsearch + Logstash + Kibana) thay đổi cuộc đời: centralized logs, full-text search, dashboards. Nhưng Elasticsearch là memory monster — 3 nodes × 32GB RAM minimum. "Logs cost more than the application they monitor," chàng ta than.</p><p>Rồi Grafana Loki ra đời: "Like Prometheus, but for logs." Index labels only, not full text. 10x cheaper storage. Tích hợp Grafana. "Finally, logs that don't bankrupt us," chàng ta vui mừng.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. ELK Stack:</strong> Elasticsearch: full-text search, powerful query DSL. Logstash: log processing pipeline. Kibana: visualization. Filebeat: lightweight log shipper. Powerful nhưng resource-intensive. ILM (Index Lifecycle Management) cho retention. Snapshot cho backup.</div>
+            <div class="tip"><strong>2. Grafana Loki:</strong> Index labels only (not full text) = cheaper storage. LogQL query language (similar to PromQL). Tích hợp Grafana natively. Promtail/Alloy cho log collection. Multi-tenant support. S3/GCS cho long-term storage. Best cho: Prometheus+Grafana users muốn add logs.</div>
+            <div class="tip"><strong>3. Log Collection:</strong> Fluentd: plugin-based, Ruby. Fluent Bit: lightweight C version. Vector: Rust-based, fast, observable. Choose: Fluent Bit cho lightweight (containers), Vector cho performance, Fluentd cho plugin ecosystem.</div>
+            <div class="tip"><strong>4. Structured Logging:</strong> JSON format: {"level":"error","msg":"connection failed","service":"api","duration_ms":1500}. Parseable, searchable, filterable. ĐỪNG log unstructured text. Include: timestamp, level, service, trace_id, relevant context. ĐỪNG log: passwords, API keys, PII (compliance risk).</div>
+            <div class="tip"><strong>5. Retention & Cost:</strong> Hot storage (SSD): 7-14 days cho real-time analysis. Warm storage: 30-90 days cho investigation. Cold/archive: 90+ days cho compliance. Retention policies automated. Log volume reduction: log levels (don't DEBUG in production), sampling, aggregation.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>💾 Chuyện Elasticsearch Disk Full</h3><p>Elasticsearch cluster 3 nodes × 1TB. Application logs: 50GB/day. ILM policy: nope. 20 ngày sau: disk 100%. Elasticsearch goes read-only (to protect data). New logs cannot be indexed. Kibana shows old data only. Alerting based on logs: blind.</p><p>Emergency: delete old indices manually. Setup ILM: hot (7 days, SSD) → warm (30 days) → delete (>30 days). Index size management: rollover at 50GB. Disk monitoring alerts at 70%, 80%, 90%.</p><div class="lesson">💡 Bài học: ILM policies from DAY ONE. Monitor disk usage aggressively. Elasticsearch read-only mode at ~95% disk = no new logs = blind monitoring. Size cluster for expected log volume + 30% headroom. Consider Loki if log search is more important than full-text indexing.</div></div>
+            <div class="story"><h3>🔍 Chuyện Unstructured Logs Nightmare</h3><p>Application logs: 'User john@company.com failed login at 2024-01-15 10:30:45 from IP 192.168.1.100.' Parsing: grok pattern = 20 minutes of regex crafting. Log format changes = parser breaks. 10 different log formats across 20 microservices. Logstash grok filters = 500 lines of regex hell.</p><p>Fix: mandate structured logging (JSON) across all services. Standard fields: timestamp, level, service, trace_id. No more parsing — just JSON decode. Search by any field. Filter, aggregate, correlate. Development time for logging library: 2 days. Saved parsing maintenance: infinite.</p><div class="lesson">💡 Bài học: Structured logging (JSON) is NON-NEGOTIABLE for microservices. Standardize log format across services. Shared logging library cho consistency. No grok patterns needed. Machine-parseable from day one. Retrofit is painful — implement early.</div></div>
+            <div class="story"><h3>🔐 Chuyện Password Trong Error Log</h3><p>Application throws database connection error. Error message includes full connection string: 'Failed to connect to postgres://admin:P@ssw0rd123@db.prod:5432/production'. Log shipped to centralized ELK. Indexed, searchable. Anyone with Kibana access can search for 'postgres://' and find production database credentials.</p><p>Fix: log scrubbing (mask sensitive patterns). Application: never include credentials in error messages. Fluentd/Vector: regex filter to mask patterns before shipping. Audit logs for sensitive data regularly.</p><div class="lesson">💡 Bài học: Logs WILL contain secrets accidentally. Defense in depth: (1) Application: never log credentials, (2) Log pipeline: scrub/mask sensitive patterns, (3) Access control: limit who can read logs, (4) Audit: regularly search logs for leaked secrets. PII in logs = GDPR/compliance violation.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Log everything at DEBUG:</strong> Log volume explodes. Storage costs explode. Signal-to-noise ratio: 0. Production: WARN/ERROR. Staging: INFO. DEBUG: only when debugging specific issue.</div>
+            <div class="mistake"><strong>2. No structured logging:</strong> Unstructured text = parse hell. JSON structured logging from day one. Standard fields across services.</div>
+            <div class="mistake"><strong>3. No retention policy:</strong> Logs forever = unlimited storage cost. Define retention by log type. Access logs: 30 days. Error logs: 90 days. Audit logs: 1 year.</div>
+            <div class="mistake"><strong>4. Single log pipeline:</strong> Log pipeline down = no logs = blind. Redundant log shipping. Buffer/queue between collector and storage.</div>
+            <div class="mistake"><strong>5. No correlation:</strong> Logs without trace_id. Cannot follow request across microservices. Distributed tracing correlation in logs essential.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #116</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

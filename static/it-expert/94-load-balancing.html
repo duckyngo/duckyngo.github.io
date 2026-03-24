@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cân Bằng Tải Đại Sư - Chuyên Gia HAProxy, Nginx, Envoy & Traefik</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a2a 30%, #0a2a3a 60%, #1a3a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #06b6d4; text-shadow: 0 0 20px #06b6d440; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #06b6d4; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #06b6d4; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #06b6d4; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #06b6d430; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #06b6d4; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #06b6d4; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">⚖️</span>
+            <h1>Cân Bằng Tải Đại Sư</h1>
+            <div class="title">Chuyên Gia HAProxy, Nginx, Envoy & Traefik</div>
+            <div class="quote">"Load balancing giống như chia pizza: round-robin thì mỗi người 1 miếng, least-connections thì ai đói nhất ăn trước. Nhưng sticky session thì 1 người ăn cả pizza."</div>
+        </div>
+        <div class="badges">            <span class="badge">⚖️ HAProxy Master</span>
+            <span class="badge">🌐 Nginx Expert</span>
+            <span class="badge">🔷 Envoy Proxy</span>
+            <span class="badge">🔀 Traefik Pro</span>
+            <span class="badge">🔄 L4 vs L7</span>
+            <span class="badge">❤️ Health Checks</span>
+            <span class="badge">🍪 Session Persistence</span>
+            <span class="badge">🚦 Rate Limiting</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư bắt đầu với Nginx làm web server, rồi phát hiện nó có thể làm reverse proxy và load balancer. "Wait, 1 tool làm 3 việc?" Từ đó chàng ta nghiện load balancing.</p><p>Chàng ta đã thử mọi algorithm: round-robin, least-connections, weighted, IP hash, consistent hashing. Chàng ta biết khi nào dùng L4 (TCP), khi nào dùng L7 (HTTP). Chàng ta có thể configure HAProxy trong giấc ngủ — và thực sự đã làm vậy một lần khi bị gọi lúc 3 giờ sáng.</p><p>Giờ đây với service mesh (Envoy, Istio), load balancing đã phức tạp hơn bao giờ hết. Nhưng core concepts vẫn giữ nguyên: distribute traffic evenly, detect failures, và đừng gửi users tới dead servers.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. L4 vs L7 — Chọn Đúng Layer:</strong> L4 (TCP/UDP): fast, simple, không biết content. NAT-based hoặc DSR (Direct Server Return). Dùng cho: database connections, raw TCP, non-HTTP protocols. L7 (HTTP/HTTPS): content-aware, path routing, header manipulation. Dùng cho: web applications, API routing, SSL termination. L7 phổ biến hơn cho modern web apps.</div>
+            <div class="tip"><strong>2. Health Checks — Phát Hiện Server Chết:</strong> Active health checks: LB gửi requests tới backend, check response. Passive health checks: monitor actual traffic cho errors. HTTP health check: GET /health → 200 OK. Check BEYOND 'process running': verify database connectivity, downstream services. Interval, threshold, timeout tuning quan trọng — quá aggressive = false positives.</div>
+            <div class="tip"><strong>3. HAProxy — Enterprise Load Balancer:</strong> High performance, battle-tested. Runtime API cho dynamic configuration. Built-in stats page. ACLs cho complex routing. Rate limiting, connection queuing. HAProxy + keepalived cho HA pair. Lua scripting cho custom logic. HAProxy 2.x: HTTP/2 support, dynamic servers.</div>
+            <div class="tip"><strong>4. Nginx — Web Server + Reverse Proxy:</strong> upstream blocks cho backend pools. proxy_pass cho reverse proxy. ssl_certificate cho TLS termination. proxy_cache cho caching. rate limiting với limit_req_zone. Plus (commercial) cho dynamic configuration, health checks. OpenResty cho Lua scripting.</div>
+            <div class="tip"><strong>5. Envoy — Cloud-Native Proxy:</strong> xDS APIs cho dynamic configuration. Circuit breaking, retries, timeouts. Distributed tracing integration. Hot restarts cho zero-downtime config changes. gRPC support. Foundation for service meshes (Istio). Complex nhưng powerful cho microservices.</div>
+            <div class="tip"><strong>6. Session Persistence:</strong> Sticky sessions (cookie, IP hash) keep user on same backend. Trade-off: session persistence vs load distribution. Stateless applications = no sticky sessions needed = best for scaling. If must use: cookie-based > IP hash (NAT breaks IP hash). Better: externalize session to Redis/Memcached.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🍪 Chuyện Sticky Session Phá Autoscaling</h3><p>E-commerce site dùng sticky sessions (cookie-based). Black Friday: traffic tăng 10x, autoscaler thêm 8 servers. Nhưng existing sessions vẫn gắn với 2 servers cũ. 2 servers cũ CPU 100%, 8 servers mới idle 5%. Users on old servers: slow response. Users on new servers: fast. 80% users chậm.</p><p>Root cause: sticky sessions prevent load redistribution. Fix: externalize sessions to Redis cluster, remove sticky sessions. All servers share session state. Autoscaling works correctly. Performance equal across all servers.</p><div class="lesson">💡 Bài học: Sticky sessions là anti-pattern cho auto-scaling. Externalize state (Redis, database) cho stateless application servers. Load balancer distribute evenly. Nếu PHẢI dùng sticky sessions, set reasonable TTL và monitor per-server load.</div></div>
+            <div class="story"><h3>❤️ Chuyện Health Check False Positive</h3><p>HAProxy health check: TCP connect to port 8080. Backend app crash nhưng Nginx trên server vẫn listen port 8080 → health check PASS. Traffic gửi tới crashed app → 502 errors cho users. HAProxy nghĩ server healthy vì TCP connect thành công.</p><p>Fix: chuyển từ TCP health check sang HTTP health check: GET /health → kiểm tra application status, database connection, dependencies. Health endpoint return 503 nếu app unhealthy dù Nginx healthy.</p><div class="lesson">💡 Bài học: TCP health check chỉ verify port is open, không verify application is working. HTTP health check endpoint phải verify actual application health: database connectivity, downstream services, business logic readiness. Deep health check vs shallow health check.</div></div>
+            <div class="story"><h3>🔄 Chuyện Traefik Auto-Discovery Magic</h3><p>Team migrate từ Nginx manual config sang Traefik với Docker provider. Traefik auto-discover containers qua Docker labels. Deploy new service → Traefik automatically route traffic. Magic! Cho đến khi developer deploy test container với label 'traefik.enable=true' và duplicate hostname → Traefik route production traffic tới test container. Users see test data.</p><p>Fix: separate Traefik instances cho production và non-production. Namespace constraints cho Docker labels. Deployment review process cho Traefik labels.</p><div class="lesson">💡 Bài học: Auto-discovery powerful nhưng dangerous nếu không constrained. Separate production và non-production service discovery. Review labels/annotations trước deploy. Traefik routers phải có explicit constraints (namespace, label filters).</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. No health checks:</strong> Traffic gửi tới dead servers. Always configure health checks — HTTP deep health check for web apps.</div>
+            <div class="mistake"><strong>2. SSL termination ở wrong place:</strong> SSL termination ở LB: backend traffic unencrypted (OK trong private network). End-to-end encryption: re-encrypt to backend. Choose based on security requirements.</div>
+            <div class="mistake"><strong>3. Không monitor backend latency:</strong> LB happy nhưng backends slow. Monitor p50/p95/p99 latency per backend. Slow backend affects all users routed to it.</div>
+            <div class="mistake"><strong>4. Single load balancer:</strong> LB is single point of failure. Active-passive pair (keepalived/VRRP) hoặc cloud-managed LB cho HA.</div>
+            <div class="mistake"><strong>5. Over-complicated routing:</strong> 50 ACL rules, 20 backends, path-based + header-based + cookie-based routing. Simplify. Document routing logic. Test edge cases.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #94</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

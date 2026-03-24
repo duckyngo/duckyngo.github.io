@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cột Rộng Đại Sư — Wide Column Store Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #0a0a18;
+            --card-bg: rgba(18, 18, 40, 0.85);
+            --card-border: rgba(230, 126, 34, 0.2);
+            --accent: #e67e22;
+            --accent2: #f39c12;
+            --accent3: #e74c3c;
+            --text: #f0e8e0;
+            --text-muted: #aa9988;
+            --glow: rgba(230, 126, 34, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 25% 35%, rgba(230,126,34,0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 75% 65%, rgba(231,76,60,0.07) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote {
+            margin-top: 1.5rem; padding: 1rem 2rem;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            font-style: italic; color: var(--accent2); display: inline-block;
+        }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge {
+            padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--card-border); background: var(--card-bg);
+            backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip {
+            padding: 1rem 1.5rem; margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+            background: rgba(230,126,34,0.05); border-radius: 0 8px 8px 0;
+        }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story {
+            padding: 1.5rem; margin: 1rem 0;
+            background: rgba(231,76,60,0.05); border-radius: 12px;
+            border: 1px solid rgba(231,76,60,0.1);
+        }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(230,126,34,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake {
+            padding: 1rem 1.5rem; margin: 0.75rem 0;
+            background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757;
+            border-radius: 0 8px 8px 0;
+        }
+        .mistake strong { color: #ff6b81; }
+        .footer {
+            text-align: center; padding: 3rem 2rem; margin-top: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--card-border);
+        }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">🏛️</span>
+        <h1>Cột Rộng Đại Sư</h1>
+        <p class="subtitle">Trấn Thủ Vùng Đất Petabyte — Nơi Dữ Liệu Đo Bằng Tấn</p>
+        <div class="quote">"Bạn chưa biết thế nào là BIG DATA cho đến khi partition key sai và cluster cháy lúc 3 giờ sáng."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge" style="color:#1287B1;border-color:#1287B1;">👁️ Cassandra</span>
+        <span class="badge" style="color:#5FC8D8;border-color:#5FC8D8;">⚡ ScyllaDB</span>
+        <span class="badge" style="color:#E45226;border-color:#E45226;">🐘 HBase</span>
+        <span class="badge" style="color:#4285F4;border-color:#4285F4;">🔶 DynamoDB</span>
+        <span class="badge">🔑 Partition Keys</span>
+        <span class="badge">📊 Wide Column</span>
+        <span class="badge">🔄 Consistency Levels</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Cột Rộng Đại Sư, tên thật là <strong>Phạm Đức Khổng Lồ</strong>, từ nhỏ đã có sở thích kỳ lạ: sưu tập mọi thứ. Tem thư, nắp chai, lá cây — gì cũng giữ. Và ông sắp xếp chúng theo hệ thống mà chỉ mình ông hiểu: nhóm theo loại, rồi xếp theo ngày, mỗi nhóm lại có nhóm con.</p>
+        <p>Năm 2008, khi Facebook mở nguồn Cassandra, lão biết đây là "chân ái". Một database có thể lưu trữ petabyte dữ liệu, phân tán trên hàng ngàn node, không có single point of failure? Lão đã tìm thấy niết bàn.</p>
+        <p>Sau 16 năm, lão đã vận hành clusters từ 3 node đến 3000 node. Lão từng nói: <em>"Cassandra giống như nuôi rồng — mạnh mẽ vô cùng, nhưng không hiểu nó thì nó sẽ đốt cháy bạn."</em></p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Partition Key — Chìa Khóa Sinh Tử</strong>
+            <p>Partition key quyết định data nằm trên node nào. Key tốt phân tán đều data. Key tệ = hot partition = một node chết, cluster sống. Ví dụ: dùng <code>country</code> làm partition key khi 80% user ở Mỹ = node Mỹ quá tải. Dùng <code>user_id</code> hoặc compound key <code>(country, user_id)</code>.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Data Modeling — Thiết Kế Từ Query, Không Từ Entity</strong>
+            <p>Ngược với RDBMS: trong Cassandra, bạn thiết kế bảng dựa trên cách bạn sẽ query, không phải entity relationship. Một query = một bảng. Denormalize là bình thường. Duplicate data là bình thường. Đây không phải RDBMS — đừng normalize.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Consistency Level — Chọn Trade-off</strong>
+            <p>ONE: nhanh nhất, ít an toàn nhất. QUORUM: đọc/ghi > N/2+1 nodes, cân bằng tốt. ALL: an toàn nhất, chậm nhất, một node chết = cả query fail. Quy tắc vàng: Read CL + Write CL > Replication Factor = Strong Consistency. Ví dụ: RF=3, Write QUORUM + Read QUORUM = 2+2 > 3 = OK.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Compaction Strategy — Chọn Sai Là Disk Cháy</strong>
+            <p>SizeTieredCompaction: tốt cho write-heavy workload. LeveledCompaction: tốt cho read-heavy, ít space amplification. TimeWindowCompaction: cho time-series data. ScyllaDB có Incremental Compaction — hybrid approach. Monitor disk usage, vì compaction cần temporary space gấp đôi.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>DynamoDB — Serverless Nhưng Không Lo-less</strong>
+            <p>On-demand mode cho traffic unpredictable. Provisioned mode + auto-scaling cho traffic ổn định (rẻ hơn). GSI (Global Secondary Index) cho query patterns khác primary key. Nhưng mỗi GSI = một bản copy data = chi phí x2. DAX cache cho hot data — giảm latency từ ms xuống microseconds.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>ScyllaDB — Cassandra Trên Steroid</strong>
+            <p>API tương thích Cassandra nhưng viết bằng C++ thay vì Java. Không có GC pause — đây là killer feature. Shard-per-core architecture tận dụng tối đa hardware. Cùng workload, ScyllaDB thường cần 1/3 đến 1/5 số node so với Cassandra. Nhưng community nhỏ hơn nhiều.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">🔥 Chuyện 1: Hot Partition Làm Chảy Cluster</div>
+            <p>Công ty game online dùng Cassandra lưu player activity. Partition key: <code>game_id</code>. Vấn đề: công ty chỉ có... 1 game. Tất cả 500 triệu events/ngày dồn vào 1 partition, trên 1 node. Node đó CPU 100%, latency tăng từ 2ms lên 30 giây. Các node khác ngồi chơi.</p>
+            <p>Lão đổi partition key thành <code>(game_id, date, bucket)</code> với bucket = hash(player_id) % 100. Data phân tán đều trên 100 partitions × 365 ngày. Latency trở về 2ms. Nhưng phải migrate 50TB data — mất 1 tuần chạy migration liên tục.</p>
+            <div class="lesson">💡 Bài học: Partition key phải có high cardinality. Nếu chỉ có vài giá trị, thêm bucket hoặc compound key. Test distribution trước khi production bằng cách check partition size: mỗi partition không nên vượt 100MB.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">💸 Chuyện 2: DynamoDB Throttling Giữa Black Friday</div>
+            <p>E-commerce dùng DynamoDB provisioned mode. Bình thường 1000 RCU/WCU là đủ. Black Friday: traffic tăng x50 trong 5 phút. Auto-scaling cần 5-15 phút để react. Trong 5 phút đó: <code>ProvisionedThroughputExceededException</code> tràn ngập. Giỏ hàng không load được, checkout fail, khách hàng bỏ đi.</p>
+            <p>Lão chuyển sang on-demand mode trước mỗi sale event, sau đó chuyển lại provisioned. Đắt hơn 20% nhưng không bao giờ throttle. Bài học thương đau: <em>"Tiết kiệm $200/tháng rồi mất $200,000 doanh thu trong 1 ngày."</em></p>
+            <div class="lesson">💡 Bài học: DynamoDB auto-scaling không phải instant. Với spike traffic, dùng on-demand mode hoặc pre-warm bằng cách tăng provisioned capacity trước event. Đừng để auto-scaling bảo vệ bạn trong những lúc quan trọng nhất.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">☠️ Chuyện 3: Tombstone Storm — Khi Xóa Data Mà Data Không Chịu Đi</div>
+            <p>Team dùng Cassandra lưu session data, TTL 24 giờ. Mỗi ngày có 100 triệu sessions tạo ra và tự động expired. Vấn đề: mỗi expired row tạo 1 tombstone. Cassandra phải scan qua tombstones khi đọc. Sau vài tháng: 1 tỷ tombstones. Read latency tăng vọt. Đến khi vượt <code>tombstone_warn_threshold</code> (default 1000), Cassandra bắt đầu warning liên tục.</p>
+            <p>Tệ hơn: compaction không đuổi kịp tốc độ tạo tombstones mới. Disk usage tăng phi mã dù "data chỉ giữ 24 giờ". Lão phải tune compaction, giảm <code>gc_grace_seconds</code>, và redesign schema dùng TimeWindowCompaction.</p>
+            <div class="lesson">💡 Bài học: Trong Cassandra, DELETE không xóa data ngay — nó tạo tombstone. TTL cũng tạo tombstone. High-churn data cần TimeWindowCompaction và gc_grace_seconds phù hợp. Monitor tombstone count per read.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Dùng Cassandra cho data nhỏ</strong>
+            <p>Cassandra dưới 10GB data trên 3 nodes? Overhead của distributed system lớn hơn lợi ích. PostgreSQL single node sẽ nhanh hơn, đơn giản hơn, dễ vận hành hơn 100 lần.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ SELECT * FROM table (full table scan)</strong>
+            <p>Trong Cassandra, điều này yêu cầu coordinator gửi request đến TẤT CẢ nodes. Cluster 100 nodes = 100 requests. Timeout guaranteed. Dùng partition key trong WHERE clause, luôn luôn.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Dùng ALLOW FILTERING</strong>
+            <p>Khi Cassandra từ chối query, nó có lý do. <code>ALLOW FILTERING</code> biến query thành full scan. Dev thêm ALLOW FILTERING "cho chạy được cái đã" rồi quên remove. Production chết khi data lớn.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Partition quá lớn</strong>
+            <p>Nhét hàng triệu rows vào 1 partition. Cassandra cảnh báo khi partition > 100MB. Partition 1GB = query trên partition đó timeout. Thiết kế partition size trước khi data modeling.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không monitor GC pause (Cassandra/Java)</strong>
+            <p>Cassandra chạy trên JVM. GC pause dài = node bị đánh dấu "down" bởi gossip protocol. Node "sống lại" sau GC = confuse cluster. Tune JVM GC settings (G1GC, heap size). Hoặc chuyển sang ScyllaDB.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ DynamoDB: Scan thay vì Query</strong>
+            <p>Scan đọc toàn bộ table, tốn RCU khủng khiếp. Query chỉ đọc items matching partition key. Thiết kế table và GSI sao cho mọi access pattern đều dùng Query, không bao giờ Scan.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không test với realistic data volume</strong>
+            <p>Dev test với 1000 rows, mọi thứ nhanh. Production có 1 tỷ rows, mọi thứ chết. Wide column databases cần benchmark với production-level data volume và traffic pattern.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">🏛️ Cột Rộng Đại Sư — Phạm Đức Khổng Lồ</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Khi bạn cần lưu 1 petabyte dữ liệu và vẫn query trong milliseconds, đó là lúc bạn cần tôi."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

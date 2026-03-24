@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulumi Pháp Sư - Chuyên Gia Pulumi | Người Dùng TypeScript Để Tạo Server</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 30%, #2a0a3a 60%, #3a1a3a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #c084fc; text-shadow: 0 0 20px #c084fc40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #c084fc; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #c084fc; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #c084fc; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #c084fc30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #c084fc; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #c084fc; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🫧</span><h1>Pulumi Pháp Sư</h1><div class="title">Chuyên Gia Pulumi | Người Dùng TypeScript Để Tạo Server</div><div class="quote">"Tại sao viết HCL khi bạn có thể viết TypeScript? Tại sao viết TypeScript khi bạn có thể viết Python? Tại sao viết code khi bạn có thể click console? — Vòng xoáy existential của IaC."</div></div>
+        <div class="badges">            <span class="badge">🫧 Pulumi Expert</span>
+            <span class="badge">📝 TypeScript IaC</span>
+            <span class="badge">🐍 Python IaC</span>
+            <span class="badge">🔄 State Management</span>
+            <span class="badge">📦 Component Resources</span>
+            <span class="badge">🆚 vs Terraform</span>
+            <span class="badge">🔧 Automation API</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Pháp Sư là developer chuyển sang DevOps. HCL syntax của Terraform là rào cản: "Tại sao phải học một ngôn ngữ mới chỉ để tạo infrastructure? Tôi đã biết TypeScript!" Pulumi cho phép viết infrastructure bằng ngôn ngữ quen thuộc: TypeScript, Python, Go, C#, Java.</p><p>Ngày đầu tiên dùng Pulumi, chàng ta viết for loop để tạo 10 EC2 instances. "Trong Terraform phải dùng count hoặc for_each, trong Pulumi chỉ cần for loop bình thường!" Chàng ta phấn khích. Rồi chàng ta viết class inheritance cho infrastructure modules. Rồi generic types. Rồi async/await. Và chàng ta nhận ra: power of real programming language cũng đi kèm complexity of real programming language.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Real Programming Languages:</strong> TypeScript/JavaScript, Python, Go, C#, Java, YAML. Full IDE support: autocomplete, type checking, refactoring. Testing: unit tests cho infrastructure logic. Debugging: breakpoints, step through. Conditionals, loops, functions — real programming constructs, không phải DSL workarounds.</div>
+            <div class="tip"><strong>2. State Management:</strong> Pulumi Cloud (default backend): managed state + secrets + history. Self-managed backends: S3, Azure Blob, GCS, local file. Stack = environment (dev, staging, prod). pulumi stack ls cho danh sách. Config per stack: pulumi config set key value. Secrets encrypted automatically.</div>
+            <div class="tip"><strong>3. Pulumi vs Terraform:</strong> Pulumi: real languages, better abstractions, steeper learning curve cho infra engineers. Terraform: HCL, larger ecosystem, more community modules, familiar cho ops teams. Both: state-based, plan/preview before apply, supports major clouds. Choose based on team skills — developers prefer Pulumi, ops prefer Terraform.</div>
+            <div class="tip"><strong>4. Component Resources:</strong> Custom resources encapsulate complex patterns. Reusable across projects. Type-safe interfaces. Versioned và published as packages. Example: VpcComponent encapsulates VPC + subnets + route tables + NAT Gateway. Higher-level abstractions cho team consumption.</div>
+            <div class="tip"><strong>5. Automation API:</strong> Programmatically drive Pulumi operations. Embed Pulumi trong larger applications. REST API triggers infrastructure changes. Platform engineering: self-service infrastructure. Custom CLIs cho infrastructure operations. CI/CD integration without CLI dependency.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔄 Chuyện TypeScript IaC Loops</h3><p>Developer viết Pulumi program với complex TypeScript: async/await cho API calls during infrastructure creation, Promise.all cho parallel resource creation, class hierarchies cho module system. Code elegant nhưng... pulumi preview mất 5 phút vì await external API calls. pulumi up fail khi API rate limited. Debugging = debugging distributed TypeScript application.</p><p>Đại Sư simplify: remove runtime API calls (use config instead), flatten class hierarchy, replace Promise.all with simple loop. Preview: 10 giây. Deploy: reliable. 'Infrastructure code should be boring,' Đại Sư advise.</p><div class="lesson">💡 Bài học: Just because you CAN use advanced language features doesn't mean you SHOULD. Infrastructure code should be predictable, simple, debuggable. Avoid runtime API calls during preview/up. Keep abstractions shallow. Real language power for testing and type safety, not for complexity.</div></div>
+            <div class="story"><h3>📊 Chuyện Pulumi Preview vs Actual</h3><p>pulumi preview shows: 3 resources to create. pulumi up creates: 3 resources + triggers 5 dependent changes not shown in preview (cloud-side effects). Developer confused: 'Preview said 3 changes!' Reason: some cloud API side effects not predictable by Pulumi — like default security groups, auto-generated resources.</p><div class="lesson">💡 Bài học: Preview is best-effort, not guarantee. Cloud providers create implicit resources. Always verify after apply. Drift detection (pulumi refresh) cho actual vs expected state. Integration tests cho infrastructure validation.</div></div>
+            <div class="story"><h3>🔀 Chuyện Migration Terraform to Pulumi</h3><p>Team decide migrate 500 Terraform resources to Pulumi. Estimated: 2 weeks. Actual: 3 months. Issues: state import complex, HCL → TypeScript translation non-trivial, team learning curve, CI/CD pipeline changes, Terraform modules → Pulumi components rewrite.</p><p>Alternative approach discovered too late: pulumi-terraform-bridge cho Terraform provider compatibility. coexistence strategy: new infra in Pulumi, existing in Terraform, migrate gradually.</p><div class="lesson">💡 Bài học: Terraform → Pulumi migration is significant effort. Don't migrate everything at once. Coexistence strategy: new projects in Pulumi, existing in Terraform. pulumi import cho existing resources. Budget 3-6 months cho large migrations.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Over-engineering abstractions:</strong> 5 levels of class inheritance cho VPC. Infrastructure code needs simplicity, not design patterns exhibition.</div>
+            <div class="mistake"><strong>2. Runtime dependencies in IaC:</strong> Calling external APIs during pulumi up. Fails if API down. Use config values instead of runtime lookups.</div>
+            <div class="mistake"><strong>3. No preview before up:</strong> pulumi up --yes without review. ALWAYS preview. Especially for production stacks.</div>
+            <div class="mistake"><strong>4. Mixing application and infrastructure code:</strong> Application logic in Pulumi program. Keep infrastructure code separate from application code. Clear boundaries.</div>
+            <div class="mistake"><strong>5. Not using stack references:</strong> Hardcode outputs between stacks. StackReference cho cross-stack dependencies. Type-safe, maintainable.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #106</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

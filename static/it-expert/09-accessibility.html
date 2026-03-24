@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hòa Nhập Hiệp Sĩ - Bậc Thầy Accessibility/a11y</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(56,189,248,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #22d3ee, #38bdf8, #a5f3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5f3fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(56,189,248,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #a5f3fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5f3fc; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #22d3ee; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5f3fc; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #38bdf8; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5f3fc; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #a5f3fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">♿</span>
+            <h1>Hòa Nhập Hiệp Sĩ</h1>
+            <p class="subtitle">Nguyễn Hòa Nhập — Bậc Thầy Accessibility/a11y</p>
+            <p class="quote">"Web cho tất cả mọi người — không phải chỉ cho người có đôi mắt và đôi tay hoàn hảo."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">ARIA Roles</span>
+            <span class="skill-tag">Screen Readers</span>
+            <span class="skill-tag">Keyboard Navigation</span>
+            <span class="skill-tag">Color Contrast</span>
+            <span class="skill-tag">WCAG 2.1</span>
+            <span class="skill-tag">Semantic HTML</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Nguyễn Hòa Nhập không phải lúc nào cũng quan tâm đến accessibility. Cho đến một ngày, ông nhận được email từ một user khiếm thị: 'Tôi rất muốn dùng app của các bạn nhưng screen reader không đọc được gì ngoài button button button div div div.' Email đó thay đổi cuộc đời ông.
+
+Ông bắt đầu học dùng screen reader — bịt mắt duyệt web bằng VoiceOver suốt 1 tuần. Trải nghiệm đó khiến ông rơi nước mắt: 90% websites không navigable bằng keyboard, form không có labels, images không có alt text, modal mở mà focus vẫn ở behind.
+
+Từ đó ông trở thành Hiệp Sĩ Hòa Nhập, tự nguyện audit accessibility cho mọi project, đào tạo dev teams, và viết linter rules bắt buộc. Motto: 'Accessibility không phải feature — nó là quyền cơ bản.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Semantic HTML — Nền tảng Accessibility</h3>
+                <p>Screen readers dùng HTML semantics để navigate. <code>&lt;nav&gt;</code> = navigation landmark, user nhảy tới nhanh. <code>&lt;main&gt;</code> = nội dung chính. <code>&lt;button&gt;</code> = focusable, clickable by keyboard (Enter/Space). <code>&lt;div onclick&gt;</code> = KHÔNG focusable, keyboard users bị mắc kẹt. Quy tắc: dùng native HTML elements trước. Chỉ cần ARIA khi native element không đủ. 'No ARIA is better than bad ARIA.'</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: ARIA Roles, States, Properties</h3>
+                <p><code>role='dialog'</code> cho modal, <code>aria-expanded='true/false'</code> cho dropdown, <code>aria-live='polite'</code> cho dynamic content updates (toast notifications). <code>aria-label</code> khi text label không visible, <code>aria-labelledby</code> khi label là element khác. <code>aria-hidden='true'</code> cho decorative elements. Cẩn thận: sai ARIA worse than no ARIA — <code>role='button'</code> trên div nhưng không handle keyboard = broken for everyone.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Keyboard Navigation</h3>
+                <p>MỌI interactive element phải focusable và operable bằng keyboard. Tab order logical (đừng dùng <code>tabindex > 0</code>). Trap focus trong modal (Tab/Shift+Tab cycle trong modal, không escape ra ngoài). Escape key đóng modal/dropdown. Arrow keys cho menu/tabs. Skip to main content link cho screen reader users bypass navigation. Test: unplug mouse, navigate bằng keyboard — nếu bạn mắc kẹt ở đâu, user cũng vậy.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Color Contrast & Visual Design</h3>
+                <p>WCAG AA: text contrast ratio 4.5:1 (normal text), 3:1 (large text 18px+ bold). Đừng dùng color alone để convey information — thêm icon, pattern, text. Red/green colorblind = 8% nam giới. Test: Chrome DevTools > Rendering > Emulate vision deficiencies. Tools: axe DevTools, WAVE, Stark (Figma plugin). Dark mode cũng cần đủ contrast — đừng dùng gray text trên dark gray background.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Forms & Error Handling Accessible</h3>
+                <p>Label PHẢI liên kết với input (<code>&lt;label for='email'&gt;</code> hoặc wrap input). Error messages: <code>aria-describedby</code> link error text với input, <code>aria-invalid='true'</code> khi validation fail. Dùng <code>role='alert'</code> hoặc <code>aria-live</code> cho error messages xuất hiện dynamic. Autocomplete attributes: <code>autocomplete='email'</code>, <code>autocomplete='new-password'</code> — giúp browser và screen reader autofill đúng.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #6: Testing Accessibility</h3>
+                <p>Automated (40% issues): axe-core, Lighthouse a11y audit, ESLint plugin jsx-a11y. Manual (60% issues): keyboard navigation test, screen reader test (VoiceOver trên Mac, NVDA trên Windows), zoom 200% test, high contrast mode test. User testing: mời người khuyết tật test — automated tools không thể thay thế real user experience.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Form Không Có Labels — Mê Cung Cho Screen Reader</h3>
+                <p>Trang đăng ký có 8 input fields. Designer muốn 'clean design' — không labels, chỉ placeholder text. Trông đẹp trên screenshot. Screen reader user mở form: 'Edit text. Edit text. Edit text. Edit text...' Không biết field nào là gì. Placeholder biến mất khi bắt đầu gõ — user quên field này hỏi gì.
+
+Tệ hơn: password field có requirement 'Tối thiểu 8 ký tự, 1 chữ hoa, 1 số' — nhưng chỉ hiển thị khi validation fail, và error message không linked với input. Screen reader user gõ password, submit, fail, KHÔNG BIẾT TẠI SAO fail.
+
+Fix: thêm visible labels (hoặc ẩn bằng CSS nhưng vẫn accessible qua <code>sr-only</code> class), <code>aria-describedby</code> cho requirements, <code>aria-invalid</code> + <code>role='alert'</code> cho error messages.</p>
+                <div class="lesson">💡 Bài học: Labels là BẮT BUỘC, không phải optional. Placeholder KHÔNG thay thế label (biến mất khi type, contrast thấp, screen reader support inconsistent). Nếu design không muốn visible labels — dùng <code>aria-label</code> hoặc visually hidden labels (<code>.sr-only</code>). Mỗi input cần: label + description + error message accessible.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Div Soup Accessibility Nightmare</h3>
+                <p>SPA hiện đại, mọi thứ là <code>&lt;div&gt;</code>. Navigation bar = div với onClick handlers. Buttons = div styled like buttons. Headings = div với font-size lớn. Table data = grid of divs.
+
+Screen reader user: không thấy landmarks (no nav, no main), không tab được vào 'buttons' (div không focusable), heading navigation không hoạt động (không có h1-h6), data table không navigable by row/column.
+
+Kết quả: user khiếm thị hoàn toàn không dùng được app. Audit phát hiện 147 accessibility violations. Team mất 3 tháng refactor: thay div bằng semantic elements, thêm ARIA cho custom widgets, implement keyboard navigation.
+
+Tổng chi phí fix > chi phí build accessible từ đầu gấp 5 lần.</p>
+                <div class="lesson">💡 Bài học: Build accessible từ đầu LUÔN rẻ hơn fix sau. Checklist mỗi component: 1) Dùng semantic HTML? 2) Keyboard focusable? 3) Screen reader understandable? 4) Color contrast OK? Tích hợp a11y linting vào CI — catch issues trước khi merge.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Color-only Status Indicators</h3>
+                <p>Dashboard hiển thị server status bằng màu: xanh = OK, vàng = warning, đỏ = error. Đẹp, intuitive — cho người phân biệt được màu. Red-green colorblind user (8% nam giới): xanh và đỏ trông GIỐNG NHAU. Tất cả servers trông 'OK' trong khi thực tế 3 servers đang down.
+
+Incident kéo dài 2 giờ vì on-call engineer colorblind không nhận ra alert. Fix: thêm icons (checkmark, warning triangle, X mark) + text labels bên cạnh color indicators.</p>
+                <div class="lesson">💡 Bài học: KHÔNG BAO GIỜ dùng color alone để convey information. Luôn có secondary indicator: icon, text, pattern, shape. Test với colorblind simulation (Chrome DevTools > Rendering > Emulate vision deficiencies). Applies cho: status indicators, form validation, charts, data visualization.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Dùng <code>div</code> thay <code>button</code></h3>
+                <p>div + onClick KHÔNG focusable bằng keyboard, KHÔNG triggered bằng Enter/Space, screen reader KHÔNG announce là button. Dùng <code>&lt;button&gt;</code> — free keyboard support, free ARIA role, free focus styling.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Alt text 'image.jpg' hoặc trống cho content images</h3>
+                <p>Decorative images: <code>alt=''</code> (empty, screen reader skip). Content images: alt text mô tả NỘI DUNG, không phải filename. 'Biểu đồ doanh thu Q3 tăng 25%' thay vì 'chart.png' hoặc 'biểu đồ'.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: tabindex > 0 để 'fix' focus order</h3>
+                <p>tabindex='5' đặt element lên đầu tab order — nhưng phá vỡ natural flow. Chỉ dùng: <code>tabindex='0'</code> (add to tab order), <code>tabindex='-1'</code> (programmatic focus only). Fix DOM order thay vì hack tabindex.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Autoplay video/audio</h3>
+                <p>Screen reader user: đang navigate bằng audio → video autoplay → KHÔNG NGHE ĐƯỢC screen reader. Luôn muted autoplay hoặc no autoplay. Provide controls dễ tìm để pause/stop.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Modal không trap focus</h3>
+                <p>Modal mở → Tab key → focus thoát ra element behind modal → user tương tác với hidden content. Implement focus trap: Tab cycle trong modal, Escape đóng modal, focus return to trigger element khi đóng.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Nguyễn Hòa Nhập</span> — Hòa Nhập Hiệp Sĩ</p>
+            <p>♿ "Web cho tất cả mọi người — không phải chỉ cho người có đôi mắt và đôi tay hoàn hảo."</p>
+        </div>
+    </div>
+</body>
+</html>

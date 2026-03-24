@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vận Hành Container Sư - Chuyên Gia containerd, CRI-O & Podman</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 30%, #2a0a1a 60%, #3a1a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #f43f5e; text-shadow: 0 0 20px #f43f5e40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #f43f5e; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #f43f5e; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #f43f5e; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f43f5e30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #f43f5e; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #f43f5e; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">📦</span>
+            <h1>Vận Hành Container Sư</h1>
+            <div class="title">Chuyên Gia containerd, CRI-O & Podman</div>
+            <div class="quote">"Docker là gateway drug. Sau Docker, bạn sẽ tìm hiểu containerd, CRI-O, Podman, và tự hỏi: 'Tại sao có nhiều cách chạy container thế?'"</div>
+        </div>
+        <div class="badges">            <span class="badge">📦 containerd</span>
+            <span class="badge">🔴 CRI-O</span>
+            <span class="badge">🦭 Podman</span>
+            <span class="badge">📋 OCI Spec</span>
+            <span class="badge">🔓 Rootless</span>
+            <span class="badge">🔐 Container Security</span>
+            <span class="badge">🆚 Container vs VM</span>
+            <span class="badge">🏗️ Buildah/Skopeo</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Vận Hành Container Sư từng nghĩ Docker là duy nhất. "Container = Docker, Docker = Container." Rồi chàng ta phát hiện: Docker chỉ là MỘT implementation. Bên dưới Docker là containerd, bên dưới containerd là runc, và tất cả follow OCI (Open Container Initiative) specification.</p><p>Khi Kubernetes deprecate Docker runtime (kubernetes 1.24), chàng ta panic: "Docker chết rồi?!" Rồi chàng ta hiểu: Kubernetes dùng CRI (Container Runtime Interface), và Docker không implement CRI trực tiếp — containerd và CRI-O thì có. Docker images vẫn hoạt động — chỉ là runtime layer thay đổi.</p><p>Rồi Podman xuất hiện: "Docker-compatible nhưng daemonless, rootless, không cần root." Chàng ta thử và phải lòng. "podman run" thay thế "docker run" — alias docker=podman và cuộc sống tiếp tục.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. OCI Specification — Tiêu Chuẩn Chung:</strong> OCI Runtime Spec: how to run containers (runc, crun, youki). OCI Image Spec: how to build/distribute images. OCI Distribution Spec: how to push/pull images. Mọi container tool follow OCI = images portable giữa Docker, Podman, containerd, CRI-O. Build once, run anywhere (for real this time).</div>
+            <div class="tip"><strong>2. containerd — Industry Standard Runtime:</strong> Graduated CNCF project. Used by Docker Engine (as daemon). Used by Kubernetes (via CRI plugin). Handles: image pull, container lifecycle, networking, storage. nerdctl: Docker-compatible CLI cho containerd. Lightweight hơn Docker Engine (không có Docker CLI, Docker Compose overhead).</div>
+            <div class="tip"><strong>3. Podman — Daemonless & Rootless:</strong> No daemon = no single point of failure. Rootless containers: run without root privileges. Docker-compatible CLI: alias docker=podman works. Pods concept (group of containers — like Kubernetes pods). Podman Compose cho docker-compose compatibility. Systemd integration: podman generate systemd cho service files. Best cho: development, CI/CD, security-conscious environments.</div>
+            <div class="tip"><strong>4. CRI-O — Kubernetes-Focused:</strong> Minimal runtime cho Kubernetes only. Implements CRI directly. Lighter than containerd (doesn't do everything containerd does). Used by OpenShift (Red Hat). Stable, well-tested. Choose if: running OpenShift hoặc want minimal Kubernetes runtime.</div>
+            <div class="tip"><strong>5. Rootless Containers — Security Best Practice:</strong> Container processes run as non-root user on HOST. Even container escape = unprivileged user = limited damage. Podman natively rootless. Docker rootless mode available nhưng more complex. Limitation: cannot bind to ports < 1024 without capabilities. Solution: rootlesskit port forwarding hoặc use high ports.</div>
+            <div class="tip"><strong>6. Container vs VM Security:</strong> VMs: hardware-level isolation, separate kernel. Containers: shared kernel, namespace/cgroup isolation. Container escape = access to host kernel. gVisor (Google): userspace kernel cho containers. Kata Containers: lightweight VMs running containers. Firecracker (AWS): microVMs. For multi-tenant: VM isolation > container isolation.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔄 Chuyện Docker to Podman Migration</h3><p>Enterprise mandate: remove Docker from all servers due to Docker Desktop licensing changes. 500 developers dùng Docker daily. Migration plan: install Podman, alias docker=podman, done? Not quite.</p><p>Issues discovered: Docker Compose không compatible 100% (podman-compose vs podman compose). Docker-in-Docker cho CI/CD không work natively. Docker socket mount cho development tools breaks. Rootless mode require subuid/subgid configuration. Migration mất 3 tháng thay vì planned 2 tuần.</p><div class="lesson">💡 Bài học: Docker to Podman migration phức tạp hơn 'just alias'. Test ALL workflows: development, CI/CD, Docker Compose, Docker-in-Docker. Podman compose (v2) vs podman-compose (Python) — different tools. rootless containers cần additional host configuration. Plan migration carefully với pilot group.</div></div>
+            <div class="story"><h3>🔓 Chuyện Container Escape Vulnerability</h3><p>Security team discover CVE trong runc — container escape vulnerability. Attacker with container access có thể overwrite runc binary trên host → gain host root access. 2000 containers running trên shared Kubernetes cluster. All containers potentially affected.</p><p>Incident response: patch runc immediately (emergency maintenance window). Audit container images cho malicious content. Review pod security policies (restrict privileged containers). Enable runtime security monitoring (Falco). Lesson: container isolation is NOT equivalent to VM isolation.</p><div class="lesson">💡 Bài học: Container runtime vulnerabilities = host compromise potential. Patch container runtimes ngay khi CVE published. Restrict privileged containers (PodSecurityPolicy/Standards). Runtime security monitoring (Falco, Sysdig). For multi-tenant: consider VM-level isolation (Kata Containers, Firecracker).</div></div>
+            <div class="story"><h3>🏗️ Chuyện Buildah Cho CI/CD Không Root</h3><p>CI/CD pipeline cần build Docker images. Truyền thống: Docker-in-Docker (DinD) — mount Docker socket (security risk) hoặc run Docker daemon trong container (complex). Security team reject cả hai options.</p><p>Đại Sư introduce Buildah: build OCI images without Docker daemon. Rootless build. No socket mount needed. Skopeo cho image operations (copy, inspect). CI/CD pipeline: buildah bud → buildah push. Faster builds (no daemon overhead), more secure, same output images.</p><div class="lesson">💡 Bài học: Buildah + Skopeo = Docker build/push without Docker daemon. Perfect cho CI/CD: no privileged containers needed. Rootless builds possible. Same Dockerfile syntax. Output = standard OCI image, pushable to any registry. Kaniko (Google) là alternative cho Kubernetes-native builds.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Docker socket mount cho everything:</strong> /var/run/docker.sock mount = root access to host. Only mount when absolutely necessary. Use alternatives: Podman socket, Buildah.</div>
+            <div class="mistake"><strong>2. Ignore container runtime CVEs:</strong> runc, containerd CVEs = host security risk. Monitor và patch immediately. Subscribe to security advisories.</div>
+            <div class="mistake"><strong>3. Privileged containers in production:</strong> --privileged = almost no isolation. Use specific capabilities (--cap-add) instead. Audit privileged containers.</div>
+            <div class="mistake"><strong>4. Not using rootless when possible:</strong> Rootless containers significantly reduce blast radius of container escape. Default to rootless, use root only when needed.</div>
+            <div class="mistake"><strong>5. Mixing container runtimes:</strong> Docker trên dev, containerd trên staging, CRI-O trên production. Subtle behavior differences. Standardize runtime across environments.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #99</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

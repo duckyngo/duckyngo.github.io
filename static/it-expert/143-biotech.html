@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Nghệ Sinh Học Đại Sư - Bioinformatics & HealthTech</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #0a1a0d 25%, #0d2e1a 50%, #0a1a0d 75%, #0a0a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        .hero {
+            text-align: center; padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(45,212,191,0.15));
+            border-radius: 24px; border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden;
+        }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #22c55e, #2dd4bf, #22c55e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #86efac; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(45,212,191,0.2)); border: 1px solid rgba(34,197,94,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #86efac; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; }
+        .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; }
+        .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(34,197,94,0.4), rgba(45,212,191,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
+
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(34,197,94,0.2); box-shadow: 0 8px 40px rgba(34,197,94,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #86efac; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+
+        .tip { background: rgba(34,197,94,0.06); border-left: 3px solid #22c55e; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #86efac; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+
+        .story { background: linear-gradient(135deg, rgba(45,212,191,0.06), rgba(34,197,94,0.06)); border: 1px solid rgba(45,212,191,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #2dd4bf; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #86efac; font-weight: 600; }
+        code { background: rgba(34,197,94,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #86efac; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🧬</span>
+            <h1>Công Nghệ Sinh Học Đại Sư</h1>
+            <p class="subtitle">Trần Văn Genome — Kiến Trúc Sư Bioinformatics, HealthTech & FHIR</p>
+            <p class="quote">"DNA là source code của sự sống — nhưng documentation thì còn tệ hơn cả legacy codebase."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Genomics Pipelines</span>
+            <span class="skill-tag">Medical Imaging AI</span>
+            <span class="skill-tag">FHIR / HL7</span>
+            <span class="skill-tag">Bioinformatics</span>
+            <span class="skill-tag">HIPAA Compliance</span>
+            <span class="skill-tag">Drug Discovery AI</span>
+            <span class="skill-tag">Wearable Health Data</span>
+            <span class="skill-tag">Clinical Trials Tech</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Văn Genome khởi đầu là sinh viên y khoa, nhưng sau khi nhìn thấy bệnh viện quản lý hồ sơ bệnh nhân bằng sổ tay giấy và fax, ông quyết định rằng y học cần công nghệ hơn là thêm một bác sĩ nữa. Ông chuyển sang bioinformatics — lĩnh vực mà bạn cần hiểu cả biology lẫn computer science, nhưng thường không ai hiểu bạn đang làm gì ở cả hai phía.</p>
+            <p>Kiếp nạn đầu tiên: xử lý file FASTQ 500GB từ whole genome sequencing trên laptop 8GB RAM. RAM swap liên tục, laptop nóng đến mức có thể chiên trứng. Kiếp nạn thứ hai: tích hợp hệ thống EMR (Electronic Medical Records) giữa 3 bệnh viện — mỗi nơi dùng format khác nhau, encoding khác nhau, và định nghĩa "blood pressure" theo 3 cách khác nhau.</p>
+            <p>Khoảnh khắc giác ngộ là khi AI model của ông detect ung thư phổi giai đoạn sớm trên CT scan mà 2 radiologist đã miss — cứu mạng một bệnh nhân 45 tuổi. Từ đó, ông tin rằng HealthTech không phải about tech, mà about impact. Nhưng ông vẫn thề rằng FHIR integration là thử thách khó hơn cả giải trình tự genome.</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Genomics Pipelines — Xử lý terabytes DNA data</h3>
+                <p>Pipeline chuẩn: FASTQ → Quality Control (FastQC) → Trimming (Trimmomatic) → Alignment (BWA-MEM2) → Variant Calling (GATK HaplotypeCaller) → Annotation (VEP/ANNOVAR) → Filtering → Clinical Report. Mỗi bước tạo intermediate files lớn — plan storage carefully. Nextflow hoặc Snakemake cho workflow management. Containerize mỗi tool (Docker/Singularity) để reproducibility. Và LUÔN validate pipeline trên reference datasets (NA12878/HG001) trước khi chạy clinical samples.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Medical Imaging AI — CNN không phải bác sĩ</h3>
+                <p>Architectures phổ biến: U-Net cho segmentation, ResNet/EfficientNet cho classification, YOLO/RetinaNet cho detection. DICOM format cho medical images — phức tạp hơn JPEG vì chứa metadata bệnh nhân, study info, pixel spacing. Data augmentation QUAN TRỌNG vì medical datasets nhỏ. Transfer learning từ ImageNet rồi fine-tune. FDA clearance (510(k) hoặc De Novo) cho AI medical device — process mất 6-18 tháng. Và nhớ: AI assist, không replace radiologist. False negative trong y khoa = mạng người.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: FHIR — Tiêu chuẩn trao đổi dữ liệu y tế</h3>
+                <p>FHIR (Fast Healthcare Interoperability Resources) — RESTful API cho healthcare data. Resources: Patient, Observation, Condition, MedicationRequest, Encounter. Bundle cho batch operations. SearchParameters cho querying. SMART on FHIR cho OAuth2-based authorization. Subscription cho real-time notifications. Mapping từ HL7v2 (legacy) sang FHIR là 80% công việc integration. Terminology binding: LOINC cho lab tests, SNOMED CT cho clinical terms, ICD-10 cho diagnoses, RxNorm cho medications.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Health Data Standards & Compliance</h3>
+                <p>HIPAA (US): PHI (Protected Health Information) phải encrypted at rest và in transit. Minimum necessary rule: chỉ access data cần thiết cho job function. BAA (Business Associate Agreement) với mọi vendor xử lý PHI. GDPR (EU) cho health data = special category, cần explicit consent. De-identification: Safe Harbor (18 identifiers) hoặc Expert Determination. Audit logs cho mọi access. Breach notification trong 72 giờ (GDPR) hoặc 60 ngày (HIPAA). Penalty: lên đến $1.5M/violation category/year.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Drug Discovery AI — Từ molecule đến thuốc</h3>
+                <p>Virtual screening: dùng ML để sàng lọc millions compounds thay vì wet lab testing từng cái. AlphaFold cho protein structure prediction — revolutionize drug target identification. Generative models (VAE, GAN, diffusion) cho de novo drug design. ADMET prediction: Absorption, Distribution, Metabolism, Excretion, Toxicity. Nhưng in silico ≠ in vivo: AI predict compound tốt vẫn phải qua Phase I/II/III clinical trials — 10-15 năm và $1-2B. AI giảm thời gian discovery, KHÔNG giảm thời gian clinical trials.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Wearable & Remote Patient Monitoring</h3>
+                <p>ECG (Apple Watch), SpO2, continuous glucose monitoring (CGM), actigraphy. Data volume: 1 patient × 24h continuous monitoring = ~1GB raw data/ngày. Edge processing trên device, send summarized metrics lên cloud. Alert systems: real-time anomaly detection cho critical events (arrhythmia, hypoglycemia). HL7 FHIR Observation resources cho standardized storage. Challenge lớn nhất: signal noise trong real-world conditions (motion artifacts, poor contact). Và FDA regulatory: SaMD (Software as Medical Device) classification.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: AI Phát Hiện Ung Thư Sớm Hơn Bác Sĩ</h3>
+                <p>Bệnh viện triển khai AI screening cho CT scan phổi. Model trained trên 50,000 scans, sensitivity 94%, specificity 91%. Tuần đầu tiên: AI flag 1 case là "suspicious nodule, recommend follow-up" mà 2 radiologists đã đọc là "normal".</p>
+                <p>Radiologist senior review lại: "Hmm, có vẻ như artifact." Nhưng protocol yêu cầu follow-up khi AI flag. Biopsy kết quả: lung adenocarcinoma, stage IA. Giai đoạn cực sớm, tỷ lệ sống 5 năm &gt;90% nếu phẫu thuật ngay. Bệnh nhân 45 tuổi, không triệu chứng, chưa bao giờ hút thuốc.</p>
+                <p>Nếu không có AI flag, nodule sẽ bị miss, phát hiện khi đã stage III-IV với tỷ lệ sống 5 năm &lt;20%. AI literally cứu mạng. Nhưng cũng trong tuần đó, AI false-positive 15 cases, gây stress và unnecessary biopsies cho 15 bệnh nhân khác. Trade-off đau đầu.</p>
+                <div class="lesson">💡 Bài học: AI trong y khoa là augmentation, không phải automation. High sensitivity = bắt được nhiều ca nhưng cũng nhiều false positive. Clinical workflow phải accommodate AI recommendations mà không overwhelm physicians. Và luôn nhớ: một false negative trong medical imaging có thể là một mạng người.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: FHIR Integration — Ác Mộng Interoperability</h3>
+                <p>Dự án: kết nối 3 bệnh viện để share patient records qua FHIR. Timeline: 6 tháng. Reality: 18 tháng và vẫn chưa xong.</p>
+                <p>Bệnh viện A dùng Epic (FHIR R4). Bệnh viện B dùng hệ thống tự build (HL7v2, encoding ISO-8859-1). Bệnh viện C dùng phần mềm Việt Nam (REST API custom, Vietnamese field names, dates format DD/MM/YYYY thay vì ISO 8601). "Blood pressure" ở BV-A là LOINC code 85354-9, BV-B gửi "BP sys/dia" dạng free text, BV-C gửi 2 fields riêng biệt "huyet_ap_tam_thu" và "huyet_ap_tam_truong".</p>
+                <p>Mapping terminology: SNOMED CT → ICD-10 không phải 1:1. Medication names: BV-A dùng RxNorm, BV-B dùng tên thương mại tiếng Việt, BV-C dùng mã nội bộ. Patient matching: BV-A có MRN, BV-B có CMND, BV-C có CCCD — cùng một bệnh nhân nhưng 3 ID khác nhau. Master Patient Index (MPI) trở thành project riêng.</p>
+                <div class="lesson">💡 Bài học: Healthcare interoperability là 20% technical, 80% political + data quality. Standard FHIR resources chỉ là starting point — mapping legacy data vào FHIR là nơi 90% effort nằm. Terminology mapping (LOINC, SNOMED, ICD-10, RxNorm) cần domain expert, không chỉ developer. Và patient matching across systems là unsolved problem — probabilistic matching tốt nhất cũng chỉ 95% accurate.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: Genomics Pipeline Crash Lúc Nửa Đêm</h3>
+                <p>Chạy whole genome sequencing pipeline cho 200 samples — estimated 72 giờ compute trên cluster 64 cores. Bắt đầu thứ 6 chiều, plan xong thứ 2 sáng. Pipeline dùng Nextflow, mỗi step containerized, checkpointing enabled. Tự tin về nhà weekend.</p>
+                <p>Thứ 7 2h sáng: alert — pipeline crash tại step alignment. Error: "Disk space full." 200 BAM files intermediate = 4TB. Disk chỉ có 5TB, và BWA-MEM2 tạo temp files thêm 2TB. Tổng cần 6TB, có 5TB. Pipeline crash sau 30 giờ compute — mất hết progress.</p>
+                <p>Fix: implement streaming pipeline — output alignment pipe trực tiếp vào sort → markdup → CRAM compression, xoá intermediate files ngay. CRAM thay BAM giảm 40% storage. Và thêm disk usage monitoring với auto-cleanup cho temp files. Resume từ checkpoint: chỉ mất thêm 24 giờ thay vì 72 giờ từ đầu.</p>
+                <div class="lesson">💡 Bài học: Genomics data = BIG data. Luôn estimate storage TRƯỚC khi chạy: input size × 10 cho intermediate files là rule of thumb. Streaming pipelines giảm disk footprint dramatically. CRAM &gt; BAM cho long-term storage. Và checkpointing KHÔNG phải optional — nó là insurance policy cho compute jobs dài.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Train AI model trên biased medical data</h3>
+                <p>Dataset 90% male, white patients → model kém accuracy cho female, non-white patients. Skin lesion classifier trained trên light skin → miss melanoma trên dark skin. ALWAYS check demographic distribution và test across subgroups. Health equity bắt đầu từ data.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Bỏ qua regulatory compliance</h3>
+                <p>Ship medical AI without FDA clearance = illegal. "Move fast and break things" KHÔNG apply cho healthcare. FDA SaMD guidance, CE marking (EU), PMDA (Japan) — biết regulation trước khi build. Regulatory ≠ bureaucracy — nó bảo vệ bệnh nhân.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Dùng production patient data cho development</h3>
+                <p>Synthetic data (Synthea), de-identified datasets, hoặc sandboxed environments cho dev/test. HIPAA violation khi dev access real PHI = fines + criminal charges. "Nhưng cần real data để test" — NO. Synthetic data đủ tốt cho 95% development scenarios.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Nghĩ FHIR giải quyết mọi vấn đề interoperability</h3>
+                <p>FHIR là standard, nhưng implementation varies wildly. Epic FHIR ≠ Cerner FHIR ≠ custom FHIR. Extensions, profiles, terminology bindings khác nhau. FHIR giải quyết format problem, KHÔNG giải quyết semantic problem (cùng field nhưng ý nghĩa khác nhau).</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Treat medical AI như tech product thông thường</h3>
+                <p>Tech product bug = inconvenience. Medical AI bug = harm. False negative mammogram = missed cancer. Wrong drug interaction alert = patient death. Testing rigor, validation methodology, post-market surveillance — healthcare AI needs 10x the quality bar of regular software.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Văn Genome</span> — Công Nghệ Sinh Học Đại Sư</p>
+            <p>🧬 "Code bugs crash apps. Medical bugs cost lives. Test accordingly."</p>
+        </div>
+    </div>
+</body>
+</html>

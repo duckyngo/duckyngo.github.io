@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Chưởng Môn - Chưởng Môn Kubernetes | Người Viết YAML Đến Mờ Mắt</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a2a 30%, #0a1a3a 60%, #1a2a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #3b82f6; text-shadow: 0 0 20px #3b82f640; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #3b82f6; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #3b82f6; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #3b82f6; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #3b82f630; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #3b82f6; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #3b82f6; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">☸️</span>
+            <h1>Kubernetes Chưởng Môn</h1>
+            <div class="title">Chưởng Môn Kubernetes | Người Viết YAML Đến Mờ Mắt</div>
+            <div class="quote">"Kubernetes giải quyết vấn đề mà bạn không biết mình có, bằng cách tạo ra vấn đề mà bạn không hiểu. Nhưng nó làm điều đó ở scale."</div>
+        </div>
+        <div class="badges">            <span class="badge">☸️ K8s Architecture</span>
+            <span class="badge">🎯 Pods & Services</span>
+            <span class="badge">🚀 Deployments</span>
+            <span class="badge">📦 StatefulSets</span>
+            <span class="badge">👹 DaemonSets</span>
+            <span class="badge">🌐 Networking</span>
+            <span class="badge">🔐 RBAC</span>
+            <span class="badge">📋 YAML Master</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Chưởng Môn nhớ ngày đầu tiên đọc Kubernetes documentation: "A pod is the smallest deployable unit that can be created and managed in Kubernetes." Chàng ta đọc lại 5 lần vẫn không hiểu. Rồi chàng ta đọc thêm: "A service is an abstract way to expose an application running on a set of pods as a network service." Càng đọc càng confused.</p><p>Chàng ta quyết định cài minikube và thử. kubectl apply -f deployment.yaml. Pod running! kubectl expose deployment. Service created! kubectl get pods. STATUS: Running! Niềm vui ngắn chẳng tày gang khi pod restart liên tục vì OOMKilled — chàng ta quên set memory limits.</p><p>15 năm sau, chàng ta đã deploy hàng trăm clusters, viết hàng vạn dòng YAML, và vẫn phải Google "kubernetes service types" mỗi tháng. Kubernetes phức tạp, nhưng nó giải quyết orchestration problems tốt hơn bất kỳ thứ gì khác. "Hate the YAML, love the platform," chàng ta nói.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Architecture — Control Plane & Data Plane:</strong> Control plane: kube-apiserver, etcd, scheduler, controller-manager. Data plane: kubelet, kube-proxy, container runtime. etcd: source of truth — backup etcd = backup cluster state. API server: mọi communication qua REST API. Scheduler: assign pods to nodes dựa trên resources, affinity, taints. Understand architecture để troubleshoot effectively.</div>
+            <div class="tip"><strong>2. Pods — Smallest Unit:</strong> Pod = 1+ containers sharing network namespace, volumes. Sidecar containers cho logging, proxying. Init containers cho initialization. Pod lifecycle: Pending → Running → Succeeded/Failed. Resource requests (scheduling guarantee) vs limits (maximum). ALWAYS set requests AND limits cho production pods. Liveness probes: restart unhealthy containers. Readiness probes: exclude from service endpoints.</div>
+            <div class="tip"><strong>3. Services — Networking Abstraction:</strong> ClusterIP: internal only (default). NodePort: expose on node port (30000-32767). LoadBalancer: cloud load balancer. ExternalName: DNS alias. Headless service (clusterIP: None): direct pod addressing cho StatefulSets. Service discovery: DNS (my-service.my-namespace.svc.cluster.local). Ingress cho HTTP/HTTPS routing.</div>
+            <div class="tip"><strong>4. Deployments — Declarative Updates:</strong> Rolling update strategy: maxSurge, maxUnavailable. kubectl rollout status, rollout history, rollout undo. Pod Disruption Budgets (PDB) cho maintenance safety. Update strategy: RollingUpdate (default, zero-downtime) vs Recreate (downtime, useful cho incompatible versions). Replicas, scaling, auto-scaling integration.</div>
+            <div class="tip"><strong>5. StatefulSets — Stateful Workloads:</strong> Stable network identity (pod-0, pod-1...). Ordered deployment and scaling. Persistent Volume Claims per pod. Dùng cho: databases, Kafka, Elasticsearch. headless service bắt buộc. volumeClaimTemplates cho automatic PVC creation. CẨNTHẬN: deleting StatefulSet KHÔNG delete PVCs — data preserved.</div>
+            <div class="tip"><strong>6. Networking — CNI & Policies:</strong> CNI plugins: Calico (popular, network policies), Cilium (eBPF, fastest), Flannel (simple). Pod-to-pod communication: flat network, every pod reachable. NetworkPolicies: firewall rules for pods. Default: all traffic allowed. Apply deny-all then whitelist. DNS: CoreDNS cho service discovery. Ingress controllers: Nginx, Traefik, Istio Gateway.</div>
+            <div class="tip"><strong>7. RBAC — Security:</strong> Roles/ClusterRoles: define permissions. RoleBindings/ClusterRoleBindings: assign to users/service accounts. Principle of least privilege. Namespace-scoped Roles cho team isolation. Service accounts cho workload identity. Audit logging cho compliance. ĐỪNG dùng cluster-admin cho regular operations.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🌪️ Chuyện Pod Eviction Storm</h3><p>Kubernetes cluster 50 nodes, 2000 pods. Node running hot — memory pressure. Kubelet start evicting pods (BestEffort first, then Burstable). Evicted pods rescheduled trên OTHER nodes → other nodes become memory-pressured → cascade eviction. 30% pods evicted within 10 minutes.</p><p>Root cause: pods without memory requests/limits → scheduled anywhere → node overcommitted. Fix: mandatory resource requests/limits (LimitRange, ResourceQuota). Proper capacity planning. Pod Priority Classes cho critical workloads. Monitor node resource utilization.</p><div class="lesson">💡 Bài học: ALWAYS set resource requests AND limits. Requests = scheduling guarantee. Limits = maximum allowed. Without them: nodes overcommit → cascade evictions. LimitRange enforce defaults. ResourceQuota enforce namespace totals. Capacity planning: leave headroom cho spikes.</div></div>
+            <div class="story"><h3>🕸️ Chuyện Service Mesh Meltdown</h3><p>Team deploy Istio service mesh cho 'better observability and security.' 200 microservices, mỗi cái có Envoy sidecar. Result: pod count double (200 app + 200 sidecar). Memory usage +40%. Latency +20ms per hop (sidecar overhead). Control plane (istiod) consuming 8GB RAM. Engineers spent more time debugging Istio than actual applications.</p><p>CTO: 'We added complexity to reduce complexity?' Đại Sư recommend: start with Linkerd (lighter) hoặc Cilium (sidecar-less). Hoặc: implement mTLS và observability incrementally, không phải all-at-once full mesh.</p><div class="lesson">💡 Bài học: Service mesh powerful nhưng complex. Start small: mTLS first, then observability, then traffic management. Linkerd simpler than Istio. Cilium sidecar-less (eBPF) cho lowest overhead. Evaluate: does your organization NEED service mesh? 10 microservices probably don't.</div></div>
+            <div class="story"><h3>📋 Chuyện YAML Hell</h3><p>Deployment 500 dòng YAML, mỗi environment khác nhau (dev, staging, prod). Developer maintain 3 copies. Thay đổi 1 field → update 3 files. Drift between environments. Bug in production chỉ vì staging YAML thiếu 1 environment variable.</p><p>Đại Sư introduce: Kustomize cho environment overlays (base + patches). Helm cho templated deployments. CI/CD validate YAML trước apply. Sealed Secrets cho encrypted secrets trong git. ArgoCD cho GitOps — YAML trong git = source of truth.</p><div class="lesson">💡 Bài học: Raw YAML cho nhiều environments = maintenance nightmare. Kustomize: overlays approach, good for simple differences. Helm: templating approach, good for reusable packages. GitOps (ArgoCD/Flux): git = desired state. Choose ONE approach và standardize. YAML linting trong CI/CD catch errors sớm.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Không set resource limits:</strong> Pod eat all node memory → OOM → cascade eviction. ALWAYS set requests AND limits. Use LimitRange cho defaults.</div>
+            <div class="mistake"><strong>2. Latest tag cho container images:</strong> kubectl rollout restart pull same 'latest' tag — but image changed. Pin specific versions. Image pull policy: IfNotPresent + versioned tags.</div>
+            <div class="mistake"><strong>3. Secrets trong YAML không encrypted:</strong> base64 is NOT encryption. Sealed Secrets, SOPS, External Secrets Operator cho encrypted secrets. Don't commit raw Secrets to git.</div>
+            <div class="mistake"><strong>4. Không có PodDisruptionBudgets:</strong> Node drain evict tất cả pods cùng lúc. PDB ensure minimum available replicas during maintenance.</div>
+            <div class="mistake"><strong>5. Single replica deployments:</strong> 1 replica = 0 availability during updates/failures. Minimum 2 replicas cho production. 3+ cho critical services.</div>
+            <div class="mistake"><strong>6. Ignore namespace isolation:</strong> Everything trong default namespace. No RBAC, no ResourceQuota, no NetworkPolicy. Namespaces cho team/environment isolation.</div>
+            <div class="mistake"><strong>7. kubectl apply từ local machine:</strong> Developer kubectl apply trực tiếp lên production. No review, no audit, no rollback. GitOps approach: all changes qua git PR → ArgoCD sync.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #100</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

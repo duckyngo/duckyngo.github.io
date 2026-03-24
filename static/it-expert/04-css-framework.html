@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mỹ Thuật Sư - CSS Frameworks</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #2e0a1a 25%, #1b0d3e 50%, #2e0a1a 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(251,146,60,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(244,63,94,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #fb7185, #fb923c, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fda4af; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(244,63,94,0.2), rgba(251,146,60,0.2)); border: 1px solid rgba(244,63,94,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fda4af; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(244,63,94,0.4), rgba(251,146,60,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(244,63,94,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(244,63,94,0.2); box-shadow: 0 8px 40px rgba(244,63,94,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fda4af; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(244,63,94,0.06); border-left: 3px solid #fb7185; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fda4af; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(244,63,94,0.06), rgba(251,146,60,0.06)); border: 1px solid rgba(244,63,94,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #fb923c; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fda4af; font-weight: 600; }
+        code { background: rgba(244,63,94,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fda4af; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🎨</span>
+            <h1>Mỹ Thuật Sư</h1>
+            <p class="subtitle">Phạm Mỹ Thuật — Bậc Thầy CSS Frameworks</p>
+            <p class="quote">"className dài 200 ký tự? Đó không phải bug, đó là Tailwind lifestyle."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Tailwind CSS</span>
+            <span class="skill-tag">Bootstrap</span>
+            <span class="skill-tag">Material UI</span>
+            <span class="skill-tag">Chakra UI</span>
+            <span class="skill-tag">Design Tokens</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Phạm Mỹ Thuật lớn lên trong thời đại "pixel-perfect" — khi mà designer gửi PSD file và developer phải match từng pixel một. Ông từng dùng float-based layout, clearfix hack, và table-based design. Khi Bootstrap ra đời, ông tưởng mình đã tìm được chân lý — cho đến khi MỌI website trên Internet đều trông giống nhau.</p>
+            <p>Rồi Tailwind CSS xuất hiện, và cộng đồng chia thành hai phe: "Utility-first là thiên tài!" vs "Inline style với extra steps!". Ông đứng giữa hai phe, uống trà, quan sát, rồi thầm nghĩ: "Cả hai đều đúng, cả hai đều sai."</p>
+            <p>Ngày nay, ông chuyên tư vấn cho các startup về design system — biến đống CSS lộn xộn thành hệ thống có tổ chức. Motto: "CSS framework tốt nhất là cái mà team bạn consistent dùng được."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Utility-First (Tailwind) vs Component-Based (Bootstrap) — Chọn ai?</h3>
+                <p><strong>Tailwind:</strong> Viết style trực tiếp trong HTML bằng utility classes. Ưu điểm: không cần đặt tên class, không context switching, tree-shaking loại bỏ CSS không dùng. Nhược điểm: HTML dài dòng, learning curve cho class names. <strong>Bootstrap:</strong> Pre-built components (.btn, .card, .modal). Ưu điểm: nhanh, ít custom, documentation tốt. Nhược điểm: mọi site trông giống nhau, khó customize deeply. Quy tắc: Tailwind cho custom design, Bootstrap cho admin panel/internal tools, Material UI cho design system consistency.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Design Tokens — Ngôn ngữ chung giữa Design và Dev</h3>
+                <p>Design tokens là bộ giá trị gốc: colors, spacing, typography, shadows — defined 1 lần, dùng everywhere. Tailwind config, CSS custom properties, hoặc tools như Style Dictionary. Khi designer nói "primary-500", developer biết chính xác là <code>#6366f1</code>. Khi rebrand, thay đổi 1 file tokens → cả app update. Đừng hardcode <code>#6366f1</code> rải rác 500 chỗ — dùng <code>var(--color-primary-500)</code> hoặc Tailwind's <code>text-primary-500</code>.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Dark Mode — Không chỉ đổi background</h3>
+                <p>Dark mode đúng cách: không chỉ invert colors. Text trắng trên nền đen → contrast quá cao → mỏi mắt. Dùng xám nhẹ cho text (<code>#e0e0e0</code>), dark gray cho background (<code>#1a1a2e</code>). Shadows trong dark mode dùng darker shade thay vì rgba black. Images cần giảm brightness. Tailwind <code>dark:</code> prefix hoặc CSS <code>prefers-color-scheme</code>. Lưu preference trong <code>localStorage</code> và respect system setting mặc định.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Tailwind CSS nâng cao — Beyond Basics</h3>
+                <p><code>@apply</code> để extract repeated utility patterns vào CSS class — nhưng ĐỪNG lạm dụng (nếu <code>@apply</code> everywhere thì tại sao dùng Tailwind?). Tailwind plugins cho custom utilities. <code>group-hover</code>, <code>peer-checked</code> cho state-based styling. JIT (Just-In-Time) mode arbitrary values: <code>w-[237px]</code>, <code>bg-[#1da1f2]</code>. Tailwind Merge library để handle conflicting classes khi components compose. <code>cva</code> (Class Variance Authority) cho type-safe component variants.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: CSS-in-JS — Khi nào dùng, khi nào tránh</h3>
+                <p>Styled-components, Emotion: CSS viết trong JS, scoped tự động, dynamic styles dễ dàng. Nhưng: runtime overhead (JS phải parse CSS), không cache được CSS riêng, SSR complexity. Zero-runtime CSS-in-JS alternatives: Vanilla Extract, Panda CSS, StyleX — compile-time CSS extraction, best of both worlds. Quy tắc: nếu dùng Tailwind, không cần CSS-in-JS. Nếu cần programmatic styles, dùng zero-runtime solutions.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Headless UI Libraries — Logic without Style</h3>
+                <p>Radix UI, Headless UI, React Aria, Ark UI: cung cấp behavior + accessibility, KHÔNG có styling. Bạn style theo ý muốn bằng Tailwind/CSS. So với Material UI: MUI cho bạn cả behavior + style (opinionated), Radix cho bạn behavior only (flexible). Khi project cần custom design → headless + Tailwind. Khi cần ship nhanh, consistent design → full component library (MUI, Ant Design, Mantine).</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: className Dài 200 Ký Tự</h3>
+                <p>Junior dev push code, PR review: một button component có className: <code>"flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900"</code></p>
+                <p>Senior review comment: "Bạn vừa viết cả một paragraph trong className." Junior reply: "Nhưng mà... Tailwind way?" Senior: "Tailwind way là extract thành component, không phải viết tiểu thuyết trong HTML attribute."</p>
+                <p>Team tạo rule: className > 80 ký tự → extract thành component hoặc dùng <code>@apply</code>. Từ đó, codebase sạch hơn, PR review dễ hơn, và không ai phải scroll ngang để đọc một cái button nữa.</p>
+                <div class="lesson">💡 Bài học: Tailwind utility classes tuyệt vời cho prototyping và one-off styles. Nhưng khi pattern lặp lại → extract thành component (React/Vue component, không phải CSS class). <code>@apply</code> chỉ dùng cho base styles, component composition cho complex patterns. Dùng Prettier plugin tailwind để auto-sort class order.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: Bootstrap Version Upgrade — Cuộc Đại Tu Đau Thương</h3>
+                <p>Dự án dùng Bootstrap 3, quyết định upgrade lên Bootstrap 5. "Chỉ update version thôi mà" — PM nói. 2 tháng sau, team vẫn đang fix regression bugs.</p>
+                <p>Bootstrap 3 → 4: Grid system đổi từ float sang flexbox. Tất cả <code>.col-xs-*</code> thành <code>.col-*</code>. Glyphicons bị remove. Panel → Card. <code>.pull-left</code> → <code>.float-start</code>. Bootstrap 4 → 5: jQuery bị remove hoàn toàn. <code>.ml-*</code> → <code>.ms-*</code> (margin-start for RTL). <code>.left</code>/<code>.right</code> → <code>.start</code>/<code>.end</code>.</p>
+                <p>Mỗi thay đổi nhỏ nhưng rải rác 500 files. Find & Replace giải quyết 70%, 30% còn lại cần manual check vì class names trùng với business logic. Sau vụ này, team viết wrapper components cho Bootstrap — để lần upgrade sau chỉ cần sửa wrappers.</p>
+                <div class="lesson">💡 Bài học: Đừng dùng CSS framework classes trực tiếp rải rác trong codebase. Tạo abstraction layer: design system components wrap framework classes. Khi upgrade framework, chỉ sửa abstraction layer. Và LUÔN đọc migration guide trước khi update major version.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: "Pixel Perfect" Meeting từ Địa Ngục</h3>
+                <p>Designer gửi Figma mockup, yêu cầu "pixel perfect". Developer implement bằng Tailwind, responsive trên mọi kích thước. Cuộc họp review: designer mở Figma bên trái, website bên phải, zoom 400%, overlay hai màn hình: "Cái button này lệch 2 pixel."</p>
+                <p>Dev: "Nhưng nó responsive, trên mobile hiển thị đẹp, accessible, có focus ring..." Designer: "2 pixel. Lệch. Sửa." Dev sửa, thêm <code>mt-[2px]</code>. Designer: "Giờ trên tablet lệch 1 pixel." Dev: *cầm laptop ra ban công hít thở*</p>
+                <p>Giải pháp: team tạo shared design tokens, designer dùng 4px grid system (spacing increment = 4px), developer map vào Tailwind spacing scale. Không còn arbitrary pixel values, cả hai nói cùng ngôn ngữ.</p>
+                <div class="lesson">💡 Bài học: "Pixel perfect" là myth trên responsive web — mỗi device render khác nhau. Thay vào đó, establish design system với consistent spacing, typography scale, và color palette. Designer và developer dùng cùng token system. Kết quả: consistent design, không còn debate 2 pixel.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Import toàn bộ CSS framework</h3>
+                <p><code>@import 'bootstrap'</code> → 250KB CSS, dùng 10% utilities. Tailwind JIT mode tự động tree-shake. Bootstrap cần custom import hoặc PurgeCSS. Material UI hỗ trợ tree-shaking qua named imports. Luôn audit CSS bundle size.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Override framework styles bằng <code>!important</code></h3>
+                <p>Khi MUI button không đúng màu, bạn dùng <code>!important</code>. Rồi hover state cần <code>!important</code>. Rồi disabled state. Dừng lại — dùng theme customization API, CSS custom properties, hoặc styled() wrapper. <code>!important</code> là dấu hiệu bạn đang fight framework thay vì work with it.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Không dùng CSS custom properties cho theming</h3>
+                <p><code>:root { --brand-primary: #6366f1; }</code> → thay đổi 1 chỗ, cả app update. Tốt hơn là hardcode hex values 500 lần. Custom properties cascade, có thể override per component/section, và JavaScript đọc/ghi được qua <code>getComputedStyle</code>.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Dùng Tailwind nhưng không config theme</h3>
+                <p>Tailwind mặc định có palette, spacing, breakpoints — nhưng project bạn có brand colors riêng. Không config <code>tailwind.config.js</code> → dùng arbitrary values everywhere <code>bg-[#1a2b3c]</code> → mất consistency. Config theme trước, dùng semantic names: <code>bg-brand-primary</code>.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Quên responsive testing trên thiết bị thật</h3>
+                <p>Chrome DevTools responsive mode !== thiết bị thật. Touch targets khác mouse hover. Virtual keyboard push content lên. Notch/safe area trên iPhone. Luôn test trên ít nhất 2-3 thiết bị thật trước launch.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Phạm Mỹ Thuật</span> — Mỹ Thuật Sư</p>
+            <p>🎨 "CSS framework không tạo ra good design — designer và developer có taste mới tạo ra good design."</p>
+        </div>
+    </div>
+</body>
+</html>

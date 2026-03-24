@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thí Nghiệm Sư - Frontend Testing</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a2e0a 25%, #1b3e0d 50%, #1a2e0a 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(132,204,22,0.15), rgba(34,197,94,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(132,204,22,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #a3e635, #4ade80, #2dd4bf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #bef264; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(132,204,22,0.2), rgba(34,197,94,0.2)); border: 1px solid rgba(132,204,22,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #bef264; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(132,204,22,0.4), rgba(34,197,94,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(132,204,22,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(132,204,22,0.2); box-shadow: 0 8px 40px rgba(132,204,22,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #bef264; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(132,204,22,0.06); border-left: 3px solid #a3e635; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #bef264; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(132,204,22,0.06), rgba(34,197,94,0.06)); border: 1px solid rgba(132,204,22,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #4ade80; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #bef264; font-weight: 600; }
+        code { background: rgba(132,204,22,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #bef264; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🧪</span>
+            <h1>Thí Nghiệm Sư</h1>
+            <p class="subtitle">Đỗ Thí Nghiệm — Bậc Thầy Frontend Testing</p>
+            <p class="quote">"Test không phải để chứng minh code đúng — mà để phát hiện khi code sai."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Cypress</span>
+            <span class="skill-tag">Playwright</span>
+            <span class="skill-tag">Vitest</span>
+            <span class="skill-tag">Jest</span>
+            <span class="skill-tag">Testing Library</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Đỗ Thí Nghiệm — người đàn ông mà mỗi khi commit code đều run test trước. Ông bắt đầu sự nghiệp ở thời kỳ "test bằng F5 và mắt thường". Click click, thấy OK, deploy. Rồi production bug xuất hiện lúc 3h sáng — cái bug mà nếu có test thì phát hiện trong 30 giây.</p>
+            <p>Từ đó ông thề sẽ test MỌII THỨ. Thời kỳ cuồng test: 95% code coverage, test từng pixel, mock từng function. Test suite chạy 45 phút. Developer push code xong đi uống cà phê, quay lại CI vẫn chưa xong. Rồi ông ngộ ra: coverage 95% không có nghĩa là app hoạt động đúng — chỉ có nghĩa là code ĐƯỢC CHẠY, không phải code ĐÚNG.</p>
+            <p>Ngày nay ông theo triết lý: "Test the behavior, not the implementation. Test what matters, not what's easy to test." Ông nổi tiếng với câu: "Nếu refactor code mà test fail, test của bạn test sai thứ."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Test Pyramid — Nền móng vững chắc</h3>
+                <p>Đáy (nhiều nhất): Unit tests — test functions, utilities, hooks riêng lẻ. Nhanh, stable, dễ debug. Giữa: Integration tests — test components interact với nhau, form submit, API calls. Realistic hơn. Đỉnh (ít nhất): E2E tests — test flow user thực tế (đăng nhập → tìm sản phẩm → checkout). Chậm nhưng confidence cao. Tỷ lệ lý tưởng: 70% unit, 20% integration, 10% E2E. Đừng invert pyramid (nhiều E2E, ít unit) — CI sẽ chạy cả tiếng.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Testing Library — Test như user dùng</h3>
+                <p>React Testing Library triết lý: "The more your tests resemble the way your software is used, the more confidence they give you." Đừng test implementation details (internal state, method calls). Test behavior: render component → interact (click, type) → assert outcome (text on screen, element visibility). Query by role (<code>getByRole('button', {name: 'Submit'})</code>) thay vì test ID — vì user không biết test ID, user biết "nút Submit".</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Playwright vs Cypress — Chọn ai cho E2E?</h3>
+                <p><strong>Playwright:</strong> Multi-browser (Chromium, Firefox, WebKit), multi-tab support, network interception, parallel execution, auto-wait, trace viewer. Microsoft maintain. Chạy ngoài browser (Node.js). <strong>Cypress:</strong> Developer experience tuyệt vời, time-travel debugging, real-time reload. Chạy TRONG browser. Nhược: chỉ Chromium-based, single-tab only, không test cross-origin dễ dàng. Quy tắc: Playwright cho CI/CD, comprehensive testing. Cypress cho DX, interactive development. 2025: Playwright đang thắng cuộc chiến.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Vitest — Jest nhưng nhanh hơn</h3>
+                <p>Vitest dùng Vite's transform pipeline — nhanh hơn Jest đáng kể cho Vite-based projects. Jest-compatible API — migrate gần như zero effort. Native ESM support, TypeScript out of box, HMR cho test files, in-source testing. Browser mode cho DOM testing thật. Nếu project dùng Vite → dùng Vitest, không cần suy nghĩ. Nếu project dùng Webpack → Jest vẫn ổn. Đừng chuyển test runner chỉ vì "mới hơn".</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Mocking Strategies — Mock đúng, test đúng</h3>
+                <p>Mock quá nhiều = test không reflect reality. Mock quá ít = test chậm, flaky, dependent on external services. Quy tắc: Mock network requests (MSW - Mock Service Worker là gold standard), mock timers, mock random. KHÔNG mock component internals, KHÔNG mock everything. MSW intercept ở network level — code fetching vẫn chạy thật, chỉ response là giả. Integration test với MSW = high confidence without external dependency.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Visual Regression Testing</h3>
+                <p>Logic test pass nhưng CSS broken → production trông thảm hại. Visual regression: capture screenshot, compare với baseline. Tools: Playwright built-in screenshot comparison, Percy, Chromatic (for Storybook). Tích hợp CI: mỗi PR auto-capture screenshots, diff với main branch, reviewer approve visual changes. Đặc biệt hữu ích khi update CSS framework, refactor shared components, hoặc redesign.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Flaky Tests — Bóng Ma Trong CI Pipeline</h3>
+                <p>CI pipeline có 500 E2E tests. Mỗi lần chạy, 3-5 tests random fail. Re-run: pass. Team thêm retry logic: re-run failed tests lên tới 3 lần. "Fixed!" — không, chỉ MASK vấn đề.</p>
+                <p>Nguyên nhân thực: race conditions. Test click button → assert result NGAY LẬP TỨC — nhưng API call chưa xong. Trên máy developer nhanh: pass (API response < 100ms). Trên CI server chậm: fail (API response > 200ms). Fix: dùng Playwright's auto-wait, <code>waitForResponse</code>, <code>expect(locator).toBeVisible()</code> thay vì <code>sleep(1000)</code>.</p>
+                <p>Sau 2 tuần fix flaky tests, CI reliability từ 70% lên 99%. Deploy confidence tăng vọt. Team không còn ignore CI failures với câu "chắc flaky test thôi" — vì giờ khi CI fail, it means something is actually wrong.</p>
+                <div class="lesson">💡 Bài học: Flaky test nguy hiểm hơn no test — vì team mất trust vào test suite và bắt đầu ignore failures. Root causes thường gặp: race conditions, hardcoded waits, shared test state, timezone/locale differences. Fix root cause, KHÔNG retry mask. Mỗi flaky test cần RCA (root cause analysis).</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: Snapshot Testing Gone Wrong</h3>
+                <p>Team adopt snapshot testing cho React components. <code>expect(component).toMatchSnapshot()</code> — một dòng test, coverage tăng vù vù. Manager happy nhìn coverage report: "95%! Tuyệt vời!"</p>
+                <p>Thực tế: developer thay đổi component → snapshot fail → developer chạy <code>jest --updateSnapshot</code> → pass → commit. KHÔNG AI ĐỌC snapshot diff. Snapshots dài 500 dòng HTML — ai đọc 500 dòng diff trong PR review? Kết quả: snapshot tests thành rubber stamp, không catch bug nào cả.</p>
+                <p>Tệ hơn: bug slip through vì snapshot file quá lớn, reviewer auto-approve. Một ngày, CSS class name typo khiến toàn bộ styling vỡ — snapshot "updated" nhưng không ai nhận ra <code>btn-priamry</code> thay vì <code>btn-primary</code>.</p>
+                <div class="lesson">💡 Bài học: Snapshot testing có chỗ dùng (serialized data, small outputs) nhưng KHÔNG thay thế behavior testing. Nếu snapshot > 20 dòng → quá lớn, không ai review. Dùng inline snapshots cho small, focused assertions. Prefer <code>expect(screen.getByRole('button')).toHaveTextContent('Submit')</code> thay vì snapshot cả component.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: "Chỉ Test Happy Path" — Khi Murphy Gõ Cửa</h3>
+                <p>Login form tested: nhập email + password → click submit → redirect to dashboard. Test pass. Ship it! Production: user nhập email có space ở cuối → validation pass → API reject → infinite loading. User nhập password có emoji → backend crash. User double-click submit → 2 requests → duplicate session.</p>
+                <p>Team chỉ test happy path — điều hiếm khi xảy ra trong real life. Users sáng tạo hơn bạn tưởng: paste từ Excel (có hidden characters), autofill browser thêm whitespace, slow network khiến user double-click, ad blocker chặn API endpoint.</p>
+                <p>Sau incident, team tạo "Adversarial Testing Checklist": empty input, whitespace only, special characters, double submit, network timeout, API error responses, concurrent access. Mỗi feature đều test negative cases.</p>
+                <div class="lesson">💡 Bài học: Happy path testing cho bạn false confidence. Test: empty/null inputs, boundary values, error responses, timeout, concurrent actions, invalid data types. Dùng property-based testing (fast-check) để auto-generate edge cases. Rule: nếu bug đã xảy ra, viết regression test TRƯỚC khi fix.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Test implementation details</h3>
+                <p>Test <code>expect(setState).toHaveBeenCalledWith({count: 1})</code> — refactor từ useState sang useReducer → test fail dù behavior giống hệt. Test behavior (<code>expect(screen.getByText('1')).toBeVisible()</code>), không test internals.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: <code>sleep(3000)</code> trong E2E tests</h3>
+                <p>Hardcoded waits = slow tests + still flaky. Dùng proper waits: <code>await page.waitForSelector()</code>, <code>await expect(element).toBeVisible()</code>. Playwright/Cypress auto-retry assertions — tận dụng nó.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Không clean state giữa các tests</h3>
+                <p>Test A tạo user → Test B dùng user đó → Test B pass. Run Test B ALONE → fail. Test order dependency = nightmare. Mỗi test phải setup own state, teardown sau khi xong. <code>beforeEach</code>, <code>afterEach</code> là bạn.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Coverage metric là KPI</h3>
+                <p>80% coverage với meaningful tests > 95% coverage với snapshot tests. Coverage đo lines EXECUTED, không đo lines TESTED CORRECTLY. Một assertion <code>expect(true).toBe(true)</code> sau rendering toàn bộ app → high coverage, zero value.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Không test accessibility</h3>
+                <p>Logic tests pass, visual tests pass, nhưng keyboard user không navigate được. Tích hợp axe-core vào test suite: <code>expect(await axe(container)).toHaveNoViolations()</code>. Test keyboard navigation trong E2E: Tab, Enter, Escape flows.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Đỗ Thí Nghiệm</span> — Thí Nghiệm Sư</p>
+            <p>🧪 "Viết test như viết bảo hiểm — hy vọng không bao giờ cần, nhưng khi cần thì cứu mạng."</p>
+        </div>
+    </div>
+</body>
+</html>

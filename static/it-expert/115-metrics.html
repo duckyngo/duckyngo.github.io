@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Số Liệu Đại Sư - Chuyên Gia Prometheus, Grafana & Datadog</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 30%, #2a0a2a 60%, #2a1a3a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #a78bfa; text-shadow: 0 0 20px #a78bfa40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #a78bfa; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #a78bfa; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #a78bfa; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #a78bfa30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #a78bfa; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #a78bfa; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">📊</span><h1>Số Liệu Đại Sư</h1><div class="title">Chuyên Gia Prometheus, Grafana & Datadog</div><div class="quote">"Nếu bạn không đo lường được, bạn không quản lý được. Nhưng nếu bạn đo lường MỌI THỨ, bạn sẽ bị chìm trong data mà vẫn không hiểu gì."</div></div>
+        <div class="badges">            <span class="badge">📊 Prometheus Expert</span>
+            <span class="badge">📈 Grafana Master</span>
+            <span class="badge">🐕 Datadog Pro</span>
+            <span class="badge">📐 PromQL</span>
+            <span class="badge">🎨 Dashboard Design</span>
+            <span class="badge">⚡ High Cardinality</span>
+            <span class="badge">🔔 Alerting Rules</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Số Liệu Đại Sư từng monitor bằng cách SSH vào servers chạy top, free -h, df -h. Mỗi sáng, 30 phút SSH qua 20 servers. "Manual monitoring," chàng ta gọi. Thực ra đó là "hope-based observability."</p><p>Rồi Prometheus + Grafana thay đổi cuộc đời: scrape metrics tự động, store time-series, query với PromQL, visualize với Grafana dashboards. Đẹp, real-time, alerting. "Tôi nhìn dashboards thay vì SSH," chàng ta hạnh phúc.</p><p>Cho đến khi Prometheus OOM vì high cardinality metrics. 10 triệu unique time series. Memory: 30GB. Cost: tears. "Not all metrics are created equal," chàng ta giác ngộ. "Some metrics are more expensive than others."</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Prometheus — Pull-Based Metrics:</strong> Scrape targets qua HTTP. Time-series database (TSDB). PromQL cho querying. Service discovery (Kubernetes, consul, file-based). Federation cho scaling. Thanos/Cortex/Mimir cho long-term storage + HA. Recording rules cho pre-computed metrics. Alert rules cho alerting.</div>
+            <div class="tip"><strong>2. PromQL — Querying:</strong> Instant vectors, range vectors, scalar. rate() cho per-second rate of counter. histogram_quantile() cho percentiles. by/without cho aggregation. offset cho time shift. Common patterns: rate(http_requests_total[5m]), histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])). Practice PromQL — it is essential.</div>
+            <div class="tip"><strong>3. Grafana — Visualization:</strong> Dashboards cho metrics visualization. Multiple datasources: Prometheus, Loki, Elasticsearch, CloudWatch. Variables cho dynamic dashboards. Alerting (Grafana Alerting hoặc Prometheus Alertmanager). Annotations cho events. Dashboard as code (grafonnet, Terraform). Dashboard folders + permissions cho organization.</div>
+            <div class="tip"><strong>4. Cardinality — The Silent Killer:</strong> Cardinality = number of unique time series. High cardinality = high memory, slow queries. Causes: user_id labels, request_path labels, UUID labels. Rule: labels should have bounded cardinality. Monitor cardinality: prometheus_tsdb_head_series. Drop high-cardinality labels with metric_relabel_configs.</div>
+            <div class="tip"><strong>5. Dashboard Best Practices:</strong> USE method (Utilization, Saturation, Errors) cho resources. RED method (Rate, Errors, Duration) cho services. Golden signals: latency, traffic, errors, saturation. Dashboard hierarchy: overview → service → component. Avoid: too many panels, rainbow colors, vanity metrics.</div>
+            <div class="tip"><strong>6. Datadog — SaaS Alternative:</strong> Agent-based, easy setup. 700+ integrations. APM, infrastructure, logs unified. Pricing per host + custom metrics. Expensive at scale but reduces ops burden. Good for: teams without dedicated monitoring infra team. Consider: costs grow with infrastructure size.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📈 Chuyện High Cardinality Giết Prometheus</h3><p>Developer add label path={{request_path}} to HTTP metrics. 50,000 unique URLs = 50,000 time series PER metric. 10 metrics × 50,000 paths = 500,000 time series. Prometheus memory: 8GB → 30GB → OOM crash. Metrics lost. Alerting down. Nobody knows systems are failing.</p><p>Fix: remove path label (use histogram cho latency distribution instead). Implement cardinality limits. Metric relabeling to drop high-cardinality labels before storage. Monitor prometheus_tsdb_head_series cho early warning.</p><div class="lesson">💡 Bài học: Label values MUST have bounded cardinality. No user IDs, no request paths, no UUIDs as labels. If needed: log them, don't metric them. Monitor Prometheus memory và series count. Cardinality explosion = Prometheus death. Set series limits per scrape target.</div></div>
+            <div class="story"><h3>🎨 Chuyện Dashboard Nói Dối</h3><p>Grafana dashboard shows CPU 30%, memory 50%, disk 40%. Everything green. But users complaining: 'app is slow!' Dashboard metrics are AVERAGES across 10 servers. Reality: 1 server at 100% CPU (slow), 9 servers at 22% CPU (fine). Average: 30%. Dashboard hides the problem.</p><p>Fix: show per-instance metrics, not just averages. Add p99 percentiles. Heat maps cho distribution. Alert on per-instance thresholds, not averages.</p><div class="lesson">💡 Bài học: Averages lie. Show distributions (percentiles, heat maps). Per-instance metrics alongside aggregates. p99 latency more important than average latency. Dashboard designed to surface problems, not hide them. If dashboard always green, it's probably wrong.</div></div>
+            <div class="story"><h3>🔔 Chuyện Alert Storm 500 Alerts</h3><p>Monitoring setup: alert cho every metric threshold. CPU > 80%, memory > 80%, disk > 80%, latency > 100ms, error rate > 1%, ... per service, per instance. 50 services × 10 instances × 5 alerts = 2,500 potential alerts. Network issue: 1 upstream dependency fails → 30 services error → 500 alerts fire simultaneously. On-call engineer: 500 PagerDuty notifications in 5 minutes. Phone literally vibrating off desk.</p><div class="lesson">💡 Bài học: Alert design: alert on symptoms (user-facing impact), not causes. Aggregated alerts: 'web-tier error rate high' not 'server-1 error, server-2 error...'. Alert grouping, inhibition, silencing trong Alertmanager. Runbook link in every alert. Alert fatigue = missed real alerts.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Alert on every metric:</strong> Too many alerts = alert fatigue = ignored alerts = missed incidents. Alert on symptoms, investigate causes.</div>
+            <div class="mistake"><strong>2. No recording rules:</strong> Complex PromQL query in dashboard = slow rendering. Recording rules pre-compute common queries. Faster dashboards, reusable metrics.</div>
+            <div class="mistake"><strong>3. Prometheus without persistent storage:</strong> Pod restart = data loss. PVC cho TSDB storage. Thanos/Mimir cho long-term và HA.</div>
+            <div class="mistake"><strong>4. Dashboard without context:</strong> Numbers without baseline. What is normal CPU? Add historical comparisons, baselines, SLO targets to dashboards.</div>
+            <div class="mistake"><strong>5. Monitoring only infrastructure:</strong> CPU, memory, disk — but no application metrics. Business metrics (orders/sec, conversion rate) equally important.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #115</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

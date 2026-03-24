@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Táo Khuyết Đại Sư - Bậc Thầy iOS Development</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(79,70,229,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #6366f1, #4f46e5, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5b4fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(79,70,229,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #a5b4fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5b4fc; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #6366f1; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5b4fc; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #4f46e5; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5b4fc; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #a5b4fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🍎</span>
+            <h1>Táo Khuyết Đại Sư</h1>
+            <p class="subtitle">Trần Táo Khuyết — Bậc Thầy iOS Development</p>
+            <p class="quote">"Apple không bán điện thoại — họ bán trải nghiệm. Code của bạn phải xứng đáng với trải nghiệm đó."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">Swift</span>
+            <span class="skill-tag">SwiftUI</span>
+            <span class="skill-tag">UIKit</span>
+            <span class="skill-tag">Combine</span>
+            <span class="skill-tag">Core Data</span>
+            <span class="skill-tag">App Store</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Táo Khuyết bắt đầu với Objective-C — ngôn ngữ mà khi nhìn lần đầu ai cũng hỏi: 'Đây là code hay là bảng mã Morse?' Bracket hell: <code>[[[[object method1] method2] method3] method4]</code>. Rồi Swift ra đời năm 2014, ông khóc vì hạnh phúc.
+
+Ông đã survive qua mọi drama của Apple ecosystem: Auto Layout ra đời (constraint hell bắt đầu), Swift 1 → 2 → 3 migration pain, Storyboard vs programmatic UI wars, và cuối cùng SwiftUI revolution. App Store review process đã reject app ông 17 lần — mỗi lần một lý do khác nhau, có lần chỉ vì 'UI not aligned with Human Interface Guidelines'.
+
+Motto: 'Trên iOS, user kỳ vọng perfection. 60fps animation, instant response, zero crash. Bất kỳ cái gì kém hơn đều nhận 1-star review.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: SwiftUI vs UIKit — Khi nào dùng gì</h3>
+                <p>SwiftUI: declarative UI, preview canvas, less code, cross-Apple-platform (iOS, macOS, watchOS, tvOS). Bắt đầu projects mới bằng SwiftUI. UIKit: imperative, mature, full control, complex custom UI. Cần cho: complex collection views, custom transitions, UIKit-only APIs. Hybrid: SwiftUI hosting UIKit (<code>UIViewRepresentable</code>) và UIKit hosting SwiftUI (<code>UIHostingController</code>). 2025: SwiftUI đủ mature cho 90% use cases. UIKit cho edge cases và legacy codebase.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Swift Concurrency — async/await + Actors</h3>
+                <p>Swift 5.5+: structured concurrency. <code>async/await</code> thay completion handlers (goodbye callback hell). <code>Task</code> groups cho parallel work. <code>Actor</code> isolation: data race prevention tại compile time — actor properties chỉ accessible từ actor context. <code>@MainActor</code> cho UI updates — compiler đảm bảo UI code chạy trên main thread. <code>Sendable</code> protocol đánh dấu types safe for concurrent access. Tương lai iOS development = Swift Concurrency everywhere.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: App Architecture — MVVM, TCA, Clean Architecture</h3>
+                <p>MVVM + SwiftUI: View (SwiftUI view) → ViewModel (@Observable class) → Model (data structs). Simple, works cho đa số apps. TCA (The Composable Architecture): functional, composable, testable — mỗi feature = State + Action + Reducer + Environment. Opinionated nhưng consistent. Clean Architecture: Use Cases → Repositories → Data Sources. Cho complex domain logic. Recommendation: MVVM cho apps đơn giản, TCA cho apps cần predictable state, Clean Architecture cho enterprise.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Core Data vs SwiftData vs Realm</h3>
+                <p>Core Data: Apple's ORM, powerful nhưng verbose, NSManagedObjectContext threading rules complex. SwiftData (iOS 17+): modern Core Data wrapper, macro-based (@Model), SwiftUI integration native. Dùng SwiftData cho new projects targeting iOS 17+. Realm: third-party, zero-copy architecture (fast reads), live objects, sync capability (MongoDB Atlas). SQLite direct: khi cần full SQL control hoặc cross-platform database.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Performance Optimization</h3>
+                <p>Instruments: Time Profiler (CPU bottlenecks), Allocations (memory leaks), Leaks (retain cycles), Core Animation (rendering performance). SwiftUI: avoid expensive body computations, use <code>@State</code> wisely (granular state = less re-rendering), <code>List</code> lazy by default nhưng <code>ForEach</code> trong <code>ScrollView</code> KHÔNG lazy — dùng <code>LazyVStack</code>. Image: downsize on load, cache with NSCache, dùng <code>prepareThumbnail()</code>. Network: URLSession caching, pagination, prefetching.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: App Store Rejection Saga — 17 Lần Bị Từ Chối</h3>
+                <p>Submit app lần 1: 'Guideline 4.0 - Design: UI elements do not conform to Human Interface Guidelines.' Sửa UI, submit lại. Lần 2: 'Guideline 2.1 - Performance: App crashed on iPad Pro 12.9 inch.' Fix crash (auto layout constraint conflict ở landscape). Lần 3: 'Guideline 5.1.2 - Data Use: Privacy policy link required.' Thêm privacy policy.
+
+Lần 7: 'Guideline 3.1.1 - In-App Purchase: Feature X requires IAP.' Implement IAP cho premium features. Lần 12: 'Guideline 2.3 - Accurate Metadata: Screenshots not match current version.' Update screenshots. Lần 17: 'APPROVED.' Team ăn mừng bằng nước mắt.
+
+Tổng thời gian: 3 tháng từ submit đầu đến approved. Giờ app review nhanh hơn (24-48h) nhưng rejection vẫn đau.</p>
+                <div class="lesson">💡 Bài học: Đọc App Store Review Guidelines TRƯỚC khi code, không phải trước khi submit. Common rejections: IAP issues, privacy policy missing, metadata mismatch, crash on specific devices, design guideline violations. TestFlight beta testing để catch issues early. App Store Connect response clear và specific — đọc kỹ, fix đúng, đừng argue.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Auto Layout Constraint Hell</h3>
+                <p>Designer gửi complex UI: card layout, nested scroll views, dynamic height cells, floating action button, safe area handling. Developer implement bằng Auto Layout constraints programmatically.
+
+200 constraints cho 1 screen. Ambiguous layout warnings trong console. Một ngày, constraint conflict: <code>Unable to simultaneously satisfy constraints</code> với 15 constraints listed. Debug: nào là leading, trailing, top, bottom, width, height, centerX, centerY — constraint nào conflict với constraint nào?
+
+Xcode Constraint debugger KHÔNG helpful cho 200 constraints. Team chuyển sang SnapKit (DSL cho Auto Layout): code readable hơn, ít error-prone hơn. Sau đó SwiftUI ra đời — declarative layout, không constraint. Dev: 'Tại sao phải chịu đau 10 năm?'</p>
+                <div class="lesson">💡 Bài học: Auto Layout constraints programmatically = verbose và error-prone. Solutions: SnapKit/Cartography (Swift DSL), Interface Builder (visual nhưng merge conflict hell), hoặc SwiftUI (declarative, no constraints). Cho legacy UIKit: group constraints logically, name constraints cho debugging, dùng <code>UIStackView</code> giảm 80% constraints.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Memory Leak từ Closure Retain Cycle</h3>
+                <p>App bắt đầu lag sau 30 phút sử dụng. Memory usage tăng liên tục. Instruments > Leaks: retain cycle. Closure trong UIViewController capture <code>self</code> strongly → ViewController không dealloc → tất cả subviews, images, data models giữ trong memory.
+
+50 screens navigate qua trong 30 phút = 50 ViewControllers alive trong memory, mỗi cái hold 5-10MB assets. Memory: 500MB. iOS kill app.
+
+Fix: <code>[weak self]</code> trong mọi closure capture ViewController. <code>[unowned self]</code> khi guarantee self alive. Deinit logging: <code>deinit { print('VC deallocated') }</code> — nếu không thấy log = leak.</p>
+                <div class="lesson">💡 Bài học: Retain cycle là memory leak phổ biến nhất trên iOS. Rule: closure capture object → dùng <code>[weak self]</code>. Delegate pattern → weak reference. Timer → invalidate trong deinit. NotificationCenter → removeObserver. Add deinit logging cho EVERY ViewController. Run Instruments Leaks check định kỳ.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Force unwrap everywhere</h3>
+                <p><code>let name = user!.name!</code> — crash waiting to happen. Dùng guard let, if let, nil coalescing (??). Force unwrap chỉ OK khi 100% guaranteed non-nil (IBOutlet after viewDidLoad).</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Blocking main thread</h3>
+                <p>Network call, heavy computation trên main thread → UI freeze → user nghĩ app crash. MỌII I/O và computation nặng phải chạy trên background queue. UI updates PHẢI trên main queue. Swift Concurrency (@MainActor) enforce tại compile time.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Massive View Controller</h3>
+                <p>ViewController 3000 dòng: networking + UI + business logic + animation + gesture handling. Tách: MVVM (ViewModel cho logic), Coordinator (navigation), Service classes (networking). SwiftUI naturally enforces smaller views.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Không test trên device thật</h3>
+                <p>Simulator ≠ real device. Camera, GPS, push notifications, performance, memory constraints — tất cả khác. Test trên ít nhất 2 devices: newest + oldest supported model.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Ignore accessibility</h3>
+                <p>VoiceOver users tăng. Label mọi UI element, test VoiceOver navigation, support Dynamic Type (font size tùy chỉnh), High Contrast mode. Apple review team test accessibility — fail = rejection.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Táo Khuyết</span> — Táo Khuyết Đại Sư</p>
+            <p>🍎 "Apple không bán điện thoại — họ bán trải nghiệm. Code của bạn phải xứng đáng với trải nghiệm đó."</p>
+        </div>
+    </div>
+</body>
+</html>

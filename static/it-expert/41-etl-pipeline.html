@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đường Ống Dữ Liệu Sư — ETL/ELT Pipeline Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #0a0d18;
+            --card-bg: rgba(15, 20, 40, 0.85);
+            --card-border: rgba(46, 204, 113, 0.2);
+            --accent: #2ecc71;
+            --accent2: #58d68d;
+            --accent3: #f39c12;
+            --text: #e8f5e8;
+            --text-muted: #88bb99;
+            --glow: rgba(46, 204, 113, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 20% 40%, rgba(46,204,113,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 60%, rgba(243,156,18,0.06) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote {
+            margin-top: 1.5rem; padding: 1rem 2rem;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            font-style: italic; color: var(--accent2); display: inline-block;
+        }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge {
+            padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--card-border); background: var(--card-bg);
+            backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip {
+            padding: 1rem 1.5rem; margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+            background: rgba(46,204,113,0.05); border-radius: 0 8px 8px 0;
+        }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story {
+            padding: 1.5rem; margin: 1rem 0;
+            background: rgba(243,156,18,0.05); border-radius: 12px;
+            border: 1px solid rgba(243,156,18,0.1);
+        }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(46,204,113,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake {
+            padding: 1rem 1.5rem; margin: 0.75rem 0;
+            background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757;
+            border-radius: 0 8px 8px 0;
+        }
+        .mistake strong { color: #ff6b81; }
+        .footer {
+            text-align: center; padding: 3rem 2rem; margin-top: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--card-border);
+        }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">🔧</span>
+        <h1>Đường Ống Dữ Liệu Sư</h1>
+        <p class="subtitle">Thợ Đường Ống Kết Nối Mọi Nguồn Dữ Liệu</p>
+        <div class="quote">"Dữ liệu giống nước — nếu đường ống bị rò, bạn sẽ không biết cho đến khi nhà ngập."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge">🔄 ETL</span>
+        <span class="badge">📥 ELT</span>
+        <span class="badge">✅ Data Validation</span>
+        <span class="badge">🔁 Idempotency</span>
+        <span class="badge">📊 Data Quality</span>
+        <span class="badge">🔌 Connectors</span>
+        <span class="badge">📋 Schema Mapping</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Đường Ống Dữ Liệu Sư, tên thật là <strong>Đặng Chuyển Hoá</strong>, hồi bé thích nhất là chơi trò xây kênh dẫn nước từ bồn rửa mặt ra sân. Bố mẹ la mắng, nhưng ông nội — một kỹ sư thủy lợi — lại khen: <em>"Thằng này có gen thủy lợi!"</em></p>
+        <p>Vào nghề data, lão phát hiện pipeline dữ liệu cũng giống hệ thống thủy lợi: nguồn (source), kênh dẫn (pipeline), bể chứa (destination), van điều khiển (transformations), và bộ lọc (validation). Và giống hệ thống thủy lợi — nếu bị rò rỉ, hậu quả rất nghiêm trọng nhưng không ai biết cho đến khi đã quá muộn.</p>
+        <p>Sau 12 năm xây pipeline, lão có câu nói trứ danh: <em>"80% thời gian làm data là dọn dẹp data. 15% là xây pipeline. 5% là phân tích. Và 200% là debug tại sao pipeline fail lúc 3 giờ sáng."</em></p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>ETL vs ELT — Thứ Tự Quyết Định Mọi Thứ</strong>
+            <p><strong>ETL</strong>: Extract → Transform → Load. Transform trước khi load vào warehouse. Tốt khi target storage đắt hoặc hạn chế compute. <strong>ELT</strong>: Extract → Load → Transform. Load raw data vào warehouse, transform bằng SQL (dbt). Tốt khi warehouse có compute mạnh (BigQuery, Snowflake). Trend hiện tại: ELT thắng nhờ cloud warehouse rẻ và mạnh.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Idempotency — Chạy Lại Không Lo</strong>
+            <p>Pipeline PHẢI idempotent: chạy 1 lần hay 100 lần, kết quả giống nhau. Cách làm: dùng upsert (INSERT ON CONFLICT UPDATE), replace partition thay vì append, dedup bằng unique key. Nếu pipeline fail giữa chừng và retry, dữ liệu không bị duplicate hay corrupt.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Data Validation — Trust But Verify</strong>
+            <p>Validate ở 3 điểm: sau Extract (source data hợp lệ?), sau Transform (logic đúng?), sau Load (row counts match? checksums match?). Great Expectations library cho Python. dbt tests cho SQL. Minimum: null checks, unique checks, referential integrity, value range checks.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Incremental Processing — Đừng Load Lại Mọi Thứ</strong>
+            <p>Full load 100 triệu rows mỗi ngày khi chỉ có 10,000 rows mới? Dùng incremental: CDC (Change Data Capture) bằng Debezium, hoặc watermark column (updated_at > last_run). Incremental giảm thời gian chạy 100x và giảm load lên source database.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Error Handling — Dead Letter Queue</strong>
+            <p>Record lỗi không nên crash toàn bộ pipeline. Pattern: ghi record lỗi vào dead letter table/queue, tiếp tục xử lý records còn lại, alert khi error rate > threshold, retry dead letters sau. Pipeline chạy xong = success + partial errors list, không phải all-or-nothing.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Monitoring & Alerting — Biết Trước Khi Boss Biết</strong>
+            <p>Metrics cần monitor: row count (so với expected), latency (job chạy lâu bất thường?), freshness (data mới nhất bao lâu rồi?), error rate. Alert khi: job fail, row count lệch > 10%, freshness > SLA. Dùng Soda, Monte Carlo, hoặc custom checks.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">💀 Chuyện 1: ETL Job Corrupt Production Data</div>
+            <p>Anh data engineer viết ETL job: đọc từ MySQL, transform, ghi vào data warehouse. Nhưng anh mắc sai lầm chết người: dùng production MySQL connection thay vì read replica. Và pipeline có bug — thay vì chỉ SELECT, nó chạy UPDATE (do copy-paste sai function).</p>
+            <p>Pipeline chạy lúc 2 giờ sáng. Cập nhật 5 triệu records trong bảng <code>orders</code> — set <code>status = 'pending'</code> cho mọi order đã completed. Sáng hôm sau: khách hàng complain hàng loạt "đơn hàng đã giao sao vẫn hiện pending?" Customer service mất 3 ngày để fix thủ công.</p>
+            <div class="lesson">💡 Bài học: ETL connections đến source PHẢI read-only. Dùng read replica, không bao giờ production primary. Tạo database user riêng cho ETL với chỉ SELECT permission. Review pipeline code kỹ như review production code.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🕳️ Chuyện 2: Silent Data Loss — Mất Dữ Liệu Âm Thầm</div>
+            <p>Pipeline sync user data từ CRM sang warehouse. Chạy ổn 6 tháng. Một ngày, team analytics phát hiện: số users trong warehouse ít hơn CRM 15%. Ai đó hỏi: <em>"Từ bao giờ?"</em> Không ai biết. Không có monitoring.</p>
+            <p>Điều tra: 3 tháng trước, CRM vendor thay đổi API pagination — trả max 100 records/page thay vì 1000. Pipeline code giữ nguyên page_size=1000 → API trả 100 → pipeline nghĩ "chỉ có 100 records, done" → bỏ qua 900 records mỗi page. 3 tháng × 300 pages/run = 270,000 users bị mất.</p>
+            <div class="lesson">💡 Bài học: Validate row counts sau mỗi extraction. So sánh source count vs extracted count. Alert khi lệch. Silent data loss là loại bug nguy hiểm nhất vì không ai biết cho đến khi đã quá muộn.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔄 Chuyện 3: Duplicate Data — Chạy Lại = Gấp Đôi</div>
+            <p>Pipeline append data vào warehouse mỗi giờ. Job fail lúc 3pm, team retry lúc 4pm. Nhưng job không idempotent — retry ghi thêm 1 lần nữa data của 3pm. Revenue report cuối ngày: doanh thu tăng 15% so với hôm qua. CEO vui mừng khôn xiết. Cho đến khi phát hiện: doanh thu thực ra giảm 5%, 15% kia là duplicate data.</p>
+            <p>Lão phải: tìm và xóa duplicates (dùng ROW_NUMBER() PARTITION BY), redesign pipeline dùng MERGE/UPSERT thay vì INSERT, thêm dedup logic. Và viết email xin lỗi CEO.</p>
+            <div class="lesson">💡 Bài học: Pipeline PHẢI idempotent. Dùng UPSERT/MERGE, hoặc replace full partition, hoặc dedup bằng unique key. Test bằng cách chạy pipeline 2 lần liên tiếp — kết quả phải giống nhau.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Không có retry logic</strong>
+            <p>Network blip, API timeout, database connection reset — transient errors xảy ra thường xuyên. Không retry = pipeline fail vì lý do tạm thời. Implement exponential backoff retry (3 attempts, 1s/5s/30s delay).</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Hard-coded credentials trong code</strong>
+            <p>Database password trong ETL script commit lên git. Secret management: dùng environment variables, Vault, AWS Secrets Manager, hoặc Airflow connections.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Full load khi incremental là đủ</strong>
+            <p>Load lại 100 triệu rows mỗi ngày khi chỉ có 1000 rows thay đổi. Tốn time, tốn compute, tốn money, tạo load lên source database.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không log pipeline metadata</strong>
+            <p>Pipeline chạy xong nhưng không biết: chạy bao lâu? bao nhiêu rows? từ timestamp nào đến timestamp nào? Khi debug, không có gì để check. Log mọi run metadata.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Transform quá complex trong 1 step</strong>
+            <p>1 pipeline: extract 5 sources, join, filter, aggregate, format, load — tất cả trong 1 giant script. Khi fail, không biết fail ở đâu. Chia thành stages nhỏ, mỗi stage có checkpoint.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">🔧 Đường Ống Dữ Liệu Sư — Đặng Chuyển Hoá</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Pipeline tốt giống ống nước tốt: bạn không nghĩ về nó cho đến khi nó hỏng. Và khi nó hỏng, mọi thứ ngập."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

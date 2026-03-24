@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Trình Tướng Quân - Bậc Thầy Task Scheduling</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(79,70,229,0.15), rgba(67,56,202,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #4338ca, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5b4fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(79,70,229,0.15), rgba(67,56,202,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #a5b4fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5b4fc; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #4f46e5; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5b4fc; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #4338ca; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5b4fc; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #a5b4fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">⏰</span>
+            <h1>Lịch Trình Tướng Quân</h1>
+            <p class="subtitle">Nguyễn Lịch Trình — Bậc Thầy Task Scheduling</p>
+            <p class="quote">"Task chạy đúng giờ thì không ai khen. Task chạy sai giờ thì cả team thức đêm."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">Celery</span>
+            <span class="skill-tag">Hangfire</span>
+            <span class="skill-tag">Bull/BullMQ</span>
+            <span class="skill-tag">Temporal</span>
+            <span class="skill-tag">Airflow</span>
+            <span class="skill-tag">Cron</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Nguyễn Lịch Trình bắt đầu với cron jobs — crontab trên Linux server, đơn giản và hiệu quả. Cho đến khi server reboot giữa đêm, cron job không chạy, daily report không gửi, sếp không có data cho meeting 8h sáng. 'Cron job của anh đâu?' — câu hỏi ám ảnh suốt sự nghiệp.
+
+Ông upgrade lên Celery (Python), rồi Bull (Node.js), rồi Temporal cho complex workflows. Mỗi tool dạy ông bài học: Celery dạy distributed task processing, Bull dạy Redis-based simplicity, Temporal dạy durable execution. Nhưng bài học lớn nhất là: 'Task scheduling đúng giờ thì invisible. Sai giờ thì VISIBLE cho toàn bộ company.'
+
+Motto: 'Idempotent, retriable, observable — ba tính chất mà mọi scheduled task phải có.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Idempotency — Chạy 1 lần hay 10 lần, kết quả phải giống nhau</h3>
+                <p>Scheduled task có thể chạy lại (retry after failure, duplicate trigger, clock drift). Nếu task 'send daily report email' chạy 2 lần → user nhận 2 emails = bad. Implement: check nếu report đã gửi cho ngày đó → skip. Idempotency key: task_name + date + parameters = unique identifier. Check trước khi execute, mark completed sau khi success. Database unique constraint hoặc distributed lock.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Celery — Python's Task Queue Standard</h3>
+                <p>Celery: distributed task queue cho Python. Broker: Redis hoặc RabbitMQ. Result backend: Redis, PostgreSQL, hoặc disabled (fire-and-forget). Beat scheduler cho periodic tasks. Canvas: chain, group, chord cho complex task workflows. Cẩn thận: Celery memory leaks (long-running workers), task serialization gotchas (don't pass ORM objects, pass IDs), timezone handling (USE_TZ=True, CELERY_TIMEZONE config). Monitor: Flower dashboard cho real-time worker monitoring.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: BullMQ — Node.js Queue Powerhouse</h3>
+                <p>BullMQ: Redis-based queue cho Node.js. Features: delayed jobs, rate limiting, prioritized jobs, repeatable jobs (cron-like), sandboxed processors (separate process per job type). Dashboard: bull-board hoặc arena. Advantages over raw Redis: reliable (BRPOPLPUSH atomic move), retry with backoff, job lifecycle events. Cẩn thận: Redis persistence config critical — RDB + AOF cho durability. Redis cluster mode cho scalability.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Temporal — Durable Execution Revolution</h3>
+                <p>Temporal: durable execution platform. Workflow code = regular code (Go, Java, TypeScript, Python) nhưng state persisted automatically. Activity fails → Temporal retry. Server crash → workflow resume from last checkpoint. Long-running workflows (days, months) OK. Saga patterns, timer-based logic, human-in-the-loop — all built-in. Use cases: order fulfillment, subscription billing, CI/CD pipelines. Tradeoff: operational complexity (Temporal server cluster), learning curve (workflow/activity separation).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Airflow — Data Pipeline Orchestration</h3>
+                <p>Airflow: DAG-based workflow orchestration. Define tasks + dependencies → Airflow schedule + execute + monitor. Built for data pipelines: ETL, ML training, report generation. Operators: BashOperator, PythonOperator, custom operators, cloud-specific operators (AWS, GCP). UI: DAG visualization, task logs, retry, backfill. Cẩn thận: Airflow is ORCHESTRATOR not EXECUTOR — heavy computation should run on external systems (Spark, Kubernetes), Airflow just triggers and monitors.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Cron Job Chạy Hai Lần — The Double Email Incident</h3>
+                <p>Cron job gửi daily digest email, schedule: <code>0 8 * * *</code> (8h sáng). Server timezone set UTC. Developer nghĩ mình set giờ Việt Nam. Kết quả: email gửi lúc 3h chiều thay vì 8h sáng.
+
+Fix timezone → nhưng quên rằng Daylight Saving Time (DST) shift 1 giờ ở một số nước. Users ở Mỹ nhận email lúc 7h hoặc 9h tùy mùa. Để fix cho mọi timezone → phải per-user scheduling → cron job đơn giản thành distributed scheduling system.
+
+Tệ hơn: server có 2 instances (load balanced), cả 2 đều run cron → user nhận 2 emails. Fix: distributed lock (Redis SETNX) — chỉ 1 instance execute task. Hoặc dedicated scheduler instance (single point of failure nhưng đơn giản hơn).</p>
+                <div class="lesson">💡 Bài học: Cron jobs trên multiple instances = duplicate execution. Solutions: distributed lock (Redis/ZooKeeper), dedicated scheduler node, hoặc task queue (Celery Beat, BullMQ repeatable). Timezone: LUÔN store/process in UTC, convert to user timezone chỉ khi display. Test cron expression trên crontab.guru.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Task Stuck in Queue Forever</h3>
+                <p>Celery worker process task: call external API → API timeout 30 seconds → worker stuck. Celery soft_time_limit: not set (default: no limit). Worker holds task indefinitely → prefetch count reached → no new tasks processed. Queue grows → 50,000 tasks pending → system effectively dead.
+
+Alert fires 2 giờ sau (vì alert based on queue size > 10,000, not growth rate). 2 giờ notifications không gửi, reports không generate, webhooks không deliver.
+
+Fix: <code>soft_time_limit=300</code> (5 phút), <code>time_limit=600</code> (10 phút hard kill). External API calls: own timeout (requests.get(url, timeout=10)). Alert on queue growth RATE, không chỉ absolute size.</p>
+                <div class="lesson">💡 Bài học: LUÔN set task timeout — soft limit (graceful cleanup) + hard limit (force kill). External calls within tasks MUST have own timeout. Monitor: queue size, processing rate, task duration p99, failed task rate. Alert on anomalies, not just thresholds.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Airflow DAG từ Địa Ngục — 200 Tasks, 50 Dependencies</h3>
+                <p>Data team build Airflow DAG cho daily data pipeline. Start simple: 5 tasks. 1 năm sau: 200 tasks, 50 cross-dependencies, 3 conditional branches, retry logic everywhere. DAG visualization: spaghetti. Nobody understands full flow. One task failure → cascade → 50 downstream tasks fail → entire daily pipeline broken.
+
+Debug: read through 200 task logs to find root cause (usually: source data format changed). Fix one task → re-run pipeline → 4 giờ to complete → data available lúc 2h chiều thay vì 8h sáng. Stakeholders unhappy.
+
+Refactor: break mega-DAG into smaller DAGs with clear interfaces. Implement data quality checks (Great Expectations) between stages. Alert on first failure, not after cascade.</p>
+                <div class="lesson">💡 Bài học: Large DAGs = maintenance nightmare. Keep DAGs small and focused (< 30 tasks). Split large pipelines into multiple DAGs with data contracts between them. Implement data quality checks as gates between stages. Monitor: DAG duration trend, task success rate, SLA compliance.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Cron job without distributed lock</h3>
+                <p>Multiple instances → multiple executions. Use Redis SETNX, ZooKeeper, database advisory lock. Or better: use proper scheduler (Celery Beat, BullMQ repeatable) with single scheduler instance.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: No task timeout</h3>
+                <p>Task calls external service → service hangs → task hangs forever → worker pool exhausted → queue dead. ALWAYS set task timeout: soft limit + hard limit. External calls: own timeout shorter than task timeout.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Retry without backoff</h3>
+                <p>Task fails → retry immediately → fails again → retry → fails → retry... infinite loop hammering failing service. Implement exponential backoff: 1s, 2s, 4s, 8s, 16s... Max retries: 3-5. After max retries: DLQ.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Schedule critical tasks at exact hour</h3>
+                <p>Everyone schedules tasks at :00 — midnight, every hour. All tasks compete for resources. Stagger schedules: <code>3 * * * *</code> (at :03), <code>17 * * * *</code> (at :17). Spread load across the hour.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: No observability for scheduled tasks</h3>
+                <p>Task silently fails → nobody knows until stakeholder complains. Dashboard: last run time, status, duration. Alert: task didn't run (SLA miss), task failed, task running longer than usual.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Nguyễn Lịch Trình</span> — Lịch Trình Tướng Quân</p>
+            <p>⏰ "Task chạy đúng giờ thì không ai khen. Task chạy sai giờ thì cả team thức đêm."</p>
+        </div>
+    </div>
+</body>
+</html>

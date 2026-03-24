@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Cấu Hình Đại Sư - Chuyên Gia Ansible, Puppet & Chef</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a0a 30%, #2a1a0a 60%, #3a2a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #fb923c; text-shadow: 0 0 20px #fb923c40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #fb923c; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #fb923c; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #fb923c; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #fb923c30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #fb923c; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #fb923c; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">⚙️</span><h1>Quản Lý Cấu Hình Đại Sư</h1><div class="title">Chuyên Gia Ansible, Puppet & Chef</div><div class="quote">"Configuration management: vì SSH vào 500 servers để sửa 1 config file không phải là scalable approach. Và cũng không vui."</div></div>
+        <div class="badges">            <span class="badge">⚙️ Ansible Master</span>
+            <span class="badge">🎭 Puppet Expert</span>
+            <span class="badge">👨‍🍳 Chef Pro</span>
+            <span class="badge">📋 Idempotency</span>
+            <span class="badge">🔄 Convergence</span>
+            <span class="badge">📦 Roles/Cookbooks</span>
+            <span class="badge">🗃️ Inventories</span>
+            <span class="badge">🔐 Vault/Secrets</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư bắt đầu với bash scripts: ssh server "sed -i 's/old/new/g' /etc/config.conf". Works cho 1 server. 10 servers? Viết loop. 500 servers? Bash script 2000 dòng, error handling "pray and hope". Idempotency? "Run nó lại lần nữa và cầu nguyện."</p><p>Ansible thay đổi cuộc đời: YAML playbooks, agentless (SSH), idempotent modules. "Describe desired state, not steps." Chàng ta viết playbooks cho everything: user management, package installation, service configuration. Cuộc sống organized hơn.</p><p>Chàng ta cũng học Puppet (Ruby DSL, agent-based, strong enforcement) và Chef (Ruby, code-as-infrastructure). Mỗi tool có philosophy khác nhau, nhưng goal giống nhau: consistent, automated, repeatable server configuration.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Ansible — Agentless Simplicity:</strong> SSH-based, no agent installation. YAML playbooks human-readable. Modules cho everything: package, service, file, template. Idempotent: run multiple times, same result. Roles cho reusable configuration. Galaxy cho community roles. ansible-vault cho encrypted secrets. Ad-hoc commands cho quick tasks.</div>
+            <div class="tip"><strong>2. Idempotency — Core Concept:</strong> Apply configuration multiple times → same end state. package: present, service: started — not 'install package', 'start service'. Check current state before action. Templates overwrite only if changed. Handlers run only when triggered. Idempotency = safe to re-run = safe to automate.</div>
+            <div class="tip"><strong>3. Inventory Management:</strong> Static inventory: INI or YAML files. Dynamic inventory: cloud APIs (AWS EC2, Azure VMs). Groups cho role-based targeting. Host variables và group variables. Inventory plugins cho custom sources. Đừng hardcode IPs — use DNS names hoặc dynamic inventory.</div>
+            <div class="tip"><strong>4. Roles — Reusable Units:</strong> Roles encapsulate: tasks, handlers, templates, files, defaults, vars. Galaxy roles cho common configurations. Role dependencies cho composition. Role testing: molecule cho unit tests. Ansible Collections cho distribution. Pin role versions cho reproducibility.</div>
+            <div class="tip"><strong>5. Best Practices:</strong> Playbooks trong git — version controlled. ansible-lint cho style checking. Molecule cho testing. Staging → production workflow. Tags cho selective execution. Check mode (--check) cho dry run. Diff mode (--diff) cho change preview. NEVER store secrets in plain text — ansible-vault.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🎭 Chuyện Ansible Playbook Chạy Sai Hosts</h3><p>Playbook update nginx config. Inventory group [webservers] include production VÀ staging. Engineer chạy playbook targeting 'webservers' — both environments updated simultaneously. Staging config (debug mode enabled) pushed to production. Production nginx serving debug info to users.</p><p>Fix: separate inventory files per environment. --limit cho targeted execution. Mandatory --check trước --apply. CI/CD pipeline enforce environment targeting.</p><div class="lesson">💡 Bài học: SEPARATE inventories per environment. --limit flag cho targeted hosts. --check mode trước apply. CI/CD pipeline restrict targeting. Group naming include environment: prod_webservers, staging_webservers.</div></div>
+            <div class="story"><h3>👨‍🍳 Chuyện Chef Cookbook Conflict</h3><p>Two Chef cookbooks manage same config file: cookbook_a sets max_connections = 100, cookbook_b sets max_connections = 500. Run list order determines winner. Tuesday: cookbook_a runs last → 100. Thursday: cookbook_b runs last → 500. Config flip-flops. Application behavior inconsistent.</p><p>Root cause: overlapping responsibility. Fix: single cookbook owns each config file. Attribute precedence hierarchy understood by all. Wrapper cookbooks cho customization. Code review cho attribute conflicts.</p><div class="lesson">💡 Bài học: Ownership clarity: one tool/cookbook owns each configuration file. Avoid multiple tools managing same resource. Attribute/variable precedence documented. Code review catch conflicts. Testing catch drift.</div></div>
+            <div class="story"><h3>🔐 Chuyện Ansible Vault Cứu Secrets</h3><p>Team stored database passwords in group_vars/all.yml — plain text, committed to git. Git history preserved passwords forever, even after 'fixing' by removing them. Anyone with repo access = all production credentials.</p><p>Migration: ansible-vault encrypt all secrets. Rotate ALL exposed credentials. git filter-branch to remove history (complex, error-prone). Lesson learned: vault from day one, not after incident.</p><div class="lesson">💡 Bài học: ansible-vault cho MỌI secrets từ ngày đầu. Git history preserves deleted secrets forever. Rotate credentials khi exposed. Vault password management: vault password file (gitignored) hoặc integration với HashiCorp Vault. No exceptions for 'temporary' plain text secrets.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Config management chỉ một lần:</strong> Setup server once, never run config management again. Configuration drift. Run regularly (cron) cho enforcement.</div>
+            <div class="mistake"><strong>2. No testing:</strong> Push untested playbook/cookbook to production. Molecule/Test Kitchen cho automated testing. Staging trước production.</div>
+            <div class="mistake"><strong>3. Ansible trong interactive mode:</strong> Expect user input during playbook run. Automation should be non-interactive. Default values, fail nếu missing.</div>
+            <div class="mistake"><strong>4. Massive playbooks:</strong> 1 playbook 500 tasks. Split into roles, use includes. Single responsibility per role.</div>
+            <div class="mistake"><strong>5. Plain text secrets:</strong> ansible-vault, Chef encrypted data bags, Puppet hiera-eyaml. NO EXCEPTIONS for plain text credentials.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #108</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

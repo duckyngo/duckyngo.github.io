@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins Lão Tướng - Chuyên Gia Jenkins | Người Chạy Groovy Bằng Niềm Tin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a0a 30%, #1a2a1a 60%, #2a3a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #84cc16; text-shadow: 0 0 20px #84cc1640; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #84cc16; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #84cc16; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #84cc16; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #84cc1630; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #84cc16; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #84cc16; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🤵</span><h1>Jenkins Lão Tướng</h1><div class="title">Chuyên Gia Jenkins | Người Chạy Groovy Bằng Niềm Tin</div><div class="quote">"Jenkins giống như chiếc xe hơi cổ: đáng kính, vẫn chạy được, nhưng cần bảo trì liên tục và mỗi plugin update là một cuộc phiêu lưu."</div></div>
+        <div class="badges">            <span class="badge">🤵 Jenkins Master</span>
+            <span class="badge">📜 Groovy Pipelines</span>
+            <span class="badge">🔌 Plugin Expert</span>
+            <span class="badge">🏗️ Distributed Builds</span>
+            <span class="badge">🔐 Security</span>
+            <span class="badge">📊 Blue Ocean</span>
+            <span class="badge">🐳 Docker Agent</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Jenkins Lão Tướng đã phục vụ CI/CD từ thời Hudson (tiền thân Jenkins, 2004). Chàng ta nhớ thời Freestyle jobs, XML configuration, và "Build Now" button. "Back in my day, CI/CD meant clicking a button and praying," chàng ta hay nói.</p><p>Khi Declarative Pipeline ra đời, chàng ta mừng rỡ: "Finally, pipeline as code!" Nhưng Groovy syntax khiến chàng ta khóc. def, closure, @NonCPS — "Đây là CI/CD hay Groovy programming course?"</p><p>Bây giờ, mỗi khi ai nói "hãy dùng GitHub Actions," chàng ta phản bác: "Jenkins chạy behind firewall, controls own data, extensible vô hạn qua plugins." Rồi chàng ta update một plugin và Jenkins crashes. "Well, almost vô hạn."</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Declarative vs Scripted Pipeline:</strong> Declarative: structured, easier to read/write, built-in steps. pipeline { agent, stages, steps, post }. Scripted: Groovy-based, full flexibility, harder to maintain. Choose Declarative cho standard workflows. Scripted chỉ khi Declarative không đủ. Shared Libraries cho reusable pipeline code.</div>
+            <div class="tip"><strong>2. Plugin Management:</strong> 2000+ plugins available. Plugin compatibility matrix check TRƯỚC update. Update plugins incrementally (one at a time, test). Plugin deprecation → find alternatives. Must-have: Blue Ocean, Docker Pipeline, Credentials, Git. Avoid: unmaintained plugins (no updates in 2+ years).</div>
+            <div class="tip"><strong>3. Distributed Builds:</strong> Controller (master): orchestration only. Agents (slaves): run builds. Docker agents cho isolated builds. Kubernetes plugin cho dynamic agents. Label-based agent assignment. Cloud agents cho auto-scaling. ĐỪNG run builds on controller — security và performance risk.</div>
+            <div class="tip"><strong>4. Security:</strong> Matrix-based security cho fine-grained permissions. Credentials plugin cho secrets management. Script approval cho Groovy sandbox. CSRF protection enabled. Agent → controller security. Audit trail plugin. Regular security updates. LDAP/OIDC integration cho authentication.</div>
+            <div class="tip"><strong>5. Pipeline Best Practices:</strong> Jenkinsfile in repository root (pipeline as code). Shared Libraries cho common functions. Parallel stages cho speed. Timeout and retry cho resilience. Input step cho manual approval. Blue Ocean cho visualization. Webhooks cho trigger.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔌 Chuyện Plugin Phá Hủy Jenkins</h3><p>Monday morning, Jenkins admin update 15 plugins cùng lúc. Restart Jenkins. Boom: ClassNotFoundException, NoSuchMethodError, plugin dependency conflicts. Jenkins dashboard shows 'Jenkins is loading...' — forever. 200 developers cannot push code. CI/CD completely stopped.</p><p>Recovery: SSH vào Jenkins server. Remove newly updated plugins từ $JENKINS_HOME/plugins/. Restart. Jenkins boots với old plugin versions. Re-install plugins ONE AT A TIME, testing between each. Total downtime: 4 giờ.</p><div class="lesson">💡 Bài học: NEVER update multiple plugins simultaneously. Update one, test, verify. Check compatibility matrix. Have plugin backup (copy plugins directory trước update). Jenkins LTS cho stability. Consider migrating to cloud-native CI/CD cho reduced maintenance burden.</div></div>
+            <div class="story"><h3>📜 Chuyện Groovy Sandbox Escape</h3><p>Developer write Groovy pipeline code accessing System.getenv() to read server environment variables. Groovy sandbox blocks. Developer requests script approval. Admin approves without reviewing. Script reads AWS credentials from environment. Developer (unintentionally) logs credentials.</p><div class="lesson">💡 Bài học: Groovy script approval is SECURITY GATE. Review EVERY script approval request. Sandbox exists cho reason — don't blindly approve. Use Credentials plugin cho secrets, not environment variables. Audit approved scripts regularly. Limit who can approve scripts.</div></div>
+            <div class="story"><h3>🐳 Chuyện Jenkins Docker Agent</h3><p>Team configure Docker agent cho clean build environments. Each build spins up fresh container. Works great until: 50 concurrent builds × Docker pull × Docker create = Docker daemon overwhelmed. Builds queue. Timeout. Retry. More queue. Docker OOM. All builds fail simultaneously.</p><p>Fix: local Docker registry mirror (reduce pulls). Pre-built agent images. Limit concurrent builds. Kubernetes plugin cho better scheduling. Resource limits per agent.</p><div class="lesson">💡 Bài học: Docker agent = clean environment but resource-intensive. Local registry mirror cho image caching. Pre-built agent images reduce startup time. Concurrent build limits prevent resource exhaustion. Kubernetes-based agents cho better resource management.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Builds on controller:</strong> Security risk + performance bottleneck. All builds on agents. Controller for orchestration only.</div>
+            <div class="mistake"><strong>2. Freestyle jobs cho complex pipelines:</strong> Freestyle jobs = UI-based, not version controlled. Pipeline as code (Jenkinsfile) for everything.</div>
+            <div class="mistake"><strong>3. No backup strategy:</strong> $JENKINS_HOME contains everything. Regular backups. Thin Backup plugin or filesystem snapshots.</div>
+            <div class="mistake"><strong>4. Plugin sprawl:</strong> Install every plugin that sounds useful. More plugins = more maintenance, more security surface. Minimal plugin set.</div>
+            <div class="mistake"><strong>5. No update strategy:</strong> Never update Jenkins or plugins → security vulnerabilities. Regular updates with testing. LTS cho stability.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #111</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tốc Độ Cuồng Phong - Bậc Thầy Web Performance</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(245,158,11,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(234,179,8,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #fbbf24, #f59e0b, #fde68a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fde68a; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(245,158,11,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fde68a; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fde68a; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #fbbf24; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fde68a; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #f59e0b; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fde68a; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fde68a; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">⚡</span>
+            <h1>Tốc Độ Cuồng Phong</h1>
+            <p class="subtitle">Lý Tốc Độ — Bậc Thầy Web Performance</p>
+            <p class="quote">"Mỗi millisecond chậm đi là một user mất đi. Mỗi KB thừa là một tội lỗi."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Core Web Vitals</span>
+            <span class="skill-tag">Lighthouse</span>
+            <span class="skill-tag">Bundle Optimization</span>
+            <span class="skill-tag">Lazy Loading</span>
+            <span class="skill-tag">Code Splitting</span>
+            <span class="skill-tag">Image Optimization</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Lý Tốc Độ từng là developer bình thường cho đến ngày Lighthouse score của trang web ông xuống 12/100. Sếp gọi vào phòng, chỉ vào màn hình đỏ lòm: "Giải thích đi." Từ đó, ông dành 3 năm nghiên cứu mọi kỹ thuật tối ưu performance từ CDN caching đến critical rendering path.
+
+Ông từng giúp một trang e-commerce tăng Lighthouse score từ 23 lên 97 trong 2 tuần — và conversion rate tăng 35%. CEO gọi ông là "phù thủy", nhưng ông chỉ cười: "Tôi chỉ xóa 14MB JavaScript không ai dùng."
+
+Triết lý: "Performance không phải optimization — nó là feature. User trên 3G ở vùng quê cũng deserve trải nghiệm tốt như user trên fiber ở thành phố." </p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Core Web Vitals — Ba chỉ số quyết định</h3>
+                <p>LCP (Largest Contentful Paint): thời gian render element lớn nhất — target < 2.5s. Optimize: preload hero image, dùng <code>fetchpriority='high'</code>, optimize server response time. FID/INP (Interaction to Next Paint): thời gian phản hồi user interaction — target < 200ms. Optimize: break long tasks, dùng Web Workers cho heavy computation. CLS (Cumulative Layout Shift): layout shift không mong muốn — target < 0.1. Optimize: set width/height cho images, reserve space cho ads/lazy content, dùng <code>content-visibility</code>.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Bundle Size — Kẻ thù số 1</h3>
+                <p>Dùng <code>bundlephobia.com</code> check size trước khi <code>npm install</code>. <code>moment.js</code> = 300KB → dùng <code>date-fns</code> hoặc <code>dayjs</code> (2KB). <code>lodash</code> full = 70KB → import specific: <code>import debounce from 'lodash/debounce'</code>. Webpack Bundle Analyzer / Vite's rollup-plugin-visualizer để thấy bundle composition. Tree-shaking chỉ hoạt động với ESM — check thư viện có <code>module</code> field trong package.json.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Lazy Loading & Code Splitting</h3>
+                <p>Route-based splitting: mỗi page là một chunk, load khi navigate. Component splitting: heavy components (chart, editor, map) lazy load khi cần. <code>React.lazy()</code> + <code>Suspense</code>, Vue <code>defineAsyncComponent()</code>. Image lazy loading: native <code>loading='lazy'</code> cho images below fold. Intersection Observer cho custom lazy load logic. Prefetch: <code>&lt;link rel='prefetch'&gt;</code> cho resources likely needed next.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Image Optimization — Low-hanging Fruit</h3>
+                <p>Images thường chiếm 50%+ page weight. Format: WebP (30% nhỏ hơn JPEG), AVIF (50% nhỏ hơn). <code>&lt;picture&gt;</code> element cho format fallback. Responsive images: <code>srcset</code> + <code>sizes</code> — serve 400px image cho mobile, 1200px cho desktop. CDN image transformation (Cloudinary, imgix, Vercel/og). Blur placeholder (LQIP) cho perceived performance. NEVER serve 4000x3000 image cho 200x200 thumbnail.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Critical Rendering Path</h3>
+                <p>Browser: HTML → DOM, CSS → CSSOM, DOM + CSSOM → Render Tree → Layout → Paint. CSS blocking rendering — inline critical CSS, defer non-critical. JavaScript blocking parsing — <code>defer</code> hoặc <code>async</code> attributes. Font loading: <code>font-display: swap</code> — show fallback font ngay, swap khi custom font load. Preconnect: <code>&lt;link rel='preconnect' href='https://api.example.com'&gt;</code> — establish connection early.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Bundle 15MB — Khi node_modules Lên Production</h3>
+                <p>Startup launch ngày D-Day, PM check trang load: 47 giây trên 4G. DevTools Network tab: main bundle 15MB. 15 MEGABYTE JavaScript. Phân tích: full lodash (70KB), moment.js với ALL locales (300KB), three.js cho một animation nhỏ (600KB), và — kinh hoàng nhất — ai đó import toàn bộ AWS SDK (3MB) client-side chỉ để generate S3 presigned URL.
+
+Sau 1 tuần audit: thay lodash bằng lodash-es + tree-shaking, thay moment bằng dayjs, move three.js vào dynamic import, move S3 logic sang API route. Bundle: 15MB → 280KB. Load time: 47s → 1.8s. CEO: 'Vậy trước giờ chúng ta ship cái gì cho user?'</p>
+                <div class="lesson">💡 Bài học: Audit bundle size TRƯỚC khi nó thành vấn đề. Integrate bundle size check vào CI — fail PR nếu bundle tăng > 10KB không giải thích. Dùng <code>import cost</code> VS Code extension để thấy cost ngay khi import. Quy tắc: nếu library > 50KB, phải có justification.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Image Optimization Fail — 8MB Hero Image</h3>
+                <p>Designer gửi hero image: 8MB, 6000x4000px PNG. Developer dùng nguyên, không resize, không compress. Mobile user trên 3G: 2 phút load hero image. LCP: 45 giây. Page bị Google đánh xuống rank vì Core Web Vitals fail.
+
+Sau khi optimize: resize 1920px max width, convert WebP (200KB), AVIF cho browser hỗ trợ (120KB), blur placeholder 20px inline SVG. LCP giảm từ 45s xuống 1.2s. Lesson: một image thay đổi = page rank thay đổi.</p>
+                <div class="lesson">💡 Bài học: Images là low-hanging fruit performance. Checklist: 1) Đúng kích thước (không serve 4K cho mobile), 2) Đúng format (WebP/AVIF), 3) Compression (quality 80% đủ cho web), 4) Lazy load below-fold, 5) CDN delivery. Modern frameworks (Next.js Image, Nuxt Image) handle tự động — dùng chúng.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Lighthouse Audit Emergency</h3>
+                <p>Client gửi email: 'Google nói site chúng tôi slow, đang giảm rank.' Lighthouse audit: Performance 23, Accessibility 41, Best Practices 56. Trang load 12 giây, render-blocking CSS 8 files, JavaScript 3MB, no caching headers.
+
+2 tuần sprint optimization: inline critical CSS, defer rest. Code split per route. Enable gzip/brotli. Set cache headers (static assets: 1 year, HTML: no-cache). Remove unused CSS (PurgeCSS). Add image lazy loading. Preconnect external domains.
+
+Kết quả: Performance 96, load time 1.4s. Google rank tăng từ page 3 lên page 1 trong 6 tuần. Organic traffic tăng 300%.</p>
+                <div class="lesson">💡 Bài học: Web performance = SEO = revenue. Google dùng Core Web Vitals làm ranking signal. Mỗi 100ms delay = 1% conversion loss (Amazon data). Performance audit nên là part of sprint, không phải emergency response.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Optimize trước khi measure</h3>
+                <p>Đừng đoán bottleneck — MEASURE. Lighthouse, WebPageTest, Chrome DevTools Performance tab. Profile trước, optimize chỗ impact lớn nhất trước. Optimize function chạy 1 lần/ngày ít value hơn optimize function chạy mỗi render.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Preload EVERYTHING</h3>
+                <p><code>&lt;link rel='preload'&gt;</code> mọi thứ = preload không gì cả. Browser có priority system — khi bạn preload 20 resources, browser không biết cái nào quan trọng. Chỉ preload: hero image, critical font, above-fold resources.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Không set cache headers</h3>
+                <p>Static assets (JS, CSS, images) nên cache 1 year + content hash trong filename. HTML nên no-cache hoặc short TTL. Không cache = mỗi visit download lại toàn bộ. Quá cache = user thấy version cũ sau deploy.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Third-party scripts không kiểm soát</h3>
+                <p>Analytics, ads, chat widgets — mỗi cái thêm 50-500KB. Tổng: 2MB third-party JS. Load chúng async, defer, hoặc qua Partytown (off-main-thread). Audit định kỳ — remove scripts không dùng.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Render-blocking CSS trên mobile</h3>
+                <p>CSS file 300KB block rendering cho cả desktop lẫn mobile. Media query split: <code>&lt;link rel='stylesheet' media='(min-width: 768px)' href='desktop.css'&gt;</code> — mobile không download desktop CSS.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Lý Tốc Độ</span> — Tốc Độ Cuồng Phong</p>
+            <p>⚡ "Mỗi millisecond chậm đi là một user mất đi. Mỗi KB thừa là một tội lỗi."</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dòng Chảy Thần Công — Stream Processing Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #08101a;
+            --card-bg: rgba(12, 20, 38, 0.85);
+            --card-border: rgba(0, 188, 212, 0.2);
+            --accent: #00bcd4;
+            --accent2: #4dd0e1;
+            --accent3: #ff7043;
+            --text: #e0f5f8;
+            --text-muted: #88bbcc;
+            --glow: rgba(0, 188, 212, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 25% 35%, rgba(0,188,212,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 75% 65%, rgba(255,112,67,0.06) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote {
+            margin-top: 1.5rem; padding: 1rem 2rem;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            font-style: italic; color: var(--accent2); display: inline-block;
+        }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge {
+            padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--card-border); background: var(--card-bg);
+            backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip {
+            padding: 1rem 1.5rem; margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+            background: rgba(0,188,212,0.05); border-radius: 0 8px 8px 0;
+        }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story {
+            padding: 1.5rem; margin: 1rem 0;
+            background: rgba(255,112,67,0.05); border-radius: 12px;
+            border: 1px solid rgba(255,112,67,0.1);
+        }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(0,188,212,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake {
+            padding: 1rem 1.5rem; margin: 0.75rem 0;
+            background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757;
+            border-radius: 0 8px 8px 0;
+        }
+        .mistake strong { color: #ff6b81; }
+        .footer {
+            text-align: center; padding: 3rem 2rem; margin-top: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--card-border);
+        }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">🌊</span>
+        <h1>Dòng Chảy Thần Công</h1>
+        <p class="subtitle">Người Thuần Phục Dòng Sông Dữ Liệu Không Bao Giờ Ngừng Chảy</p>
+        <div class="quote">"Batch processing là xem phim đã quay. Stream processing là xem truyền hình trực tiếp. Cả hai đều cần, nhưng trực tiếp thì hồi hộp hơn."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge" style="color:#E6526F;border-color:#E6526F;">🔥 Apache Flink</span>
+        <span class="badge" style="color:#231F20;border-color:#aaa;">📡 Kafka Streams</span>
+        <span class="badge" style="color:#2196F3;border-color:#2196F3;">🔵 Apache Beam</span>
+        <span class="badge">⏱️ Event Time</span>
+        <span class="badge">🪟 Windowing</span>
+        <span class="badge">💧 Watermarks</span>
+        <span class="badge">🔁 Exactly-Once</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Dòng Chảy Thần Công, tên thật là <strong>Lưu Bất Ngừng</strong>, sống theo triết lý: <em>"Dữ liệu giống dòng sông — nếu bạn đợi nó ngừng chảy mới xử lý, bạn sẽ đợi mãi."</em> Hồi nhỏ, lão hay ngồi bên suối xem nước chảy hàng giờ. Bố nghĩ lão hơi "lạ". Hóa ra lão đang tư duy về windowing functions.</p>
+        <p>Sự nghiệp bắt đầu ở công ty fintech xử lý giao dịch real-time. Batch processing delay 24 giờ — phát hiện fraud sau khi tiền đã mất. Lão được giao xây real-time fraud detection bằng Kafka + Flink. 6 tháng sau: fraud detection từ T+1 xuống T+500ms. Tiền tiết kiệm: $2M/năm.</p>
+        <p>Từ đó, lão bị "nghiện" stream processing. Mọi thứ phải real-time. Đồng nghiệp nói lão: <em>"Anh ơi, cái report này chạy batch mỗi ngày là được mà."</em> Lão: <em>"Nhưng nếu chạy real-time thì... đẹp hơn?"</em></p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Event Time vs Processing Time — Hai Đồng Hồ Khác Nhau</strong>
+            <p><strong>Event time</strong>: khi sự kiện xảy ra (timestamp trong data). <strong>Processing time</strong>: khi hệ thống xử lý event. Chúng KHÁC NHAU vì: network delay, queue backlog, retry. Event lúc 10:00:00 có thể được xử lý lúc 10:00:05. Dùng event time cho chính xác, processing time cho đơn giản.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Windowing — Cắt Dòng Chảy Thành Từng Đoạn</strong>
+            <p><strong>Tumbling window</strong>: [0-5min), [5-10min) — non-overlapping, mỗi event thuộc 1 window. <strong>Sliding window</strong>: [0-5min), [1-6min), [2-7min) — overlapping, event có thể thuộc nhiều windows. <strong>Session window</strong>: based on activity gap. <strong>Global window</strong>: tất cả events trong 1 window, trigger bằng custom logic.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Watermarks — "Tôi Tin Rằng Data Trước Thời Điểm Này Đã Đến Hết"</strong>
+            <p>Watermark = estimated point in event time that all data up to that point has arrived. Flink auto-generates watermarks. Watermark quá aggressive (nhỏ delay) = miss late data. Watermark quá conservative (lớn delay) = kết quả chậm. Tune allowed lateness + side output cho late events.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Exactly-Once Processing — Khó Nhưng Cần</strong>
+            <p>At-least-once: dễ, nhưng có duplicates. At-most-once: message có thể mất. <strong>Exactly-once</strong>: mỗi message xử lý đúng 1 lần. Flink: distributed snapshots (Chandy-Lamport). Kafka Streams: transaction + idempotent producer. Exactly-once end-to-end = pipeline tất cả components phải hỗ trợ.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Apache Flink — Vua Stream Processing</strong>
+            <p>Stateful computation: Flink quản lý state (RocksDB backend cho large state). Savepoints: snapshot state để upgrade, migrate, scale. Event time processing native. SQL interface (Flink SQL) cho đơn giản hóa. Deployment: standalone, YARN, Kubernetes. Nhược: learning curve dốc, operational complexity.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Kafka Streams — Lightweight Stream Processing</strong>
+            <p>Library (không phải cluster) — nhúng vào Java application. Dùng Kafka topics làm input/output. No separate cluster to manage. Tốt cho: microservice stream processing, simple transformations, exactly-once with Kafka. Nhưng: chỉ đọc từ Kafka, không flexible như Flink cho complex event processing.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #7:</span> <strong>Apache Beam — Write Once, Run Anywhere</strong>
+            <p>Unified programming model: viết pipeline 1 lần, chạy trên Flink, Spark, Dataflow (Google Cloud). Tốt khi muốn vendor flexibility. Nhưng: abstraction layer = không tận dụng được features đặc thù của runtime. Jack of all trades, master of none.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">📅 Chuyện 1: Late Data Đến Sau 3 Ngày</div>
+            <p>Hệ thống IoT, sensors gửi data qua mobile network. Bình thường latency 1-5 giây. Flink job aggregate sensor readings theo 1-minute tumbling window, watermark delay 10 giây.</p>
+            <p>Một ngày, mobile network outage 3 ngày ở vùng rural. Khi network phục hồi, 3 ngày data đổ ập vào. Events có event time 3 ngày trước nhưng arrive bây giờ. Watermark đã pass qua rất lâu → tất cả đều là "late data" → bị drop. 3 ngày data = mất.</p>
+            <p>Lão redesign: tách thành 2 streams. Main stream với reasonable watermark (30 giây). Late data stream với side output, ghi vào storage riêng. Batch job reconcile late data hàng ngày. Hybrid batch + stream approach.</p>
+            <div class="lesson">💡 Bài học: Late data là thực tế, đặc biệt với mobile/IoT. Design cho worst case: side output cho late events, batch reconciliation. "Lambda architecture" không đẹp nhưng practical: real-time stream + batch correction.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">💥 Chuyện 2: Backpressure Crash — Khi Downstream Không Kịp</div>
+            <p>Flink job đọc từ Kafka (100K events/s), transform, ghi vào Elasticsearch. Bình thường OK. Một ngày Elasticsearch cluster slow (disk issue). Flink ghi chậm → buffer đầy → backpressure lên Kafka consumer → consumer lag tăng → Kafka broker retention hết → DATA LOSS ở Kafka.</p>
+            <p>Chain reaction: Elasticsearch chậm → Flink backpressure → Kafka consumer lag → Kafka log retention expire → messages bị xóa trước khi consumed. Lão fix: tăng Kafka retention, thêm buffer topic trung gian, set Flink checkpoint interval hợp lý, alert trên consumer lag.</p>
+            <div class="lesson">💡 Bài học: Backpressure propagation có thể gây data loss ở upstream. Monitor consumer lag religiously. Kafka retention phải > worst case recovery time. Buffer topics cho decoupling. Alert khi lag > threshold.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔄 Chuyện 3: Exactly-Once — Lời Hứa Và Thực Tế</div>
+            <p>Team cần exactly-once cho payment processing stream. Flink + Kafka exactly-once = OK trong lý thuyết. Nhưng sink là external REST API (gọi bank). REST API không idempotent. Flink checkpoint → crash → restart → replay → gọi API lần 2 → chuyển tiền 2 lần!</p>
+            <p>Exactly-once trong Flink = exactly-once WITHIN Flink. External systems phải handle idempotency riêng. Lão thêm: unique transaction ID per event, check duplicate trước khi gọi API, idempotency key gửi kèm API call. <em>"Exactly-once là end-to-end problem, không phải framework feature."</em></p>
+            <div class="lesson">💡 Bài học: Exactly-once processing guarantee chỉ cover internal state. External side effects (API calls, emails, notifications) PHẢI được design idempotent. Unique ID + dedup check = insurance policy bắt buộc.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Stream everything khi batch là đủ</strong>
+            <p>Daily summary report không cần real-time. Monthly invoice không cần real-time. Stream processing phức tạp và tốn kém hơn batch. Dùng khi latency matters: fraud detection, alerting, real-time dashboards.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Ignore backpressure</strong>
+            <p>Consumer chậm hơn producer → buffer overflow → data loss hoặc OOM. Monitor consumer lag, implement backpressure handling, rate limiting, buffering.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Stateful processing without checkpoint</strong>
+            <p>Flink job không enable checkpointing, crash → mất state → kết quả sai. Luôn enable checkpointing, configure checkpoint interval (1-5 phút), save to durable storage (S3, HDFS).</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Processing time khi cần event time</strong>
+            <p>"Đơn giản hơn" → nhưng kết quả khác nhau mỗi lần replay, window boundaries không deterministic. Dùng event time khi cần correctness.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Unbounded state</strong>
+            <p>State tăng mãi không clear: session map không có timeout, counter không có TTL. Flink state backend OOM. Set state TTL, clean up expired state.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">🌊 Dòng Chảy Thần Công — Lưu Bất Ngừng</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Dữ liệu là dòng sông — bạn không tắm hai lần trên cùng một dòng, nhưng bạn có thể xử lý mỗi giọt nước khi nó chảy qua."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

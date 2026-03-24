@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thời Gian Thực Đại Sư - Bậc Thầy RTOS & Firmware</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #ef4444, #dc2626, #fca5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fca5a5; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fca5a5; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fca5a5; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #ef4444; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fca5a5; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #dc2626; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fca5a5; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fca5a5; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🕐</span>
+            <h1>Thời Gian Thực Đại Sư</h1>
+            <p class="subtitle">Nguyễn Thời Gian — Bậc Thầy RTOS & Firmware</p>
+            <p class="quote">"Trong hệ thống thời gian thực, trễ 1 millisecond có thể là sự khác biệt giữa hoạt động và thảm họa."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">FreeRTOS</span>
+            <span class="skill-tag">Zephyr</span>
+            <span class="skill-tag">Real-time</span>
+            <span class="skill-tag">ISR</span>
+            <span class="skill-tag">Priority Inversion</span>
+            <span class="skill-tag">Watchdog</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Nguyễn Thời Gian bắt đầu sự nghiệp trong nhà máy sản xuất — nơi mà firmware điều khiển dây chuyền lắp ráp robot. Trễ 1ms trong control loop = robot arm di chuyển quá 0.5mm = sản phẩm lỗi. Trễ 10ms = robot arm va vào fixture = thiệt hại $50,000. Deadline không phải khái niệm project management — nó là real-time constraint vật lý.
+
+Ông đã làm việc với mọi loại RTOS: FreeRTOS (embedded standard), VxWorks (aerospace/defense), QNX (automotive), Zephyr (IoT). Mỗi dự án là bài toán timing: interrupt latency, task switching overhead, priority assignment, resource sharing.
+
+Triết lý: 'Trong RTOS, determinism quan trọng hơn speed. Hệ thống respond trong 1ms LUÔN LUÔN tốt hơn hệ thống respond trong 0.1ms THƯỜNG THƯỜNG nhưng đôi khi trễ 100ms.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Task Scheduling — Priority-based Preemptive</h3>
+                <p>RTOS tasks có priority. Higher priority task preempt (interrupt) lower priority task. Real-time tasks: highest priority, short execution, deterministic timing. Background tasks: lowest priority, run khi nothing else needs CPU. Deadline scheduling: Rate Monotonic (higher frequency = higher priority), Earliest Deadline First. FreeRTOS: <code>xTaskCreate(function, name, stackSize, params, priority, handle)</code>. Stack size: tính toán worst case (deepest call stack + local variables + interrupt overhead). Too small = stack overflow crash. Too large = waste RAM.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Interrupt Handling — ISR Best Practices</h3>
+                <p>ISR (Interrupt Service Routine) phải ngắn — dùng để đọc hardware state và signal task, KHÔNG process data trong ISR. Pattern: ISR read data → đặt vào queue → notify task → task process data. FreeRTOS: <code>xQueueSendFromISR()</code>, <code>xSemaphoreGiveFromISR()</code> — special ISR-safe versions. Nested interrupts: higher priority interrupt preempt lower priority ISR. Disable interrupts cẩn thận — critical section ngắn nhất có thể (microseconds, not milliseconds).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Inter-task Communication</h3>
+                <p>Queues: send data between tasks (producer-consumer). Semaphores: binary (signaling), counting (resource pool). Mutexes: mutual exclusion with priority inheritance (prevent priority inversion). Event Groups: multiple events, wait for any/all. Task Notifications: lightweight semaphore (zero overhead, one notification per task). Direct-to-task notifications: fastest IPC mechanism trong FreeRTOS. Rule: dùng simplest mechanism that solves the problem.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Watchdog Timer — Last Line of Defense</h3>
+                <p>Hardware watchdog: if firmware không 'feed' watchdog within timeout → hardware reset device. Purpose: recover from firmware hangs (infinite loop, deadlock, bus error). Pattern: main supervision task feeds watchdog ONLY IF all critical tasks alive. If any critical task stuck → supervision task không feed → reset. Independent watchdog: runs from separate clock, not affected by system clock failure. Window watchdog: must feed within time WINDOW (not too early, not too late) — detect timing errors.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Real-time Debugging</h3>
+                <p>Logic analyzer: capture GPIO toggles, measure timing precisely (ns resolution). Oscilloscope: analog signals, interrupt latency, ISR duration. RTOS trace tools: Tracealyzer (FreeRTOS), Percepio (visual timeline of task execution). GPIO debugging: toggle GPIO pin at start/end of ISR or task — measure on oscilloscope. <code>configASSERT()</code>: FreeRTOS assertion — catch impossible states during development. Memory protection (MPU): detect memory corruption, stack overflow at hardware level.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Priority Inversion Deadlock — Mars Pathfinder Bug tại Nhà Máy</h3>
+                <p>Hệ thống điều khiển 3 tasks: High priority (motor control, 10ms deadline), Medium priority (data logging), Low priority (configuration update). Low task acquire mutex → lock shared resource. High task needs same resource → blocked waiting for Low to release mutex. Medium task (không cần mutex) preempt Low task. Result: High priority task BLOCKED bởi Medium task (indirect, via mutex held by Low).
+
+Motor control miss deadline → robot arm overshoot → crash vào fixture → $50,000 damage. Nguyên nhân: priority inversion — high priority task effectively running at low priority.
+
+Fix: priority inheritance mutex — khi High task blocked, Low task temporarily inherit High priority → Medium cannot preempt Low → Low finish quickly → release mutex → High runs. FreeRTOS: <code>xSemaphoreCreateMutex()</code> (có priority inheritance) thay vì <code>xSemaphoreCreateBinary()</code>.</p>
+                <div class="lesson">💡 Bài học: Priority inversion = silent killer trong RTOS. LUÔN dùng mutex với priority inheritance cho shared resources giữa tasks có different priorities. Test: simulated high-load scenarios where all priority levels run simultaneously. NASA's Mars Pathfinder had this exact bug — fixed via remote patch from 319 million km away.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Watchdog Timer Saved Production</h3>
+                <p>IoT gateway firmware có bug: memory leak slowly consume RAM → after 72 hours → malloc fail → null pointer dereference → firmware hang. Device deployed ở remote agricultural field — no physical access for weeks.
+
+Without watchdog: device offline permanently until manual reset. With watchdog: firmware hang → watchdog timeout (30 seconds) → hardware reset → device reboot → reconnect → continue operation. Users notice: 30 seconds offline every 72 hours (acceptable for agriculture sensor data). Team receive watchdog reset counter via telemetry → identify there's a bug → fix via OTA update.
+
+Watchdog bought team 3 WEEKS to investigate and fix bug, instead of emergency field visit.</p>
+                <div class="lesson">💡 Bài học: Watchdog timer = MANDATORY cho deployed embedded devices. Always implement: 1) Watchdog feed in main supervision task, 2) Critical task health monitoring (each task reports alive), 3) Watchdog reset counter (persist across resets, send via telemetry), 4) Root cause analysis khi watchdog fires (it's a SYMPTOM, not a fix). Watchdog doesn't fix bugs — it buys time.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: ISR Quá Dài — Real-time System Miss Deadline</h3>
+                <p>Motor controller firmware: ADC interrupt fires at 10KHz (every 100us). ISR reads ADC → run PID control algorithm → update PWM output. PID computation: 80us. ISR overhead: 10us. Total: 90us per ISR call. Seems fine (90/100 = 90% CPU in ISR).
+
+Problem: 90% CPU trong ISR → RTOS scheduler barely runs → other tasks starved → communication task miss heartbeat → remote monitoring system thinks device dead → alarm triggered.
+
+Fix: ISR chỉ read ADC + put value in queue (5us). Separate high-priority task run PID (80us). CPU trong ISR: 5%. Task scheduler runs normally. Communication task heartbeat on time.</p>
+                <div class="lesson">💡 Bài học: ISR PHẢI ngắn — ideally < 10% CPU time. Pattern: ISR captures data → signals task → task processes. This preserves RTOS scheduler functioning, allows other tasks to run, and maintains deterministic behavior. Measure ISR duration with oscilloscope + GPIO toggle.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Malloc trong embedded RTOS</h3>
+                <p>Dynamic allocation trong RTOS = fragmentation over time → eventual failure. Pre-allocate fixed buffers, use memory pools, static allocation. If must use heap: FreeRTOS heap_4 (best-fit with coalescence) hoặc heap_5 (multiple memory regions).</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Disable interrupts quá lâu</h3>
+                <p>Critical section disable interrupts → ISR delayed → real-time deadline miss. Keep critical sections MICROSECONDS. Dùng mutex thay vì disabling interrupts khi possible. FreeRTOS <code>taskENTER_CRITICAL()</code> chỉ cho very short sections.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Task priority assignment sai</h3>
+                <p>All tasks same priority → round-robin → no real-time guarantee. Too many high priority tasks → lower tasks starved. Rate Monotonic: higher frequency tasks = higher priority. Analyze worst-case response time cho each task.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Stack size guessing</h3>
+                <p>Stack too small: overflow → data corruption → bizarre crashes. Stack too large: waste precious RAM. Calculate: maximum call depth × stack frame size + local variables + ISR stack. FreeRTOS: <code>uxTaskGetStackHighWaterMark()</code> check remaining stack.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Blocking trong ISR</h3>
+                <p>NEVER block (wait, delay, mutex lock) trong ISR. ISR must complete ASAP. Use ISR-safe API versions (xQueueSendFromISR, xSemaphoreGiveFromISR). Violation = system hang or undefined behavior.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Nguyễn Thời Gian</span> — Thời Gian Thực Đại Sư</p>
+            <p>🕐 "Trong hệ thống thời gian thực, trễ 1 millisecond có thể là sự khác biệt giữa hoạt động và thảm họa."</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rô-Bốt Xanh Hiệp Sĩ - Bậc Thầy Android Development</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(22,163,74,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #22c55e, #16a34a, #86efac); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #86efac; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(22,163,74,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #86efac; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #86efac; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #22c55e; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #86efac; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #16a34a; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #86efac; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #86efac; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🤖</span>
+            <h1>Rô-Bốt Xanh Hiệp Sĩ</h1>
+            <p class="subtitle">Lê Rô-Bốt — Bậc Thầy Android Development</p>
+            <p class="quote">"1000 devices, 1000 screen sizes, 1000 Android versions — và app phải chạy đẹp trên TẤT CẢ."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">Kotlin</span>
+            <span class="skill-tag">Jetpack Compose</span>
+            <span class="skill-tag">Room</span>
+            <span class="skill-tag">Hilt</span>
+            <span class="skill-tag">Coroutines</span>
+            <span class="skill-tag">Material Design 3</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Lê Rô-Bốt bắt đầu Android development năm 2011 — thời Activity lifecycle là cơn ác mộng, Fragment là khái niệm mới và buggy, và UI phải viết bằng XML layout. Ông từng debug một Fragment crash mất 1 tuần — kết luận: Fragment lifecycle phức tạp hơn cả thuyết tương đối của Einstein.
+
+Khi Kotlin trở thành first-class language cho Android (2017), ông nhảy vào ngay. Null safety, extension functions, coroutines — mỗi feature giải quyết một nỗi đau thật sự. Khi Jetpack Compose ra đời, ông biết thời đại XML layout đã kết thúc.
+
+Ông đặc biệt nổi tiếng trong giới Android vì bài blog 'Tôi đã test app trên 200 thiết bị Android và đây là những gì tôi học được' — bao gồm Samsung, Xiaomi, Oppo, Vivo, Realme, và cả một chiếc tablet no-name từ AliExpress.</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Jetpack Compose — Tương lai UI Android</h3>
+                <p>Declarative UI: describe UI based on state, Compose handle rendering. Composable functions: <code>@Composable fun Greeting(name: String)</code>. State hoisting: state owned by parent, events bubbled up. Recomposition: chỉ re-render composables có state thay đổi. Side effects: <code>LaunchedEffect</code>, <code>DisposableEffect</code>, <code>SideEffect</code>. Navigation: <code>NavHost</code> + <code>NavController</code>. Interop: Compose trong XML (<code>ComposeView</code>), XML trong Compose (<code>AndroidView</code>). 2025: Compose là default — XML layout cho legacy code.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Kotlin Coroutines — Async Done Right</h3>
+                <p>Coroutines: lightweight threads cho async operations. <code>suspend fun</code>: function có thể pause/resume. <code>viewModelScope</code>: coroutine auto-cancel khi ViewModel cleared. <code>lifecycleScope</code>: auto-cancel khi lifecycle destroyed. Dispatchers: <code>Main</code> (UI), <code>IO</code> (network/disk), <code>Default</code> (CPU). Flow: reactive streams, cold by default, collect trong lifecycle-aware scope. StateFlow/SharedFlow cho UI state. Channel cho one-time events.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Dependency Injection — Hilt/Koin</h3>
+                <p>Hilt (recommended by Google): Dagger-based, compile-time DI, Android-specific scopes (@AndroidEntryPoint, @HiltViewModel). Less boilerplate than raw Dagger. Koin: runtime DI, Kotlin-first, simpler setup, no annotation processing. Tradeoff: Hilt = compile-time safety + more setup. Koin = simpler + runtime errors. Recommendation: Hilt cho production apps (compile-time error detection). Koin cho prototypes, small apps. Manual DI cho very simple apps.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Room Database — SQLite Made Easy</h3>
+                <p>Room: ORM wrapper over SQLite. Compile-time query validation (typo trong SQL → compile error, không phải runtime crash). Entity = data class + @Entity annotation. DAO = interface với @Query, @Insert, @Update, @Delete. Database migration: <code>Migration(1, 2)</code> với ALTER TABLE. Flow/LiveData integration: database changes auto-emit updates. Encrypted Room: SQLCipher. Testing: in-memory database cho unit tests.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Android Architecture Components</h3>
+                <p>ViewModel: survive configuration changes (rotation). LiveData/StateFlow: lifecycle-aware observable data. WorkManager: guaranteed background work (survive app kill, device reboot). DataStore: modern SharedPreferences replacement (Proto DataStore cho typed data, Preferences DataStore cho key-value). Paging 3: large data sets với RecyclerView/LazyColumn. Navigation Component: type-safe navigation, deep links.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Fragment Backstack Nightmare</h3>
+                <p>App với 5 screens, mỗi screen là Fragment. User navigate: A → B → C → B → D → C. Backstack: A, B, C, B, D, C. User press Back: C → D → B → C → B → A. User confused: 'Tại sao tôi thấy screen B hai lần?'
+
+Fix: <code>popUpTo</code> + <code>inclusive</code> trong Navigation Component. Nhưng business logic phức tạp hơn: B cần different state khi navigate từ A vs từ D. Kết quả: Fragment arguments chaos, SavedStateHandle mismatches.
+
+Team chuyển sang single-Activity architecture với Navigation Component (hoặc Compose Navigation): centralized navigation graph, type-safe arguments, predictable back stack. Fragment transactions manual = đau đầu guaranteed.</p>
+                <div class="lesson">💡 Bài học: Single-Activity architecture là best practice. Navigation Component (XML hoặc Compose) manage back stack, arguments, deep links. Đừng manual FragmentTransaction trừ khi absolutely necessary. Backstack behavior: test EVERY navigation path — forward, backward, deep link, process death restoration.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Android Fragmentation Testing — 200 Devices</h3>
+                <p>App trông đẹp trên Pixel 7. Deploy. Bug reports: Samsung Galaxy S21 — notch handling sai. Xiaomi Redmi Note 10 — WebView version cũ, JavaScript feature không support. Oppo A15 — camera API khác (custom Camera2 implementation). Tablet Samsung — layout vỡ ở landscape.
+
+Worse: Android 10 behavior khác Android 13 cho background location permission. Android 12 thêm splash screen API — app có 2 splash screens (custom + system). Android 14 thay đổi foreground service restrictions.
+
+Firebase Test Lab: run tests trên 50+ devices automatically. BrowserStack: manual testing trên specific devices. CI integration: mỗi PR run tests trên 5 representative devices.</p>
+                <div class="lesson">💡 Bài học: Android fragmentation là REALITY — accept và plan for it. Minimum: test trên 5 representative devices (high-end Samsung, mid-range Xiaomi, low-end device, tablet, latest Android + oldest supported). Firebase Test Lab cho automated testing. OEM-specific issues: check Samsung Internet, Xiaomi MIUI restrictions, Huawei HMS. Set <code>minSdkVersion</code> carefully — mỗi level drop = significant user base drop.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Coroutine Leak — The Silent Killer</h3>
+                <p>App dùng GlobalScope.launch cho API call. User navigate away → coroutine vẫn chạy → update UI element đã destroyed → crash: 'View not attached to window manager.' Worse: coroutine call API in loop → user leave app → API calls continue → battery drain + data usage.
+
+Fix: dùng viewModelScope (auto-cancel khi ViewModel cleared) hoặc lifecycleScope (auto-cancel khi lifecycle destroyed). KHÔNG dùng GlobalScope trừ application-level background work. Structured concurrency: parent cancel → children cancel.</p>
+                <div class="lesson">💡 Bài học: KHÔNG dùng GlobalScope. Dùng viewModelScope cho ViewModel operations, lifecycleScope cho UI operations, custom CoroutineScope với proper cancellation cho background work. Structured concurrency ensures no leaked coroutines. Test: verify coroutines cancel khi expected (ViewModel cleared, Fragment destroyed).</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Hardcode dimensions trong dp</h3>
+                <p><code>android:layout_width='360dp'</code> — giả sử screen width = 360dp. Samsung Galaxy Fold: 280dp (folded). Tablet: 800dp. Dùng ConstraintLayout percentages, weight, hoặc Compose responsive modifiers.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Ignore process death</h3>
+                <p>Android kill app process khi memory low. User quay lại → app recreate từ đầu. Nếu state không saved (ViewModel saved state, onSaveInstanceState) → user mất progress. Test: Developer Options > Don't keep activities.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Main thread network call</h3>
+                <p>NetworkOnMainThreadException trên Android >= 3.0. Nhưng disk I/O trên main thread vẫn cho phép (chỉ slow, không crash). StrictMode detect: enable trong debug builds. MỌII I/O: coroutine với Dispatchers.IO.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Không handle configuration changes</h3>
+                <p>Screen rotation → Activity recreated → state lost. ViewModel survive rotation, SavedStateHandle survive process death. Không handle = user rotate phone → form data lost → rage quit.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Dùng deprecated APIs mà không check</h3>
+                <p>Android evolve nhanh — deprecated API có thể bị remove. <code>AsyncTask</code> deprecated, dùng Coroutines. <code>SharedPreferences</code> ok nhưng DataStore better. Check API level, dùng AndroidX compat libraries.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Lê Rô-Bốt</span> — Rô-Bốt Xanh Hiệp Sĩ</p>
+            <p>🤖 "1000 devices, 1000 screen sizes, 1000 Android versions — và app phải chạy đẹp trên TẤT CẢ."</p>
+        </div>
+    </div>
+</body>
+</html>

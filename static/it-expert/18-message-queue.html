@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hàng Đợi Thần Công - Bậc Thầy Message Queues</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #f59e0b, #d97706, #fcd34d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fcd34d; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fcd34d; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fcd34d; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #f59e0b; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fcd34d; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #d97706; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fcd34d; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fcd34d; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">📬</span>
+            <h1>Hàng Đợi Thần Công</h1>
+            <p class="subtitle">Phạm Hàng Đợi — Bậc Thầy Message Queues</p>
+            <p class="quote">"Tin nhắn phải đến nơi — dù trời có sập, đất có rung, server có restart."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">RabbitMQ</span>
+            <span class="skill-tag">Apache Kafka</span>
+            <span class="skill-tag">NATS</span>
+            <span class="skill-tag">Pulsar</span>
+            <span class="skill-tag">Redis Streams</span>
+            <span class="skill-tag">Dead Letter Queue</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Phạm Hàng Đợi lớn lên trong thời đại 'gọi trực tiếp, đợi phản hồi'. Service A gọi Service B, đợi. B gọi C, đợi. Chain 5 services, mỗi cái 200ms = 1 giây latency minimum. Một service down = cả chain down.
+
+Ngày ông phát hiện message queues, ông như tìm được chân lý: decouple services, async processing, buffer burst traffic, guaranteed delivery. Nhưng với great power comes great responsibility — message ordering, exactly-once delivery, dead letter queues, partition rebalancing, consumer group management.
+
+Ông từng debug 3 ngày trời vì messages 'biến mất' — thực ra nằm trong dead letter queue mà không ai monitor. Từ đó, ông viết rule bằng máu: 'MỌI dead letter queue phải có alerting.' Motto: 'Async không phải fire-and-forget — nó là fire-and-make-sure-it-arrives.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: RabbitMQ vs Kafka — Hai triết lý khác nhau</h3>
+                <p>RabbitMQ: traditional message broker, smart broker + dumb consumers. Messages consumed → deleted from queue. Routing flexible (direct, topic, fanout, headers). Tốt cho: task queues, RPC, flexible routing. Kafka: distributed event log, dumb broker + smart consumers. Messages retained (configurable retention). Consumers track offset — replay possible. Tốt cho: event streaming, log aggregation, high-throughput pipelines, event sourcing. Rule: RabbitMQ cho traditional messaging (work queues, pub/sub). Kafka cho event streaming (event log, replay, analytics pipeline).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: At-least-once vs Exactly-once vs At-most-once</h3>
+                <p>At-most-once: fire and forget, có thể mất message. Dùng cho: logs, metrics (mất 1 data point OK). At-least-once: guaranteed delivery, có thể duplicate. Consumer PHẢI idempotent. Dùng cho: đa số use cases (orders, notifications, tasks). Exactly-once: guaranteed delivery + no duplicates. Kafka Transactions support exactly-once within Kafka ecosystem. Expensive, complex. Dùng cho: financial transactions, inventory updates. Practice: design for at-least-once + idempotent consumers — simplest reliable approach.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Dead Letter Queue (DLQ) — Nơi messages cuối cùng</h3>
+                <p>Message processing fail (poison message, bug, dependency down) → retry N times → still fail → move to Dead Letter Queue. DLQ PHẢI monitored: alert khi DLQ có messages. DLQ PHẢI có process xử lý: manual review, automated retry after fix, discard with logging. ĐỪNG để DLQ accumulate silently — đó là data loss ẩn. Pattern: main queue → retry queue (with delay) → DLQ (after max retries). Include original error, timestamp, retry count trong DLQ message.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Message Ordering — Khó hơn bạn nghĩ</h3>
+                <p>Kafka: ordering guaranteed WITHIN partition. Messages cùng partition key → same partition → ordered. Khác partition key → no ordering guarantee. RabbitMQ: ordering within single queue + single consumer. Multiple consumers → no ordering (consumers process at different speeds). Nếu cần strict ordering: single partition/consumer (limits throughput) hoặc design system to be order-independent (idempotent, commutative operations).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Consumer Groups & Scaling</h3>
+                <p>Kafka consumer groups: multiple consumers chia partitions. 10 partitions + 5 consumers = 2 partitions/consumer. Add consumer → rebalance → partitions redistribute. Cẩn thận: rebalancing = temporary pause → message processing delay. Tối ưu: number of consumers ≤ number of partitions. RabbitMQ: competing consumers — multiple consumers trên same queue, messages distributed round-robin. Simpler scaling model.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Kafka Partition Rebalance Storm</h3>
+                <p>100 partitions, 10 consumers. Deploy new consumer version: rolling update → consumer shutdown → rebalance → new consumer start → another consumer shutdown → rebalance again → repeat for all 10 consumers. 10 rebalances trong 5 phút. Mỗi rebalance: 30-60 giây pause.
+
+During rebalance: messages not consumed, producer side queue builds up, dependent services timeout waiting for responses. Cascade: order processing delayed 30 phút during peak hours. 5,000 orders stuck.
+
+Fix: implement cooperative rebalancing (incremental, less disruptive). Increase <code>session.timeout.ms</code> và <code>heartbeat.interval.ms</code>. Blue-green deployment thay vì rolling update cho consumers. Static partition assignment cho critical consumers.</p>
+                <div class="lesson">💡 Bài học: Kafka consumer rebalancing là critical operational concern. Plan deployments: rolling update during low-traffic periods, cooperative rebalancing protocol, adequate timeout configs. Monitor consumer lag — if lag increases during deployment, something is wrong. Consider: static partition assignment cho latency-sensitive consumers.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Dead Letter Queue Overflow — 2 Triệu Messages Không Ai Biết</h3>
+                <p>Order notification service: process order events → send email. Bug trong email template → parsing error → message fail → retry 3x → DLQ. Nhưng: NO ALERTING on DLQ. Bug xảy ra Friday afternoon. Monday morning: DLQ có 2 TRIỆU messages. 2 triệu customers không nhận được order confirmation email.
+
+Customer support nhận 500 calls: 'Tôi đặt hàng rồi nhưng không nhận được xác nhận, đơn hàng có thành công không?' Trust damaged. Manual work: replay 2M messages after fix. Replay mất 6 giờ.
+
+After incident: DLQ alerting mandatory cho mọi queue. DLQ dashboard. Automated DLQ replay tool. DLQ count included trong daily ops report.</p>
+                <div class="lesson">💡 Bài học: Dead Letter Queue PHẢI có alerting — threshold alert (> 100 messages), rate alert (> 50 messages/minute). Monitoring DLQ = monitoring reliability. DLQ không phải 'ignore bucket' — nó là 'investigate immediately bucket'. Include DLQ monitoring trong operational runbook.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Message Ordering Bug — Đơn Hàng Bị Cancel Trước Khi Tạo</h3>
+                <p>E-commerce: order events pushed to Kafka. Event sequence: OrderCreated → OrderPaid → OrderShipped. Consumer processes events. Nhưng: OrderCreated partition key = user_id, OrderPaid partition key = order_id. Khác partition key → khác partition → khác processing order.
+
+Result: consumer nhận OrderPaid TRƯỚC OrderCreated → 'Order not found' error → OrderPaid moved to DLQ. Tệ hơn: OrderCancelled arrive trước OrderCreated → cancel nonexistent order → ignore. Rồi OrderCreated arrive → order exists nhưng should be cancelled → nobody cancels it.
+
+30% orders trong trạng thái inconsistent. Fix: dùng order_id làm partition key cho TẤT CẢ order-related events → same partition → ordered processing.</p>
+                <div class="lesson">💡 Bài học: Message ordering critical cho stateful processing. Rule: ALL events related to same entity PHẢI dùng same partition key → same partition → ordered. Design partition key carefully — entity ID (order_id, user_id) not attribute (payment_type, status). Test ordering assumptions explicitly trong integration tests.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Fire and forget cho critical operations</h3>
+                <p>Publish message thành công ≠ message processed thành công. Implement acknowledgment, delivery confirmation, consumer health monitoring. Critical messages cần guaranteed delivery + processing confirmation.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Không set message TTL</h3>
+                <p>Messages without expiry → queue grows forever → disk full → broker crash. Set TTL appropriate cho use case: notifications 24h, tasks 7 days, events 30 days. Expired messages → DLQ hoặc drop with logging.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Consumer không idempotent</h3>
+                <p>Network retry, consumer restart, rebalance → duplicate delivery. Consumer process message twice → duplicate order, double charge. Implement idempotency: deduplication key, check-before-process, upsert instead of insert.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Single consumer cho critical queue</h3>
+                <p>Consumer crash → messages accumulate → processing delay. Minimum 2 consumers cho redundancy. Monitor consumer lag — alert khi lag exceeds threshold.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Quá nhiều queues/topics</h3>
+                <p>100 queues cho 100 message types → operational overhead (monitoring, alerting, capacity planning each). Group related messages: order.created, order.paid → 'orders' topic with message type header. Fewer topics = less operational burden.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Phạm Hàng Đợi</span> — Hàng Đợi Thần Công</p>
+            <p>📬 "Tin nhắn phải đến nơi — dù trời có sập, đất có rung, server có restart."</p>
+        </div>
+    </div>
+</body>
+</html>
