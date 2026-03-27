@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 17: Đạo Lý và Phúc Lành – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #0F766E 0%, #6B21A8 50%, #4C1D95 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: var(--purple-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .wisdom-grid { display: grid; gap: 16px; margin: 20px 0; }
+  .wisdom-card {
+    background: white; border-radius: 16px; padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    display: flex; gap: 20px; align-items: flex-start;
+    transition: transform 0.2s;
+  }
+  .wisdom-card:hover { transform: translateX(4px); }
+  .wisdom-card:nth-child(odd) { border-left: 5px solid var(--purple); }
+  .wisdom-card:nth-child(even) { border-left: 5px solid var(--teal); }
+  .wisdom-num {
+    min-width: 50px; height: 50px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+    background: linear-gradient(135deg, #F5F3FF, #ECFDF5);
+  }
+  .wisdom-content strong { font-weight: 800; font-size: 1.05rem; color: var(--gray-800); display: block; margin-bottom: 6px; }
+  .wisdom-content p { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .closing-tribute {
+    background: linear-gradient(135deg, #1E1B4B, #022c22);
+    border-radius: 16px; padding: 36px; margin: 32px 0; color: white;
+    text-align: center;
+  }
+  .closing-tribute h3 { color: #FDE68A; font-size: 1.3rem; margin-bottom: 16px; }
+  .closing-tribute p { opacity: 0.9; max-width: 600px; margin: 0 auto; font-size: 1rem; line-height: 1.7; }
+  .closing-tribute .dedication { margin-top: 20px; font-size: 0.9rem; opacity: 0.7; font-style: italic; }
+  .quote-box { background: linear-gradient(135deg, #F5F3FF, #ECFDF5); border-left: 5px solid var(--purple); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--purple-light); opacity: 0.15; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: var(--purple-dark); font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-gold { background: #FFFBEB; border: 2px solid var(--amber); }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-gold .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .final-lesson { background: linear-gradient(135deg, #1E1B4B, #0F766E); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .final-lesson h3 { font-size: 1.2rem; margin-bottom: 20px; color: #A7F3D0; }
+  .final-lesson .lesson-list { list-style: none; }
+  .final-lesson .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .final-lesson .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .complete-banner {
+    background: linear-gradient(135deg, var(--amber), #D97706);
+    border-radius: 16px; padding: 28px; margin: 32px 0;
+    text-align: center; color: white;
+  }
+  .complete-banner h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+  .complete-banner p { opacity: 0.9; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">⭐ Chương Cuối</div>
+  <div class="hero-emoji">🌟</div>
+  <h1>Đạo Lý và Phúc Lành</h1>
+  <div class="subtitle">Chương cuối của một cuộc đời – 9 bài học lớn vượt qua mọi hợp đồng và thỏa thuận</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">✨ 9 Bài Học Lớn Của Cả Đời</div>
+
+  <div class="wisdom-grid">
+    <div class="wisdom-card">
+      <div class="wisdom-num">⭐</div>
+      <div class="wisdom-content">
+        <strong>Đạo Đức Là Nền Tảng Không Thể Thay Thế</strong>
+        <p>Sau 40 năm và 60 tỷ USD, bài học đầu tiên và quan trọng nhất vẫn là: không có thứ gì bền vững được xây trên sự gian dối. Uy tín tích lũy hàng chục năm có thể mất đi trong một ngày nếu đánh mất đạo đức.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">🙏</div>
+      <div class="wisdom-content">
+        <strong>Khiêm Tốn Là Sức Mạnh Thực Sự</strong>
+        <p>Tác giả thừa nhận đã từng nghĩ "chỉ có trời là cao hơn mình" – và đó là sai lầm. Người thực sự vĩ đại luôn còn nhiều điều để học hỏi từ bất kỳ ai, kể cả người kém kinh nghiệm nhất.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">🤝</div>
+      <div class="wisdom-content">
+        <strong>Kính Trọng Là Ngôn Ngữ Chung Của Nhân Loại</strong>
+        <p>Dù khác biệt văn hóa, ngôn ngữ, tôn giáo – mọi người đều cảm nhận được khi họ bị tôn trọng hay khinh thường. Kính trọng không tốn tiền nhưng mở mọi cánh cửa.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">💝</div>
+      <div class="wisdom-content">
+        <strong>Gia Đình Là Điểm Tựa Bền Nhất</strong>
+        <p>40 năm xa nhà, hàng trăm đêm khách sạn – điều giúp tác giả đứng vững là tình yêu thương và sự ủng hộ của gia đình. Không có thành công nào đáng nếu đánh mất điều này.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">🌱</div>
+      <div class="wisdom-content">
+        <strong>Cống Hiến Cho Xã Hội Là Nghĩa Vụ</strong>
+        <p>Người được xã hội trao cơ hội có trách nhiệm trả lại. Cuốn sách này chính là một cách trả lại – chia sẻ kinh nghiệm để thế hệ sau không phải học bài học đắt giá từ đầu.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">🧘</div>
+      <div class="wisdom-content">
+        <strong>An Tịnh Tâm Hồn Quan Trọng Hơn Thành Tích</strong>
+        <p>Sau mọi con số, hợp đồng, danh hiệu – điều còn lại là: bạn có ngủ được không? Lương tâm thanh thản là tài sản vô giá mà không hợp đồng nào mua được.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">📚</div>
+      <div class="wisdom-content">
+        <strong>Học Tập Không Bao Giờ Dừng</strong>
+        <p>Người thương thuyết giỏi nhất là người luôn cảm thấy mình còn nhiều điều cần học. Khi bạn nghĩ mình biết tất cả – đó là lúc bạn bắt đầu thụt lùi.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">🌍</div>
+      <div class="wisdom-content">
+        <strong>Xây Dựng Cầu Nối, Không Phải Tường Ngăn</strong>
+        <p>Mỗi cuộc thương thuyết là cơ hội kết nối con người qua mọi biên giới. Người thương thuyết giỏi là người xây dựng cầu nối giữa các nền văn hóa, không phải người khai thác sự khác biệt.</p>
+      </div>
+    </div>
+    <div class="wisdom-card">
+      <div class="wisdom-num">🎁</div>
+      <div class="wisdom-content">
+        <strong>Phúc Lành Đến Từ Sự Cho Đi</strong>
+        <p>Nghịch lý lớn nhất của cuộc đời: người cho đi nhiều nhất thường nhận lại nhiều nhất. Hào phóng với tri thức, thời gian, và kinh nghiệm là cách tốt nhất để xây dựng di sản lâu dài.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Đạo đức là chìa khóa của sự an tịnh tâm hồn, của hạnh phúc bền vững. Sau tất cả những hợp đồng và chuyến đi, điều duy nhất còn lại là: bạn đã sống như thế nào."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-gold">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-body">
+      <strong>Thông điệp cuối cùng của tác giả</strong>
+      <p>Cuốn sách này là "món quà bằng tiếng Việt, từ tim Việt, lòng Việt và cho người Việt" – tóm tắt 40 năm bôn ba xa quê hương, mang về tất cả để đặt trong tay thế hệ tiếp theo. Hãy đọc, suy ngẫm, và chia sẻ tiếp.</p>
+    </div>
+  </div>
+
+  <div class="closing-tribute">
+    <h3>💌 Lời Tri Ân</h3>
+    <p>Tác giả dành tác phẩm này cho Cha Phan Văn Tạo, Mẹ Vũ Thị Quý, và đặc biệt cho người vợ Vũ Mộng Lan cùng hai con gái Phan Vân Lan và Phan Vân Đào – những người đã tha thứ cho sự vắng mặt thường xuyên của người chồng và người cha trong suốt ba thập niên.</p>
+    <div class="dedication">— Một sự nghiệp không thể thành công nếu thiếu sự hi sinh thầm lặng của những người thân yêu nhất —</div>
+  </div>
+
+  <div class="complete-banner">
+    <h3>🎉 Bạn Đã Hoàn Thành Toàn Bộ Cuốn Sách!</h3>
+    <p>Từ Thằng Bờm đến đạo lý phúc lành – cảm ơn bạn đã đồng hành cùng hành trình 40 năm của GS. Phan Văn Trường. Hãy áp dụng những bài học này vào cuộc sống và công việc của bạn!</p>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Ba Câu Hỏi Để Suy Ngẫm</strong>
+      <p>① Bài học nào trong cuốn sách này có ý nghĩa nhất với bạn ngay lúc này? ② Điều gì bạn sẽ làm khác trong cuộc thương thuyết tiếp theo? ③ Ai xứng đáng được bạn chia sẻ cuốn sách này?</p>
+    </div>
+  </div>
+
+  <div class="final-lesson">
+    <h3>🎯 Bài Học Rút Ra – Chương 17 và Toàn Bộ Cuốn Sách</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Đạo đức là nền tảng không thể thay thế – uy tín xây hàng chục năm, mất đi trong một ngày nếu đánh mất đạo đức.</li>
+      <li><span class="lesson-num">2</span>Khiêm tốn và kính trọng mọi người là bí quyết mở mọi cánh cửa trong thương thuyết.</li>
+      <li><span class="lesson-num">3</span>An tịnh tâm hồn quan trọng hơn mọi thành tích và con số trong hợp đồng.</li>
+      <li><span class="lesson-num">4</span>Gia đình là điểm tựa bền nhất – không có thành công nào đáng giá nếu đánh mất điều này.</li>
+      <li><span class="lesson-num">5</span>Phúc lành đến từ sự cho đi – người hào phóng với tri thức và kinh nghiệm để lại di sản lâu bền nhất.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-16.html" class="nav-btn nav-btn-prev">← Chương 16</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <span class="nav-btn" style="background: linear-gradient(135deg, var(--amber), #D97706); color: white;">🎉 Hoàn Thành!</span>
+  </div>
+
+</div>
+</body>
+</html>

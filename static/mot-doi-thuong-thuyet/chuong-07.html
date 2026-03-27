@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 7: Ngân Hàng – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #1E3A5F 0%, #1E40AF 50%, #1D4ED8 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #1E40AF; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .bank-role { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 20px 0; }
+  .bank-role h3 { color: #1E40AF; font-size: 1.05rem; margin-bottom: 16px; }
+  .role-item { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #F3F4F6; }
+  .role-item:last-child { border-bottom: none; }
+  .role-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .role-content strong { font-weight: 700; color: var(--gray-800); display: block; margin-bottom: 4px; }
+  .role-content p { font-size: 0.9rem; color: #6B7280; }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid #1E40AF; transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--teal); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--rose); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--amber); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .story-box { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border: 1px solid #BFDBFE; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .story-box h3 { color: #1E40AF; font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .story-box p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .story-box.danger { background: linear-gradient(135deg, #FFF1F2, #FFE4E6); border: 1px solid #FECDD3; }
+  .story-box.danger h3 { color: var(--rose); }
+  .quote-box { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border-left: 5px solid #1E40AF; border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: #60A5FA; opacity: 0.2; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: #1E3A5F; font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-blue { background: #EFF6FF; border: 1px solid #BFDBFE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-blue .callout-body strong { color: #1E40AF; }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #0F172A, #1E3A5F); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #93C5FD; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">🏦 Chương 7</div>
+  <div class="hero-emoji">🏦</div>
+  <h1>Ngân Hàng – Chỗ Nương Tựa Kín Đáo</h1>
+  <div class="subtitle">Kịch sĩ quan trọng nhất nhưng thích ở trong bóng tối – ngân hàng định đoạt số phận hợp đồng</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🎭 Vai Trò Kép Của Ngân Hàng</div>
+
+  <div class="bank-role">
+    <h3>🏦 Ngân Hàng Làm Gì Trong Thương Thuyết?</h3>
+    <div class="role-item">
+      <div class="role-icon">💰</div>
+      <div class="role-content">
+        <strong>Tài trợ cho người mua</strong>
+        <p>Ngân hàng cho người mua mượn tiền để mua hàng của bạn. Không có tài trợ = không có hợp đồng, dù mọi thứ khác đều hoàn hảo.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-icon">🛡️</div>
+      <div class="role-content">
+        <strong>Bảo lãnh và bảo đảm</strong>
+        <p>Phát hành thư bảo lãnh, bảo đảm thanh toán cho cả hai bên. Đây là "mạng lưới an toàn" cho mọi hợp đồng lớn.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-icon">🔍</div>
+      <div class="role-content">
+        <strong>Thẩm định dự án</strong>
+        <p>Ngân hàng phân tích rủi ro của dự án. Nếu ngân hàng không tin tưởng, họ từ chối tài trợ – và dự án chết ngay ở đó.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-icon">🤝</div>
+      <div class="role-content">
+        <strong>Đồng hành trong bóng tối</strong>
+        <p>Ngân hàng hiếm khi xuất hiện chính thức trong phòng đàm phán, nhưng ảnh hưởng của họ lan rộng khắp mọi khía cạnh của thỏa thuận.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🙈</div>
+      <div class="takeaway-title">Thích ở hậu trường</div>
+      <div class="takeaway-text">Ngân hàng không muốn xuất hiện công khai nhưng lại có ảnh hưởng quyết định. Hiểu điều này giúp bạn biết cách tiếp cận họ đúng cách.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">💸</div>
+      <div class="takeaway-title">Chỉ cho người giàu mượn</div>
+      <div class="takeaway-text">Nghịch lý ngân hàng: họ cho người có khả năng trả nợ mượn tiền. Điều này tạo ra bất bình đẳng trong thương mại – và bạn phải biết cách điều hướng nó.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">⚖️</div>
+      <div class="takeaway-title">Vô tư trên danh nghĩa</div>
+      <div class="takeaway-text">Ngân hàng tuyên bố trung lập, làm việc "cho thân chủ" nhưng thực ra có lợi ích riêng. Phải hiểu điều này khi làm việc với họ.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🌐</div>
+      <div class="takeaway-title">Mạng lưới quốc tế</div>
+      <div class="takeaway-text">Trong dự án lớn, tác giả từng dẫn phái đoàn 200 người với 5 ngân hàng và 3 văn phòng luật sư. Điều phối tất cả những bên này là cả một nghệ thuật.</div>
+    </div>
+  </div>
+
+  <div class="story-box danger">
+    <h3>⚠️ Câu Chuyện Thoát Nạn Mafia</h3>
+    <p>Tác giả kể về một tình huống tại một quốc gia nơi tiền "bẩn" len lỏi vào hệ thống ngân hàng. Khi nhận ra đối tác có liên hệ với mafia địa phương, ông phải tìm cách rút lui khéo léo mà không gây xung đột – vì đây là vấn đề an toàn tính mạng, không chỉ là chuyện kinh doanh.</p>
+    <p>Bài học: hãy thẩm định nguồn gốc tài chính của đối tác sớm và kỹ trước khi cam kết bất kỳ điều gì.</p>
+  </div>
+
+  <div class="story-box">
+    <h3>🚨 Câu Chuyện Rửa Tiền</h3>
+    <p>Trong sự nghiệp, tác giả đã gặp tình huống một dự án tưởng chừng hợp pháp hóa ra được tài trợ bằng tiền có nguồn gốc đáng ngờ. Đây là bẫy mà nhiều doanh nhân vô tình sa vào, với hậu quả pháp lý nghiêm trọng.</p>
+    <p>Nguyên tắc vàng: khi tiền "quá dễ" và "quá nhiều" – đó là lúc phải cảnh giác cao độ.</p>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Ngân hàng chỉ cho người giàu mượn tiền – đây là nghịch lý vĩnh cửu của hệ thống tài chính. Nhưng hiểu nghịch lý này mới điều hướng được nó."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Lưu ý quan trọng về xung đột lợi ích</strong>
+      <p>Ngân hàng làm việc cho thân chủ nhưng cũng có lợi ích riêng của họ. Phí dịch vụ, lãi suất, rủi ro danh mục – tất cả ảnh hưởng đến quyết định của ngân hàng. Đừng bao giờ giả định ngân hàng hoàn toàn trung lập.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Chiến lược làm việc với ngân hàng</strong>
+      <p>Xây dựng quan hệ với ngân hàng <em>trước</em> khi cần họ. Khi khủng hoảng, ngân hàng ưu tiên khách hàng quen biết và tin tưởng. Đầu tư vào quan hệ ngân hàng là đầu tư dài hạn quan trọng.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <div class="callout-icon">🔍</div>
+    <div class="callout-body">
+      <strong>Thẩm định nguồn vốn – không thể bỏ qua</strong>
+      <p>Trong mọi giao dịch lớn, phải thẩm định kỹ nguồn gốc tài chính của đối tác. Làm ăn với tiền bẩn không chỉ vi phạm pháp luật mà còn nguy hiểm đến tính mạng.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 7</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Ngân hàng là kịch sĩ quan trọng nhất nhưng thích ở hậu trường – đừng bỏ qua vai trò của họ.</li>
+      <li><span class="lesson-num">2</span>Không có tài trợ ngân hàng = không có dự án – xác nhận tài chính từ đầu, không phải cuối.</li>
+      <li><span class="lesson-num">3</span>Ngân hàng không trung lập hoàn toàn – họ có lợi ích riêng cần được tính đến.</li>
+      <li><span class="lesson-num">4</span>Thẩm định nguồn gốc vốn trước khi làm ăn – tiền bẩn mang đến rủi ro pháp lý và thậm chí nguy hiểm thân thể.</li>
+      <li><span class="lesson-num">5</span>Xây dựng quan hệ ngân hàng tốt trước khi cần – đây là đầu tư chiến lược dài hạn.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-06.html" class="nav-btn nav-btn-prev">← Chương 6</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-08.html" class="nav-btn nav-btn-next">Chương 8 →</a>
+  </div>
+
+</div>
+</body>
+</html>

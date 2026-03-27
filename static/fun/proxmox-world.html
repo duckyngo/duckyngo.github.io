@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Proxmox - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.08); filter: brightness(1.3); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .dual-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor / Feature Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.kvm::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.lxc::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.virtio::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.ovmf::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.cloudinit::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.ignition::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+  .vendor-card.zfs::before { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+  .vendor-card.ceph::before { background: linear-gradient(90deg, #ef4444, #f97316); }
+  .vendor-card.lvm::before { background: linear-gradient(90deg, #10b981, #84cc16); }
+  .vendor-card.nfs::before { background: linear-gradient(90deg, #8b5cf6, #a855f7); }
+
+  .vendor-card.cluster::before { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
+  .vendor-card.ha::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.migrate::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+  .vendor-card.corosync::before { background: linear-gradient(90deg, #ec4899, #8b5cf6); }
+
+  .vendor-card.iommu::before { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+  .vendor-card.vfio::before { background: linear-gradient(90deg, #f97316, #ef4444); }
+  .vendor-card.gpu::before { background: linear-gradient(90deg, #10b981, #8b5cf6); }
+  .vendor-card.sriov::before { background: linear-gradient(90deg, #ec4899, #f59e0b); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol / Tech Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* PBS Section */
+  .pbs-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .pbs-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .pbs-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    min-width: 700px;
+    padding: 1rem 0;
+  }
+
+  .pbs-node {
+    background: rgba(59,130,246,0.05);
+    border: 2px solid rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 130px;
+    transition: all 0.3s;
+  }
+
+  .pbs-node:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .pbs-node .node-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .pbs-node h4 { font-size: 0.85rem; color: var(--accent); }
+  .pbs-node p { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .pbs-arrow {
+    font-size: 1.3rem;
+    color: var(--accent3);
+    flex-shrink: 0;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dual-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .pbs-diagram { flex-direction: column; min-width: auto; }
+    .pbs-arrow { transform: rotate(90deg); }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Proxmox World</a>
+  <a href="#what">Proxmox VE?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#core">Core Engine</a>
+  <a href="#storage">Storage</a>
+  <a href="#cluster">Cluster & HA</a>
+  <a href="#passthrough">Passthrough</a>
+  <a href="#pbs">Backup</a>
+  <a href="#compare">So sánh</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#x1F5A5;</div>
+  <h1>Thế Giới Proxmox</h1>
+  <p class="subtitle">Từ bare-metal hypervisor đến cụm cluster toàn diện - Hành trình chinh phục ảo hoá mã nguồn mở. Mọi thứ bạn cần biết về KVM, LXC, ZFS, Ceph, HA, và cả những hiểu nhầm cần tránh khi bước vào thế giới Proxmox VE.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS PROXMOX -->
+<section id="what">
+  <div class="intro-box">
+    <h2 class="section-title">Proxmox VE là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Proxmox Virtual Environment</strong> - Một nền tảng ảo hoá mã nguồn mở hoàn chỉnh, kết hợp hai công nghệ mạnh mẽ nhất thế giới Linux: <strong style="color: var(--accent);">KVM</strong> (Kernel-based Virtual Machine) cho full virtualization và <strong style="color: var(--accent3);">LXC</strong> (Linux Containers) cho OS-level virtualization. Tất cả được gói trong một giao diện web quản lý thống nhất, chạy trên nền Debian.
+    </p>
+
+    <div class="dual-analogy">
+      <div class="analogy-box">
+        <div class="icon">&#x1F4BB;</div>
+        <h3>KVM / QEMU</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Full Virtualization<br>Chạy Windows, Linux, BSD<br><strong style="color: var(--accent);">Cách ly hoàn toàn</strong></p>
+      </div>
+      <div class="analogy-arrow">+</div>
+      <div class="analogy-box">
+        <div class="icon">&#x1F4E6;</div>
+        <h3>LXC Containers</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">OS-level Virtualization<br>Nhẹ, nhanh, chia sẻ kernel<br><strong style="color: var(--accent3);">Hiệu năng gần native</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Tại sao Proxmox đặc biệt?</h4>
+      <p>Hầu hết các hypervisor chỉ hỗ trợ một loại ảo hoá. VMware ESXi chỉ có VM. Docker chỉ có container. Proxmox VE là nền tảng hiếm hoi cho phép bạn chạy cả hai trên cùng một host, quản lý thống nhất qua một giao diện duy nhất. Bạn có thể đặt một Windows Server VM chạy Active Directory ngay cạnh một LXC container chạy Pi-hole - tất cả trên cùng một con server vật lý.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="num">2008</div>
+        <div class="label">Ra đời</div>
+      </div>
+      <div class="stat">
+        <div class="num">Debian</div>
+        <div class="label">Nền tảng</div>
+      </div>
+      <div class="stat">
+        <div class="num">AGPL v3</div>
+        <div class="label">License</div>
+      </div>
+      <div class="stat">
+        <div class="num">800K+</div>
+        <div class="label">Hosts</div>
+      </div>
+      <div class="stat">
+        <div class="num">Web UI</div>
+        <div class="label">Quản lý</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Lịch sử Ảo hoá</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Từ mainframe IBM đến Proxmox - hành trình hơn 50 năm của công nghệ ảo hoá.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">1967</div>
+        <h3>IBM CP/CMS</h3>
+        <p>IBM phát minh khái niệm "virtual machine" đầu tiên trên mainframe System/360-67. Mỗi user có một "máy ảo" riêng - ý tưởng cách mạng cho thời đại đó. Đây là tổ tiên của mọi hypervisor ngày nay.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">1998</div>
+        <h3>VMware ra đời</h3>
+        <p>VMware Workstation biến ảo hoá từ "đồ chơi mainframe" thành công cụ cho x86. Lần đầu tiên, bạn có thể chạy Windows trong Linux (và ngược lại) trên một chiếc PC thông thường. Ngành công nghiệp ảo hoá bắt đầu bùng nổ.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2003</div>
+        <h3>Xen Hypervisor</h3>
+        <p>Đại học Cambridge phát triển Xen - hypervisor mã nguồn mở Type-1 đầu tiên cho x86. Amazon Web Services sau này được xây dựng trên nền Xen. Citrix mua lại XenSource năm 2007 và thương mại hoá thành XenServer (nay là XCP-ng).</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2006</div>
+        <h3>KVM vào Linux Kernel</h3>
+        <p>Avi Kivity (Qumranet, sau được Red Hat mua) viết KVM module. Được merge vào Linux kernel 2.6.20 năm 2007. Đây là bước ngoặt: Linux kernel chính thức trở thành một hypervisor. Không cần cài thêm gì - chỉ cần CPU hỗ trợ VT-x/AMD-V.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2008</div>
+        <h3>Proxmox VE 1.0</h3>
+        <p>Proxmox Server Solutions GmbH (Áo) phát hành phiên bản đầu tiên. Kết hợp KVM + OpenVZ trên nền Debian, với giao diện web quản lý. Mục tiêu: tạo ra một giải pháp ảo hoá enterprise-grade nhưng hoàn toàn mã nguồn mở và miễn phí.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2014</div>
+        <h3>Chuyển sang LXC</h3>
+        <p>Proxmox VE 3.4 thay thế OpenVZ bằng LXC - công nghệ container chính thống của Linux kernel. Đây là quyết định sáng suốt: LXC được maintain trong mainline kernel, trong khi OpenVZ luôn là patch ngoài. Hiệu năng và tính tương thích được cải thiện đáng kể.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2017</div>
+        <h3>Ceph tích hợp sâu</h3>
+        <p>Proxmox VE 5.0 mang Ceph storage vào tầm tay người dùng. Cài đặt và quản lý Ceph cluster trực tiếp từ web UI. Hyper-converged infrastructure không còn là đặc quyền của VMware vSAN hay Nutanix.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2020</div>
+        <h3>Proxmox Backup Server</h3>
+        <p>PBS ra đời - giải pháp backup chuyên dụng cho Proxmox. Incremental backup, deduplication, encryption, verify - tất cả miễn phí. Đây là câu trả lời cho Veeam Backup trong thế giới mã nguồn mở.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2023-2025</div>
+        <h3>Kỷ nguyên hậu VMware</h3>
+        <p>Broadcom mua lại VMware, thay đổi chính sách license khiến cộng đồng phẫn nộ. Hàng ngàn doanh nghiệp chuyển sang Proxmox. Proxmox VE 8.x trên Debian 12 Bookworm trở thành lựa chọn hàng đầu cho cả homelab lẫn production.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE: KVM/QEMU -->
+<section id="core">
+  <h2 class="section-title" style="color: var(--accent);">Core Engine: Bên trong Proxmox</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Hiểu cách KVM, QEMU, virtio, OVMF, và cloud-init phối hợp với nhau - nền tảng để master Proxmox.</p>
+
+  <!-- Architecture Diagram -->
+  <div class="arch-container">
+    <h3 style="color: var(--accent); margin-bottom: 1.5rem;">Kiến trúc Proxmox VE Stack</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F310;</div>
+        <h4>Web UI / API</h4>
+        <p>ExtJS, REST API<br>Port 8006</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x2699;</div>
+        <h4>pve-manager</h4>
+        <p>Perl daemon<br>Quản lý cluster</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4BB;</div>
+        <h4>QEMU / LXC</h4>
+        <p>User-space<br>Device emulation</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F9E0;</div>
+        <h4>KVM Module</h4>
+        <p>Kernel module<br>/dev/kvm</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4A0;</div>
+        <h4>CPU VT-x/AMD-V</h4>
+        <p>Hardware<br>Ring -1</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vendor-grid">
+    <div class="vendor-card kvm">
+      <div class="vendor-logo">&#x1F9E0;</div>
+      <h3>KVM / QEMU</h3>
+      <div class="vendor-type">Full Virtualization Engine</div>
+      <p>KVM là một kernel module biến Linux thành hypervisor Type-1. Nó tận dụng hardware virtualization extensions (Intel VT-x, AMD-V) để chạy guest OS ở tốc độ gần native. QEMU là user-space component phụ trách emulate các thiết bị phần cứng (disk, network, USB...) cho VM.</p>
+      <p>Khi bạn tạo một VM trong Proxmox, thực chất là khởi động một tiến trình QEMU với KVM acceleration. Mỗi vCPU là một thread, mỗi VM là một process - đơn giản và mạnh mẽ.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Type-1</div>
+          <div class="label">Hypervisor</div>
+        </div>
+        <div class="stat">
+          <div class="num">~2%</div>
+          <div class="label">Overhead</div>
+        </div>
+        <div class="stat">
+          <div class="num">2007</div>
+          <div class="label">In Kernel</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Hardware Accel</span>
+        <span class="tag">Mainline Kernel</span>
+        <span class="tag">Nested Virt</span>
+      </div>
+    </div>
+
+    <div class="vendor-card lxc">
+      <div class="vendor-logo">&#x1F4E6;</div>
+      <h3>LXC Containers</h3>
+      <div class="vendor-type">OS-level Virtualization</div>
+      <p>LXC sử dụng namespaces và cgroups của Linux kernel để tạo ra các môi trường cách ly mà không cần hypervisor. Container chia sẻ kernel với host, nên không có overhead của hardware emulation. Khởi động trong vài giây, tiêu thụ RAM ít hơn nhiều so với VM.</p>
+      <p>Proxmox quản lý LXC qua công cụ <code>pct</code>. Bạn có thể mount thư mục host vào container, giới hạn CPU/RAM/IO, và thậm chí chạy Docker bên trong LXC (unprivileged container cần cấu hình thêm).</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">~0%</div>
+          <div class="label">CPU Overhead</div>
+        </div>
+        <div class="stat">
+          <div class="num">2-5s</div>
+          <div class="label">Boot time</div>
+        </div>
+        <div class="stat">
+          <div class="num">Shared</div>
+          <div class="label">Kernel</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Siêu nhẹ</span>
+        <span class="tag">Namespaces</span>
+        <span class="tag">cgroups v2</span>
+        <span class="tag warn">Chỉ Linux</span>
+      </div>
+    </div>
+
+    <div class="vendor-card virtio">
+      <div class="vendor-logo">&#x26A1;</div>
+      <h3>VirtIO</h3>
+      <div class="vendor-type">Paravirtualized I/O</div>
+      <p>Thay vì emulate một ổ cứng IDE hay card mạng Intel thật, VirtIO tạo ra một "giao thức" tối ưu giữa guest và host. Guest biết mình đang chạy trong VM và dùng driver chuyên biệt để giao tiếp trực tiếp với hypervisor. Kết quả: disk I/O nhanh hơn 2-5 lần, network throughput gần line-rate.</p>
+      <p>Trên Linux, VirtIO driver có sẵn trong kernel. Trên Windows, bạn cần cài VirtIO driver ISO (từ Fedora project). Đây là bước quan trọng nhất khi tạo Windows VM trên Proxmox.</p>
+      <div class="tag-row">
+        <span class="tag good">virtio-blk</span>
+        <span class="tag good">virtio-net</span>
+        <span class="tag good">virtio-scsi</span>
+        <span class="tag">virtio-gpu</span>
+        <span class="tag warn">Cần driver</span>
+      </div>
+    </div>
+
+    <div class="vendor-card ovmf">
+      <div class="vendor-logo">&#x1F511;</div>
+      <h3>OVMF / UEFI</h3>
+      <div class="vendor-type">Firmware ảo hoá</div>
+      <p>OVMF (Open Virtual Machine Firmware) là implementation UEFI cho máy ảo, dựa trên EDK II của Tianocore. Khi bạn chọn BIOS type = OVMF trong Proxmox, VM sẽ boot qua UEFI thay vì SeaBIOS truyền thống.</p>
+      <p>OVMF cần thiết cho: Secure Boot, GPU passthrough (nhiều GPU đời mới chỉ có UEFI GOP, không có legacy VBIOS), boot từ ổ GPT > 2TB, và Windows 11 (yêu cầu TPM + Secure Boot). Proxmox tự động tạo EFI disk khi bạn chọn OVMF.</p>
+      <div class="tag-row">
+        <span class="tag">Secure Boot</span>
+        <span class="tag good">GPU Passthrough</span>
+        <span class="tag">GPT > 2TB</span>
+        <span class="tag warn">EFI disk riêng</span>
+      </div>
+    </div>
+
+    <div class="vendor-card cloudinit">
+      <div class="vendor-logo">&#x2601;</div>
+      <h3>Cloud-Init</h3>
+      <div class="vendor-type">Tự động hoá VM</div>
+      <p>Cloud-Init là chuẩn công nghiệp để cấu hình VM tự động khi boot lần đầu. Thay vì cài đặt thủ công (chọn ngôn ngữ, tạo user, cấu hình mạng...), bạn chuẩn bị một template image + cloud-init config. VM sẽ tự nhận hostname, IP, SSH key, chạy script tuỳ ý.</p>
+      <p>Trong Proxmox, bạn tạo một cloud-init drive (IDE/SCSI), điền thông tin qua GUI hoặc API. Kết hợp với Terraform/Ansible, đây là nền tảng Infrastructure as Code cho homelab và production.</p>
+      <div class="tag-row">
+        <span class="tag good">IaC ready</span>
+        <span class="tag">SSH Keys</span>
+        <span class="tag">Network Config</span>
+        <span class="tag">User Data</span>
+      </div>
+    </div>
+
+    <div class="vendor-card ignition">
+      <div class="vendor-logo">&#x1F525;</div>
+      <h3>Ignition</h3>
+      <div class="vendor-type">CoreOS / Flatcar Config</div>
+      <p>Ignition là phiên bản "cloud-init cho CoreOS" - được thiết kế cho Fedora CoreOS, Flatcar Linux, và các hệ điều hành immutable. Không giống cloud-init chạy mỗi boot, Ignition chỉ chạy một lần duy nhất trong lần khởi động đầu tiên (initramfs stage).</p>
+      <p>Nếu bạn chạy Kubernetes trên bare-metal hoặc VM, Ignition + Flatcar/FCOS là combo phổ biến. Proxmox hỗ trợ Ignition qua fw_cfg QEMU interface - bạn truyền config dưới dạng JSON transpiled từ Butane YAML.</p>
+      <div class="tag-row">
+        <span class="tag hot">Immutable OS</span>
+        <span class="tag">Butane YAML</span>
+        <span class="tag">First-boot only</span>
+        <span class="tag">fw_cfg</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Kinh nghiệm thực tế</h4>
+    <p>Khi tạo VM mới trong Proxmox, luôn chọn: Machine type = q35 (hỗ trợ PCIe passthrough), BIOS = OVMF (nếu không cần legacy), SCSI controller = VirtIO SCSI single (io_thread=on), Network = VirtIO. Đây là combo cho hiệu năng tốt nhất. Với template, dùng cloud-init image (Ubuntu/Debian cloud image, hoặc Rocky Linux GenericCloud) để triển khai VM trong vài giây.</p>
+  </div>
+</section>
+
+<!-- STORAGE -->
+<section id="storage">
+  <h2 class="section-title" style="color: var(--accent3);">Storage: Nơi Dữ liệu Sống</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">ZFS, Ceph, LVM-thin, NFS, iSCSI - mỗi loại storage có điểm mạnh riêng. Chọn sai là đau đầu cả năm.</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card zfs">
+      <div class="vendor-logo">&#x1F4BE;</div>
+      <h3>ZFS</h3>
+      <div class="vendor-type">Copy-on-Write Filesystem</div>
+      <p>ZFS là filesystem/volume manager tiên tiến nhất thế giới. Được Sun Microsystems phát triển, nay là dự án OpenZFS. ZFS kết hợp RAID, LVM, và filesystem thành một thể thống nhất với tính năng data integrity chưa từng có.</p>
+      <p><strong>Pools & VDEVs:</strong> ZFS pool gồm nhiều VDEV (mirror, RAIDZ1/2/3, stripe). Mỗi VDEV là một nhóm disk. Dữ liệu được phân phối qua các VDEV. Mất 1 VDEV = mất pool. Nên luôn dùng mirror hoặc RAIDZ.</p>
+      <p><strong>Datasets:</strong> Giống "thư mục thông minh" - mỗi dataset có quota, compression, snapshot riêng. Proxmox tạo dataset cho mỗi VM/CT.</p>
+      <p><strong>Snapshots:</strong> Tức thì, không tốn thêm dung lượng (CoW). Rollback trong tích tắc. Kết hợp <code>zfs send | zfs recv</code> để replicate sang host khác.</p>
+      <p><strong>Scrub:</strong> Quét toàn bộ pool để phát hiện và tự sửa bit rot. Nên chạy monthly. Proxmox tự schedule scrub.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">256</div>
+          <div class="label">Trillion ZB max</div>
+        </div>
+        <div class="stat">
+          <div class="num">SHA-256</div>
+          <div class="label">Checksum</div>
+        </div>
+        <div class="stat">
+          <div class="num">CoW</div>
+          <div class="label">Architecture</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Data Integrity</span>
+        <span class="tag good">Snapshots</span>
+        <span class="tag good">Compression</span>
+        <span class="tag warn">RAM hungry</span>
+        <span class="tag">ARC Cache</span>
+        <span class="tag">SLOG/L2ARC</span>
+      </div>
+    </div>
+
+    <div class="vendor-card ceph">
+      <div class="vendor-logo">&#x1F419;</div>
+      <h3>Ceph</h3>
+      <div class="vendor-type">Distributed Storage</div>
+      <p>Ceph là hệ thống lưu trữ phân tán - dữ liệu được chia nhỏ và phân phối qua nhiều node, không có single point of failure. Proxmox tích hợp Ceph sâu nhất trong các hypervisor mã nguồn mở.</p>
+      <p><strong>CRUSH Map:</strong> Thuật toán phân phối dữ liệu thông minh - không cần central metadata server. Client tính toán vị trí dữ liệu từ CRUSH map, giảm bottleneck.</p>
+      <p><strong>OSD:</strong> Mỗi ổ disk là một OSD daemon. Ceph tự replicate (hoặc erasure code) dữ liệu qua các OSD trên các node khác nhau.</p>
+      <p><strong>RBD:</strong> Proxmox dùng RADOS Block Device làm storage cho VM/CT. Live migration hoạt động tức thì vì storage là shared.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">3+</div>
+          <div class="label">Nodes tối thiểu</div>
+        </div>
+        <div class="stat">
+          <div class="num">10GbE+</div>
+          <div class="label">Network khuyến nghị</div>
+        </div>
+        <div class="stat">
+          <div class="num">3x</div>
+          <div class="label">Replication mặc định</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">No SPOF</span>
+        <span class="tag good">Scale-out</span>
+        <span class="tag">RBD</span>
+        <span class="tag">CephFS</span>
+        <span class="tag warn">Phức tạp</span>
+        <span class="tag hot">Network intensive</span>
+      </div>
+    </div>
+
+    <div class="vendor-card lvm">
+      <div class="vendor-logo">&#x1F4CA;</div>
+      <h3>LVM-Thin</h3>
+      <div class="vendor-type">Thin Provisioning</div>
+      <p>LVM-Thin là phiên bản nâng cấp của LVM truyền thống, hỗ trợ thin provisioning - cấp phát dung lượng theo nhu cầu thực tế thay vì cố định. Một thin pool 500GB có thể chứa 10 VM mỗi cái "claim" 100GB nhưng chỉ dùng 30GB.</p>
+      <p>LVM-Thin hỗ trợ snapshot nhanh (nhanh hơn LVM standard). Proxmox mặc định dùng LVM-Thin khi cài với local storage. Đơn giản, ổn định, nhưng không có data integrity checking như ZFS.</p>
+      <div class="tag-row">
+        <span class="tag good">Thin Provision</span>
+        <span class="tag good">Snapshots</span>
+        <span class="tag">Đơn giản</span>
+        <span class="tag warn">Không checksum</span>
+      </div>
+    </div>
+
+    <div class="vendor-card nfs">
+      <div class="vendor-logo">&#x1F4C1;</div>
+      <h3>NFS / iSCSI / SMB</h3>
+      <div class="vendor-type">Network Storage</div>
+      <p><strong>NFS:</strong> Giao thức chia sẻ file qua mạng, phổ biến nhất cho shared storage trong Proxmox cluster. Dễ setup, hỗ trợ live migration. Hiệu năng phụ thuộc vào network và NFS server.</p>
+      <p><strong>iSCSI:</strong> Block-level storage qua TCP/IP. Hiệu năng cao hơn NFS cho random I/O. Thường dùng với SAN (TrueNAS, Synology, Dell PowerStore). Kết hợp LVM on iSCSI để có snapshot.</p>
+      <p><strong>SMB/CIFS:</strong> Chủ yếu cho ISO images, container templates, VZDump backup. Không khuyến nghị cho VM disk do overhead.</p>
+      <div class="tag-row">
+        <span class="tag">NFS v3/v4</span>
+        <span class="tag">iSCSI</span>
+        <span class="tag">SMB/CIFS</span>
+        <span class="tag good">Shared Storage</span>
+        <span class="tag warn">Network dependent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Storage chọn như thế nào?</h4>
+    <p><strong>Single node homelab:</strong> ZFS mirror (2 ổ) hoặc RAIDZ1 (3 ổ). Đơn giản và an toàn nhất. Nhớ dành RAM cho ARC (quy tắc: 1GB RAM / 1TB storage). <strong>Cluster nhỏ (3 node):</strong> Ceph nếu có 10GbE, hoặc NFS từ NAS chuyên dụng. <strong>Production lớn:</strong> Ceph + NVMe OSD + dedicated network. <strong>Tránh:</strong> Chạy ZFS trên hardware RAID controller - ZFS cần truy cập trực tiếp disk (HBA mode / IT mode).</p>
+  </div>
+</section>
+
+<!-- CLUSTERING & HA -->
+<section id="cluster">
+  <h2 class="section-title" style="color: var(--accent2);">Clustering & High Availability</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Biến nhiều server rời rạc thành một "siêu máy tính" thống nhất - sức mạnh thực sự của Proxmox.</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card cluster">
+      <div class="vendor-logo">&#x1F517;</div>
+      <h3>Cluster & Quorum</h3>
+      <div class="vendor-type">Corosync + pmxcfs</div>
+      <p>Proxmox cluster dùng Corosync để giao tiếp giữa các node (multicast hoặc unicast). Mỗi node có một "vote" và cluster cần quorum (đa số > 50%) để hoạt động. Cluster 3 node chịu được mất 1 node. Cluster 5 node chịu được mất 2 node.</p>
+      <p><strong>pmxcfs</strong> là filesystem đặc biệt của Proxmox - lưu toàn bộ cấu hình cluster trong SQLite database, replicate real-time qua Corosync. Thay đổi config trên node A tức thì xuất hiện trên node B.</p>
+      <p><strong>Tại sao quorum quan trọng?</strong> Tránh "split-brain" - tình huống 2 nhóm node đều nghĩ mình là cluster chính và cùng chạy VM, gây corrupt dữ liệu. Quorum đảm bảo chỉ một nhóm được phép hoạt động.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">3+</div>
+          <div class="label">Nodes khuyến nghị</div>
+        </div>
+        <div class="stat">
+          <div class="num">N/2+1</div>
+          <div class="label">Quorum formula</div>
+        </div>
+        <div class="stat">
+          <div class="num">pmxcfs</div>
+          <div class="label">Config sync</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Corosync</span>
+        <span class="tag good">Quorum</span>
+        <span class="tag">Totem Protocol</span>
+        <span class="tag warn">Cần số lẻ node</span>
+      </div>
+    </div>
+
+    <div class="vendor-card ha">
+      <div class="vendor-logo">&#x1F6E1;</div>
+      <h3>High Availability (HA)</h3>
+      <div class="vendor-type">Tự động failover</div>
+      <p>HA trong Proxmox nghĩa là: khi một node chết, các VM/CT được đánh dấu HA sẽ tự động khởi động lại trên node khác. Không cần người can thiệp - downtime chỉ vài phút thay vì hàng giờ.</p>
+      <p><strong>HA Manager</strong> theo dõi trạng thái từng resource. <strong>HA Groups</strong> cho phép chỉ định VM chỉ được chạy trên một nhóm node cụ thể (ví dụ: nhóm node có GPU). <strong>Fencing</strong> là cơ chế "giết" node lỗi trước khi khởi động VM trên node mới - tránh 2 node cùng chạy 1 VM.</p>
+      <p><strong>Yêu cầu:</strong> Cluster ít nhất 3 node (cho quorum) + shared storage (Ceph, NFS, iSCSI). Local storage không hỗ trợ HA vì dữ liệu không di chuyển được.</p>
+      <div class="tag-row">
+        <span class="tag good">Auto Failover</span>
+        <span class="tag">HA Groups</span>
+        <span class="tag hot">Fencing</span>
+        <span class="tag warn">Cần shared storage</span>
+      </div>
+    </div>
+
+    <div class="vendor-card migrate">
+      <div class="vendor-logo">&#x1F680;</div>
+      <h3>Live Migration</h3>
+      <div class="vendor-type">Di chuyển VM không downtime</div>
+      <p>Live migration cho phép di chuyển VM đang chạy từ node A sang node B mà user không hề biết. RAM được copy iteratively (dirty pages), cuối cùng VM bị pause vài millisecond để sync lần cuối, rồi resume trên node đích.</p>
+      <p><strong>Với shared storage:</strong> Chỉ copy RAM - nhanh, đơn giản. <strong>Với local storage:</strong> Proxmox hỗ trợ "storage migration" - copy cả disk qua mạng, chậm hơn nhưng vẫn hoạt động. <strong>Với Ceph RBD:</strong> Gần như tức thì vì disk nằm trên cluster storage.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">~ms</div>
+          <div class="label">Downtime</div>
+        </div>
+        <div class="stat">
+          <div class="num">Pre-copy</div>
+          <div class="label">Algorithm</div>
+        </div>
+        <div class="stat">
+          <div class="num">Online</div>
+          <div class="label">Disk migrate</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Zero downtime</span>
+        <span class="tag">Pre-copy RAM</span>
+        <span class="tag">Online disk move</span>
+      </div>
+    </div>
+
+    <div class="vendor-card corosync">
+      <div class="vendor-logo">&#x1F4E1;</div>
+      <h3>Corosync Deep Dive</h3>
+      <div class="vendor-type">Cluster Communication</div>
+      <p>Corosync là lớp giao tiếp nền tảng của cluster. Nó dùng Totem Single Ring Protocol để đảm bảo tất cả node nhận tin nhắn theo cùng thứ tự (total ordering). Mỗi node có một Corosync ring (hoặc link trong Corosync 3).</p>
+      <p><strong>Multi-link:</strong> Proxmox hỗ trợ nhiều network link cho Corosync (link0, link1). Nếu một link chết, cluster vẫn hoạt động qua link còn lại. Luôn cấu hình ít nhất 2 link cho production.</p>
+      <p><strong>QDevice:</strong> Node bỏ phiếu bên ngoài cluster (chạy trên Raspberry Pi cũng được). Cho phép cluster 2 node vẫn có quorum khi mất 1 node. Giải pháp cho homelab không đủ 3 server.</p>
+      <div class="tag-row">
+        <span class="tag">Totem Protocol</span>
+        <span class="tag good">Multi-link</span>
+        <span class="tag good">QDevice</span>
+        <span class="tag">UDP Unicast/Multicast</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Bài học từ thực tế</h4>
+    <p>Cluster 2 node là "anti-pattern" phổ biến nhất. Khi mất 1 node, node còn lại không có quorum và từ chối hoạt động - đúng thiết kế, nhưng gây hoảng loạn. Giải pháp: thêm QDevice (corosync-qdevice), hoặc chấp nhận rủi ro bằng cách set <code>pvecm expected 1</code> khi node chết. Cluster 3 node luôn là lựa chọn tối ưu cho homelab.</p>
+  </div>
+</section>
+
+<!-- PCIe PASSTHROUGH -->
+<section id="passthrough">
+  <h2 class="section-title" style="color: var(--accent4);">PCIe Passthrough: Hardware trong VM</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Gắn trực tiếp GPU, NIC, NVMe, USB controller vào VM - hiệu năng 100% native.</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card iommu">
+      <div class="vendor-logo">&#x1F9F1;</div>
+      <h3>IOMMU</h3>
+      <div class="vendor-type">Input-Output Memory Management Unit</div>
+      <p>IOMMU (Intel VT-d / AMD-Vi) là nền tảng của PCIe passthrough. Nó tạo ra một "bản đồ bộ nhớ" riêng cho từng thiết bị PCIe, ngăn không cho thiết bị trong VM truy cập bộ nhớ của host hoặc VM khác.</p>
+      <p><strong>IOMMU Groups:</strong> Các thiết bị PCIe được nhóm thành các IOMMU group. Bạn chỉ có thể passthrough nguyên một group, không thể tách lẻ. Một số mainboard có IOMMU grouping tệ (gộp nhiều thiết bị vào 1 group), cần ACS override patch (rủi ro bảo mật).</p>
+      <p>Kích hoạt: Thêm <code>intel_iommu=on</code> hoặc <code>amd_iommu=on</code> vào kernel command line (GRUB hoặc systemd-boot).</p>
+      <div class="tag-row">
+        <span class="tag">Intel VT-d</span>
+        <span class="tag">AMD-Vi</span>
+        <span class="tag good">DMA Isolation</span>
+        <span class="tag warn">IOMMU Groups</span>
+      </div>
+    </div>
+
+    <div class="vendor-card vfio">
+      <div class="vendor-logo">&#x1F50C;</div>
+      <h3>VFIO</h3>
+      <div class="vendor-type">Virtual Function I/O</div>
+      <p>VFIO là framework trong Linux kernel cho phép user-space program (QEMU) truy cập trực tiếp PCIe device một cách an toàn. Khi bạn "passthrough" một device, thực chất là bind nó vào vfio-pci driver thay vì driver gốc.</p>
+      <p><strong>Quy trình:</strong> (1) Bật IOMMU, (2) Load vfio-pci module, (3) Unbind device khỏi driver gốc, (4) Bind vào vfio-pci, (5) Assign cho VM trong Proxmox UI. Host không thể dùng device nữa - nó thuộc về VM hoàn toàn.</p>
+      <div class="tag-row">
+        <span class="tag">vfio-pci</span>
+        <span class="tag">Device unbind</span>
+        <span class="tag good">Full performance</span>
+        <span class="tag hot">Host mất device</span>
+      </div>
+    </div>
+
+    <div class="vendor-card gpu">
+      <div class="vendor-logo">&#x1F3AE;</div>
+      <h3>GPU Passthrough</h3>
+      <div class="vendor-type">Gaming / AI / Transcoding</div>
+      <p>GPU passthrough là use case phổ biến nhất. Gắn NVIDIA/AMD GPU vào VM để chơi game, train AI model, hoặc hardware transcoding (Plex/Jellyfin). VM nhận được 100% hiệu năng GPU - không khác gì cắm trực tiếp.</p>
+      <p><strong>NVIDIA:</strong> Từng có "Code 43" block trên consumer GPU (GeForce). Nay đã bỏ từ driver 465+. Vẫn cần: OVMF BIOS, machine type q35, hidden state, vendor_id.</p>
+      <p><strong>AMD:</strong> Thường dễ passthrough hơn NVIDIA. Nhưng có "reset bug" trên một số dòng (Navi, Polaris) - GPU không reset đúng khi VM restart, cần vendor-reset module.</p>
+      <p><strong>Intel iGPU (GVT-g):</strong> Chia sẻ iGPU cho nhiều VM. Hỗ trợ có giới hạn, đang chuyển sang SR-IOV trên Intel Flex/Arc.</p>
+      <div class="tag-row">
+        <span class="tag good">100% Performance</span>
+        <span class="tag">NVIDIA GeForce</span>
+        <span class="tag">AMD Radeon</span>
+        <span class="tag warn">Reset bug AMD</span>
+        <span class="tag">GVT-g / SR-IOV</span>
+      </div>
+    </div>
+
+    <div class="vendor-card sriov">
+      <div class="vendor-logo">&#x1F504;</div>
+      <h3>SR-IOV</h3>
+      <div class="vendor-type">Single Root I/O Virtualization</div>
+      <p>SR-IOV cho phép một PCIe device vật lý tạo ra nhiều "Virtual Functions" (VF) - mỗi VF hoạt động như một device riêng biệt, có thể assign cho VM khác nhau. Một NIC 10GbE tạo ra 64 VF, mỗi VM có "NIC riêng" với near-native performance.</p>
+      <p><strong>NIC SR-IOV:</strong> Intel X710, Mellanox ConnectX - phổ biến nhất. Bypass hoàn toàn software bridge, giảm latency và tăng throughput đáng kể so với virtio-net.</p>
+      <p><strong>GPU SR-IOV:</strong> Intel Data Center GPU Flex (ATS-M), NVIDIA A-series (vGPU). Chia sẻ GPU cho nhiều VM mà không cần license đắt đỏ (Intel) hoặc cần license (NVIDIA).</p>
+      <div class="tag-row">
+        <span class="tag good">Multi-VM sharing</span>
+        <span class="tag">Virtual Functions</span>
+        <span class="tag">NIC / GPU</span>
+        <span class="tag warn">Hardware support</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Kinh nghiệm GPU Passthrough</h4>
+    <p>Trước khi mua hardware cho GPU passthrough, kiểm tra: (1) CPU/Mainboard có hỗ trợ IOMMU không, (2) IOMMU groups có tách biệt không (dùng script <code>find /sys/kernel/iommu_groups/</code>), (3) GPU có nằm trong group riêng không. Server motherboard (Supermicro, ASRock Rack) thường có IOMMU grouping tốt hơn consumer board. Và nhớ: bạn cần 2 GPU (hoặc 1 GPU + 1 iGPU) nếu muốn host vẫn có display output.</p>
+  </div>
+</section>
+
+<!-- PROXMOX BACKUP SERVER -->
+<section id="pbs">
+  <h2 class="section-title" style="color: var(--accent5);">Proxmox Backup Server</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Backup không phải "nice to have" - nó là bảo hiểm nhân thọ cho dữ liệu. PBS là giải pháp chuyên dụng cho Proxmox.</p>
+
+  <div class="pbs-flow">
+    <div class="flow-title">Luồng Backup: PVE &#x2192; PBS</div>
+    <div class="pbs-diagram">
+      <div class="pbs-node">
+        <div class="node-icon">&#x1F5A5;</div>
+        <h4>Proxmox VE</h4>
+        <p>VM / CT nguồn</p>
+      </div>
+      <div class="pbs-arrow">&#x2192; dirty bitmap &#x2192;</div>
+      <div class="pbs-node">
+        <div class="node-icon">&#x1F4E6;</div>
+        <h4>Changed Blocks</h4>
+        <p>Incremental data</p>
+      </div>
+      <div class="pbs-arrow">&#x2192; deduplicate &#x2192;</div>
+      <div class="pbs-node">
+        <div class="node-icon">&#x1F512;</div>
+        <h4>Chunk Store</h4>
+        <p>Encrypted, verified</p>
+      </div>
+      <div class="pbs-arrow">&#x2192; store &#x2192;</div>
+      <div class="pbs-node">
+        <div class="node-icon">&#x1F4BE;</div>
+        <h4>PBS Datastore</h4>
+        <p>ZFS / ext4 / XFS</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vendor-grid">
+    <div class="vendor-card" style="border-top: 4px solid var(--accent3);">
+      <div class="vendor-logo">&#x1F4C8;</div>
+      <h3>Incremental Forever</h3>
+      <div class="vendor-type">Backup thông minh</div>
+      <p>PBS không bao giờ tạo full backup lần thứ hai. Sau lần backup đầu tiên, tất cả các lần tiếp theo chỉ gửi các block thay đổi (dirty bitmap tracking). Kết quả: backup 1TB VM chỉ mất vài phút nếu chỉ thay đổi vài GB.</p>
+      <p>Mỗi backup vẫn là một "full image" logic - bạn có thể restore bất kỳ snapshot nào mà không cần chain ngược lại. Đây là điểm vượt trội so với nhiều giải pháp backup truyền thống.</p>
+      <div class="tag-row">
+        <span class="tag good">Incremental forever</span>
+        <span class="tag good">Fast restore</span>
+        <span class="tag">Dirty bitmap</span>
+      </div>
+    </div>
+
+    <div class="vendor-card" style="border-top: 4px solid var(--accent2);">
+      <div class="vendor-logo">&#x1F50D;</div>
+      <h3>Deduplication & Verify</h3>
+      <div class="vendor-type">Tiết kiệm dung lượng</div>
+      <p>PBS chunk dữ liệu thành các block cố định, hash mỗi block. Nếu 2 VM có cùng OS base image, PBS chỉ lưu 1 bản. Tỷ lệ dedup thường 2-5x cho môi trường đồng nhất.</p>
+      <p><strong>Verify:</strong> PBS có thể kiểm tra integrity của mọi backup bất kỳ lúc nào. Không cần restore thử - chỉ cần chạy verify job. Backup bị corrupt sẽ được phát hiện trước khi bạn cần nó.</p>
+      <div class="tag-row">
+        <span class="tag good">Content-based dedup</span>
+        <span class="tag good">Verify jobs</span>
+        <span class="tag">SHA-256 chunks</span>
+      </div>
+    </div>
+
+    <div class="vendor-card" style="border-top: 4px solid var(--accent4);">
+      <div class="vendor-logo">&#x1F512;</div>
+      <h3>Encryption & Sync</h3>
+      <div class="vendor-type">Bảo mật dữ liệu</div>
+      <p><strong>Client-side encryption:</strong> Dữ liệu được mã hoá trên PVE host trước khi gửi đến PBS. PBS admin không thể đọc dữ liệu backup. Dùng AES-256-GCM.</p>
+      <p><strong>Remote sync:</strong> PBS có thể replicate datastore sang PBS khác qua internet (pull hoặc push). Kết hợp encryption, bạn có offsite backup an toàn mà không cần VPN phức tạp.</p>
+      <div class="tag-row">
+        <span class="tag good">AES-256-GCM</span>
+        <span class="tag good">Client-side encrypt</span>
+        <span class="tag">Remote sync</span>
+        <span class="tag">Tape backup</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Quy tắc 3-2-1</h4>
+    <p>3 bản sao dữ liệu, trên 2 loại media khác nhau, với 1 bản ở offsite. PBS làm cho quy tắc này dễ thực hiện: (1) Dữ liệu gốc trên PVE, (2) Backup trên PBS local, (3) Sync sang PBS remote hoặc tape. Chi phí gần như bằng 0 so với các giải pháp thương mại như Veeam ($$$).</p>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="compare">
+  <h2 class="section-title" style="color: var(--accent);">So sánh: Proxmox vs Đối thủ</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Mỗi hypervisor có điểm mạnh riêng. Hiểu rõ để chọn đúng công cụ cho đúng việc.</p>
+
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Proxmox VE</th>
+          <th>VMware ESXi</th>
+          <th>Hyper-V</th>
+          <th>XCP-ng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>License</td>
+          <td style="color: var(--accent3);">AGPL v3 - Miễn phí</td>
+          <td style="color: var(--accent5);">Proprietary - $$$</td>
+          <td style="color: var(--accent4);">Windows Server License</td>
+          <td style="color: var(--accent3);">GPL v2 - Miễn phí</td>
+        </tr>
+        <tr>
+          <td>Hypervisor</td>
+          <td>KVM (Type-1 via Linux)</td>
+          <td>VMkernel (Type-1)</td>
+          <td>Hyper-V (Type-1)</td>
+          <td>Xen (Type-1)</td>
+        </tr>
+        <tr>
+          <td>Containers</td>
+          <td style="color: var(--accent3);">LXC tích hợp</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td>Windows Containers</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Distributed Storage</td>
+          <td style="color: var(--accent3);">Ceph tích hợp</td>
+          <td>vSAN (thêm tiền)</td>
+          <td>S2D (Datacenter Ed.)</td>
+          <td>XOSTOR / GlusterFS</td>
+        </tr>
+        <tr>
+          <td>ZFS</td>
+          <td style="color: var(--accent3);">Native support</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent5);">Không (ReFS)</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Backup tích hợp</td>
+          <td style="color: var(--accent3);">PBS (miễn phí)</td>
+          <td>Cần Veeam / Nakivo</td>
+          <td>Windows Server Backup</td>
+          <td>XO Backup (community)</td>
+        </tr>
+        <tr>
+          <td>Live Migration</td>
+          <td style="color: var(--accent3);">Miễn phí</td>
+          <td style="color: var(--accent4);">vMotion (Enterprise+)</td>
+          <td style="color: var(--accent3);">Miễn phí</td>
+          <td style="color: var(--accent3);">Miễn phí</td>
+        </tr>
+        <tr>
+          <td>PCIe Passthrough</td>
+          <td style="color: var(--accent3);">Hỗ trợ tốt</td>
+          <td>DirectPath I/O</td>
+          <td>DDA (giới hạn)</td>
+          <td>Hỗ trợ (Xen PCI)</td>
+        </tr>
+        <tr>
+          <td>API / Automation</td>
+          <td>REST API, Terraform</td>
+          <td>vSphere API, PowerCLI</td>
+          <td>PowerShell, SCVMM</td>
+          <td>XAPI, Terraform</td>
+        </tr>
+        <tr>
+          <td>Nền tảng</td>
+          <td>Debian Linux</td>
+          <td>VMkernel (ESXi)</td>
+          <td>Windows Server</td>
+          <td>CentOS / XS Linux</td>
+        </tr>
+        <tr>
+          <td>Cộng đồng</td>
+          <td style="color: var(--accent3);">Rất lớn, forum active</td>
+          <td>Lớn nhưng đang giảm</td>
+          <td>Trung bình</td>
+          <td>Nhỏ nhưng growing</td>
+        </tr>
+        <tr>
+          <td>Phù hợp cho</td>
+          <td>Homelab + SMB + Enterprise</td>
+          <td>Enterprise (nếu có budget)</td>
+          <td>Windows-centric shop</td>
+          <td>Homelab + SMB</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Nhận xét thẳng thắn</h4>
+    <p>Proxmox không phải "VMware killer" và cũng không nên cố so sánh 1:1. VMware vSphere có hệ sinh thái enterprise khổng lồ (NSX, vROps, Aria). Nhưng sau khi Broadcom thay đổi license, Proxmox trở thành lựa chọn thực tế cho 80% use case mà không tốn một đồng license. Với homelab, Proxmox là vua không ngai.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Hiểu Nhầm Phổ Biến</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Những quan niệm sai lầm mà ngay cả người dùng lâu năm cũng mắc phải.</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Proxmox là Type-2 hypervisor vì chạy trên Linux"</h4>
+      <p>Nhiều người nghĩ: Proxmox cài trên Debian = Linux chạy trước = Type-2 (như VirtualBox). Sai hoàn toàn.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>KVM là kernel module - Linux kernel chính nó trở thành hypervisor khi load KVM. Giống ESXi là "OS + hypervisor", Linux + KVM cũng là "OS + hypervisor". Nhiều tài liệu phân loại KVM là Type-1. VM chạy ở Ring -1 (VMX root), host OS ở Ring 0 - không có "host OS chạy trước rồi mới có hypervisor".</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Container LXC không an toàn, dễ bị escape"</h4>
+      <p>Nhiều người đánh đồng LXC với Docker rồi kết luận container không an toàn bằng VM.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>LXC unprivileged container trong Proxmox cực kỳ an toàn. User namespace mapping đảm bảo root trong container = nobody trên host. Kết hợp AppArmor profile + seccomp filter, attack surface rất nhỏ. Tất nhiên, VM vẫn cách ly tốt hơn (separate kernel), nhưng LXC unprivileged đủ tốt cho hầu hết workload.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Cần mua subscription để dùng Proxmox"</h4>
+      <p>Rất nhiều người mới nghĩ pop-up "no valid subscription" nghĩa là Proxmox sẽ ngừng hoạt động hoặc bị giới hạn tính năng.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>Proxmox VE miễn phí 100% tính năng. Subscription chỉ cho bạn: (1) enterprise repo ổn định hơn, (2) support ticket. Dùng no-subscription repo hoàn toàn hợp pháp và đầy đủ chức năng. Pop-up chỉ là reminder - bạn có thể dismiss hoặc remove bằng script.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"ZFS cần ECC RAM, không có thì mất dữ liệu"</h4>
+      <p>Một "myth" tồn tại hơn 10 năm trong cộng đồng: "Không có ECC thì ZFS sẽ ăn hết dữ liệu."</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>ZFS hoạt động tốt trên non-ECC RAM. ECC tốt hơn cho MỌI filesystem (ext4, XFS, NTFS đều hưởng lợi). ZFS checksumming phát hiện corruption trên disk, nhưng không fix RAM error - đúng, nhưng ext4 cũng không! ZFS với non-ECC vẫn an toàn hơn ext4 với non-ECC. ECC là "nice to have", không phải "must have".</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Proxmox không phù hợp cho production"</h4>
+      <p>Một số IT manager: "Proxmox chỉ là đồ chơi homelab, production phải dùng VMware."</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>Proxmox được dùng bởi hàng ngàn doanh nghiệp, ISP, trường đại học, và cả chính phủ. Hetzner - một trong những hosting provider lớn nhất châu Âu - chạy Proxmox cho toàn bộ infrastructure. Với Ceph, HA, backup tích hợp, Proxmox đáp ứng mọi yêu cầu production. Vấn đề không phải "Proxmox có đủ tốt không" mà là "team bạn có đủ skill Linux không".</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Snapshot là backup, không cần PBS"</h4>
+      <p>Nhiều người tạo ZFS/LVM snapshot rồi yên tâm: "Dữ liệu an toàn rồi."</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>Snapshot nằm trên cùng storage với dữ liệu gốc. Disk chết = mất cả data lẫn snapshot. Snapshot cũng tích lũy dirty blocks, gây chậm I/O theo thời gian. PBS backup sang server/disk riêng mới là backup thực sự. Snapshot là "undo button" tiện lợi, không phải disaster recovery.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"GPU passthrough không ổn định, hay crash"</h4>
+      <p>Nhiều bài forum report lỗi passthrough, khiến người mới sợ không dám thử.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>GPU passthrough hoạt động cực kỳ ổn định khi cấu hình đúng. 90% lỗi đến từ: IOMMU chưa bật, BIOS setting sai, dùng SeaBIOS thay vì OVMF, hoặc AMD reset bug (cần vendor-reset module). Một khi setup đúng, VM chạy GPU passthrough ổn định hàng tháng không restart. Vấn đề là tài liệu hướng dẫn thường outdated hoặc thiếu bước.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Ceph quá phức tạp cho homelab"</h4>
+      <p>"Ceph là enterprise-only, homelab 3 node chạy Ceph là phí phạm."</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Đúng</div>
+      <p>Proxmox đã đơn giản hoá Ceph đến mức bạn có thể setup 3-node Ceph cluster trong 30 phút qua Web UI. Với 3 node, mỗi node 1 SSD OSD, bạn có shared storage với auto-replication, live migration, và HA. Chi phí: 3 con SSD. Tất nhiên cần 10GbE (hoặc ít nhất 2.5GbE bonded) để Ceph hoạt động tốt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Cheat Sheet: Lệnh Hay Dùng</h2>
+  <div class="section-title" style="display:block;"></div>
+  <p class="section-subtitle">Những lệnh CLI quan trọng nhất khi quản trị Proxmox hàng ngày.</p>
+
+  <h3 style="color: var(--accent); margin-bottom: 1rem;">&#x1F4BB; qm - Quản lý VM (QEMU)</h3>
+  <div class="cheat-grid" style="margin-bottom: 2.5rem;">
+    <div class="cheat-card">
+      <h4>Liệt kê VM</h4>
+      <p>Xem tất cả VM trên node hiện tại</p>
+      <code>qm list</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Tạo VM mới</h4>
+      <p>Tạo VM ID 100 với 4GB RAM, 2 cores</p>
+      <code>qm create 100 \
+  --memory 4096 \
+  --cores 2 \
+  --name my-vm \
+  --net0 virtio,bridge=vmbr0 \
+  --scsihw virtio-scsi-single</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Start / Stop / Reboot</h4>
+      <p>Điều khiển VM cơ bản</p>
+      <code>qm start 100
+qm shutdown 100
+qm stop 100       # force stop
+qm reboot 100
+qm reset 100      # force reset</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Snapshot</h4>
+      <p>Tạo và quản lý snapshot</p>
+      <code>qm snapshot 100 before-update
+qm rollback 100 before-update
+qm delsnapshot 100 before-update
+qm listsnapshot 100</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Clone & Template</h4>
+      <p>Nhân bản VM và tạo template</p>
+      <code>qm clone 100 201 --name clone-vm
+qm clone 100 202 --full    # full clone
+qm template 100            # convert to template</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Import Disk</h4>
+      <p>Import disk image vào VM</p>
+      <code>qm importdisk 100 \
+  /path/to/image.qcow2 \
+  local-lvm</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Resize Disk</h4>
+      <p>Tăng dung lượng disk VM</p>
+      <code>qm resize 100 scsi0 +20G
+qm resize 100 scsi0 50G   # set to 50G</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Migration</h4>
+      <p>Di chuyển VM sang node khác</p>
+      <code>qm migrate 100 node2
+qm migrate 100 node2 --online  # live</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent3); margin-bottom: 1rem;">&#x1F4E6; pct - Quản lý LXC Container</h3>
+  <div class="cheat-grid" style="margin-bottom: 2.5rem;">
+    <div class="cheat-card">
+      <h4>Tạo Container</h4>
+      <p>Tạo CT từ template</p>
+      <code>pct create 200 \
+  local:vztmpl/debian-12-standard.tar.zst \
+  --hostname my-ct \
+  --memory 1024 \
+  --cores 2 \
+  --rootfs local-lvm:8 \
+  --net0 name=eth0,bridge=vmbr0,ip=dhcp \
+  --unprivileged 1</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Start / Stop / Enter</h4>
+      <p>Điều khiển và truy cập container</p>
+      <code>pct start 200
+pct shutdown 200
+pct stop 200
+pct enter 200      # attach console
+pct exec 200 -- ls /  # run command</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Mount / Push / Pull</h4>
+      <p>Tương tác filesystem container</p>
+      <code>pct push 200 /local/file /ct/path
+pct pull 200 /ct/path /local/file
+pct mount 200      # mount rootfs
+pct unmount 200</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Resize & Snapshot</h4>
+      <p>Quản lý storage container</p>
+      <code>pct resize 200 rootfs +5G
+pct snapshot 200 snap1
+pct rollback 200 snap1
+pct listsnapshot 200</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent2); margin-bottom: 1rem;">&#x1F517; pvecm - Cluster Management</h3>
+  <div class="cheat-grid" style="margin-bottom: 2.5rem;">
+    <div class="cheat-card">
+      <h4>Tạo Cluster</h4>
+      <p>Tạo cluster mới trên node đầu tiên</p>
+      <code>pvecm create my-cluster
+pvecm create my-cluster \
+  --link0 10.10.10.1 \
+  --link1 10.10.20.1</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Join Cluster</h4>
+      <p>Thêm node vào cluster</p>
+      <code>pvecm add 10.10.10.1 \
+  --link0 10.10.10.2 \
+  --link1 10.10.20.2</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Trạng thái Cluster</h4>
+      <p>Kiểm tra health và quorum</p>
+      <code>pvecm status
+pvecm nodes
+pvecm expected 1  # emergency quorum</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Remove Node</h4>
+      <p>Xoá node khỏi cluster (chạy từ node còn lại)</p>
+      <code>pvecm delnode node-name
+# Trên node bị xoá:
+systemctl stop pve-cluster corosync
+pmxcfs -l          # local mode
+rm /etc/corosync/*
+rm /etc/pve/corosync.conf
+systemctl start pve-cluster</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent4); margin-bottom: 1rem;">&#x1F4BE; ZFS Commands</h3>
+  <div class="cheat-grid" style="margin-bottom: 2.5rem;">
+    <div class="cheat-card">
+      <h4>Pool Management</h4>
+      <p>Tạo và quản lý ZFS pool</p>
+      <code>zpool create tank mirror sda sdb
+zpool create tank raidz1 sda sdb sdc
+zpool status
+zpool list
+zpool iostat -v 5</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Dataset Operations</h4>
+      <p>Tạo dataset với tuỳ chọn</p>
+      <code>zfs create tank/data
+zfs create -o compression=lz4 tank/vms
+zfs set quota=100G tank/data
+zfs list -t all
+zfs get all tank/data</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Snapshot & Send</h4>
+      <p>Snapshot và replicate dữ liệu</p>
+      <code>zfs snapshot tank/data@today
+zfs rollback tank/data@today
+zfs send tank/data@today | \
+  zfs recv backup/data
+# Incremental:
+zfs send -i @snap1 tank/data@snap2 | \
+  zfs recv backup/data</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Scrub & Maintenance</h4>
+      <p>Kiểm tra integrity và bảo trì</p>
+      <code>zpool scrub tank
+zpool status -v          # xem errors
+zpool replace tank old-disk new-disk
+zpool trim tank          # SSD TRIM
+zfs destroy tank/data@old-snap</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent5); margin-bottom: 1rem;">&#x1F6E0; Lệnh Hữu ích Khác</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Proxmox Service</h4>
+      <p>Quản lý dịch vụ Proxmox</p>
+      <code>systemctl restart pvedaemon
+systemctl restart pveproxy
+systemctl restart pvestatd
+pveversion -v     # version info
+pveperf /path     # benchmark storage</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Firewall</h4>
+      <p>Quản lý firewall Proxmox</p>
+      <code>pve-firewall status
+pve-firewall start
+pve-firewall stop
+# Config: /etc/pve/firewall/
+# VM rules: /etc/pve/firewall/100.fw</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Storage Management</h4>
+      <p>Quản lý storage trong Proxmox</p>
+      <code>pvesm status
+pvesm list local-lvm
+pvesm alloc local-lvm 100 vm-100-disk-0 32G
+pvesm free local-lvm:vm-100-disk-0</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Backup & Restore</h4>
+      <p>Backup thủ công và restore</p>
+      <code># Backup VM
+vzdump 100 --storage local --mode snapshot
+# Restore VM
+qmrestore /backup/vzdump-qemu-100.vma 100
+# Restore CT
+pct restore 200 /backup/vzdump-lxc-200.tar.zst</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Network Debug</h4>
+      <p>Kiểm tra network và bridge</p>
+      <code>ip -br link show
+brctl show
+cat /etc/network/interfaces
+ifreload -a       # apply network changes
+pvesh get /nodes/$(hostname)/network</code>
+    </div>
+    <div class="cheat-card">
+      <h4>IOMMU & Passthrough</h4>
+      <p>Kiểm tra IOMMU groups</p>
+      <code>dmesg | grep -i iommu
+# List IOMMU groups:
+for d in /sys/kernel/iommu_groups/*/devices/*; do
+  n=$(basename $(dirname $(dirname $d)))
+  echo "Group $n: $(lspci -nns ${d##*/})"
+done</code>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="font-size: 1.5rem; margin-bottom: 1rem;">&#x1F5A5;</p>
+  <p><strong>Proxmox World</strong> - Trang deep-dive kiến thức ảo hoá mã nguồn mở</p>
+  <p style="margin-top: 0.5rem;">Được viết cho cộng đồng Proxmox Việt Nam. Kiến thức là sức mạnh - hãy chia sẻ!</p>
+  <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--border);">Cập nhật: 2026 | Proxmox VE 8.x | Không liên kết với Proxmox Server Solutions GmbH</p>
+</footer>
+
+</body>
+</html>

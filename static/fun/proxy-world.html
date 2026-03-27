@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Proxy - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-icon 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-icon {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is Proxy */
+  .proxy-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .proxy-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .proxy-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.nginx::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.haproxy::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.traefik::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.caddy::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .vendor-card.apache::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.envoy::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Concept Cards */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .concept-card:hover { border-color: var(--accent); }
+
+  .concept-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .concept-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  .concept-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.hot { background: var(--accent5); }
+
+  /* Algorithm Cards */
+  .algo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .algo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .algo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .algo-card .algo-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .algo-card h4 { color: var(--accent); margin-bottom: 0.5rem; }
+  .algo-card p { color: var(--text-dim); font-size: 0.9rem; }
+  .algo-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--accent3);
+    margin-top: 0.8rem;
+    white-space: pre;
+    text-align: left;
+  }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Topology / Architecture visual */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  .topo-visual {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 4rem;
+  }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .proxy-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .algo-grid { grid-template-columns: 1fr; }
+    .concept-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Proxy World</a>
+  <a href="#what">Proxy là gì?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#vendors">Các ông lớn</a>
+  <a href="#concepts">Concepts</a>
+  <a href="#algorithms">Algorithms</a>
+  <a href="#architecture">Kiến trúc</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#x1F500;</div>
+  <h1>Thế Giới Proxy</h1>
+  <p class="subtitle">Từ CERN httpd đến service mesh hiện đại - Hành trình của reverse proxy và load balancing. Mọi thứ bạn cần biết về lớp trung gian âm thầm giữ cho Internet không sụp đổ mỗi ngày.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS PROXY -->
+<section id="what">
+  <div class="proxy-what">
+    <h2 class="section-title">Proxy là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Proxy</strong> - trong tiếng Latin nghĩa là "đại diện". Trong thế giới mạng, proxy là một server trung gian đứng giữa client và server đích. Nó nhận request từ một bên, rồi "đại diện" bên đó gửi request đến bên kia. Nghe đơn giản, nhưng ý tưởng này đã thay đổi hoàn toàn cách Internet vận hành.
+    </p>
+
+    <div class="proxy-analogy">
+      <div class="analogy-box">
+        <div class="icon">&#x27A1;&#xFE0F;</div>
+        <h3>Forward Proxy</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Client &#8594; <strong>Proxy</strong> &#8594; Internet<br>Proxy đại diện cho <strong style="color: var(--accent3);">client</strong><br>VD: Squid, VPN, corporate proxy</p>
+      </div>
+      <div class="analogy-arrow">&#x21C4;</div>
+      <div class="analogy-box">
+        <div class="icon">&#x2B05;&#xFE0F;</div>
+        <h3>Reverse Proxy</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Internet &#8594; <strong>Proxy</strong> &#8594; Backend servers<br>Proxy đại diện cho <strong style="color: var(--accent);">server</strong><br>VD: Nginx, HAProxy, Traefik</p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Phép ẩn dụ để nhớ mãi</h4>
+      <p><strong>Forward proxy</strong> giống như bạn nhờ một người bạn mua hộ món đồ trên mạng - người bán không biết bạn là ai, chỉ biết "người bạn" đó. <strong>Reverse proxy</strong> giống như lễ tân khách sạn - khách đến chỉ gặp lễ tân, không biết phòng bếp, phòng giặt nằm ở đâu. Lễ tân tiếp nhận yêu cầu rồi điều phối bên trong. Trong homelab và production, <strong>reverse proxy mới là nhân vật chính</strong> - và đó là trọng tâm của trang này.</p>
+    </div>
+
+    <div class="proxy-analogy" style="margin-top: 2rem;">
+      <div class="analogy-box">
+        <div class="icon">&#x1F310;</div>
+        <h3>Không có Reverse Proxy</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Mỗi service expose 1 port riêng<br>app1:3000, app2:8080, app3:5000<br>Người dùng phải nhớ port<br><strong style="color: var(--accent5);">Không TLS, không bảo mật</strong></p>
+      </div>
+      <div class="analogy-arrow">&#8594;</div>
+      <div class="analogy-box">
+        <div class="icon">&#x1F6E1;&#xFE0F;</div>
+        <h3>Có Reverse Proxy</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Tất cả qua port 443 (HTTPS)<br>app1.domain.com, app2.domain.com<br>Auto TLS, rate limit, caching<br><strong style="color: var(--accent3);">Một cửa duy nhất, bảo mật tuyệt đối</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian Reverse Proxy</h2>
+  <p class="section-subtitle">Từ phòng thí nghiệm CERN đến mọi datacenter trên thế giới - câu chuyện của những lớp trung gian vĩ đại</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1990-1995</span>
+        <h3>CERN httpd - Khởi nguyên</h3>
+        <p>Tim Berners-Lee viết web server đầu tiên tại CERN. Ngay từ phiên bản đầu, nó đã có tính năng proxy cơ bản. Khi web mới chỉ có vài nghìn trang, việc cache và chuyển tiếp request đã được nghĩ đến. Squid proxy ra đời năm 1996 để cache nội dung web, giảm băng thông quốc tế - điều cực kỳ quan trọng thời dial-up.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1995-2004</span>
+        <h3>Apache httpd thống trị</h3>
+        <p>Apache HTTP Server ra đời (1995), nhanh chóng chiếm 70%+ thị phần web server. Module mod_proxy biến Apache thành reverse proxy. Tuy nhiên, kiến trúc process-per-connection của Apache sớm bộc lộ giới hạn khi traffic tăng. Mỗi connection cần một process riêng - tốn RAM kinh khủng. Đây là nỗi đau mà sau này Nginx sẽ giải quyết.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2000-2004</span>
+        <h3>HAProxy - Ông vua Load Balancer</h3>
+        <p>Willy Tarreau viết HAProxy năm 2000 tại Pháp. Sinh ra với một mục đích duy nhất: load balancing cực nhanh, cực ổn định. Không cần làm web server, không cần serve static file - chỉ cần phân tải traffic tốt nhất có thể. Triết lý "làm một việc và làm cho hoàn hảo" khiến HAProxy trở thành tiêu chuẩn vàng cho high-traffic sites.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2004</span>
+        <h3>Nginx - Cuộc cách mạng C10K</h3>
+        <p>Igor Sysoev (Nga) công bố Nginx để giải quyết "C10K problem" - xử lý 10.000 concurrent connections. Kiến trúc event-driven, non-blocking I/O thay vì process-per-request. Nginx dùng ít RAM hơn Apache hàng chục lần với cùng số connections. Ban đầu chỉ là reverse proxy đặt trước Apache, sau trở thành web server thống trị thế giới.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2015-2017</span>
+        <h3>Traefik, Caddy &amp; Auto-HTTPS</h3>
+        <p>Let's Encrypt ra đời (2015) - TLS certificate miễn phí cho mọi người. Caddy (2015) là web server đầu tiên tự động HTTPS mặc định. Traefik (2016) sinh ra cho Docker &amp; Kubernetes - tự động phát hiện container mới, tự cấu hình routing. Thời đại "zero-config" reverse proxy bắt đầu. Không còn phải edit file config mỗi lần deploy service mới.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2016-nay</span>
+        <h3>Envoy &amp; Service Mesh</h3>
+        <p>Lyft tạo Envoy (2016), được hiến tặng cho CNCF. Proxy không còn chỉ đứng ở edge - nó đi vào bên trong, đứng cạnh mỗi service (sidecar pattern). Istio, Linkerd sử dụng Envoy làm data plane. Khái niệm "service mesh" ra đời - mọi communication giữa các microservice đều đi qua proxy. Observability, mTLS, traffic management trở thành tự động.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors">
+  <h2 class="section-title" style="color: var(--accent2);">Các Ông Lớn Reverse Proxy</h2>
+  <p class="section-subtitle">Mỗi proxy có triết lý riêng, thế mạnh riêng, và use case mà nó tỏa sáng nhất</p>
+
+  <div class="vendor-grid">
+    <!-- Nginx -->
+    <div class="vendor-card nginx">
+      <div class="vendor-logo">&#x1F7E2;</div>
+      <h3>Nginx</h3>
+      <div class="vendor-type">Web Server / Reverse Proxy / Load Balancer</div>
+      <p>Vua không ngai của reverse proxy. Chiếm ~34% thị phần web server toàn cầu. Kiến trúc event-driven, async, non-blocking. Một worker process xử lý hàng nghìn connections đồng thời. Config file dạng declarative, dễ đọc. Có phiên bản thương mại Nginx Plus với health checks nâng cao, dashboard, và dynamic reconfiguration.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2004</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">34%</div><div class="label">Thị phần</div></div>
+        <div class="stat"><div class="num">C</div><div class="label">Ngôn ngữ</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Event-driven</span>
+        <span class="tag">HTTP/HTTPS</span>
+        <span class="tag good">Low Memory</span>
+        <span class="tag">Static Files</span>
+        <span class="tag warn">Config Reload</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>Nginx gốc (open source) <strong>không có active health check</strong> - chỉ passive. Nếu cần active health check, bạn phải dùng Nginx Plus (trả phí) hoặc module bên thứ ba. Đây là điểm mà HAProxy vượt trội hơn ở bản miễn phí.</p>
+      </div>
+    </div>
+
+    <!-- HAProxy -->
+    <div class="vendor-card haproxy">
+      <div class="vendor-logo">&#x1F535;</div>
+      <h3>HAProxy</h3>
+      <div class="vendor-type">Load Balancer / TCP-HTTP Proxy chuyên dụng</div>
+      <p>Nếu Nginx là "con dao Thụy Sĩ" thì HAProxy là "con dao phẫu thuật". Sinh ra để load balance, và làm việc đó tốt nhất thế giới. Hỗ trợ cả L4 (TCP) và L7 (HTTP). ACL system cực mạnh cho traffic routing phức tạp. Được dùng bởi GitHub, Stack Overflow, Reddit, Airbnb, Instagram. Zero-downtime reload là built-in.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2000</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">L4+L7</div><div class="label">Proxy Layer</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Core</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Active Health Check</span>
+        <span class="tag good">Zero-downtime</span>
+        <span class="tag">TCP/HTTP</span>
+        <span class="tag">ACL Routing</span>
+        <span class="tag warn">Không serve static</span>
+      </div>
+    </div>
+
+    <!-- Traefik -->
+    <div class="vendor-card traefik">
+      <div class="vendor-logo">&#x1F7E3;</div>
+      <h3>Traefik</h3>
+      <div class="vendor-type">Cloud-Native Edge Router / Auto-Discovery</div>
+      <p>"Reverse proxy dành cho người lười" - theo nghĩa tốt nhất. Traefik tự động phát hiện services từ Docker, Kubernetes, Consul, Rancher. Thêm container mới? Traefik tự thêm route. Xóa container? Route biến mất. Let's Encrypt tự động. Dashboard đẹp built-in. Viết bằng Go, single binary, dễ deploy. Lý tưởng cho homelab và microservices.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2016</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">3B+</div><div class="label">Downloads</div></div>
+        <div class="stat"><div class="num">Go</div><div class="label">Ngôn ngữ</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Auto-Discovery</span>
+        <span class="tag good">Docker Native</span>
+        <span class="tag">Let's Encrypt</span>
+        <span class="tag">K8s Ingress</span>
+        <span class="tag warn">RAM cao hơn Nginx</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Homelab pick</h4>
+        <p>Traefik là lựa chọn số 1 cho homelab chạy Docker. Chỉ cần thêm labels vào docker-compose, Traefik lo hết phần còn lại. Không cần edit config file, không cần reload. <strong>Đây là "phép thuật" thực sự</strong> khi bạn có 20+ containers.</p>
+      </div>
+    </div>
+
+    <!-- Caddy -->
+    <div class="vendor-card caddy">
+      <div class="vendor-logo">&#x1F7E1;</div>
+      <h3>Caddy</h3>
+      <div class="vendor-type">Web Server / Automatic HTTPS / Zero-Config</div>
+      <p>Caddy có một triết lý đơn giản đến cực đoan: <strong>HTTPS phải là mặc định, không phải tùy chọn</strong>. Chỉ cần 3 dòng Caddyfile là có reverse proxy với TLS tự động. Không cần certbot, không cần cron job renew certificate. Viết bằng Go, memory-safe, single binary. API cho dynamic config. Lý tưởng cho người muốn "nó hoạt động, đừng hỏi thêm".</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2015</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Auto</div><div class="label">HTTPS</div></div>
+        <div class="stat"><div class="num">Go</div><div class="label">Ngôn ngữ</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Auto HTTPS</span>
+        <span class="tag good">Caddyfile dễ đọc</span>
+        <span class="tag">Single Binary</span>
+        <span class="tag">API Config</span>
+        <span class="tag warn">Ít plugin hơn Nginx</span>
+      </div>
+    </div>
+
+    <!-- Apache -->
+    <div class="vendor-card apache">
+      <div class="vendor-logo">&#x1F534;</div>
+      <h3>Apache HTTP Server</h3>
+      <div class="vendor-type">Web Server / Legacy Reverse Proxy</div>
+      <p>Ông tổ web server, ra đời năm 1995 từ NCSA httpd. mod_proxy, mod_proxy_http, mod_proxy_balancer biến Apache thành reverse proxy. Vẫn chạy tốt nhưng kiến trúc process/thread-per-connection tốn RAM hơn Nginx nhiều. Thế mạnh: .htaccess, mod_rewrite cực mạnh, hệ sinh thái module khổng lồ. Nhiều legacy app vẫn cần Apache.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1995</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">30+</div><div class="label">Năm tuổi</div></div>
+        <div class="stat"><div class="num">C</div><div class="label">Ngôn ngữ</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag warn">Process-per-conn</span>
+        <span class="tag">.htaccess</span>
+        <span class="tag">mod_rewrite</span>
+        <span class="tag hot">Legacy</span>
+        <span class="tag good">Stable 30 năm</span>
+      </div>
+    </div>
+
+    <!-- Envoy -->
+    <div class="vendor-card envoy">
+      <div class="vendor-logo">&#x1FA77;</div>
+      <h3>Envoy Proxy</h3>
+      <div class="vendor-type">Service Mesh Data Plane / L7 Proxy</div>
+      <p>Sinh ra tại Lyft, hiến tặng cho CNCF. Envoy không dành cho bạn config bằng tay - nó được thiết kế để <strong>điều khiển bởi control plane</strong> (Istio, Consul Connect). xDS API cho dynamic configuration. L7 observability siêu chi tiết: distributed tracing, metrics per-route, per-cluster. gRPC native. Là "xương sống" của service mesh hiện đại.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2016</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">CNCF</div><div class="label">Graduated</div></div>
+        <div class="stat"><div class="num">C++</div><div class="label">Ngôn ngữ</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Service Mesh</span>
+        <span class="tag">xDS API</span>
+        <span class="tag good">Observability</span>
+        <span class="tag">gRPC Native</span>
+        <span class="tag warn">Phức tạp</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Nginx</th>
+          <th>HAProxy</th>
+          <th>Traefik</th>
+          <th>Caddy</th>
+          <th>Envoy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Kiến trúc</td>
+          <td>Event-driven</td>
+          <td>Event-driven</td>
+          <td>Go routines</td>
+          <td>Go routines</td>
+          <td>Event-driven (C++)</td>
+        </tr>
+        <tr>
+          <td>Auto HTTPS</td>
+          <td>Cần certbot</td>
+          <td>Cần external</td>
+          <td>Built-in</td>
+          <td>Mặc định</td>
+          <td>Cần control plane</td>
+        </tr>
+        <tr>
+          <td>Docker auto-discovery</td>
+          <td>Không</td>
+          <td>Không</td>
+          <td>Native</td>
+          <td>Plugin</td>
+          <td>Via xDS</td>
+        </tr>
+        <tr>
+          <td>Active Health Check (free)</td>
+          <td>Không</td>
+          <td>Có</td>
+          <td>Có</td>
+          <td>Có</td>
+          <td>Có</td>
+        </tr>
+        <tr>
+          <td>L4 Load Balancing</td>
+          <td>Stream module</td>
+          <td>Native</td>
+          <td>Có</td>
+          <td>Có (v2+)</td>
+          <td>Native</td>
+        </tr>
+        <tr>
+          <td>Config reload</td>
+          <td>nginx -s reload</td>
+          <td>Zero-downtime</td>
+          <td>Tự động</td>
+          <td>API / reload</td>
+          <td>xDS hot reload</td>
+        </tr>
+        <tr>
+          <td>RAM (1K conn)</td>
+          <td>~5 MB</td>
+          <td>~3 MB</td>
+          <td>~40 MB</td>
+          <td>~30 MB</td>
+          <td>~20 MB</td>
+        </tr>
+        <tr>
+          <td>Phù hợp nhất</td>
+          <td>Web server + proxy</td>
+          <td>High-traffic LB</td>
+          <td>Docker/K8s</td>
+          <td>Simple sites</td>
+          <td>Service mesh</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="concepts">
+  <h2 class="section-title" style="color: var(--accent3);">Các Khái Niệm Cốt Lõi</h2>
+  <p class="section-subtitle">Hiểu sâu những khái niệm nền tảng mà bất kỳ ai làm việc với proxy đều cần nắm vững</p>
+
+  <div class="concept-grid">
+    <!-- L4 vs L7 -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> L4 vs L7 Load Balancing</h4>
+      <p><strong>Layer 4 (Transport):</strong> Proxy chỉ nhìn thấy IP + port. Nhanh như chớp vì không cần parse nội dung. Dùng cho TCP/UDP thuần - database connections, game servers, mail servers. <strong>Ví dụ:</strong> forward MySQL traffic đến replica gần nhất.</p>
+      <p style="margin-top: 0.8rem;"><strong>Layer 7 (Application):</strong> Proxy hiểu HTTP headers, URL path, cookies, thậm chí body. Có thể route dựa trên /api/* vs /static/*, host header, JWT token. Chậm hơn L4 nhưng thông minh hơn rất nhiều. <strong>Ví dụ:</strong> gửi /api/v2/* đến cluster mới, /api/v1/* đến cluster cũ.</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag">L4 = Nhanh + Đơn giản</span>
+        <span class="tag good">L7 = Thông minh + Linh hoạt</span>
+      </div>
+    </div>
+
+    <!-- TLS Termination -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> TLS Termination</h4>
+      <p>Client kết nối HTTPS đến proxy. Proxy giải mã TLS, đọc nội dung, rồi chuyển tiếp bằng HTTP thuần đến backend. Backend không cần lo TLS certificate - proxy lo hết. Đây gọi là <strong>"TLS termination"</strong> hay "SSL offloading".</p>
+      <p style="margin-top: 0.8rem;"><strong>Lợi ích:</strong> Backend đơn giản hơn, certificate quản lý tập trung, có thể inspect traffic để caching/WAF. <strong>Nhược điểm:</strong> Traffic từ proxy đến backend là plaintext - cần đảm bảo mạng nội bộ an toàn hoặc dùng <strong>TLS re-encryption</strong>.</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag good">Centralized certs</span>
+        <span class="tag">SSL Offload</span>
+        <span class="tag warn">Internal plaintext</span>
+      </div>
+    </div>
+
+    <!-- mTLS -->
+    <div class="concept-card">
+      <h4><span class="status hot"></span> mTLS (Mutual TLS)</h4>
+      <p>TLS bình thường: chỉ client xác minh server (server có certificate hợp lệ không?). <strong>mTLS:</strong> cả hai bên đều xác minh nhau. Server kiểm tra certificate của client, client kiểm tra certificate của server. Mỗi service có identity riêng.</p>
+      <p style="margin-top: 0.8rem;">Trong service mesh (Istio/Linkerd), mTLS được bật tự động giữa mọi service. Không cần code thay đổi gì - sidecar proxy (Envoy) lo hết. Đây là nền tảng của <strong>Zero Trust networking</strong> - "không tin ai, verify tất cả".</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag hot">Zero Trust</span>
+        <span class="tag">Service Identity</span>
+        <span class="tag good">Auto trong mesh</span>
+      </div>
+    </div>
+
+    <!-- Health Checks -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Health Checks</h4>
+      <p><strong>Passive:</strong> Proxy theo dõi response từ backend. Nếu liên tục nhận 502/503 hoặc timeout, đánh dấu backend là "down" và ngừng gửi traffic đến đó. Đơn giản nhưng phản ứng chậm - phải chờ request thất bại.</p>
+      <p style="margin-top: 0.8rem;"><strong>Active:</strong> Proxy chủ động gửi request kiểm tra (GET /health) đến backend theo interval. Phát hiện backend chết <strong>trước khi</strong> user bị ảnh hưởng. HAProxy, Traefik, Envoy có sẵn. Nginx OSS không có - cần Plus hoặc module riêng.</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag">Passive = Reactive</span>
+        <span class="tag good">Active = Proactive</span>
+        <span class="tag warn">/health endpoint cần thiết</span>
+      </div>
+    </div>
+
+    <!-- Sticky Sessions -->
+    <div class="concept-card">
+      <h4><span class="status legacy"></span> Sticky Sessions (Session Affinity)</h4>
+      <p>Đảm bảo mọi request từ cùng một user luôn được gửi đến cùng một backend server. Cần thiết khi backend giữ session state trong memory (ví dụ: giỏ hàng, login session). Thường dùng cookie hoặc IP hash.</p>
+      <p style="margin-top: 0.8rem;"><strong>Vấn đề:</strong> Nếu backend đó chết, user mất session. Phân tải không đều - một server có thể bị quá tải. <strong>Best practice hiện đại:</strong> dùng external session store (Redis) thay vì sticky sessions. Như vậy bất kỳ backend nào cũng phục vụ được bất kỳ user nào.</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag warn">Session mất khi server chết</span>
+        <span class="tag">Cookie-based</span>
+        <span class="tag good">Redis tốt hơn</span>
+      </div>
+    </div>
+
+    <!-- WebSocket & gRPC proxying -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> WebSocket &amp; gRPC Proxying</h4>
+      <p><strong>WebSocket:</strong> Sau HTTP handshake, connection "upgrade" thành full-duplex. Proxy cần hỗ trợ Connection: Upgrade header và giữ connection mở lâu dài. Nginx, HAProxy, Traefik đều hỗ trợ tốt nhưng cần config đúng timeout.</p>
+      <p style="margin-top: 0.8rem;"><strong>gRPC:</strong> Chạy trên HTTP/2, dùng protocol buffers. Proxy cần hỗ trợ HTTP/2 end-to-end, streaming, và trailers. Envoy là lựa chọn tốt nhất cho gRPC proxy. Nginx hỗ trợ từ v1.13.10. Traefik v2+ hỗ trợ native.</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag">HTTP Upgrade</span>
+        <span class="tag">HTTP/2</span>
+        <span class="tag good">Full-duplex</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Quy tắc vàng</h4>
+    <p>Khi chọn giữa L4 và L7: <strong>nếu bạn cần route dựa trên nội dung request (URL, header, cookie) thì L7. Nếu chỉ cần phân tải dựa trên IP/port thì L4.</strong> L4 nhanh hơn 10-50x nhưng "mù" nội dung. Trong thực tế, hầu hết web application cần L7. L4 thường dùng cho database, MQTT, game server, hoặc đặt trước L7 proxy để phân tải ban đầu.</p>
+  </div>
+</section>
+
+<!-- LOAD BALANCING ALGORITHMS -->
+<section id="algorithms">
+  <h2 class="section-title" style="color: var(--accent4);">Thuật Toán Load Balancing</h2>
+  <p class="section-subtitle">Cùng một bài toán "chia traffic" nhưng mỗi thuật toán có triết lý và trade-off khác nhau</p>
+
+  <div class="algo-grid">
+    <div class="algo-card">
+      <div class="algo-icon">&#x1F501;</div>
+      <h4>Round Robin</h4>
+      <p>Thuật toán đơn giản nhất: lần lượt gửi request đến từng server. Server 1, Server 2, Server 3, quay lại Server 1. Như chia bài poker - mỗi người một lá, vòng tròn.</p>
+      <p style="margin-top: 0.5rem;"><strong>Khi nào dùng:</strong> Các server cùng cấu hình, request xử lý nhanh, không cần state.</p>
+      <code>upstream backend {
+  server 10.0.0.1;
+  server 10.0.0.2;
+  server 10.0.0.3;
+  # Mặc định = round robin
+}</code>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-icon">&#x2696;&#xFE0F;</div>
+      <h4>Weighted Round Robin</h4>
+      <p>Round Robin nhưng có "trọng số". Server mạnh hơn nhận nhiều request hơn. Server 16GB RAM weight=3, server 4GB weight=1. Cứ 4 request thì server mạnh nhận 3.</p>
+      <p style="margin-top: 0.5rem;"><strong>Khi nào dùng:</strong> Server không đồng nhất (khác CPU, RAM, bandwidth).</p>
+      <code>upstream backend {
+  server 10.0.0.1 weight=3;
+  server 10.0.0.2 weight=1;
+  server 10.0.0.3 weight=2;
+}</code>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-icon">&#x1F4C9;</div>
+      <h4>Least Connections</h4>
+      <p>Gửi request đến server đang có ít connections nhất. Thông minh hơn Round Robin vì tính đến "server nào đang rảnh". Nếu một request chạy lâu, server đó sẽ ít nhận request mới.</p>
+      <p style="margin-top: 0.5rem;"><strong>Khi nào dùng:</strong> Request có thời gian xử lý khác nhau nhiều (API + file upload).</p>
+      <code>upstream backend {
+  least_conn;
+  server 10.0.0.1;
+  server 10.0.0.2;
+  server 10.0.0.3;
+}</code>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-icon">&#x1F310;</div>
+      <h4>IP Hash</h4>
+      <p>Hash địa chỉ IP của client để chọn server. Cùng IP luôn đến cùng server. Đây là cách đơn giản nhất để implement sticky sessions mà không cần cookie.</p>
+      <p style="margin-top: 0.5rem;"><strong>Cảnh báo:</strong> Nếu client đi qua NAT (nhiều user cùng 1 IP), phân tải sẽ lệch. Không tốt cho mobile (IP thay đổi liên tục).</p>
+      <code>upstream backend {
+  ip_hash;
+  server 10.0.0.1;
+  server 10.0.0.2;
+  server 10.0.0.3;
+}</code>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-icon">&#x23F1;&#xFE0F;</div>
+      <h4>Least Time (Fastest)</h4>
+      <p>Gửi đến server có response time thấp nhất. Proxy đo latency thực tế của mỗi backend và ưu tiên server nhanh nhất. Phức tạp hơn nhưng hiệu quả cao nhất.</p>
+      <p style="margin-top: 0.5rem;"><strong>Khi nào dùng:</strong> Backend ở nhiều region, hoặc server có performance khác nhau theo thời gian.</p>
+      <code># Nginx Plus only
+upstream backend {
+  least_time header;
+  server 10.0.0.1;
+  server 10.0.0.2;
+}</code>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-icon">&#x1F3B2;</div>
+      <h4>Random with Two Choices</h4>
+      <p>Chọn ngẫu nhiên 2 server, sau đó pick server ít connections hơn. Nghe "silly" nhưng về mặt toán học, thuật toán này phân tải gần tối ưu với overhead cực thấp. Được gọi là "power of two choices".</p>
+      <p style="margin-top: 0.5rem;"><strong>Khi nào dùng:</strong> Cluster lớn (50+ nodes) khi least_conn overhead quá cao.</p>
+      <code># HAProxy
+balance random(2)
+# Chọn 2 random, pick
+# server ít conn hơn</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Kinh nghiệm thực chiến</h4>
+    <p><strong>90% trường hợp, Round Robin là đủ.</strong> Đừng over-engineer. Chỉ chuyển sang Least Connections khi bạn thấy rõ ràng một số server bị quá tải trong khi server khác rảnh. IP Hash chỉ dùng khi buộc phải sticky session và không thể dùng external session store. Weighted dùng khi có server mạnh yếu khác nhau. <strong>Thuật toán tốt nhất là thuật toán đơn giản nhất mà giải quyết được vấn đề của bạn.</strong></p>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <h2 class="section-title" style="color: var(--accent);">Kiến Trúc Proxy Hiện Đại</h2>
+  <p class="section-subtitle">Từ edge proxy đơn giản đến service mesh phức tạp - proxy đã tiến hóa thành hệ sinh thái</p>
+
+  <!-- Edge Proxy Architecture -->
+  <h3 style="color: var(--accent3); margin-bottom: 1rem;">Edge Proxy (Kiến trúc truyền thống)</h3>
+  <div class="arch-container">
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F310;</div>
+        <h4>Internet</h4>
+        <p>Users / Clients</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F6E1;&#xFE0F;</div>
+        <h4>CDN / WAF</h4>
+        <p>Cloudflare, AWS CF</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">&#x1F500;</div>
+        <h4>Reverse Proxy</h4>
+        <p>Nginx / Traefik</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x2699;&#xFE0F;</div>
+        <h4>App Servers</h4>
+        <p>Node, Python, Go</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4BE;</div>
+        <h4>Database</h4>
+        <p>PostgreSQL, Redis</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Mesh, Sidecar, API Gateway -->
+  <div class="topology-container" style="margin-top: 3rem;">
+    <div class="topo-card">
+      <h4>Sidecar Proxy</h4>
+      <div class="topo-visual">&#x1F6F8;</div>
+      <p>Một proxy instance chạy bên cạnh mỗi service (cùng pod trong K8s). Mọi traffic in/out đều đi qua sidecar. Service không biết có proxy tồn tại. Envoy là sidecar phổ biến nhất. <strong>Ưu điểm:</strong> mTLS tự động, retry, circuit breaking, metrics - không cần thay đổi code.</p>
+      <div class="tag-row" style="margin-top: 0.8rem; justify-content: center;">
+        <span class="tag">Envoy</span>
+        <span class="tag good">Transparent</span>
+      </div>
+    </div>
+
+    <div class="topo-card">
+      <h4>Service Mesh</h4>
+      <div class="topo-visual">&#x1F578;&#xFE0F;</div>
+      <p><strong>Data plane:</strong> Tập hợp tất cả sidecar proxies. <strong>Control plane:</strong> Istio/Linkerd quản lý cấu hình, certificate, policy. Mỗi service giao tiếp qua mesh, mọi thứ được encrypt, monitor, và kiểm soát. Như một "mạng lưới thần kinh" bao phủ toàn bộ cluster.</p>
+      <div class="tag-row" style="margin-top: 0.8rem; justify-content: center;">
+        <span class="tag">Istio</span>
+        <span class="tag">Linkerd</span>
+        <span class="tag good">Zero Trust</span>
+      </div>
+    </div>
+
+    <div class="topo-card">
+      <h4>API Gateway</h4>
+      <div class="topo-visual">&#x1F6AA;</div>
+      <p>Reverse proxy "nâng cấp" dành cho API. Thêm authentication, rate limiting, request transformation, API versioning, developer portal. Kong, Tyk, AWS API Gateway, Traefik Enterprise. <strong>Khác reverse proxy:</strong> hiểu business logic, không chỉ routing.</p>
+      <div class="tag-row" style="margin-top: 0.8rem; justify-content: center;">
+        <span class="tag">Kong</span>
+        <span class="tag">Tyk</span>
+        <span class="tag warn">Complexity</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Homelab Architecture -->
+  <h3 style="color: var(--accent4); margin: 2rem 0 1rem;">Kiến trúc Homelab điển hình</h3>
+  <div class="arch-container">
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4F1;</div>
+        <h4>Browser / App</h4>
+        <p>*.home.lab</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4E1;</div>
+        <h4>DNS</h4>
+        <p>Pi-hole / AdGuard</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.1);">
+        <div class="layer-icon">&#x1F500;</div>
+        <h4>Traefik / Nginx PM</h4>
+        <p>Port 443, TLS</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F433;</div>
+        <h4>Docker Containers</h4>
+        <p>Jellyfin, Nextcloud...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Homelab tip</h4>
+    <p>Trong homelab, bạn thường không cần service mesh hay API gateway. <strong>Traefik + Docker labels</strong> hoặc <strong>Nginx Proxy Manager</strong> (GUI) là đủ cho 90% use cases. Wildcard DNS (*.home.lab) trỏ về IP của proxy, proxy route dựa trên subdomain. Mỗi container một subdomain: jellyfin.home.lab, nextcloud.home.lab, grafana.home.lab. Đơn giản, sạch sẽ, dễ quản lý.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Những Hiểu Nhầm Phổ Biến</h2>
+  <p class="section-subtitle">Proxy trông đơn giản nhưng đầy rẫy những quan niệm sai lầm - ngay cả với người có kinh nghiệm</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #1</span>
+      <h4>"Nginx và HAProxy làm cùng một việc, chọn cái nào cũng được"</h4>
+      <p>Nginx là <strong>web server</strong> kiêm reverse proxy. HAProxy là <strong>load balancer chuyên dụng</strong>. Nginx serve static files, HAProxy không. HAProxy có active health check miễn phí, Nginx OSS không. HAProxy có stats dashboard built-in chi tiết đến từng backend. Nginx có SSL termination mạnh hơn với nhiều tùy chọn hơn.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Chúng bổ sung cho nhau tuyệt vời. Kiến trúc phổ biến: <strong>HAProxy ở tầng ngoài (L4 LB) &#8594; Nginx ở tầng trong (L7 proxy + static)</strong>. Hoặc trong homelab: chọn MỘT cái phù hợp nhất với use case của bạn.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #2</span>
+      <h4>"Reverse proxy thêm latency đáng kể"</h4>
+      <p>Nhiều người sợ thêm proxy sẽ làm chậm hệ thống. Thực tế, Nginx thêm khoảng <strong>0.5-2ms</strong> latency. Với connection reuse và keep-alive, proxy thực ra có thể NHANH hơn vì tái sử dụng connections đến backend thay vì tạo mới mỗi lần.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Proxy thêm latency rất nhỏ (sub-millisecond đến vài ms) nhưng bù lại bằng caching, connection pooling, compression, và khả năng phân tải. <strong>Net result thường là nhanh hơn, không chậm hơn.</strong></p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #3</span>
+      <h4>"Chỉ cần reverse proxy là đủ bảo mật"</h4>
+      <p>Reverse proxy che giấu backend server, cung cấp TLS, và có thể filter một số attack. Nhưng nó KHÔNG phải WAF (Web Application Firewall). SQL injection, XSS, CSRF vẫn đi qua proxy thoải mái nếu không có WAF rules.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Reverse proxy là <strong>một lớp</strong> trong defense-in-depth. Cần thêm: WAF (ModSecurity/Coraza), rate limiting, IP whitelisting, và bảo mật ở tầng application. <strong>Proxy bảo vệ infrastructure, WAF bảo vệ application.</strong></p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #4</span>
+      <h4>"SSL/TLS termination tại proxy là không an toàn"</h4>
+      <p>Có người cho rằng phải encrypt end-to-end, traffic từ proxy đến backend cũng phải HTTPS. Trong nhiều trường hợp, đây là over-engineering. Nếu proxy và backend cùng server hoặc cùng private network, plaintext nội bộ là chấp nhận được.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>TLS termination tại proxy là <strong>best practice phổ biến</strong> của Google, Netflix, Amazon. Nếu lo lắng về internal traffic, dùng <strong>mTLS hoặc TLS re-encryption</strong> (proxy decrypt rồi re-encrypt đến backend). Đừng để "perfect" cản trở "good enough".</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #5</span>
+      <h4>"Cứ dùng microservices thì phải có service mesh"</h4>
+      <p>Istio, Linkerd nghe rất cool, nhưng chúng thêm complexity khổng lồ: sidecar proxy cho MỖI pod, control plane cần maintain, RAM/CPU overhead, debugging khó hơn nhiều lần. Cho 5-10 services, service mesh là overkill.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Service mesh có ý nghĩa khi bạn có <strong>50+ services, nhiều team, cần mTLS tự động, và traffic policy phức tạp</strong>. Dưới đó, một reverse proxy + sane defaults là đủ. <strong>Netflix từng chạy tốt không có service mesh trong nhiều năm.</strong></p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #6</span>
+      <h4>"Traefik/Caddy chậm hơn Nginx nhiều"</h4>
+      <p>Vì viết bằng Go thay vì C, nhiều người cho rằng Traefik/Caddy chậm hơn Nginx rất nhiều. Benchmark thực tế cho thấy sự khác biệt là 10-20% ở throughput max, không phải gấp đôi hay gấp ba.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Ở mức &lt;10,000 RPS (phù hợp 99% projects), <strong>sự khác biệt không đo nổi</strong>. Traefik/Caddy dùng nhiều RAM hơn (30-50MB vs 5MB), nhưng đổi lại có auto-HTTPS, auto-discovery, config dễ hơn. <strong>Developer time đắt hơn server RAM.</strong></p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #7</span>
+      <h4>"Load balancer = High Availability"</h4>
+      <p>Nhiều người nghĩ có load balancer = hệ thống không bao giờ chết. Nhưng nếu load balancer là single point, chính nó là điểm chết. 2 backend nhưng 1 LB, LB chết = toàn bộ hệ thống chết.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>HA thực sự cần <strong>ít nhất 2 load balancers</strong> với failover (VRRP/keepalived, DNS failover, hoặc floating IP). Trong cloud: managed LB (ALB, NLB) đã HA sẵn. Trong homelab: chạy 2 instance Traefik/HAProxy + keepalived cho virtual IP.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai lầm #8</span>
+      <h4>"Proxy chỉ dành cho HTTP/HTTPS"</h4>
+      <p>HTTP là use case phổ biến nhất, nhưng proxy có thể xử lý bất kỳ protocol TCP/UDP nào. HAProxy và Nginx stream module proxy cho MySQL, PostgreSQL, MQTT, game servers, mail servers (SMTP/IMAP).</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>L4 proxy forward TCP/UDP mà không cần hiểu protocol. Bạn hoàn toàn có thể dùng HAProxy để <strong>load balance MySQL replicas, Redis cluster, hoặc Minecraft servers</strong>. Proxy là khái niệm transport-agnostic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Cheat Sheet Tổng Hợp</h2>
+  <p class="section-subtitle">Copy-paste configs và commands hữu ích cho đời thực</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Nginx - Reverse Proxy cơ bản</h4>
+      <p>Config phổ biến nhất: proxy cho một app backend</p>
+      <code>server {
+  listen 443 ssl;
+  server_name app.domain.com;
+  ssl_certificate /etc/ssl/cert.pem;
+  ssl_certificate_key /etc/ssl/key.pem;
+
+  location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For
+      $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto
+      $scheme;
+  }
+}</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Nginx - WebSocket Proxy</h4>
+      <p>Cần upgrade header cho WebSocket</p>
+      <code>location /ws {
+  proxy_pass http://backend:8080;
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_read_timeout 86400;
+}</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Nginx - Load Balancing</h4>
+      <p>Upstream block với nhiều backend</p>
+      <code>upstream myapp {
+  least_conn;
+  server 10.0.0.1:8080 weight=3;
+  server 10.0.0.2:8080 weight=1;
+  server 10.0.0.3:8080 backup;
+}
+
+server {
+  location / {
+    proxy_pass http://myapp;
+  }
+}</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Traefik - Docker Labels</h4>
+      <p>Auto-discovery với Docker labels</p>
+      <code># docker-compose.yml
+services:
+  myapp:
+    image: myapp:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.myapp
+         .rule=Host(`app.domain.com`)"
+      - "traefik.http.routers.myapp
+         .tls.certresolver=le"
+      - "traefik.http.services.myapp
+         .loadbalancer.server
+         .port=8080"</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>HAProxy - Basic Config</h4>
+      <p>Frontend + Backend setup</p>
+      <code>frontend http_front
+  bind *:443 ssl crt /etc/ssl/cert.pem
+  default_backend app_servers
+
+backend app_servers
+  balance roundrobin
+  option httpchk GET /health
+  server srv1 10.0.0.1:8080 check
+  server srv2 10.0.0.2:8080 check
+  server srv3 10.0.0.3:8080 check backup</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Caddy - Caddyfile</h4>
+      <p>Đơn giản nhất có thể - auto HTTPS</p>
+      <code>app.domain.com {
+  reverse_proxy localhost:3000
+}
+
+api.domain.com {
+  reverse_proxy localhost:8080 {
+    health_uri /health
+    health_interval 10s
+  }
+}</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug - Headers quan trọng</h4>
+      <p>Headers mà proxy nên set / forward</p>
+      <code># Client IP thật (quan trọng!)
+X-Real-IP: 203.0.113.50
+X-Forwarded-For: 203.0.113.50
+
+# Protocol gốc
+X-Forwarded-Proto: https
+
+# Host gốc
+X-Forwarded-Host: app.domain.com
+
+# Kiểm tra từ backend:
+curl -H "Host: app.domain.com" \
+  http://proxy-ip/</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Test &amp; Debug Commands</h4>
+      <p>Lệnh hữu ích khi troubleshoot proxy</p>
+      <code># Test Nginx config
+nginx -t
+
+# Reload không downtime
+nginx -s reload
+
+# Xem connections đang mở
+ss -tlnp | grep :443
+
+# Test backend trực tiếp
+curl -v http://backend:8080/health
+
+# Test qua proxy với SNI
+curl -v --resolve \
+  app.domain.com:443:10.0.0.1 \
+  https://app.domain.com/</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Security Hardening</h4>
+      <p>Checklist bảo mật cho reverse proxy</p>
+      <code># TLS 1.2+ only
+ssl_protocols TLSv1.2 TLSv1.3;
+
+# Strong ciphers
+ssl_ciphers ECDHE-ECDSA-AES128-GCM
+  -SHA256:ECDHE-RSA-AES128-GCM
+  -SHA256;
+
+# Security headers
+add_header X-Frame-Options DENY;
+add_header X-Content-Type-Options
+  nosniff;
+add_header Strict-Transport-Security
+  "max-age=31536000" always;
+
+# Rate limiting
+limit_req_zone $binary_remote_addr
+  zone=api:10m rate=10r/s;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Nginx - L4 TCP Proxy</h4>
+      <p>Proxy cho non-HTTP (database, MQTT...)</p>
+      <code># Cần stream module
+stream {
+  upstream mysql_backend {
+    server 10.0.0.1:3306;
+    server 10.0.0.2:3306;
+  }
+
+  server {
+    listen 3306;
+    proxy_pass mysql_backend;
+    proxy_connect_timeout 5s;
+  }
+}</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Docker - Traefik Compose</h4>
+      <p>Traefik proxy cho homelab Docker</p>
+      <code>services:
+  traefik:
+    image: traefik:v3
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.websecure
+         .address=:443"
+      - "--certificatesresolvers
+         .le.acme.tlschallenge=true"
+    ports:
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock
+        :/var/run/docker.sock:ro</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Monitoring Essentials</h4>
+      <p>Metrics quan trọng cần theo dõi</p>
+      <code># Key metrics to monitor:
+- Request rate (RPS)
+- Error rate (4xx, 5xx %)
+- Latency (p50, p95, p99)
+- Active connections
+- Backend health status
+- SSL cert expiry
+- Bandwidth usage
+
+# HAProxy stats page:
+listen stats
+  bind *:8404
+  stats enable
+  stats uri /stats</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Lời khuyên cuối cùng</h4>
+    <p>Reverse proxy là một trong những thành phần quan trọng nhất trong bất kỳ hạ tầng nào - từ homelab đến production triệu users. Nó là "cánh cổng" duy nhất giữa thế giới bên ngoài và hệ thống bên trong. <strong>Hãy bắt đầu đơn giản</strong>: Traefik cho Docker homelab, Nginx cho VPS, HAProxy khi cần performance tối đa. Đừng nhảy vào service mesh khi bạn chỉ có 3 containers. Và nhớ rằng: <strong>proxy tốt nhất là proxy mà bạn hiểu rõ config từng dòng</strong>, không phải proxy có nhiều feature nhất.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Proxy World Visualization | Built for engineers who want to truly understand reverse proxy &amp; load balancing</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">Nginx | HAProxy | Traefik | Caddy | Envoy | "The best proxy is the one your users don't notice."</p>
+</footer>
+
+<script>
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.vendor-card, .myth-card, .concept-card, .algo-card, .topo-card, .cheat-card, .timeline-content').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('nav a:not(.brand)');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>

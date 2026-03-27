@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 2: Đường vào quản trị — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#8E44AD 0%,var(--navy) 60%,var(--orange) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #8E44AD;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card.purple .card-num{background:#8E44AD;}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .timeline{margin:32px 0;}
+  .timeline-item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid #EEE;}
+  .timeline-item:last-child{border-bottom:none;}
+  .timeline-year{background:var(--navy);color:var(--gold);font-weight:800;padding:8px 14px;border-radius:8px;font-size:0.85rem;height:fit-content;flex-shrink:0;min-width:70px;text-align:center;}
+  .timeline-content h4{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+  .timeline-content p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:32px 0;}
+  .stat-card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);text-align:center;}
+  .stat-num{font-size:2.5rem;font-weight:900;color:var(--orange);}
+  .stat-label{font-size:0.8rem;color:#888;margin-top:4px;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-01.html" class="nav-btn">← Chương 1</a>
+    <a href="chuong-03.html" class="nav-btn">Chương 3 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🚪 Chương 2</div>
+  <span class="hero-emoji">🌍</span>
+  <h1>Đường Vào <span>Quản Trị</span></h1>
+  <p class="hero-sub">Từ gia đình Nho giáo đến văn phòng ở Paris — hành trình không ai lên kế hoạch trước.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Không ai trong chúng ta chọn xuất phát điểm của mình. GS. Phan Văn Trường lớn lên trong gia đình Nho giáo, thấm nhuần giá trị của trách nhiệm, lễ nghĩa, và sự tận tụy. Những giá trị đó — không phải MBA — mới là thứ chuẩn bị ông cho vai trò dẫn dắt 20.000 người trên 60 quốc gia.
+  </div>
+
+  <div class="cards-title">📊 Con Số Biết Nói</div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num">40</div>
+      <div class="stat-label">Tuổi bắt đầu quản trị thực sự</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--gold);">20K</div>
+      <div class="stat-label">Nhân viên dưới quyền</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--green);">60</div>
+      <div class="stat-label">Quốc gia hoạt động</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:#8E44AD;">∞</div>
+      <div class="stat-label">Bài học từ thực tế</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🗓️ Hành Trình Theo Thời Gian</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">Thuở nhỏ</div>
+      <div class="timeline-content">
+        <h4>Gia đình Nho giáo — nền tảng vô hình</h4>
+        <p>Lớn lên với những giá trị về trách nhiệm, kính trọng, và sự tận tụy. Không học từ sách giáo khoa quản trị, nhưng thấm vào xương máu từ cách cha mẹ sống.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">Tuổi ~40</div>
+      <div class="timeline-content">
+        <h4>Gia nhập Alsthom — bước ngoặt lớn</h4>
+        <p>Đảm nhận vai trò quản trị tại tập đoàn công nghiệp lớn của Pháp. Đây là lần đầu tiên ông phải dẫn dắt một tổ chức quy mô lớn ở tầm toàn cầu.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">Đỉnh cao</div>
+      <div class="timeline-content">
+        <h4>20.000 người, 60 quốc gia</h4>
+        <p>Quản lý đội ngũ đa quốc gia, đa văn hóa, đa ngôn ngữ. Mỗi quyết định mang trọng lượng của hàng chục ngàn gia đình.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">Về sau</div>
+      <div class="timeline-content">
+        <h4>Chia sẻ lại cho Việt Nam</h4>
+        <p>Giảng dạy, cố vấn, viết sách — mang những bài học sống còn về cho thế hệ lãnh đạo Việt Nam tiếp theo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Điểm Cốt Lõi Của Chương</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <div class="card-num">01</div>
+      <h3>Gốc Rễ Nho Giáo</h3>
+      <p>Những giá trị nhân-lễ-nghĩa-trí-tín không lỗi thời — chúng là nền tảng vững chắc cho bất kỳ nhà lãnh đạo hiện đại nào.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">02</div>
+      <h3>Học Từ Thực Tế</h3>
+      <p>Trường quản trị tốt nhất không phải Harvard — mà là những thách thức sống còn của doanh nghiệp trong thực tế.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌐</div>
+      <div class="card-num">03</div>
+      <h3>Tư Duy Toàn Cầu</h3>
+      <p>Dẫn dắt 60 quốc gia đòi hỏi sự thấu hiểu văn hóa sâu sắc, không chỉ kiến thức kinh doanh thuần túy.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">⏳</div>
+      <div class="card-num">04</div>
+      <h3>Quản Trị Đến Muộn</h3>
+      <p>Bắt đầu tuổi 40 không phải quá muộn — kinh nghiệm sống là thứ không trường lớp nào dạy được.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Tôi học quản trị không phải từ trường lớp<br>mà từ thực tế sống còn của doanh nghiệp."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Bài học ngược chiều:</strong> Trong thời đại mọi người đổ xô lấy bằng MBA, ông Trường nhắc nhở rằng kinh nghiệm thực chiến — với tất cả thất bại và áp lực của nó — mới là trường học thật sự của một nhà quản trị.
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Đừng đợi "đủ điều kiện":</strong> Không ai cảm thấy hoàn toàn sẵn sàng cho vai trò lãnh đạo lớn. Bước vào và học trong quá trình — đó là cách phần lớn lãnh đạo thật sự phát triển.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Nền tảng văn hóa và gia đình là "vốn liếng" quản trị quý giá nhất — dù không ai dạy bạn điều đó.</li>
+      <li>Kinh nghiệm thực chiến không thể thay thế bằng bằng cấp — và ngược lại.</li>
+      <li>Quản trị đa quốc gia đòi hỏi sự khiêm nhường và khả năng thích nghi văn hóa sâu sắc.</li>
+      <li>Tuổi tác không phải rào cản — sự chuẩn bị bên trong (giá trị, kinh nghiệm, tư duy) mới là điều quan trọng.</li>
+      <li>Mỗi vai trò lớn là cơ hội học hỏi khổng lồ — hãy đón nhận nó với tinh thần khiêm tốn.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-01.html" class="bnav-btn">← Chương 1</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-03.html" class="bnav-btn next">Chương 3: Những quí nhân →</a>
+  </div>
+</div>
+
+</body>
+</html>

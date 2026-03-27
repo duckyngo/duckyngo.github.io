@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Th&#7871; Gi&#7899;i Container - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is Container */
+  .container-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .container-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .container-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.docker::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.podman::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.lxc::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.containerd::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.crio::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Concept Cards */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .concept-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+  .concept-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .concept-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .concept-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Orchestration Cards */
+  .orch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .orch-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .orch-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .orch-card .orch-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .orch-card h3 { font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .orch-card .orch-type { color: var(--accent); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; }
+  .orch-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Dockerfile Display */
+  .dockerfile-block {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  .dockerfile-block h4 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  .dockerfile-block pre {
+    background: rgba(0,0,0,0.4);
+    border-radius: 12px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--accent3);
+  }
+
+  .dockerfile-block pre .comment { color: var(--text-dim); }
+  .dockerfile-block pre .keyword { color: var(--accent); font-weight: 700; }
+  .dockerfile-block pre .string { color: var(--accent4); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .orch-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Container World</a>
+  <a href="#what">Container l&agrave; g&igrave;?</a>
+  <a href="#history">L&#7883;ch s&#7917;</a>
+  <a href="#concepts">Core Concepts</a>
+  <a href="#runtimes">Runtimes</a>
+  <a href="#orchestration">Orchestration</a>
+  <a href="#images">Image & Registry</a>
+  <a href="#myths">Hi&#7875;u nh&#7847;m</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#128230;</div>
+  <h1>Th&#7871; Gi&#7899;i Container</h1>
+  <p class="subtitle">T&#7915; ch&#7881; m&#7897;t l&#7879;nh chroot tr&ecirc;n Unix &#273;&#7871;n h&#7879; sinh th&aacute;i Kubernetes th&#7889;ng tr&#7883; cloud-native &mdash; h&agrave;nh tr&igrave;nh 45 n&#259;m c&#7911;a c&ocirc;ng ngh&#7879; container h&oacute;a. M&#7885;i th&#7913; b&#7841;n c&#7847;n bi&#7871;t, nh&#7919;ng hi&#7875;u nh&#7847;m ph&#7893; bi&#7871;n, v&agrave; g&oacute;c nh&igrave;n th&#7921;c t&#7871; t&#7915; ng&#432;&#7901;i v&#7853;n h&agrave;nh homelab.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS CONTAINER -->
+<section id="what">
+  <div class="container-what">
+    <h2 class="section-title">Container l&agrave; g&igrave; th&#7921;c s&#7921;?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Container</strong> l&agrave; m&#7897;t &#273;&#417;n v&#7883; &#273;&oacute;ng g&oacute;i ph&#7847;n m&#7873;m chu&#7849;n h&oacute;a, bao g&#7891;m code, runtime, th&#432; vi&#7879;n h&#7879; th&#7889;ng v&agrave; c&aacute;c thi&#7871;t l&#7853;p c&#7847;n thi&#7871;t &#273;&#7875; &#7913;ng d&#7909;ng ch&#7841;y &#273;&#432;&#7907;c m&#7885;i n&#417;i. N&#7871;u b&#7841;n &#273;&atilde; t&#7915;ng nghe c&acirc;u <em>"Tr&ecirc;n m&aacute;y em ch&#7841;y &#273;&#432;&#7907;c m&agrave;!"</em> &mdash; th&igrave; container ch&iacute;nh l&agrave; l&#7901;i gi&#7843;i cho v&#7845;n &#273;&#7873; &#273;&oacute;.
+    </p>
+
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      H&atilde;y ngh&#297; &#273;&#417;n gi&#7843;n: <strong>VM</strong> l&agrave; m&#7897;t c&#259;n h&#7897; nguy&ecirc;n c&#259;n v&#7899;i h&#7879; th&#7889;ng &#273;i&#7879;n n&#432;&#7899;c ri&ecirc;ng, m&aacute;i ri&ecirc;ng, n&#7873;n m&oacute;ng ri&ecirc;ng. C&ograve;n <strong>Container</strong> l&agrave; m&#7897;t ph&ograve;ng trong chung c&#432; &mdash; d&ugrave;ng chung n&#7873;n m&oacute;ng (kernel), chung h&#7879; th&#7889;ng &#273;i&#7879;n (OS), nh&#432;ng b&ecirc;n trong m&#7895;i ph&ograve;ng &#273;&#432;&#7907;c c&aacute;ch ly ho&agrave;n to&agrave;n, trang tr&iacute; t&ugrave;y &yacute;.
+    </p>
+
+    <div class="container-analogy">
+      <div class="analogy-box">
+        <div class="icon">&#127960;&#65039;</div>
+        <h3>Virtual Machine</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Guest OS &#273;&#7847;y &#273;&#7911; + Hypervisor<br>Kh&#7903;i &#273;&#7897;ng: <strong style="color: var(--accent5);">30-60 gi&acirc;y</strong><br>Dung l&#432;&#7907;ng: <strong style="color: var(--accent5);">GB</strong></p>
+      </div>
+      <div class="analogy-arrow">&rarr;</div>
+      <div class="analogy-box">
+        <div class="icon">&#128230;</div>
+        <h3>Container</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Chia s&#7867; kernel v&#7899;i host<br>Kh&#7903;i &#273;&#7897;ng: <strong style="color: var(--accent3);">mili-gi&acirc;y</strong><br>Dung l&#432;&#7907;ng: <strong style="color: var(--accent3);">MB</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>&#272;i&#7875;m m&#7845;u ch&#7889;t</h4>
+      <p>Container <strong>kh&ocirc;ng ph&#7843;i l&agrave; VM nh&#7865;</strong>. Ch&uacute;ng l&agrave; hai kh&aacute;i ni&#7879;m kh&aacute;c nhau v&#7873; b&#7843;n ch&#7845;t. VM &#7843;o h&oacute;a <strong>ph&#7847;n c&#7913;ng</strong> (hardware virtualization), container &#7843;o h&oacute;a <strong>h&#7879; &#273;i&#7873;u h&agrave;nh</strong> (OS-level virtualization). VM c&oacute; kernel ri&ecirc;ng, container d&ugrave;ng chung kernel v&#7899;i m&aacute;y host. &#272;&acirc;y l&agrave; s&#7921; kh&aacute;c bi&#7879;t c&#417; b&#7843;n nh&#7845;t v&agrave; c&#361;ng l&agrave; ngu&#7891;n g&#7889;c c&#7911;a m&#7885;i &#432;u-nh&#432;&#7907;c &#273;i&#7875;m.</p>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="comparison-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Ti&ecirc;u ch&iacute;</th>
+            <th>Virtual Machine</th>
+            <th>Container</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>C&aacute;ch ly</td>
+            <td>Kernel ri&ecirc;ng, c&aacute;ch ly ph&#7847;n c&#7913;ng</td>
+            <td>Namespaces + cgroups, c&aacute;ch ly process</td>
+          </tr>
+          <tr>
+            <td>Th&#7901;i gian kh&#7903;i &#273;&#7897;ng</td>
+            <td>30-60 gi&acirc;y</td>
+            <td>D&#432;&#7899;i 1 gi&acirc;y</td>
+          </tr>
+          <tr>
+            <td>T&agrave;i nguy&ecirc;n</td>
+            <td>N&#7863;ng (GB RAM, GB disk)</td>
+            <td>Nh&#7865; (MB RAM, MB disk)</td>
+          </tr>
+          <tr>
+            <td>M&#7853;t &#273;&#7897;</td>
+            <td>10-50 VM/server</td>
+            <td>100-1000+ container/server</td>
+          </tr>
+          <tr>
+            <td>B&#7843;o m&#7853;t</td>
+            <td>C&aacute;ch ly m&#7841;nh (kernel ri&ecirc;ng)</td>
+            <td>C&aacute;ch ly y&#7871;u h&#417;n (chung kernel)</td>
+          </tr>
+          <tr>
+            <td>Portability</td>
+            <td>Image l&#7899;n, kh&oacute; di chuy&#7875;n</td>
+            <td>Image nh&#7887;, d&#7877; ship</td>
+          </tr>
+          <tr>
+            <td>Use case l&yacute; t&#432;&#7903;ng</td>
+            <td>Ch&#7841;y OS kh&aacute;c, c&#7847;n c&aacute;ch ly t&#7889;i &#273;a</td>
+            <td>Microservices, CI/CD, scale nhanh</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">D&ograve;ng Th&#7901;i Gian Container</h2>
+  <p class="section-subtitle">45 n&#259;m ti&#7871;n h&oacute;a &mdash; t&#7915; m&#7897;t system call &#273;&#417;n gi&#7843;n &#273;&#7871;n h&#7879; sinh th&aacute;i tri&#7879;u &#273;&ocirc;</p>
+
+  <div class="timeline">
+    <!-- chroot -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1979</span>
+        <h3>chroot &mdash; V&#7909; N&#7893; L&#7899;n</h3>
+        <p>Unix V7 gi&#7899;i thi&#7879;u <code>chroot()</code> &mdash; cho ph&eacute;p thay &#273;&#7893;i th&#432; m&#7909;c g&#7889;c c&#7911;a m&#7897;t process. &#272;&acirc;y l&agrave; h&igrave;nh th&#7913;c "c&aacute;ch ly" s&#417; khai nh&#7845;t: process nh&igrave;n th&#7845;y m&#7897;t filesystem gi&#7843; l&#7853;p, kh&ocirc;ng th&#7875; tho&aacute;t ra ngo&agrave;i. Ng&#432;&#7901;i ta g&#7885;i n&oacute; l&agrave; "chroot jail" &mdash; nh&agrave; t&ugrave; &#273;&#7847;u ti&ecirc;n c&#7911;a th&#7871; gi&#7899;i container.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <!-- FreeBSD Jails -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2000</span>
+        <h3>FreeBSD Jails &mdash; Nh&agrave; T&ugrave; Th&#7853;t S&#7921;</h3>
+        <p>FreeBSD 4.0 &#273;&#432;a Jails l&ecirc;n m&#7897;t t&#7847;m m&#7899;i: kh&ocirc;ng ch&#7881; c&aacute;ch ly filesystem m&agrave; c&ograve;n c&aacute;ch ly network, process tree, v&agrave; users. M&#7895;i jail c&oacute; IP ri&ecirc;ng, hostname ri&ecirc;ng. &#272;&acirc;y l&agrave; b&#432;&#7899;c ti&#7871;n quan tr&#7885;ng nh&#7845;t tr&#432;&#7899;c khi Linux c&oacute; namespaces.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <!-- Linux namespaces / cgroups -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2002-2008</span>
+        <h3>Linux Namespaces & cgroups</h3>
+        <p>Linux 2.4.19 (2002) gi&#7899;i thi&#7879;u mount namespace &#273;&#7847;u ti&ecirc;n. Google ph&aacute;t tri&#7875;n cgroups (2006) &#273;&#7875; gi&#7899;i h&#7841;n t&agrave;i nguy&ecirc;n. &#272;&#7871;n 2008, cgroups &#273;&#432;&#7907;c merge v&agrave;o kernel. Hai c&ocirc;ng ngh&#7879; n&agrave;y &mdash; namespaces (c&aacute;ch ly) v&agrave; cgroups (gi&#7899;i h&#7841;n) &mdash; ch&iacute;nh l&agrave; n&#7873;n t&#7843;ng c&#7911;a m&#7885;i container engine hi&#7879;n &#273;&#7841;i.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <!-- LXC -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2008</span>
+        <h3>LXC &mdash; Container &#272;&#7847;u Ti&ecirc;n Tr&ecirc;n Linux</h3>
+        <p>LXC (Linux Containers) k&#7871;t h&#7907;p namespaces + cgroups + chroot th&agrave;nh m&#7897;t gi&#7843;i ph&aacute;p ho&agrave;n ch&#7881;nh. L&#7847;n &#273;&#7847;u ti&ecirc;n ng&#432;&#7901;i d&ugrave;ng c&oacute; th&#7875; ch&#7841;y m&#7897;t "m&aacute;y &#7843;o nh&#7865;" m&agrave; kh&ocirc;ng c&#7847;n hypervisor. Tuy nhi&ecirc;n, LXC c&ograve;n kh&aacute; th&ocirc; s&#417; v&agrave; kh&oacute; d&ugrave;ng cho ng&#432;&#7901;i m&#7899;i.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <!-- Docker -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2013</span>
+        <h3>Docker &mdash; Cu&#7897;c C&aacute;ch M&#7841;ng</h3>
+        <p>Solomon Hykes gi&#7899;i thi&#7879;u Docker t&#7841;i PyCon 2013 v&#7899;i m&#7897;t live demo 5 ph&uacute;t l&agrave;m rung chuy&#7875;n c&#7843; ng&agrave;nh. Docker kh&ocirc;ng ph&aacute;t minh ra container &mdash; n&oacute; <em>&#273;&#7841;i ch&uacute;ng h&oacute;a</em> container b&#7857;ng Dockerfile, image layer, Docker Hub, v&agrave; CLI tr&#7921;c quan. Ban &#273;&#7847;u d&ugrave;ng LXC b&ecirc;n d&#432;&#7899;i, sau chuy&#7875;n sang libcontainer (nay l&agrave; runc).</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <!-- Kubernetes -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2014-2015</span>
+        <h3>Kubernetes &mdash; Ng&#432;&#7901;i &#272;i&#7873;u Phi&#7889;i</h3>
+        <p>Google m&#7903; m&atilde; ngu&#7891;n Borg con &mdash; d&#7921; &aacute;n Kubernetes (K8s). Phi&ecirc;n b&#7843;n 1.0 ra m&#7855;t 07/2015. CNCF &#273;&#432;&#7907;c th&agrave;nh l&#7853;p. K8s nhanh ch&oacute;ng &#273;&aacute;nh b&#7841;i Docker Swarm v&agrave; Mesos &#273;&#7875; tr&#7903; th&agrave;nh "h&#7879; &#273;i&#7873;u h&agrave;nh c&#7911;a cloud". T&#7915; &#273;&acirc;y, container kh&ocirc;ng ch&#7881; l&agrave; c&ocirc;ng c&#7909; &#273;&#7875; &#273;&oacute;ng g&oacute;i m&agrave; l&agrave; n&#7873;n t&#7843;ng &#273;&#7875; v&#7853;n h&agrave;nh quy m&ocirc; l&#7899;n.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <!-- OCI & Modern Era -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2015-nay</span>
+        <h3>OCI, CRI & Th&#7901;i &#272;&#7841;i Hi&#7879;n &#272;&#7841;i</h3>
+        <p>Open Container Initiative (OCI) chu&#7849;n h&oacute;a image format v&agrave; runtime spec. Kubernetes th&ecirc;m CRI (Container Runtime Interface) cho ph&eacute;p d&ugrave;ng b&#7845;t k&#7923; runtime n&agrave;o. containerd v&agrave; CRI-O n&#7893;i l&ecirc;n. Docker b&#7883; Kubernetes "lo&#7841;i" kh&#7887;i v&#7883; tr&iacute; runtime m&#7863;c &#273;&#7883;nh (v1.24). Th&#7901;i &#273;&#7841;i "Docker l&agrave; t&#7845;t c&#7843;" &#273;&atilde; qua &mdash; gi&#7901; l&agrave; h&#7879; sinh th&aacute;i m&#7903;, ti&ecirc;u chu&#7849;n h&oacute;a.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE CONCEPTS -->
+<section id="concepts">
+  <h2 class="section-title" style="color: var(--accent3);">N&#7873;n T&#7843;ng K&#7929; Thu&#7853;t</h2>
+  <p class="section-subtitle">B&#7889;n tr&#7909; c&#7897;t l&agrave;m n&ecirc;n container: namespaces, cgroups, overlay fs, v&agrave; OCI spec</p>
+
+  <!-- Architecture Diagram -->
+  <div class="arch-container">
+    <h3 style="color: var(--accent); margin-bottom: 1.5rem;">Ki&#7871;n tr&uacute;c Container tr&ecirc;n Linux</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#128187;</div>
+        <h4>&#7912;ng d&#7909;ng</h4>
+        <p>Code + dependencies</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128230;</div>
+        <h4>Container Runtime</h4>
+        <p>runc / crun / youki</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128272;</div>
+        <h4>Namespaces</h4>
+        <p>C&aacute;ch ly PID, NET, MNT...</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128202;</div>
+        <h4>cgroups v2</h4>
+        <p>Gi&#7899;i h&#7841;n CPU, RAM, IO</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#129504;</div>
+        <h4>Linux Kernel</h4>
+        <p>Chia s&#7867; v&#7899;i host</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-grid">
+    <!-- Namespaces -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Linux Namespaces</h4>
+      <p style="margin-top: 0.5rem;">Namespaces l&agrave; c&#417; ch&#7871; <strong>c&aacute;ch ly</strong> c&#7911;a container. M&#7895;i namespace t&#7841;o ra m&#7897;t "g&oacute;c nh&igrave;n" ri&ecirc;ng cho process:</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag">PID &mdash; Process ID</span>
+        <span class="tag good">NET &mdash; Network</span>
+        <span class="tag warn">MNT &mdash; Mount points</span>
+        <span class="tag">UTS &mdash; Hostname</span>
+        <span class="tag hot">USER &mdash; UID/GID</span>
+        <span class="tag good">IPC &mdash; Interprocess</span>
+        <span class="tag warn">CGROUP &mdash; cgroup view</span>
+        <span class="tag">TIME &mdash; Clock (Linux 5.6+)</span>
+      </div>
+      <p style="margin-top: 0.8rem;">V&iacute; d&#7909;: PID namespace l&agrave;m cho process trong container th&#7845;y PID=1 c&#7911;a m&igrave;nh, d&ugrave; tr&ecirc;n host n&oacute; c&oacute; th&#7875; l&agrave; PID=45821. NET namespace cho m&#7895;i container c&oacute; network stack ri&ecirc;ng v&#7899;i &#273;&#7883;a ch&#7881; IP ri&ecirc;ng.</p>
+    </div>
+
+    <!-- cgroups v2 -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> cgroups v2 (Control Groups)</h4>
+      <p style="margin-top: 0.5rem;">N&#7871;u namespaces l&agrave; "t&#432;&#7901;ng" th&igrave; cgroups l&agrave; "h&oacute;a &#273;&#417;n &#273;i&#7879;n n&#432;&#7899;c" &mdash; gi&#7899;i h&#7841;n v&agrave; gi&aacute;m s&aacute;t t&agrave;i nguy&ecirc;n m&#7895;i container &#273;&#432;&#7907;c d&ugrave;ng:</p>
+      <div class="stats-row" style="margin-top: 0.8rem;">
+        <div class="stat"><div class="num">CPU</div><div class="label">Gi&#7899;i h&#7841;n cores</div></div>
+        <div class="stat"><div class="num">RAM</div><div class="label">Memory limit</div></div>
+        <div class="stat"><div class="num">IO</div><div class="label">Disk bandwidth</div></div>
+        <div class="stat"><div class="num">PIDs</div><div class="label">S&#7889; process</div></div>
+      </div>
+      <p style="margin-top: 0.8rem;">cgroups v2 (unified hierarchy) thay th&#7871; cgroups v1 t&#7915; kernel 5.x. Thay v&igrave; m&#7895;i resource l&agrave; m&#7897;t hierarchy ri&ecirc;ng (v1), v2 g&#7897;p t&#7845;t c&#7843; v&agrave;o m&#7897;t c&acirc;y duy nh&#7845;t &mdash; &#273;&#417;n gi&#7843;n h&#417;n, m&#7841;nh h&#417;n, v&agrave; h&#7895; tr&#7907; pressure stall information (PSI).</p>
+    </div>
+
+    <!-- Overlay FS -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Overlay Filesystem</h4>
+      <p style="margin-top: 0.5rem;">&#272;&acirc;y l&agrave; "ph&eacute;p thu&#7853;t" gi&uacute;p container image nh&#7887; v&agrave; kh&#7903;i &#273;&#7897;ng nhanh. OverlayFS x&#7871;p ch&#7891;ng nhi&#7873;u layer l&ecirc;n nhau:</p>
+      <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1.2rem; margin-top: 0.8rem; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--accent3);">
+        <div style="color: var(--accent5); margin-bottom: 0.3rem;">&#9608;&#9608;&#9608; Container Layer (read-write)</div>
+        <div style="color: var(--accent4);">&#9608;&#9608;&#9608; App code layer (read-only)</div>
+        <div style="color: var(--accent);">&#9608;&#9608;&#9608; Dependencies layer (read-only)</div>
+        <div style="color: var(--accent2);">&#9608;&#9608;&#9608; Base image layer (read-only)</div>
+      </div>
+      <p style="margin-top: 0.8rem;">Khi container ghi file, ch&#7881; layer tr&ecirc;n c&ugrave;ng b&#7883; thay &#273;&#7893;i (copy-on-write). 100 container c&ugrave;ng image ch&#7881; c&#7847;n 1 b&#7843;n base layer tr&ecirc;n disk &mdash; ti&#7871;t ki&#7879;m k&#7867;.</p>
+    </div>
+
+    <!-- OCI Spec -->
+    <div class="concept-card">
+      <h4><span class="status alive"></span> OCI Image & Runtime Spec</h4>
+      <p style="margin-top: 0.5rem;">Open Container Initiative (OCI) &#273;&#7883;nh ngh&#297;a 3 ti&ecirc;u chu&#7849;n m&#7903;:</p>
+      <div class="tag-row" style="margin-top: 0.8rem;">
+        <span class="tag good">Image Spec &mdash; &#273;&#7883;nh d&#7841;ng &#273;&oacute;ng g&oacute;i</span>
+        <span class="tag">Runtime Spec &mdash; c&aacute;ch ch&#7841;y container</span>
+        <span class="tag warn">Distribution Spec &mdash; c&aacute;ch push/pull</span>
+      </div>
+      <p style="margin-top: 0.8rem;">Nh&#7901; OCI, b&#7841;n c&oacute; th&#7875; build image b&#7857;ng Docker, ch&#7841;y b&#7857;ng Podman, deploy l&ecirc;n Kubernetes d&ugrave;ng containerd. T&#7845;t c&#7843; &#273;&#7873;u "n&oacute;i chung m&#7897;t ng&ocirc;n ng&#7919;". &#272;&acirc;y l&agrave; l&yacute; do t&#7841;i sao h&#7879; sinh th&aacute;i container ph&aacute;t tri&#7875;n m&#7841;nh &mdash; kh&ocirc;ng b&#7883; vendor lock-in.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>T&#7841;i sao c&#7847;n hi&#7875;u nh&#7919;ng th&#7913; n&agrave;y?</h4>
+    <p>Nhi&#7873;u ng&#432;&#7901;i d&ugrave;ng Docker m&agrave; kh&ocirc;ng hi&#7875;u namespaces hay cgroups &mdash; gi&#7889;ng l&aacute;i xe kh&ocirc;ng bi&#7871;t &#273;&#7897;ng c&#417; ho&#7841;t &#273;&#7897;ng th&#7871; n&agrave;o. B&igrave;nh th&#432;&#7901;ng th&igrave; kh&ocirc;ng sao, nh&#432;ng khi g&#7863;p s&#7921; c&#7889; (container b&#7883; OOM-kill, network kh&ocirc;ng th&ocirc;ng, quy&#7873;n file sai) &mdash; th&igrave; hi&#7875;u n&#7873;n t&#7843;ng s&#7869; c&#7913;u b&#7841;n.</p>
+  </div>
+</section>
+
+<!-- CONTAINER RUNTIMES -->
+<section id="runtimes">
+  <h2 class="section-title" style="color: var(--accent2);">C&aacute;c &Ocirc;ng L&#7899;n Container Runtime</h2>
+  <p class="section-subtitle">M&#7895;i runtime c&oacute; tri&#7871;t l&yacute; ri&ecirc;ng, th&#7871; m&#7841;nh ri&ecirc;ng, v&agrave; "g&oacute;t ch&acirc;n Achilles" ri&ecirc;ng</p>
+
+  <div class="vendor-grid">
+    <!-- Docker -->
+    <div class="vendor-card docker">
+      <div class="vendor-logo">&#128051;</div>
+      <h3>Docker</h3>
+      <div class="vendor-type">Container Platform / Ecosystem</div>
+      <p>Kh&ocirc;ng c&#7847;n gi&#7899;i thi&#7879;u nhi&#7873;u &mdash; Docker l&agrave; c&aacute;i t&ecirc;n &#273;&#7891;ng ngh&#297;a v&#7899;i container. Docker Engine g&#7891;m dockerd (daemon), containerd (runtime), v&agrave; runc (low-level runtime). Docker Desktop l&agrave;m vi&#7879;c tr&ecirc;n macOS/Windows qua VM &#7849;n. Docker Compose &#273;i&#7873;u ph&#7889;i multi-container tr&ecirc;n m&#7897;t host.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2013</div><div class="label">Ra &#273;&#7901;i</div></div>
+        <div class="stat"><div class="num">20M+</div><div class="label">Dev h&agrave;ng th&aacute;ng</div></div>
+        <div class="stat"><div class="num">14M+</div><div class="label">Image tr&ecirc;n Hub</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">DX tuy&#7879;t v&#7901;i</span>
+        <span class="tag">Docker Compose</span>
+        <span class="tag warn">Daemon-based</span>
+        <span class="tag">Docker Hub</span>
+        <span class="tag hot">Desktop c&#7847;n license</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Nh&#7899; k&#7929;</h4>
+        <p>Docker <strong>kh&ocirc;ng ph&#7843;i l&agrave; container runtime</strong>. Docker l&agrave; m&#7897;t platform bao g&#7891;m CLI + daemon + build + registry + compose. Runtime th&#7921;c s&#7921; b&ecirc;n trong l&agrave; <strong>containerd + runc</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Podman -->
+    <div class="vendor-card podman">
+      <div class="vendor-logo">&#129433;</div>
+      <h3>Podman</h3>
+      <div class="vendor-type">Daemonless Container Engine</div>
+      <p>Red Hat ph&aacute;t tri&#7875;n Podman nh&#432; m&#7897;t "Docker kh&ocirc;ng daemon". M&#7895;i container l&agrave; m&#7897;t child process c&#7911;a Podman &mdash; kh&ocirc;ng c&oacute; daemon n&agrave;o ch&#7841;y n&#7873;n. H&#7895; tr&#7907; rootless container xu&#7845;t s&#7855;c (ch&#7841;y container kh&ocirc;ng c&#7847;n root). T&#432;&#417;ng th&iacute;ch g&#7847;n 100% v&#7899;i Docker CLI: <code>alias docker=podman</code> l&agrave; xong.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2018</div><div class="label">Ra &#273;&#7901;i</div></div>
+        <div class="stat"><div class="num">0</div><div class="label">Daemon</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">OCI</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Daemonless</span>
+        <span class="tag good">Rootless</span>
+        <span class="tag">Systemd-native</span>
+        <span class="tag">Pod support</span>
+        <span class="tag warn">Compose h&#7895; tr&#7907; ch&#432;a &#273;&#7847;y &#273;&#7911;</span>
+      </div>
+    </div>
+
+    <!-- LXC/LXD -->
+    <div class="vendor-card lxc">
+      <div class="vendor-logo">&#127968;</div>
+      <h3>LXC / Incus (LXD)</h3>
+      <div class="vendor-type">System Container Platform</div>
+      <p>LXC l&agrave; container "ki&#7875;u c&#361;" &mdash; ch&#7841;y nguy&ecirc;n m&#7897;t OS b&ecirc;n trong, gi&#7889;ng VM h&#417;n l&agrave; Docker container. LXD (nay l&agrave; Incus sau khi Canonical chuy&#7875;n h&#432;&#7899;ng) cung c&#7845;p API v&agrave; UX d&#7877; d&ugrave;ng h&#417;n. R&#7845;t ph&ugrave; h&#7907;p khi b&#7841;n c&#7847;n m&#7897;t "VM nh&#7865;" c&oacute; systemd, ssh, v&agrave; multi-process b&ecirc;n trong.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2008</div><div class="label">LXC</div></div>
+        <div class="stat"><div class="num">2015</div><div class="label">LXD</div></div>
+        <div class="stat"><div class="num">2023</div><div class="label">Incus fork</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">System container</span>
+        <span class="tag">Full OS b&ecirc;n trong</span>
+        <span class="tag warn">Kh&ocirc;ng OCI-native</span>
+        <span class="tag">Proxmox h&#7895; tr&#7907;</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Homelab tip</h4>
+        <p>Proxmox d&ugrave;ng LXC l&agrave;m container runtime. N&#7871;u b&#7841;n &#273;ang ch&#7841;y Proxmox, b&#7841;n &#273;&atilde; d&ugrave;ng LXC r&#7891;i &#273;&oacute;! M&#7895;i CT (container template) tr&ecirc;n Proxmox ch&iacute;nh l&agrave; m&#7897;t LXC container.</p>
+      </div>
+    </div>
+
+    <!-- containerd -->
+    <div class="vendor-card containerd">
+      <div class="vendor-logo">&#9881;&#65039;</div>
+      <h3>containerd</h3>
+      <div class="vendor-type">Industry-Standard Core Runtime</div>
+      <p>Sinh ra t&#7915; Docker, l&#7899;n l&ecirc;n v&#432;&#7907;t Docker. containerd l&agrave; runtime &#273;&#432;&#7907;c Kubernetes s&#7917; d&#7909;ng nhi&#7873;u nh&#7845;t hi&#7879;n nay. N&oacute; kh&ocirc;ng c&oacute; CLI &#273;&#7865;p nh&#432; Docker &mdash; v&igrave; n&oacute; &#273;&#432;&#7907;c thi&#7871;t k&#7871; l&agrave;m "&#273;&#7897;ng c&#417;" b&ecirc;n d&#432;&#7899;i, kh&ocirc;ng ph&#7843;i c&ocirc;ng c&#7909; cho ng&#432;&#7901;i d&ugrave;ng cu&#7889;i. CNCF graduated project.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2016</div><div class="label">T&aacute;ch t&#7915; Docker</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">K8s Runtime</div></div>
+        <div class="stat"><div class="num">CNCF</div><div class="label">Graduated</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">K8s default</span>
+        <span class="tag">CRI plugin</span>
+        <span class="tag">OCI-native</span>
+        <span class="tag warn">Kh&ocirc;ng d&agrave;nh cho end-user</span>
+      </div>
+    </div>
+
+    <!-- CRI-O -->
+    <div class="vendor-card crio">
+      <div class="vendor-logo">&#9898;</div>
+      <h3>CRI-O</h3>
+      <div class="vendor-type">Kubernetes-Native Runtime</div>
+      <p>Red Hat x&acirc;y CRI-O v&#7899;i &#273;&uacute;ng m&#7897;t m&#7909;c &#273;&iacute;ch: l&agrave;m container runtime cho Kubernetes v&agrave; ch&#7881; Kubernetes. Kh&ocirc;ng c&oacute; docker build, kh&ocirc;ng c&oacute; compose, kh&ocirc;ng l&agrave;m g&igrave; kh&aacute;c ngo&agrave;i CRI. OpenShift d&ugrave;ng CRI-O l&agrave;m runtime m&#7863;c &#273;&#7883;nh.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2017</div><div class="label">Ra &#273;&#7901;i</div></div>
+        <div class="stat"><div class="num">CRI</div><div class="label">Only</div></div>
+        <div class="stat"><div class="num">CNCF</div><div class="label">Incubating</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">K8s chuy&ecirc;n d&#7909;ng</span>
+        <span class="tag">OpenShift default</span>
+        <span class="tag hot">Kh&ocirc;ng &#273;&#7897;c l&#7853;p</span>
+        <span class="tag">Minimal attack surface</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Runtime Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Runtime</th>
+          <th>Ki&#7875;u</th>
+          <th>Daemon</th>
+          <th>Rootless</th>
+          <th>K8s CRI</th>
+          <th>Ph&ugrave; h&#7907;p cho</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Docker</td>
+          <td>High-level</td>
+          <td>C&oacute; (dockerd)</td>
+          <td>C&oacute; (beta)</td>
+          <td>Qua containerd</td>
+          <td>Dev, CI/CD, h&#7885;c t&#7853;p</td>
+        </tr>
+        <tr>
+          <td>Podman</td>
+          <td>High-level</td>
+          <td>Kh&ocirc;ng</td>
+          <td>C&oacute; (native)</td>
+          <td>Kh&ocirc;ng</td>
+          <td>Dev, production rootless</td>
+        </tr>
+        <tr>
+          <td>LXC/Incus</td>
+          <td>System</td>
+          <td>C&oacute; (lxd)</td>
+          <td>H&#7841;n ch&#7871;</td>
+          <td>Kh&ocirc;ng</td>
+          <td>VM-like workload, Proxmox</td>
+        </tr>
+        <tr>
+          <td>containerd</td>
+          <td>Low-level</td>
+          <td>C&oacute;</td>
+          <td>C&oacute;</td>
+          <td>Native</td>
+          <td>K8s, infrastructure</td>
+        </tr>
+        <tr>
+          <td>CRI-O</td>
+          <td>Low-level</td>
+          <td>C&oacute;</td>
+          <td>C&oacute;</td>
+          <td>Native</td>
+          <td>K8s (OpenShift)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ORCHESTRATION -->
+<section id="orchestration">
+  <h2 class="section-title" style="color: var(--accent4);">&#272;i&#7873;u Ph&#7889;i Container</h2>
+  <p class="section-subtitle">Ch&#7841;y 1 container th&igrave; d&#7877;, qu&#7843;n l&yacute; 1000 container th&igrave; c&#7847;n orchestrator</p>
+
+  <div class="orch-grid">
+    <!-- Kubernetes -->
+    <div class="orch-card">
+      <div class="orch-icon">&#9784;&#65039;</div>
+      <h3>Kubernetes (K8s)</h3>
+      <div class="orch-type">Production-Grade Orchestration</div>
+      <p>Vua c&#7911;a orchestration. Qu&#7843;n l&yacute; h&agrave;ng ngh&igrave;n container tr&ecirc;n h&agrave;ng tr&#259;m node. T&#7921; &#273;&#7897;ng scaling, self-healing, rolling update, service discovery. H&#7879; sinh th&aacute;i kh&#7893;ng l&#7891;: Helm, Istio, ArgoCD, Prometheus...</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">5.6M+</div><div class="label">Dev to&agrave;n c&#7847;u</div></div>
+        <div class="stat"><div class="num">96%</div><div class="label">T&#7893; ch&#7913;c d&ugrave;ng/&#273;&aacute;nh gi&aacute;</div></div>
+        <div class="stat"><div class="num">150K+</div><div class="label">Commits</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Production-grade</span>
+        <span class="tag">Self-healing</span>
+        <span class="tag">Auto-scaling</span>
+        <span class="tag warn">Ph&#7913;c t&#7841;p</span>
+        <span class="tag hot">Steep learning curve</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Th&#7921;c t&#7871; homelab</h4>
+        <p>K8s tr&ecirc;n homelab th&#432;&#7901;ng overkill. H&atilde;y c&acirc;n nh&#7855;c <strong>K3s</strong> (K8s nh&#7865; c&#7911;a Rancher) ho&#7863;c <strong>MicroK8s</strong> (Canonical) tr&#432;&#7899;c. Ch&#7881; c&#7847;n 512MB RAM cho m&#7897;t node K3s.</p>
+      </div>
+    </div>
+
+    <!-- Docker Compose -->
+    <div class="orch-card">
+      <div class="orch-icon">&#128221;</div>
+      <h3>Docker Compose</h3>
+      <div class="orch-type">Single-Host Multi-Container</div>
+      <p>&#272;&#7883;nh ngh&#297;a to&agrave;n b&#7897; stack trong m&#7897;t file YAML. Ph&ugrave; h&#7907;p cho dev, homelab, v&agrave; &#7913;ng d&#7909;ng nh&#7887;-v&#7915;a. M&#7897;t l&#7879;nh <code>docker compose up -d</code> l&agrave; xong. Kh&ocirc;ng c&#7847;n cluster, kh&ocirc;ng c&#7847;n etcd, kh&ocirc;ng c&#7847;n &#273;au &#273;&#7847;u.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1 host</div><div class="label">Ph&#7841;m vi</div></div>
+        <div class="stat"><div class="num">YAML</div><div class="label">C&#7845;u h&igrave;nh</div></div>
+        <div class="stat"><div class="num">5 ph&uacute;t</div><div class="label">H&#7885;c c&#417; b&#7843;n</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">&#272;&#417;n gi&#7843;n</span>
+        <span class="tag good">Homelab-friendly</span>
+        <span class="tag">1 file YAML</span>
+        <span class="tag warn">Kh&ocirc;ng multi-host</span>
+        <span class="tag warn">Kh&ocirc;ng auto-scaling</span>
+      </div>
+    </div>
+
+    <!-- Docker Swarm -->
+    <div class="orch-card">
+      <div class="orch-icon">&#129419;</div>
+      <h3>Docker Swarm</h3>
+      <div class="orch-type">Simple Multi-Host Orchestration</div>
+      <p>Cluster mode t&iacute;ch h&#7907;p s&#7861;n trong Docker. D&#7877; setup h&#417;n K8s r&#7845;t nhi&#7873;u: <code>docker swarm init</code> + <code>docker swarm join</code> l&agrave; c&oacute; cluster. Nh&#432;ng Docker &#273;&atilde; g&#7847;n nh&#432; b&#7887; r&#417;i Swarm &mdash; &#237;t update, c&#7897;ng &#273;&#7891;ng thu h&#7865;p.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2016</div><div class="label">Swarm Mode</div></div>
+        <div class="stat"><div class="num">D&#7877;</div><div class="label">Setup</div></div>
+        <div class="stat"><div class="num">&#8595;</div><div class="label">Popularity</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">D&#7877; h&#7885;c</span>
+        <span class="tag">Built-in Docker</span>
+        <span class="tag hot">G&#7847;n b&#7883; b&#7887; r&#417;i</span>
+        <span class="tag warn">H&#7879; sinh th&aacute;i h&#7841;n ch&#7871;</span>
+      </div>
+    </div>
+
+    <!-- Nomad -->
+    <div class="orch-card">
+      <div class="orch-icon">&#127758;</div>
+      <h3>HashiCorp Nomad</h3>
+      <div class="orch-type">Flexible Workload Orchestrator</div>
+      <p>Kh&ocirc;ng ch&#7881; l&agrave; container orchestrator &mdash; Nomad ch&#7841;y c&#7843; VM, Java jar, binary th&#432;&#7901;ng. T&iacute;ch h&#7907;p tuy&#7879;t v&#7901;i v&#7899;i Consul (service mesh) v&agrave; Vault (secrets). Single binary, kh&ocirc;ng c&#7847;n etcd. L&#7921;a ch&#7885;n "v&#7915;a &#273;&#7911;" gi&#7919;a Compose v&agrave; K8s.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2015</div><div class="label">Ra &#273;&#7901;i</div></div>
+        <div class="stat"><div class="num">Multi</div><div class="label">Workload types</div></div>
+        <div class="stat"><div class="num">BSL</div><div class="label">License (2023)</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">&#272;&#417;n gi&#7843;n h&#417;n K8s</span>
+        <span class="tag">Multi-workload</span>
+        <span class="tag">Consul + Vault</span>
+        <span class="tag hot">License thay &#273;&#7893;i</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orchestration Comparison -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Ti&ecirc;u ch&iacute;</th>
+          <th>K8s</th>
+          <th>Compose</th>
+          <th>Swarm</th>
+          <th>Nomad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>&#272;&#7897; ph&#7913;c t&#7841;p</td>
+          <td>R&#7845;t cao</td>
+          <td>Th&#7845;p</td>
+          <td>Trung b&igrave;nh</td>
+          <td>Trung b&igrave;nh</td>
+        </tr>
+        <tr>
+          <td>Multi-host</td>
+          <td>C&oacute;</td>
+          <td>Kh&ocirc;ng</td>
+          <td>C&oacute;</td>
+          <td>C&oacute;</td>
+        </tr>
+        <tr>
+          <td>Auto-scaling</td>
+          <td>HPA, VPA, KEDA</td>
+          <td>Kh&ocirc;ng</td>
+          <td>C&#417; b&#7843;n</td>
+          <td>C&oacute;</td>
+        </tr>
+        <tr>
+          <td>Self-healing</td>
+          <td>Xu&#7845;t s&#7855;c</td>
+          <td>restart policy</td>
+          <td>C&oacute;</td>
+          <td>C&oacute;</td>
+        </tr>
+        <tr>
+          <td>Service mesh</td>
+          <td>Istio, Linkerd...</td>
+          <td>Kh&ocirc;ng</td>
+          <td>H&#7841;n ch&#7871;</td>
+          <td>Consul Connect</td>
+        </tr>
+        <tr>
+          <td>Ph&ugrave; h&#7907;p cho homelab</td>
+          <td>K3s/MicroK8s</td>
+          <td>T&#7889;t nh&#7845;t</td>
+          <td>T&#7889;t</td>
+          <td>T&#7889;t</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- IMAGE & REGISTRY -->
+<section id="images">
+  <h2 class="section-title" style="color: var(--accent);">Image & Registry</h2>
+  <p class="section-subtitle">T&#7915; vi&#7871;t Dockerfile &#273;&#250;ng c&aacute;ch &#273;&#7871;n v&#7853;n h&agrave;nh private registry</p>
+
+  <!-- Dockerfile best practices -->
+  <div class="dockerfile-block">
+    <h4>Dockerfile Anti-Pattern vs Best Practice</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+      <div>
+        <p style="color: var(--accent5); font-weight: 700; margin-bottom: 0.5rem;">&#10060; Sai (Bloated Image)</p>
+        <pre><span class="keyword">FROM</span> <span class="string">ubuntu:latest</span>
+<span class="keyword">RUN</span> apt-get update
+<span class="keyword">RUN</span> apt-get install -y python3
+<span class="keyword">RUN</span> apt-get install -y pip
+<span class="keyword">RUN</span> pip install flask
+<span class="keyword">COPY</span> . /app
+<span class="keyword">CMD</span> ["python3", "/app/app.py"]
+<span class="comment"># K&#7871;t qu&#7843;: 800MB+ image
+# M&#7895;i RUN = 1 layer d&#432; th&#7915;a
+# Kh&ocirc;ng c&oacute; .dockerignore
+# D&ugrave;ng :latest = kh&ocirc;ng pin version</span></pre>
+      </div>
+      <div>
+        <p style="color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem;">&#9989; &#272;&uacute;ng (Multi-stage Build)</p>
+        <pre><span class="comment"># Stage 1: Build</span>
+<span class="keyword">FROM</span> <span class="string">python:3.12-slim</span> AS builder
+<span class="keyword">WORKDIR</span> /app
+<span class="keyword">COPY</span> requirements.txt .
+<span class="keyword">RUN</span> pip install --no-cache-dir \
+    --target=/deps -r requirements.txt
+
+<span class="comment"># Stage 2: Runtime</span>
+<span class="keyword">FROM</span> <span class="string">python:3.12-slim</span>
+<span class="keyword">COPY</span> --from=builder /deps /usr/local
+<span class="keyword">COPY</span> . /app
+<span class="keyword">USER</span> 1000
+<span class="keyword">CMD</span> ["python3", "/app/app.py"]
+<span class="comment"># K&#7871;t qu&#7843;: ~120MB image</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Practices Grid -->
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Pin Version, Kh&ocirc;ng D&ugrave;ng :latest</h4>
+      <p style="margin-top: 0.5rem;"><code>FROM node:20.11-alpine</code> thay v&igrave; <code>FROM node:latest</code>. Tag <code>:latest</code> thay &#273;&#7893;i b&#7845;t c&#7913; l&uacute;c n&agrave;o &mdash; build h&ocirc;m nay kh&aacute;c build ng&agrave;y mai. Trong production, h&atilde;y d&ugrave;ng <strong>digest</strong>: <code>FROM node@sha256:abc123...</code></p>
+    </div>
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Multi-stage Build</h4>
+      <p style="margin-top: 0.5rem;">T&aacute;ch build environment v&agrave; runtime environment. Build b&#7857;ng image c&oacute; compiler, r&#7891;i COPY artifact sang image nh&#7887;. Go binary t&#7915; 1GB+ xu&#7889;ng c&ograve;n 10-20MB v&#7899;i <code>FROM scratch</code>.</p>
+    </div>
+    <div class="concept-card">
+      <h4><span class="status alive"></span> .dockerignore L&agrave; B&#7855;t Bu&#7897;c</h4>
+      <p style="margin-top: 0.5rem;">Gi&#7889;ng <code>.gitignore</code> nh&#432;ng cho Docker build context. Kh&ocirc;ng c&oacute; n&oacute;, Docker g&#7917;i TO&Agrave;N B&#7896; th&#432; m&#7909;c v&agrave;o daemon &mdash; bao g&#7891;m <code>node_modules/</code>, <code>.git/</code>, v&agrave; c&#7843; file nh&#7841;y c&#7843;m n&#7871;u b&#7841;n kh&ocirc;ng c&#7849;n th&#7853;n.</p>
+    </div>
+    <div class="concept-card">
+      <h4><span class="status alive"></span> USER Kh&ocirc;ng Ph&#7843;i Root</h4>
+      <p style="margin-top: 0.5rem;">M&#7863;c &#273;&#7883;nh container ch&#7841;y b&#7857;ng root. Th&ecirc;m <code>USER 1000</code> ho&#7863;c t&#7841;o user ri&ecirc;ng. &#272;&acirc;y l&agrave; l&#7899;p b&#7843;o m&#7853;t &#273;&#417;n gi&#7843;n nh&#432;ng r&#7845;t hi&#7879;u qu&#7843; &mdash; n&#7871;u container b&#7883; t&#7845;n c&ocirc;ng, attacker kh&ocirc;ng c&oacute; quy&#7873;n root.</p>
+    </div>
+  </div>
+
+  <!-- Registry Section -->
+  <h3 style="color: var(--accent2); margin-top: 3rem; margin-bottom: 1rem; font-size: 1.5rem;">Container Registry</h3>
+  <p style="color: var(--text-dim); margin-bottom: 2rem;">N&#417;i l&#432;u tr&#7919; v&agrave; ph&acirc;n ph&#7889;i container image &mdash; "GitHub cho Docker image"</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card docker">
+      <div class="vendor-logo">&#128203;</div>
+      <h3>Docker Hub</h3>
+      <div class="vendor-type">Public Registry M&#7863;c &#272;&#7883;nh</div>
+      <p>Registry l&#7899;n nh&#7845;t th&#7871; gi&#7899;i. Mi&#7877;n ph&iacute; cho public image. Rate limit cho free tier (100 pulls/6h t&#7915; 2020). H&#7847;u h&#7871;t image ch&iacute;nh th&#7913;c (nginx, postgres, redis...) &#273;&#7873;u &#7903; &#273;&acirc;y.</p>
+      <div class="tag-row">
+        <span class="tag good">L&#7899;n nh&#7845;t</span>
+        <span class="tag warn">Rate limit</span>
+        <span class="tag">Official images</span>
+      </div>
+    </div>
+
+    <div class="vendor-card containerd">
+      <div class="vendor-logo">&#9875;</div>
+      <h3>Harbor</h3>
+      <div class="vendor-type">Self-Hosted Enterprise Registry</div>
+      <p>CNCF graduated project. T&#7921; host registry v&#7899;i vulnerability scanning (Trivy), RBAC, replication, v&agrave; audit log. Ph&ugrave; h&#7907;p cho enterprise v&agrave; homelab mu&#7889;n ki&#7875;m so&aacute;t to&agrave;n b&#7897; supply chain.</p>
+      <div class="tag-row">
+        <span class="tag good">Self-hosted</span>
+        <span class="tag good">Vulnerability scan</span>
+        <span class="tag">CNCF Graduated</span>
+        <span class="tag warn">C&#7847;n t&agrave;i nguy&ecirc;n</span>
+      </div>
+    </div>
+
+    <div class="vendor-card podman">
+      <div class="vendor-logo">&#128025;</div>
+      <h3>GHCR (GitHub Container Registry)</h3>
+      <div class="vendor-type">GitHub-Native Registry</div>
+      <p>T&iacute;ch h&#7907;p tr&#7921;c ti&#7871;p v&#7899;i GitHub. CI/CD v&#7899;i GitHub Actions push image th&#7859;ng l&ecirc;n GHCR. Mi&#7877;n ph&iacute; cho public repo. Quy&#7873;n h&#7841;n theo repo/org. &#272;ang ng&agrave;y c&agrave;ng ph&#7893; bi&#7871;n nh&#7901; h&#7879; sinh th&aacute;i GitHub.</p>
+      <div class="tag-row">
+        <span class="tag good">GitHub native</span>
+        <span class="tag">Free cho public</span>
+        <span class="tag">OCI-native</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Supply chain security</h4>
+    <p>&#272;&#7915;ng bao gi&#7901; ch&#7841;y image t&#7915; ngu&#7891;n kh&ocirc;ng r&otilde;. H&atilde;y d&ugrave;ng <strong>image t&#7915; publisher &#273;&atilde; x&aacute;c minh</strong> (Docker Official, Verified Publisher). Qu&eacute;t vulnerability v&#7899;i <code>docker scout</code> ho&#7863;c <code>trivy image &lt;name&gt;</code> tr&#432;&#7899;c khi deploy. Trong homelab, c&acirc;n nh&#7855;c ch&#7841;y Harbor &#273;&#7875; t&#7921; mirror v&agrave; scan image.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Hi&#7875;u Nh&#7847;m Ph&#7893; Bi&#7871;n</h2>
+  <p class="section-subtitle">Nh&#7919;ng &#273;i&#7873;u m&#7885;i ng&#432;&#7901;i t&#432;&#7903;ng &#273;&uacute;ng nh&#432;ng th&#7921;c ra sai b&eacute;t</p>
+
+  <div class="myth-grid">
+    <!-- Myth 1 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"Container b&#7843;o m&#7853;t nh&#432; VM"</h4>
+      <p>Nhi&#7873;u ng&#432;&#7901;i ngh&#297; container c&aacute;ch ly t&#7889;t nh&#432; VM. Th&#7921;c t&#7871;, container chia s&#7867; kernel v&#7899;i host. M&#7897;t kernel exploit c&oacute; th&#7875; tho&aacute;t kh&#7887;i container. &#272;&oacute; l&agrave; l&yacute; do c&oacute; gVisor (Google) v&agrave; Kata Containers &mdash; ch&#7841;y container trong micro-VM &#273;&#7875; c&oacute; c&#7843; hai: nh&#7865; v&agrave; an to&agrave;n.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>Container c&aacute;ch ly &#7903; m&#7913;c <strong>process</strong>, VM c&aacute;ch ly &#7903; m&#7913;c <strong>hardware</strong>. Mu&#7889;n ch&#7841;y workload kh&ocirc;ng tin t&#432;&#7903;ng? D&ugrave;ng VM ho&#7863;c sandbox runtime.</p>
+    </div>
+
+    <!-- Myth 2 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"Docker = Container"</h4>
+      <p>Docker ph&#7893; bi&#7871;n &#273;&#7871;n m&#7913;c ng&#432;&#7901;i ta d&ugrave;ng "Docker" v&agrave; "container" thay th&#7871; nhau. Nh&#432;ng Docker ch&#7881; l&agrave; M&#7896;T c&ocirc;ng c&#7909; trong h&#7879; sinh th&aacute;i container. B&#7841;n c&oacute; th&#7875; ch&#7841;y container m&agrave; kh&ocirc;ng c&#7847;n Docker: Podman, containerd, LXC, nerdctl...</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>Docker l&agrave; <strong>platform</strong>. Container l&agrave; <strong>c&ocirc;ng ngh&#7879;</strong>. Kubernetes &#273;&atilde; lo&#7841;i Docker ra kh&#7887;i runtime m&#7863;c &#273;&#7883;nh t&#7915; v1.24 v&agrave; th&#7871; gi&#7899;i v&#7851;n ch&#7841;y t&#7889;t.</p>
+    </div>
+
+    <!-- Myth 3 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"Container l&agrave; stateless, kh&ocirc;ng l&#432;u &#273;&#432;&#7907;c data"</h4>
+      <p>M&#7897;t hi&#7875;u nh&#7847;m r&#7845;t ph&#7893; bi&#7871;n. Container CAN BE stateful v&#7899;i volumes. Docker volume, bind mount, v&agrave; c&#7843; h&#7879; th&#7889;ng CSI driver tr&ecirc;n K8s cho ph&eacute;p g&#7855;n persistent storage. PostgreSQL, MySQL, Redis &#273;&#7873;u ch&#7841;y trong container production &#273;&#432;&#7907;c.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>Container <strong>layer</strong> l&agrave; ephemeral, nh&#432;ng <strong>volume</strong> l&agrave; persistent. Bi&#7871;t d&ugrave;ng volume &#273;&uacute;ng c&aacute;ch l&agrave; k&#7929; n&#259;ng c&#417; b&#7843;n.</p>
+    </div>
+
+    <!-- Myth 4 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"C&#7913; b&#7887; v&agrave;o container l&agrave; t&#7921; &#273;&#7897;ng nhanh h&#417;n"</h4>
+      <p>Container kh&ocirc;ng l&agrave;m code ch&#7841;y nhanh h&#417;n. M&#7897;t &#7913;ng d&#7909;ng ch&#7841;y tr&ecirc;n bare metal th&#432;&#7901;ng nhanh h&#417;n trong container (d&ugrave; ch&ecirc;nh l&#7879;ch r&#7845;t nh&#7887; v&#7899;i Linux). Container gi&uacute;p b&#7841;n deploy nhanh h&#417;n, scale nhanh h&#417;n, v&agrave; qu&#7843;n l&yacute; d&#7877; h&#417;n &mdash; kh&ocirc;ng ph&#7843;i ch&#7841;y nhanh h&#417;n.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>Container t&#7889;i &#432;u h&oacute;a <strong>workflow v&#7853;n h&agrave;nh</strong>, kh&ocirc;ng ph&#7843;i <strong>hi&#7879;u su&#7845;t th&#7921;c thi</strong>. Overhead c&#7911;a container tr&ecirc;n Linux g&#7847;n nh&#432; b&#7857;ng 0, nh&#432;ng tr&ecirc;n macOS/Windows c&oacute; overhead c&#7911;a VM &#7849;n b&ecirc;n d&#432;&#7899;i.</p>
+    </div>
+
+    <!-- Myth 5 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"M&#7885;i th&#7913; &#273;&#7873;u n&ecirc;n container h&oacute;a"</h4>
+      <p>Kh&ocirc;ng ph&#7843;i m&#7885;i workload &#273;&#7873;u ph&ugrave; h&#7907;p v&#7899;i container. Kernel module, GPU driver, NFS server, real-time system, ho&#7863;c &#7913;ng d&#7909;ng c&#7847;n truy c&#7853;p ph&#7847;n c&#7913;ng tr&#7921;c ti&#7871;p &mdash; nh&#7919;ng th&#7913; n&agrave;y th&#432;&#7901;ng ch&#7841;y tr&ecirc;n VM ho&#7863;c bare metal t&#7889;t h&#417;n.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>Container l&agrave; c&ocirc;ng c&#7909;, kh&ocirc;ng ph&#7843;i t&ocirc;n gi&aacute;o. D&ugrave;ng &#273;&uacute;ng ch&#7895;: <strong>microservices, web app, CI/CD, dev environment</strong>. Kh&ocirc;ng &eacute;p m&#7885;i th&#7913; v&agrave;o container.</p>
+    </div>
+
+    <!-- Myth 6 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"Alpine lu&ocirc;n l&agrave; base image t&#7889;t nh&#7845;t"</h4>
+      <p>Alpine nh&#7887; (5MB) nh&#432;ng d&ugrave;ng musl libc thay v&igrave; glibc. &#272;i&#7873;u n&agrave;y g&acirc;y ra bug kh&oacute; debug v&#7899;i nhi&#7873;u ng&ocirc;n ng&#7919; (Python, Node, Go CGO). DNS resolution kh&aacute;c bi&#7879;t, locale kh&aacute;c bi&#7879;t, v&agrave; performance kh&aacute;c bi&#7879;t so v&#7899;i glibc.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>D&ugrave;ng <strong>-slim variant</strong> (debian-slim, ubuntu) cho h&#7847;u h&#7871;t tr&#432;&#7901;ng h&#7907;p. Alpine ph&ugrave; h&#7907;p cho Go static binary ho&#7863;c khi b&#7841;n hi&#7875;u r&otilde; musl. <strong>distroless</strong> (Google) c&ograve;n t&#7889;t h&#417;n cho production.</p>
+    </div>
+
+    <!-- Myth 7 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"Kh&ocirc;ng c&#7847;n backup container v&igrave; c&oacute; image"</h4>
+      <p>Image ch&#7881; ch&#7913;a template. Data th&#7921;c s&#7921; n&#7857;m trong volume, database b&ecirc;n trong, v&agrave; config &#273;&#432;&#7907;c mount v&agrave;o. X&oacute;a container m&agrave; qu&ecirc;n backup volume = m&#7845;t data v&#297;nh vi&#7877;n. &#272;&acirc;y l&agrave; sai l&#7847;m r&#7845;t th&#432;&#7901;ng g&#7863;p &#7903; ng&#432;&#7901;i m&#7899;i.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>Lu&ocirc;n <strong>backup volume data</strong>, <strong>l&#432;u docker-compose.yml trong git</strong>, v&agrave; c&oacute; <strong>k&#7871; ho&#7841;ch disaster recovery</strong>. Image c&oacute; th&#7875; pull l&#7841;i, data th&igrave; kh&ocirc;ng.</p>
+    </div>
+
+    <!-- Myth 8 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Hi&#7875;u nh&#7847;m</div>
+      <h4>"Container kh&ocirc;ng c&#7847;n monitoring"</h4>
+      <p>"N&oacute; t&#7921; restart m&agrave;, c&#7847;n g&igrave; monitor." Sai ho&agrave;n to&agrave;n. Container c&oacute; th&#7875; restart loop (CrashLoopBackOff), leak memory, t&#7889;n disk v&#7899;i log, ho&#7863;c ch&#7841;y m&agrave; kh&ocirc;ng ph&#7909;c v&#7909; g&igrave;. Kh&ocirc;ng c&oacute; monitoring = m&ugrave; qu&aacute;ng.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">S&#7921; th&#7853;t</div>
+      <p>D&ugrave;ng <strong>Prometheus + Grafana</strong> cho metrics, <strong>Loki</strong> cho logs, <strong>cAdvisor</strong> cho container resource usage. Thi&#7871;t l&#7853;p alerting cho CPU, RAM, restart count.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Cheat Sheet Container</h2>
+  <p class="section-subtitle">Nh&#7919;ng l&#7879;nh v&agrave; ki&#7871;n th&#7913;c c&#7847;n bi&#7871;t, g&oacute;i g&#7885;n trong c&aacute;c th&#7867;</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Qu&#7843;n l&yacute; Container</h4>
+      <p>C&aacute;c l&#7879;nh Docker c&#417; b&#7843;n nh&#7845;t</p>
+      <code>docker run -d --name web nginx
+docker ps -a
+docker logs -f web
+docker exec -it web /bin/sh
+docker stop web && docker rm web
+docker stats</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Qu&#7843;n l&yacute; Image</h4>
+      <p>Build, tag, push v&agrave; d&#7885;n d&#7865;p</p>
+      <code>docker build -t myapp:1.0 .
+docker tag myapp:1.0 registry/myapp:1.0
+docker push registry/myapp:1.0
+docker images
+docker image prune -a
+docker system df</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Docker Compose</h4>
+      <p>Qu&#7843;n l&yacute; multi-container stack</p>
+      <code>docker compose up -d
+docker compose down
+docker compose logs -f
+docker compose ps
+docker compose pull
+docker compose restart service_name</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Volume & Network</h4>
+      <p>Data persistence v&agrave; networking</p>
+      <code>docker volume create mydata
+docker volume ls
+docker network create mynet
+docker network ls
+docker run -v mydata:/data ...
+docker run --network mynet ...</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug Container</h4>
+      <p>Khi m&#7885;i th&#7913; kh&ocirc;ng ho&#7841;t &#273;&#7897;ng</p>
+      <code>docker inspect container_name
+docker logs --tail 100 container_name
+docker exec -it name sh
+docker events
+docker top container_name
+nsenter -t PID -n ip addr</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>D&#7885;n D&#7865;p H&#7879; Th&#7889;ng</h4>
+      <p>Docker &#259;n disk kh&ocirc;ng th&#432;&#417;ng ti&#7871;c</p>
+      <code>docker system prune -a --volumes
+docker image prune -a
+docker container prune
+docker volume prune
+docker builder prune
+docker system df -v</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Podman T&#432;&#417;ng &#272;&#432;&#417;ng</h4>
+      <p>Thay docker b&#7857;ng podman, g&#7847;n nh&#432; gi&#7889;ng h&#7879;t</p>
+      <code>alias docker=podman
+podman run -d --name web nginx
+podman generate systemd --name web
+podman pod create --name mypod
+podman play kube pod.yaml
+podman machine init  # macOS</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Kubernetes C&#417; B&#7843;n</h4>
+      <p>L&#7879;nh kubectl thi&#7871;t y&#7871;u</p>
+      <code>kubectl get pods -A
+kubectl describe pod name
+kubectl logs -f pod/name
+kubectl apply -f manifest.yaml
+kubectl port-forward svc/web 8080:80
+kubectl top pods</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>B&#7843;o M&#7853;t Container</h4>
+      <p>Checklist b&#7843;o m&#7853;t c&#417; b&#7843;n</p>
+      <code># Scan vulnerability
+trivy image nginx:latest
+docker scout cves nginx:latest
+
+# Ch&#7841;y kh&ocirc;ng root
+USER 1000:1000
+
+# Read-only filesystem
+docker run --read-only ...
+
+# Gi&#7899;i h&#7841;n capabilities
+docker run --cap-drop ALL ...</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Dockerfile Tips</h4>
+      <p>Vi&#7871;t Dockerfile hi&#7879;u qu&#7843;</p>
+      <code># G&#7897;p RUN &#273;&#7875; gi&#7843;m layer
+RUN apt-get update \
+ && apt-get install -y pkg \
+ && rm -rf /var/lib/apt/lists/*
+
+# COPY tr&#432;&#7899;c code thay &#273;&#7893;i &iacute;t
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Container Log Management</h4>
+      <p>Ki&#7875;m so&aacute;t log tr&#225;nh &#273;&#7847;y disk</p>
+      <code># Gi&#7899;i h&#7841;n log size (daemon.json)
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+
+# Ho&#7863;c trong compose
+logging:
+  options:
+    max-size: "10m"</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Health Check</h4>
+      <p>&#272;&#7843;m b&#7843;o container th&#7921;c s&#7921; healthy</p>
+      <code># Trong Dockerfile
+HEALTHCHECK --interval=30s \
+  --timeout=3s --retries=3 \
+  CMD curl -f http://localhost/ \
+  || exit 1
+
+# Trong compose
+healthcheck:
+  test: ["CMD", "curl", "-f",
+         "http://localhost/health"]
+  interval: 30s</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>L&#7901;i khuy&ecirc;n cu&#7889;i</h4>
+    <p>Kh&ocirc;ng c&#7847;n nh&#7899; h&#7871;t &mdash; h&atilde;y <strong>bookmark trang n&agrave;y</strong>. Container l&agrave; h&agrave;nh tr&igrave;nh d&agrave;i. B&#7855;t &#273;&#7847;u v&#7899;i Docker Compose cho homelab, hi&#7875;u r&otilde; volume v&agrave; network, r&#7891;i d&#7847;n d&#7847;n kh&aacute;m ph&aacute; K8s khi s&#7861;n s&agrave;ng. &#272;&#7915;ng v&#7897;i &mdash; n&#7873;n t&#7843;ng v&#7919;ng ch&#7855;c quan tr&#7885;ng h&#417;n t&#7889;c &#273;&#7897;.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Th&#7871; Gi&#7899;i Container &mdash; Deep Dive &mdash; T&#7893;ng h&#7907;p ki&#7871;n th&#7913;c container t&#7915; g&oacute;c nh&igrave;n ng&#432;&#7901;i v&#7853;n h&agrave;nh homelab</p>
+  <p style="margin-top: 0.5rem; opacity: 0.6;">M&#7885;i ki&#7871;n th&#7913;c &#273;&#432;&#7907;c vi&#7871;t t&#7915; kinh nghi&#7879;m th&#7921;c t&#7871;, kh&ocirc;ng ph&#7843;i l&yacute; thuy&#7871;t su&ocirc;ng. C&#7853;p nh&#7853;t 2026.</p>
+</footer>
+
+</body>
+</html>

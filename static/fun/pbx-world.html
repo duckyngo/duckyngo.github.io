@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới PBX - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phone-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: ring 2s ease-in-out infinite;
+  }
+
+  @keyframes ring {
+    0%, 100% { transform: rotate(0); }
+    5% { transform: rotate(15deg); }
+    10% { transform: rotate(-13deg); }
+    15% { transform: rotate(10deg); }
+    20% { transform: rotate(-8deg); }
+    25% { transform: rotate(0); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is PBX */
+  .pbx-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .pbx-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .pbx-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.asterisk::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.avaya::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.ericsson::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.cisco::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.freepbx::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.threecx::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* SIP Flow */
+  .sip-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .sip-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .sip-line {
+    display: flex;
+    align-items: center;
+    margin: 0.3rem 0;
+    min-width: 600px;
+  }
+
+  .sip-entity { width: 100px; text-align: center; font-weight: 700; flex-shrink: 0; }
+  .sip-entity.caller { color: var(--accent3); }
+  .sip-entity.pbx { color: var(--accent); }
+  .sip-entity.callee { color: var(--accent4); }
+
+  .sip-msg {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    padding: 0.3rem 0;
+  }
+
+  .sip-msg .arrow-line {
+    height: 2px;
+    background: var(--text-dim);
+    position: relative;
+  }
+
+  .sip-msg .arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -5px;
+    top: -8px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  .sip-msg .arrow-line.left::after {
+    content: '◀';
+    left: -5px;
+    right: auto;
+  }
+
+  .sip-msg .msg-label {
+    font-size: 0.75rem;
+    color: var(--accent2);
+    margin-bottom: 2px;
+  }
+
+  /* Mindset */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Topology Viz */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+
+  .topo-visual {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .topo-node {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    position: absolute;
+    border: 2px solid;
+  }
+
+  .topo-node.central {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+    background: rgba(59,130,246,0.15);
+    border-color: var(--accent);
+    z-index: 2;
+  }
+
+  .topo-node.endpoint {
+    background: rgba(16,185,129,0.1);
+    border-color: var(--accent3);
+  }
+
+  .topo-line {
+    position: absolute;
+    height: 2px;
+    background: rgba(59,130,246,0.3);
+    transform-origin: left center;
+  }
+
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .pbx-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">PBX World</a>
+  <a href="#what">PBX là gì?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#vendors">Vendors</a>
+  <a href="#protocols">Protocols</a>
+  <a href="#architecture">Kiến trúc</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#mindset">Mindset</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="phone-icon">📞</div>
+  <h1>Thế Giới PBX</h1>
+  <p class="subtitle">Từ tổng đài analog đến VoIP cloud - Hành trình 130 năm của ngành viễn thông doanh nghiệp. Mọi thứ bạn cần biết, những hiểu nhầm cần tránh, và mindset đúng khi bước vào thế giới PBX.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS PBX -->
+<section id="what">
+  <div class="pbx-what">
+    <h2 class="section-title">PBX là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Private Branch Exchange</strong> - Nôm na là một "tổng đài thu nhỏ" đặt trong doanh nghiệp. Thay vì mỗi nhân viên cần một đường dây điện thoại riêng từ nhà mạng (cực kỳ đắt), PBX cho phép chia sẻ một số ít trunk lines cho hàng trăm extension nội bộ.
+    </p>
+
+    <div class="pbx-analogy">
+      <div class="analogy-box">
+        <div class="icon">🏢</div>
+        <h3>Không có PBX</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">100 nhân viên = 100 đường dây thuê bao<br>Chi phí: <strong style="color: var(--accent5);">$$$$$</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🔀</div>
+        <h3>Có PBX</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">100 nhân viên = 10-20 trunk lines<br>Chi phí: <strong style="color: var(--accent3);">$</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>PBX không chỉ là "tổng đài". Nó là <strong>bộ não viễn thông</strong> của doanh nghiệp - xử lý routing, voicemail, IVR, call recording, conference, ACD (Automatic Call Distribution), và hàng chục tính năng khác. Hãy nghĩ nó như một <strong>"router cho voice"</strong> - tương tự cách router quản lý traffic mạng, PBX quản lý traffic cuộc gọi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian PBX</h2>
+  <p class="section-subtitle">130 năm phát triển - từ switchboard thủ công đến cloud AI</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1876-1960s</span>
+        <h3>Kỷ nguyên Manual Switchboard</h3>
+        <p>Operator ngồi cắm dây nối cuộc gọi bằng tay. Mỗi cuộc gọi cần một con người thực hiện kết nối vật lý. Hình ảnh kinh điển của ngành telecom.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1960s-1970s</span>
+        <h3>Electromechanical PBX</h3>
+        <p>Relay và crossbar switch thay thế con người. Tự động hóa kết nối nhưng vẫn hoàn toàn analog. Tiếng "click click" đặc trưng khi quay số.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1975-1990s</span>
+        <h3>Digital PBX - Kỷ nguyên vàng</h3>
+        <p>TDM (Time Division Multiplexing) ra đời. Ericsson MD110, Avaya DEFINITY, Nortel Meridian thống trị. Voice được số hóa thành PCM 64kbps trên bus TDM. Đây là thời đại mà các "ông lớn" xây dựng đế chế.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1999-2005</span>
+        <h3>VoIP Revolution</h3>
+        <p>Asterisk ra đời (1999). SIP trở thành chuẩn (RFC 3261, 2002). Cisco CallManager. Voice chạy trên IP network. Một cuộc cách mạng thực sự - tổng đài từ phần cứng triệu đô thành phần mềm chạy trên Linux.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2010-nay</span>
+        <h3>Cloud & UCaaS</h3>
+        <p>PBX bay lên cloud. Microsoft Teams, Zoom Phone, RingCentral. Không cần phần cứng on-premise. WebRTC cho phép gọi từ browser. AI integration cho IVR và analytics.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors">
+  <h2 class="section-title" style="color: var(--accent2);">Các Ông Lớn PBX</h2>
+  <p class="section-subtitle">Mỗi vendor có triết lý riêng, thế mạnh riêng, và "cái bẫy" riêng</p>
+
+  <div class="vendor-grid">
+    <!-- Asterisk -->
+    <div class="vendor-card asterisk">
+      <div class="vendor-logo">⭐</div>
+      <h3>Asterisk</h3>
+      <div class="vendor-type">Open Source / Software PBX</div>
+      <p>Được Mark Spencer tạo ra năm 1999. "Linux của thế giới PBX". Chạy trên bất kỳ Linux box nào. Cực kỳ linh hoạt nhưng cũng cực kỳ phức tạp. Dialplan, AGI, AMI, ARI - mỗi thứ là một thế giới riêng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1999</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">2M+</div><div class="label">Deployments</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Open Source</span>
+        <span class="tag">SIP/IAX2</span>
+        <span class="tag warn">Steep Learning Curve</span>
+        <span class="tag">Dialplan</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>Asterisk KHÔNG phải là PBX. Nó là <strong>toolkit để xây PBX</strong>. FreePBX/Issabel mới là PBX xây trên Asterisk. Hiểu sự khác biệt này rất quan trọng.</p>
+      </div>
+    </div>
+
+    <!-- Avaya -->
+    <div class="vendor-card avaya">
+      <div class="vendor-logo">🔴</div>
+      <h3>Avaya</h3>
+      <div class="vendor-type">Enterprise / Proprietary PBX</div>
+      <p>Hậu duệ của AT&T/Lucent. Avaya Aura (CM/SM/OABCPE), IP Office cho SMB. Dominant trong enterprise lớn, ngân hàng, call center. Đã qua 2 lần phá sản nhưng vẫn sống. Hệ sinh thái khổng lồ nhưng vendor lock-in rất nặng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">90%</div><div class="label">Fortune 100</div></div>
+        <div class="stat"><div class="num">100M+</div><div class="label">Users</div></div>
+        <div class="stat"><div class="num">$$$</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Vendor Lock-in</span>
+        <span class="tag">H.323/SIP</span>
+        <span class="tag warn">Expensive</span>
+        <span class="tag good">Enterprise Grade</span>
+      </div>
+    </div>
+
+    <!-- Ericsson-LG -->
+    <div class="vendor-card ericsson">
+      <div class="vendor-logo">🔵</div>
+      <h3>Ericsson-LG (iPECS)</h3>
+      <div class="vendor-type">SMB-Enterprise / Korean Engineering</div>
+      <p>Liên doanh Ericsson + LG Electronics. Dòng iPECS (UCP, eMG) rất phổ biến ở châu Á. Giá tốt, tính năng đầy đủ, reliability cao. Giao diện web quản trị khá tốt. Phổ biến trong khách sạn, bệnh viện, văn phòng vừa tại VN.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">iPECS</div><div class="label">Platform</div></div>
+        <div class="stat"><div class="num">Asia #1</div><div class="label">Market</div></div>
+        <div class="stat"><div class="num">$$</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Giá tốt</span>
+        <span class="tag">SIP/H.323</span>
+        <span class="tag good">Reliable</span>
+        <span class="tag">Hotel/Hospital</span>
+      </div>
+    </div>
+
+    <!-- Cisco -->
+    <div class="vendor-card cisco">
+      <div class="vendor-logo">🟢</div>
+      <h3>Cisco (CUCM/Webex)</h3>
+      <div class="vendor-type">Enterprise / Network-Centric</div>
+      <p>Cisco Unified Communications Manager (CUCM, trước là CallManager). Sức mạnh nằm ở việc tích hợp sâu với hạ tầng Cisco (switch, router, QoS). Webex Calling là cloud play. Skinny (SCCP) protocol riêng, giờ chuyển sang SIP.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">CUCM</div><div class="label">Platform</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Enterprise UC</div></div>
+        <div class="stat"><div class="num">$$$$</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Network Integration</span>
+        <span class="tag">SCCP/SIP</span>
+        <span class="tag hot">Cisco Tax</span>
+        <span class="tag">QoS Native</span>
+      </div>
+    </div>
+
+    <!-- FreePBX -->
+    <div class="vendor-card freepbx">
+      <div class="vendor-logo">🟣</div>
+      <h3>FreePBX / Issabel</h3>
+      <div class="vendor-type">Open Source / GUI for Asterisk</div>
+      <p>GUI management cho Asterisk. FreePBX (Sangoma) là phổ biến nhất. Issabel (fork của Elastix) popular ở Latin America và châu Á. Biến Asterisk từ "cần PhD để config" thành "click-click xong". Tuy nhiên, khi cần custom sâu vẫn phải vào CLI.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Free</div><div class="label">Core</div></div>
+        <div class="stat"><div class="num">GUI</div><div class="label">Management</div></div>
+        <div class="stat"><div class="num">1hr</div><div class="label">Setup</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Easy Setup</span>
+        <span class="tag">Asterisk Based</span>
+        <span class="tag warn">Limited Scale</span>
+        <span class="tag good">Community</span>
+      </div>
+    </div>
+
+    <!-- 3CX -->
+    <div class="vendor-card threecx">
+      <div class="vendor-logo">🩷</div>
+      <h3>3CX</h3>
+      <div class="vendor-type">Software PBX / Modern</div>
+      <p>Software PBX chạy trên Windows/Linux/Cloud. Giao diện modern nhất trong các PBX. Web client, mobile app tốt. Free cho đến 10 users. Rất phù hợp SMB muốn tự host nhưng không muốn đau đầu với Asterisk. Đang push mạnh sang cloud-hosted.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">600K+</div><div class="label">Customers</div></div>
+        <div class="stat"><div class="num">12M+</div><div class="label">Users</div></div>
+        <div class="stat"><div class="num">Free*</div><div class="label">< 10 users</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Modern UI</span>
+        <span class="tag">WebRTC</span>
+        <span class="tag good">Easy Admin</span>
+        <span class="tag">Windows/Linux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Asterisk</th>
+          <th>Avaya</th>
+          <th>Ericsson-LG</th>
+          <th>Cisco CUCM</th>
+          <th>3CX</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chi phí khởi điểm</td>
+          <td style="color: var(--accent3);">Free</td>
+          <td style="color: var(--accent5);">$50K+</td>
+          <td style="color: var(--accent4);">$5K+</td>
+          <td style="color: var(--accent5);">$30K+</td>
+          <td style="color: var(--accent3);">Free-$2K</td>
+        </tr>
+        <tr>
+          <td>Độ khó triển khai</td>
+          <td>Expert</td>
+          <td>Expert + Vendor</td>
+          <td>Intermediate</td>
+          <td>Expert + CCNA</td>
+          <td>Beginner</td>
+        </tr>
+        <tr>
+          <td>Scale (users)</td>
+          <td>Unlimited*</td>
+          <td>300,000+</td>
+          <td>2,000</td>
+          <td>80,000+</td>
+          <td>1,024</td>
+        </tr>
+        <tr>
+          <td>Customization</td>
+          <td style="color: var(--accent3);">Unlimited</td>
+          <td>SDK/CTI</td>
+          <td>Limited</td>
+          <td>JTAPI/AXL</td>
+          <td>API/CFD</td>
+        </tr>
+        <tr>
+          <td>Vendor Lock-in</td>
+          <td style="color: var(--accent3);">None</td>
+          <td style="color: var(--accent5);">Extreme</td>
+          <td style="color: var(--accent4);">Moderate</td>
+          <td style="color: var(--accent5);">High</td>
+          <td style="color: var(--accent4);">Moderate</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>ISP, Geek</td>
+          <td>Enterprise, CC</td>
+          <td>Hotel, Hospital</td>
+          <td>Cisco Shop</td>
+          <td>SMB</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROTOCOLS -->
+<section id="protocols">
+  <h2 class="section-title" style="color: var(--accent3);">Protocols - Ngôn Ngữ Của PBX</h2>
+  <p class="section-subtitle">Hiểu protocol là hiểu cách PBX "nói chuyện" với nhau và với thế giới bên ngoài</p>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SIP (Session Initiation Protocol)</h4>
+      <p><strong>Vua của VoIP.</strong> RFC 3261. Text-based (giống HTTP). Chỉ làm signaling (setup/teardown cuộc gọi), KHÔNG mang voice. Voice đi qua RTP riêng. Port 5060 (UDP/TCP), 5061 (TLS).</p>
+      <div class="tag-row"><span class="tag good">Standard</span><span class="tag">Signaling only</span><span class="tag good">Mọi vendor hỗ trợ</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> RTP/SRTP (Real-time Transport Protocol)</h4>
+      <p><strong>Mang voice/video thực sự.</strong> UDP-based, random high ports. SRTP là bản mã hóa. Đây là nơi audio data thực sự chảy. Nếu SIP ok nhưng không nghe gì = lỗi RTP (thường do NAT).</p>
+      <div class="tag-row"><span class="tag good">Media transport</span><span class="tag warn">NAT issues</span><span class="tag">UDP</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> WebRTC</h4>
+      <p><strong>Tương lai.</strong> Gọi trực tiếp từ browser không cần plugin. SRTP bắt buộc. ICE/STUN/TURN giải quyết NAT. Đang thay thế softphone truyền thống.</p>
+      <div class="tag-row"><span class="tag good">Modern</span><span class="tag good">Browser-native</span><span class="tag">Encrypted</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> H.323</h4>
+      <p><strong>Ông tổ VoIP.</strong> ITU-T standard. Binary, phức tạp. Vẫn tồn tại trong các hệ thống Avaya/Cisco cũ và video conferencing. SIP đã thắng cuộc chiến protocol war.</p>
+      <div class="tag-row"><span class="tag warn">Legacy</span><span class="tag">Binary</span><span class="tag">Video conf</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> ISDN (PRI/BRI)</h4>
+      <p><strong>Kết nối với PSTN.</strong> PRI = 30 channels (E1) hoặc 23 (T1). BRI = 2 channels. Vẫn phổ biến ở VN để nối PBX với nhà mạng. Đang dần bị SIP trunk thay thế.</p>
+      <div class="tag-row"><span class="tag warn">Đang giảm</span><span class="tag">PSTN gateway</span><span class="tag">Hardware needed</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status dead"></span> SCCP (Skinny) / MGCP</h4>
+      <p><strong>Proprietary protocols.</strong> SCCP là của Cisco (cho IP Phone). MGCP là centralized control. Cả hai đều đang chết dần, nhường chỗ cho SIP. Nếu gặp chúng, bạn đang làm việc với hệ thống cũ.</p>
+      <div class="tag-row"><span class="tag hot">Deprecated</span><span class="tag">Cisco only</span><span class="tag">Centralized</span></div>
+    </div>
+  </div>
+
+  <!-- SIP Call Flow -->
+  <div class="sip-flow">
+    <div class="flow-title">SIP Call Flow - Điều gì xảy ra khi bạn nhấc máy gọi?</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  Caller (Ext 100)          PBX Server            Callee (Ext 200)
+       |                        |                        |
+       |──── INVITE ───────────>|                        |
+       |<─── 100 Trying ───────|                        |
+       |                        |──── INVITE ───────────>|
+       |                        |<─── 180 Ringing ──────|
+       |<─── 180 Ringing ──────|                        |
+       |                        |     <i style="color:var(--accent4);">♪ Ring ring... ♪</i>        |
+       |                        |<─── 200 OK ───────────|  <span style="color:var(--accent3);">← Nhấc máy!</span>
+       |<─── 200 OK ───────────|                        |
+       |──── ACK ──────────────>|──── ACK ──────────────>|
+       |                        |                        |
+       |<═══════════ <span style="color:var(--accent3);">RTP Media (Voice)</span> ═══════════>|  <span style="color:var(--accent4);">← Audio đi TRỰC TIẾP</span>
+       |                        |                        |     <span style="color:var(--accent4);">hoặc qua PBX (B2BUA)</span>
+       |                        |                        |
+       |──── BYE ──────────────>|──── BYE ──────────────>|  <span style="color:var(--accent5);">← Cúp máy</span>
+       |<─── 200 OK ───────────|<─── 200 OK ───────────|
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: SIP vs RTP - Sai lầm #1 của người mới</h4>
+    <p><strong>SIP chỉ là signaling</strong> (như người bồi bàn dẫn bạn đến bàn). <strong>RTP mới mang voice</strong> (như thức ăn trên bàn). 90% vấn đề "nghe một chiều" hoặc "không nghe gì" là do RTP bị block bởi firewall/NAT, KHÔNG phải do SIP. Debug PBX mà chỉ nhìn SIP log = nhìn sai chỗ.</p>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <h2 class="section-title" style="color: var(--accent4);">Kiến Trúc PBX</h2>
+  <p class="section-subtitle">Từ hardware box đến cloud-native microservice</p>
+
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Luồng cuộc gọi từ ngoài vào trong</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">🌐</div>
+        <h4>PSTN / SIP Trunk</h4>
+        <p>Kết nối ra bên ngoài<br>ISDN PRI, SIP Trunk</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🛡️</div>
+        <h4>SBC</h4>
+        <p>Session Border Controller<br>Security, NAT, Transcoding</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">🧠</div>
+        <h4>PBX Core</h4>
+        <p>Call routing, Features<br>Dialplan, CDR</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">📱</div>
+        <h4>Endpoints</h4>
+        <p>IP Phones, Softphones<br>WebRTC, ATA</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topology -->
+  <h3 style="margin: 2rem 0 1rem; color: var(--text-dim);">Mô hình triển khai</h3>
+  <div class="topology-container">
+    <div class="topo-card">
+      <h4>On-Premise (Truyền thống)</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="70" y="20" width="60" height="40" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          <text x="100" y="45" text-anchor="middle" fill="#3b82f6" font-size="11">PBX Box</text>
+          <circle cx="40" cy="120" r="16" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="124" text-anchor="middle" fill="#10b981" font-size="14">📞</text>
+          <circle cx="100" cy="130" r="16" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="134" text-anchor="middle" fill="#10b981" font-size="14">📞</text>
+          <circle cx="160" cy="120" r="16" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="124" text-anchor="middle" fill="#10b981" font-size="14">📞</text>
+          <line x1="85" y1="60" x2="45" y2="104" stroke="#334155" stroke-width="1.5"/>
+          <line x1="100" y1="60" x2="100" y2="114" stroke="#334155" stroke-width="1.5"/>
+          <line x1="115" y1="60" x2="155" y2="104" stroke="#334155" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <p>PBX vật lý đặt tại chỗ. Full control nhưng cần bảo trì hardware. Phổ biến nhất tại VN hiện tại.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Hosted / Cloud PBX</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <ellipse cx="100" cy="35" rx="50" ry="25" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="100" y="40" text-anchor="middle" fill="#8b5cf6" font-size="11">☁️ Cloud</text>
+          <circle cx="40" cy="120" r="16" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="124" text-anchor="middle" fill="#10b981" font-size="14">📱</text>
+          <circle cx="100" cy="130" r="16" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="134" text-anchor="middle" fill="#10b981" font-size="14">💻</text>
+          <circle cx="160" cy="120" r="16" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="124" text-anchor="middle" fill="#10b981" font-size="14">📞</text>
+          <line x1="75" y1="58" x2="45" y2="104" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="100" y1="60" x2="100" y2="114" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="125" y1="58" x2="155" y2="104" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+        </svg>
+      </div>
+      <p>PBX chạy trên cloud. Zero hardware. Pay-per-user. Internet dependency cao. Xu hướng mạnh toàn cầu.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Hybrid</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="30" y="15" width="55" height="35" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          <text x="57" y="37" text-anchor="middle" fill="#3b82f6" font-size="9">On-Prem</text>
+          <ellipse cx="145" cy="32" rx="40" ry="22" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="145" y="37" text-anchor="middle" fill="#8b5cf6" font-size="9">Cloud</text>
+          <line x1="85" y1="32" x2="105" y2="32" stroke="#f59e0b" stroke-width="2"/>
+          <text x="95" y="25" text-anchor="middle" fill="#f59e0b" font-size="10">⚡</text>
+          <circle cx="40" cy="120" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="124" text-anchor="middle" fill="#10b981" font-size="12">📞</text>
+          <circle cx="100" cy="125" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="129" text-anchor="middle" fill="#10b981" font-size="12">📱</text>
+          <circle cx="160" cy="120" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="124" text-anchor="middle" fill="#10b981" font-size="12">💻</text>
+          <line x1="50" y1="50" x2="42" y2="106" stroke="#334155" stroke-width="1.5"/>
+          <line x1="100" y1="54" x2="100" y2="111" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="145" y1="54" x2="158" y2="106" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+        </svg>
+      </div>
+      <p>PBX on-prem + cloud services. Best of both worlds. Survivability khi mất internet. Phức tạp nhất để quản lý.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MYTHS / MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">10 Hiểu Nhầm Chết Người Về PBX</h2>
+  <p class="section-subtitle">Những điều "ai cũng tưởng đúng" nhưng thực ra sai hoàn toàn</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #1</span>
+      <h4>"PBX đã chết, cloud thay thế hết rồi"</h4>
+      <p>80%+ doanh nghiệp lớn vẫn dùng on-premise PBX. Ngân hàng, bệnh viện, call center cần latency thấp, compliance, và survivability khi mất internet. Cloud PBX KHÔNG thể thay thế hoàn toàn.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>PBX đang <strong>tiến hóa</strong>, không chết. On-premise vẫn cần cho mission-critical. Hybrid là tương lai thực sự.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #2</span>
+      <h4>"SIP = VoIP"</h4>
+      <p>SIP chỉ là MỘT trong nhiều protocol VoIP. H.323, IAX2, SCCP cũng là VoIP. Và SIP chỉ làm signaling - RTP mới mang voice. Nói "SIP call" thực ra là "SIP signaling + RTP media call".</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VoIP là <strong>concept</strong> (voice qua IP). SIP là <strong>protocol</strong> (cách thiết lập cuộc gọi). RTP là <strong>transport</strong> (mang audio). Ba thứ khác nhau.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #3</span>
+      <h4>"Asterisk miễn phí = rẻ"</h4>
+      <p>Software miễn phí nhưng: SIP trunk phải trả tiền, IP phone phải mua, server phải chạy, và QUAN TRỌNG NHẤT - bạn cần người có skill để maintain. Một Asterisk engineer giỏi = $100K+/năm ở US.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>TCO (Total Cost of Ownership) của Asterisk có thể <strong>đắt hơn</strong> proprietary PBX nếu tính cả nhân sự. Free ≠ Cheap.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #4</span>
+      <h4>"Mở port 5060 trên firewall là xong"</h4>
+      <p>SIP dùng 5060 cho signaling, nhưng RTP dùng hàng NGÀN port UDP ngẫu nhiên (10000-20000). Chưa kể SIP ALG trên router thường PHÁ cuộc gọi thay vì giúp. NAT traversal là vấn đề #1 của VoIP.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Cần: <strong>Tắt SIP ALG</strong>, mở range RTP port, dùng STUN/TURN, hoặc tốt nhất là dùng SBC. Đây là nơi 70% vấn đề VoIP xảy ra.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #5</span>
+      <h4>"VoIP chất lượng kém hơn analog"</h4>
+      <p>G.711 codec (dùng trong hầu hết VoIP) có chất lượng ĐÚNG BẰNG cuộc gọi analog (cả hai đều 64kbps PCM). G.722 (HD Voice) còn TỐT HƠN analog nhiều. Vấn đề chất lượng là do network, không phải technology.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VoIP với QoS đúng + codec tốt = chất lượng <strong>vượt trội</strong> analog. Vấn đề nằm ở <strong>network quality</strong> (jitter, latency, packet loss), không phải bản thân VoIP.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #6</span>
+      <h4>"Cứ chọn vendor lớn là an toàn"</h4>
+      <p>Nortel - phá sản 2009. Avaya - phá sản 2 lần (2017, 2023). Mitel - bị thâu tóm liên tục. Siemens Enterprise - bán cho Unify rồi Atos. Ngành PBX consolidation cực kỳ khốc liệt.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Chọn vendor dựa trên <strong>standards compliance</strong> (SIP) thay vì brand. Nếu PBX nói SIP chuẩn, bạn luôn có đường thoát. Vendor lock-in mới là rủi ro lớn nhất.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #7</span>
+      <h4>"IP Phone nào cũng giống nhau"</h4>
+      <p>Sự khác biệt rất lớn: auto-provisioning, codec support, PoE, Gigabit passthrough, BLF keys, security (TLS/SRTP). Một Yealink T54W ≠ Grandstream GXP1625 ≠ Poly VVX450. Chọn sai phone = đau đầu vô tận.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Chọn phone dựa trên: <strong>auto-provisioning compatibility</strong> với PBX, codec support, build quality. Yealink hiện là best value. Poly/Cisco cho enterprise.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #8</span>
+      <h4>"Conference call = đơn giản, cứ add thêm người"</h4>
+      <p>Mỗi participant trong conference = PBX phải mix audio real-time. 10 người = PBX xử lý 10 audio streams đồng thời, encode/decode, mix, gửi lại. CPU usage tăng theo O(n). Conference bridge là tính năng ngốn tài nguyên nhất.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Conference lớn cần <strong>dedicated conference server</strong> hoặc sử dụng cloud service (Zoom, Teams). Đừng ép PBX làm việc không phải sở trường của nó.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #9</span>
+      <h4>"Recording cuộc gọi chỉ cần bật switch"</h4>
+      <p>Recording cần: storage (1 phút G.711 = 1MB, 1000 cuộc/ngày = TB/năm), legal compliance (nhiều nước cần consent cả hai bên), search/playback system, retention policy, encryption at rest. Đây là cả một subsystem.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Call recording là <strong>project riêng</strong> trong PBX deployment. Cần lên kế hoạch storage, legal, và access control từ đầu.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #10</span>
+      <h4>"PBX không cần bảo mật, ai hack tổng đài làm gì"</h4>
+      <p>Toll fraud - hacker chiếm PBX để gọi quốc tế. Thiệt hại trung bình $50K-$500K MỘT VỤ. Thế giới mất ~$40 tỷ/năm vì toll fraud. PBX exposed trên internet bị scan liên tục bởi bot.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p><strong>PBX security là CRITICAL.</strong> Fail2ban, strong passwords, restrict international dialing, SBC, TLS/SRTP, regular updates. Đây không phải optional.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MINDSET -->
+<section id="mindset">
+  <h2 class="section-title" style="color: var(--accent);">Mindset Đúng Khi Làm Việc Với PBX</h2>
+  <p class="section-subtitle">Tư duy và phương pháp của một PBX engineer giỏi</p>
+
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>Think in Layers, Not Features</h4>
+      <p>Đừng nghĩ "tôi muốn call forwarding". Hãy nghĩ: <strong>Physical layer</strong> (cáp, PoE, phone) → <strong>Network layer</strong> (VLAN, QoS, firewall) → <strong>Signaling layer</strong> (SIP, registration) → <strong>Application layer</strong> (dialplan, features). Khi troubleshoot, đi từ dưới lên. 80% lỗi PBX là lỗi network.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>Real-time = Không Tha Thứ</h4>
+      <p>Voice là real-time media. Latency > 150ms = người dùng cảm nhận được. > 300ms = không thể đàm thoại. Jitter > 30ms = méo tiếng. Packet loss > 1% = nghe bị ngắt quãng. <strong>Không có retry, không có buffer vô hạn, không có "chờ tí".</strong> Đây là khác biệt cốt lõi giữa voice và data networking.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>Capture First, Think Later</h4>
+      <p>Khi có vấn đề, NGAY LẬP TỨC capture: <strong>SIP trace</strong> (PCAP/tcpdump), <strong>PBX logs</strong>, <strong>network stats</strong>. Vấn đề VoIP thường intermittent - nếu không capture ngay, bạn sẽ mất bằng chứng. Wireshark là best friend. <code>tcpdump -i any -s 0 -w capture.pcap port 5060</code></p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">4</div>
+      <h4>NAT Là Kẻ Thù #1</h4>
+      <p>SIP được thiết kế thời chưa có NAT. IP address nằm trong SIP body (SDP), và NAT KHÔNG biết rewrite SDP. Kết quả: signaling OK nhưng media fail. <strong>Giải pháp:</strong> Luôn dùng SBC hoặc PBX có NAT helper tốt (Asterisk: nat=force_rport,comedia). STUN/TURN cho remote users.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">5</div>
+      <h4>KISS - Keep It Simple, Stupid</h4>
+      <p>Dialplan đơn giản = ít bug. Feature ít = ít lỗi. Routing rõ ràng = dễ debug. <strong>Đừng over-engineer dialplan.</strong> Mỗi regex phức tạp trong dialplan là một quả bom hẹn giờ. Document mọi thứ. Tương lai của bạn sẽ cảm ơn hiện tại.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">6</div>
+      <h4>Test Với Người Thật</h4>
+      <p>Không tool nào thay thế việc thực sự nhấc máy và gọi. Test gọi vào, gọi ra, transfer, hold, conference, voicemail, failover. <strong>Test từ mọi loại endpoint:</strong> IP phone, softphone, mobile, WebRTC. Mỗi endpoint behave khác nhau với cùng một SIP message.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">7</div>
+      <h4>Security Không Phải Afterthought</h4>
+      <p>Ngày 1: <strong>Fail2ban</strong>, strong SIP passwords, disable guest calls, restrict outbound. Ngày 2: TLS cho signaling, SRTP cho media. PBX trên internet mà không có bảo mật = bạn ĐANG trả tiền cuộc gọi cho hacker. Không phải "nếu" mà là "khi nào".</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">8</div>
+      <h4>Hiểu Business, Không Chỉ Technology</h4>
+      <p>PBX phục vụ business. CEO không quan tâm bạn dùng G.722 hay G.729. Họ quan tâm: <strong>"Khách hàng gọi vào có bị mất cuộc gọi không?"</strong>, <strong>"Call center agent có thấy caller ID không?"</strong> Translate technical vào business value. Đây là skill quan trọng nhất.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">9</div>
+      <h4>Redundancy hoặc Hối Hận</h4>
+      <p>PBX down = business down. Khác với email (async, retry được), phone call mất là mất. <strong>Luôn có plan B:</strong> dual PBX, SIP trunk failover, mobile fallback. Tính 99.99% uptime = max 52 phút downtime/năm. Mỗi phút PBX down = khách hàng gọi đối thủ.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">10</div>
+      <h4>Codec = Trade-off, Không Có Silver Bullet</h4>
+      <p><strong>G.711:</strong> Quality tốt nhất, bandwidth cao nhất (87kbps). <strong>G.729:</strong> Tiết kiệm bandwidth (31kbps) nhưng license fee + chất lượng giảm. <strong>Opus:</strong> Tương lai, adaptive, nhưng không phải phone nào cũng support. Chọn codec dựa trên bandwidth thực tế, không phải lý thuyết.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">PBX Cheat Sheet</h2>
+  <p class="section-subtitle">Những lệnh và công cụ cần nhớ</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Asterisk CLI - Kiểm tra nhanh</h4>
+      <code>asterisk -rvvv            # Connect CLI
+sip show peers             # Xem SIP registrations
+sip show channels          # Cuộc gọi đang diễn ra
+core show calls            # Tổng cuộc gọi active
+sip set debug on           # Bật SIP debug</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Capture SIP Traffic</h4>
+      <code># Capture SIP signaling
+tcpdump -i eth0 -s 0 \
+  -w sip.pcap port 5060
+
+# Capture cả RTP media
+tcpdump -i eth0 -s 0 \
+  -w full.pcap \
+  port 5060 or portrange 10000-20000
+
+# Mở bằng Wireshark
+# Telephony → SIP Flows</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Network Diagnostics</h4>
+      <code># Test latency & jitter
+ping -c 100 sip-server-ip
+
+# Test UDP connectivity
+nmap -sU -p 5060 target-ip
+
+# Check route
+traceroute -U -p 5060 target
+
+# Bandwidth estimation
+# G.711: 87kbps per call
+# 100 concurrent = ~8.7 Mbps</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SIP Test Tools</h4>
+      <code># SIPp - Load testing
+sipp -sn uac target:5060
+
+# sngrep - TUI SIP sniffer
+sngrep -c
+
+# SIP OPTIONS ping
+sipvicious/svmap target
+
+# Homer - SIP capture server
+# Grafana for dashboards</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Codec Bandwidth Reference</h4>
+      <code>G.711 (alaw/ulaw): 87.2 kbps
+G.729:              31.2 kbps
+G.722 (HD):         87.2 kbps
+Opus:               6-510 kbps (adaptive)
+iLBC:               38.4 kbps
+GSM:                35.6 kbps
+
+(Includes IP/UDP/RTP headers)
+MOS target: ≥ 4.0 (out of 5)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Security Checklist</h4>
+      <code>[ ] Fail2ban cho SIP
+[ ] Strong passwords (≥12 chars)
+[ ] Disable SIP guest
+[ ] Restrict international dial
+[ ] TLS trên port 5061
+[ ] SRTP cho media
+[ ] SBC nếu public-facing
+[ ] Intrusion detection (IDS)
+[ ] Regular firmware updates
+[ ] Call rate limiting</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Lời khuyên cuối cùng</h4>
+    <p>Thế giới PBX đang ở điểm giao thoa thú vị nhất trong lịch sử. Legacy TDM vẫn chạy, IP PBX là mainstream, Cloud đang lên, và <strong>AI đang bắt đầu thay đổi mọi thứ</strong> (AI-powered IVR, real-time transcription, sentiment analysis). Người giỏi PBX không chỉ biết config, mà phải hiểu <strong>networking, security, và business context</strong>. Đây là ngành mà kinh nghiệm 10 năm vẫn learn được thứ mới mỗi ngày.</p>
+  </div>
+</section>
+
+<footer>
+  <p>PBX World Visualization | Built for engineers who want to truly understand telecom</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">SIP RFC 3261 | RTP RFC 3550 | WebRTC W3C | "The best PBX is the one your users don't notice."</p>
+</footer>
+
+<script>
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.vendor-card, .myth-card, .mindset-card, .protocol-card, .topo-card, .cheat-card, .timeline-content').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('nav a:not(.brand)');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>

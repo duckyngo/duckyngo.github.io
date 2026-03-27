@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Database - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: dbPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes dbPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .analogy-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ACID Cards */
+  .acid-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+    margin: 2rem 0;
+  }
+
+  .acid-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .acid-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .acid-card .acid-letter {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+  }
+
+  .acid-card h4 { margin-bottom: 0.5rem; }
+  .acid-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4), var(--accent5), var(--accent));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.postgres::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.mysql::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+  .vendor-card.sqlite::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.mongodb::before { background: linear-gradient(90deg, #10b981, #34d399); }
+  .vendor-card.redis::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.cassandra::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.clickhouse::before { background: linear-gradient(90deg, #f59e0b, #eab308); }
+  .vendor-card.elastic::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Concept Cards */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .concept-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    border-color: var(--accent);
+  }
+
+  .concept-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .concept-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Protocol/Type Map */
+  .type-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .type-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .type-card:hover { border-color: var(--accent); }
+
+  .type-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .type-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.niche { background: var(--accent2); }
+
+  .type-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Topology */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; margin-top: 1rem; }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Code Flow */
+  .code-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .code-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* CAP Diagram */
+  .cap-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .cap-triangle {
+    position: relative;
+    width: 340px;
+    height: 300px;
+    margin: 2rem auto;
+  }
+
+  .cap-node {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+    border: 3px solid;
+    transition: all 0.3s;
+  }
+
+  .cap-node:hover { transform: scale(1.1); }
+
+  .cap-node.c-node { top: 0; left: 50%; transform: translateX(-50%); background: rgba(59,130,246,0.15); border-color: var(--accent); color: var(--accent); }
+  .cap-node.a-node { bottom: 0; left: 0; background: rgba(16,185,129,0.15); border-color: var(--accent3); color: var(--accent3); }
+  .cap-node.p-node { bottom: 0; right: 0; background: rgba(245,158,11,0.15); border-color: var(--accent4); color: var(--accent4); }
+  .cap-node.c-node:hover { transform: translateX(-50%) scale(1.1); }
+
+  .cap-label {
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .analogy-grid { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .cap-triangle { width: 260px; height: 240px; }
+    .cap-node { width: 80px; height: 80px; font-size: 0.75rem; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">DB World</a>
+  <a href="#what">DB là gì?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#sqlvsnosql">SQL vs NoSQL</a>
+  <a href="#vendors">Các ông lớn</a>
+  <a href="#concepts">Core Concepts</a>
+  <a href="#replication">Replication & HA</a>
+  <a href="#sharding">Sharding</a>
+  <a href="#backup">Backup</a>
+  <a href="#cap">CAP Theorem</a>
+  <a href="#homelab">Homelab</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">🗄️</div>
+  <h1>Thế Giới Database</h1>
+  <p class="subtitle">Từ flat file đến distributed database - Hành trình 60 năm lưu trữ dữ liệu của nhân loại. Mọi thứ bạn cần biết về SQL, NoSQL, replication, sharding, và cách tự host database trong homelab.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS DATABASE -->
+<section id="what">
+  <div class="intro-box">
+    <h2 class="section-title">Database là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Database (cơ sở dữ liệu)</strong> - Không chỉ đơn giản là "nơi lưu dữ liệu". Hãy tưởng tượng bạn có một thư viện khổng lồ với hàng triệu cuốn sách. Nếu chỉ chất đống sách lên sàn, bạn sẽ mất cả đời để tìm một cuốn. Database chính là <strong>hệ thống tổ chức, lưu trữ, truy vấn và bảo vệ dữ liệu</strong> - giống như thủ thư siêu năng lực biết chính xác mọi cuốn sách nằm ở đâu.
+    </p>
+
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="icon">📁</div>
+        <h3>Không có Database</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu nằm rải rác trong file<br>Tìm kiếm: <strong style="color: var(--accent5);">O(n) - duyệt từng dòng</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🗄️</div>
+        <h3>Có Database</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu có cấu trúc, được index<br>Tìm kiếm: <strong style="color: var(--accent3);">O(log n) - nhanh gấp triệu lần</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Tại sao cần Database?</h4>
+      <p>Bạn có thể lưu mọi thứ vào file CSV hoặc JSON. Nhưng khi có 10 triệu dòng dữ liệu, 100 người cùng đọc/ghi, và bạn cần đảm bảo <strong>không mất dữ liệu khi mất điện</strong> - đó là lúc bạn cần một database thực thụ. Database giải quyết bài toán mà file đơn thuần không thể: <strong>concurrent access, data integrity, crash recovery, và query optimization</strong>.</p>
+    </div>
+
+    <h3 style="color: var(--accent2); margin: 2rem 0 1rem;">ACID - Bốn trụ cột của database đáng tin cậy</h3>
+    <p style="color: var(--text-dim); margin-bottom: 1.5rem;">Mọi database quan hệ (relational) đều phải đảm bảo bốn tính chất này. Đây là lý do vì sao bạn tin tưởng ngân hàng không "mất" tiền của bạn.</p>
+
+    <div class="acid-grid">
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent);">A</div>
+        <h4>Atomicity</h4>
+        <p>Một giao dịch hoặc hoàn thành toàn bộ, hoặc không có gì xảy ra. Chuyển tiền: trừ A và cộng B phải cùng thành công hoặc cùng thất bại. Không có chuyện trừ A mà quên cộng B.</p>
+      </div>
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent3);">C</div>
+        <h4>Consistency</h4>
+        <p>Dữ liệu luôn ở trạng thái hợp lệ. Nếu rule nói "số dư không được âm", không giao dịch nào có thể vi phạm. Database từ chối mọi thao tác phá vỡ ràng buộc.</p>
+      </div>
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent4);">I</div>
+        <h4>Isolation</h4>
+        <p>Các giao dịch đồng thời không "thấy" nhau. Hai người cùng chuyển tiền từ một tài khoản sẽ không gây ra race condition. Mỗi giao dịch tưởng như mình là duy nhất.</p>
+      </div>
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent5);">D</div>
+        <h4>Durability</h4>
+        <p>Khi giao dịch đã commit, dữ liệu được lưu vĩnh viễn - kể cả khi server crash ngay lập tức. Nhờ WAL (Write-Ahead Log), database ghi log trước khi ghi data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian Database</h2>
+  <p class="section-subtitle">60 năm phát triển - từ flat file đến distributed database chạy trên hàng ngàn node</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1950s-1960s</span>
+        <h3>Kỷ nguyên Flat File</h3>
+        <p>Dữ liệu lưu trong file tuần tự trên băng từ. Muốn tìm một bản ghi phải đọc từ đầu đến cuối. Không có khái niệm "query". Thời kỳ đồ đá của lưu trữ dữ liệu - nhưng đây là nơi mọi thứ bắt đầu.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1960s</span>
+        <h3>Hierarchical & Network DB</h3>
+        <p>IBM IMS (1966) - database đầu tiên thực sự. Dữ liệu tổ chức dạng cây (hierarchical) hoặc đồ thị (network/CODASYL). Nhanh hơn flat file nhưng cứng nhắc - thay đổi cấu trúc = viết lại chương trình. Vẫn được dùng trong một số hệ thống ngân hàng đến tận ngày nay.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1970</span>
+        <h3>Relational Model - Bước ngoặt lịch sử</h3>
+        <p>Edgar F. Codd công bố bài báo huyền thoại "A Relational Model of Data for Large Shared Data Banks" tại IBM. Ý tưởng cách mạng: dữ liệu lưu trong bảng (table), truy vấn bằng logic toán học thay vì con trỏ. Ban đầu bị IBM phản đối vì "quá chậm" - nhưng lịch sử đã chứng minh Codd đúng.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1979-1995</span>
+        <h3>SQL chinh phục thế giới</h3>
+        <p>Oracle (1979), DB2 (1983), Sybase/SQL Server (1987), PostgreSQL (1996, tên cũ Postgres từ 1986), MySQL (1995). SQL trở thành ngôn ngữ chuẩn. Thời kỳ vàng của RDBMS khi mọi doanh nghiệp đều cần "relational database". Oracle trở thành gã khổng lồ.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2005-2012</span>
+        <h3>NoSQL Boom</h3>
+        <p>Google BigTable (2006), Amazon Dynamo (2007), MongoDB (2009), Cassandra (2008), Redis (2009). Web 2.0 với hàng tỷ users phá vỡ giới hạn của RDBMS truyền thống. "NoSQL" ban đầu nghĩa là "No SQL" nhưng sau được đổi thành "Not Only SQL". Schema-less, horizontal scaling, eventual consistency.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2012-nay</span>
+        <h3>NewSQL & Distributed Era</h3>
+        <p>CockroachDB, TiDB, YugabyteDB, Vitess, PlanetScale. Kết hợp ưu điểm của cả hai thế giới: ACID của SQL + khả năng scale của NoSQL. Database chạy phân tán trên hàng ngàn node, tự động sharding, global consistency. Spanner của Google chứng minh rằng "CAP theorem không phải bất khả thi".</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SQL vs NoSQL -->
+<section id="sqlvsnosql">
+  <h2 class="section-title" style="color: var(--accent3);">SQL vs NoSQL - Cuộc chiến không hồi kết</h2>
+  <p class="section-subtitle">Không có "database tốt nhất" - chỉ có database phù hợp nhất cho bài toán cụ thể</p>
+
+  <div class="type-map">
+    <div class="type-card">
+      <h4><span class="status alive"></span> Relational (SQL)</h4>
+      <p><strong>PostgreSQL, MySQL, SQLite.</strong> Dữ liệu trong bảng với hàng và cột. Schema cố định. JOIN giữa các bảng. ACID đầy đủ. Phù hợp khi dữ liệu có quan hệ rõ ràng: đơn hàng-sản phẩm, user-role, tài chính.</p>
+      <div class="tag-row"><span class="tag good">ACID</span><span class="tag">Schema</span><span class="tag good">JOIN</span><span class="tag">Mature</span></div>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status alive"></span> Document Store</h4>
+      <p><strong>MongoDB, CouchDB.</strong> Lưu JSON/BSON documents. Schema linh hoạt - mỗi document có thể khác nhau. Tuyệt vời cho CMS, catalog sản phẩm, user profiles. Cẩn thận: "schemaless" không có nghĩa là "không cần thiết kế".</p>
+      <div class="tag-row"><span class="tag good">Flexible</span><span class="tag">JSON</span><span class="tag warn">No JOIN</span><span class="tag">Rapid Dev</span></div>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status alive"></span> Key-Value Store</h4>
+      <p><strong>Redis, Memcached, etcd.</strong> Đơn giản nhất: key → value. Cực nhanh vì dữ liệu trong RAM. Dùng cho cache, session store, rate limiting, pub/sub. Redis thực ra còn hỗ trợ list, set, hash, sorted set - gần như là "Swiss Army Knife".</p>
+      <div class="tag-row"><span class="tag good">Fastest</span><span class="tag">In-Memory</span><span class="tag">Cache</span><span class="tag warn">Limited Query</span></div>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status alive"></span> Column-Family</h4>
+      <p><strong>Cassandra, HBase, ScyllaDB.</strong> Dữ liệu tổ chức theo cột thay vì hàng. Write-optimized, phân tán tuyệt vời. Dùng cho time-series, IoT, logging, metrics - nơi ghi nhiều đọc ít và cần scale ra hàng trăm node.</p>
+      <div class="tag-row"><span class="tag good">Write-fast</span><span class="tag">Distributed</span><span class="tag warn">Complex</span><span class="tag">Time-series</span></div>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status niche"></span> Graph Database</h4>
+      <p><strong>Neo4j, ArangoDB, Amazon Neptune.</strong> Dữ liệu là nodes và edges. Khi cần trả lời "bạn của bạn của bạn là ai?" hoặc phát hiện fraud, graph DB nhanh hơn SQL hàng ngàn lần. Social network, recommendation engine, knowledge graph.</p>
+      <div class="tag-row"><span class="tag good">Relationships</span><span class="tag">Traversal</span><span class="tag niche" style="background: rgba(139,92,246,0.1); color: var(--accent2); border-color: rgba(139,92,246,0.2);">Niche</span></div>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status alive"></span> Search Engine</h4>
+      <p><strong>Elasticsearch, Meilisearch, Typesense.</strong> Tối ưu cho full-text search. Inverted index, fuzzy matching, faceting. Khi bạn gõ "dâtbase" và nó vẫn tìm được "database" - đó là search engine đang làm việc.</p>
+      <div class="tag-row"><span class="tag good">Full-text</span><span class="tag">Fuzzy</span><span class="tag warn">Not Primary DB</span><span class="tag">Analytics</span></div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Relational</th>
+          <th>Document</th>
+          <th>Key-Value</th>
+          <th>Column-Family</th>
+          <th>Graph</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Schema</td>
+          <td>Cố định, strict</td>
+          <td>Linh hoạt</td>
+          <td>Không có</td>
+          <td>Bán cấu trúc</td>
+          <td>Linh hoạt</td>
+        </tr>
+        <tr>
+          <td>Scale</td>
+          <td style="color: var(--accent4);">Vertical chủ yếu</td>
+          <td style="color: var(--accent3);">Horizontal</td>
+          <td style="color: var(--accent3);">Horizontal</td>
+          <td style="color: var(--accent3);">Horizontal tốt nhất</td>
+          <td style="color: var(--accent4);">Vertical chủ yếu</td>
+        </tr>
+        <tr>
+          <td>ACID</td>
+          <td style="color: var(--accent3);">Đầy đủ</td>
+          <td style="color: var(--accent4);">Một phần</td>
+          <td style="color: var(--accent5);">Hạn chế</td>
+          <td style="color: var(--accent4);">Tunable</td>
+          <td style="color: var(--accent3);">Có</td>
+        </tr>
+        <tr>
+          <td>Query language</td>
+          <td>SQL</td>
+          <td>MQL / custom</td>
+          <td>GET/SET</td>
+          <td>CQL</td>
+          <td>Cypher / Gremlin</td>
+        </tr>
+        <tr>
+          <td>Use case chính</td>
+          <td>Business data</td>
+          <td>CMS, Catalog</td>
+          <td>Cache, Session</td>
+          <td>IoT, Logs</td>
+          <td>Social, Fraud</td>
+        </tr>
+        <tr>
+          <td>Ví dụ tiêu biểu</td>
+          <td>PostgreSQL</td>
+          <td>MongoDB</td>
+          <td>Redis</td>
+          <td>Cassandra</td>
+          <td>Neo4j</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: Polyglot Persistence</h4>
+    <p>Các hệ thống lớn thường dùng <strong>nhiều loại database cùng lúc</strong>. Ví dụ: PostgreSQL cho business data, Redis cho cache và session, Elasticsearch cho search, ClickHouse cho analytics. Đừng cố nhét mọi thứ vào một database - hãy chọn đúng công cụ cho đúng bài toán.</p>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors">
+  <h2 class="section-title" style="color: var(--accent2);">Các Ông Lớn Database</h2>
+  <p class="section-subtitle">Mỗi database có triết lý riêng, thế mạnh riêng - chọn sai là đau cả dự án</p>
+
+  <div class="vendor-grid">
+    <!-- PostgreSQL -->
+    <div class="vendor-card postgres">
+      <div class="vendor-logo">🐘</div>
+      <h3>PostgreSQL</h3>
+      <div class="vendor-type">Relational / ORDBMS</div>
+      <p>"Database tiên tiến nhất thế giới mã nguồn mở" - không phải khẩu hiệu, mà là sự thật. Hỗ trợ JSON, full-text search, GIS (PostGIS), time-series (TimescaleDB), vector (pgvector). Cộng đồng cực mạnh, extension ecosystem khổng lồ. Nếu chỉ được chọn một database, hãy chọn PostgreSQL.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1996</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">DB-Engines 2024</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">ACID</span>
+        <span class="tag good">Extensions</span>
+        <span class="tag">MVCC</span>
+        <span class="tag good">JSON + SQL</span>
+        <span class="tag">PostGIS</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>PostgreSQL với pgvector đang trở thành lựa chọn hàng đầu cho <strong>AI/ML vector search</strong>. Bạn không cần Pinecone hay Weaviate - PostgreSQL làm được luôn. Một database cai quản tất cả.</p>
+      </div>
+    </div>
+
+    <!-- MySQL/MariaDB -->
+    <div class="vendor-card mysql">
+      <div class="vendor-logo">🐬</div>
+      <h3>MySQL / MariaDB</h3>
+      <div class="vendor-type">Relational / RDBMS</div>
+      <p>MySQL - database phổ biến nhất thế giới (theo số lượng deploy). WordPress, Drupal, Magento đều chạy trên MySQL. MariaDB là fork do Monty Widenius (cha đẻ MySQL) tạo ra sau khi Oracle mua Sun. Ở Việt Nam, MariaDB đang dần thay thế MySQL trong các dự án mới.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1995</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">40%+</div><div class="label">Web Market</div></div>
+        <div class="stat"><div class="num">Free*</div><div class="label">GPL/Commercial</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Phổ biến nhất</span>
+        <span class="tag">InnoDB</span>
+        <span class="tag warn">Oracle owns MySQL</span>
+        <span class="tag good">MariaDB = fork tự do</span>
+      </div>
+    </div>
+
+    <!-- SQLite -->
+    <div class="vendor-card sqlite">
+      <div class="vendor-logo">🪶</div>
+      <h3>SQLite</h3>
+      <div class="vendor-type">Embedded / Serverless</div>
+      <p>Database được deploy nhiều nhất hành tinh - tỷ tỷ bản. Mỗi smartphone, mỗi browser, mỗi ứng dụng desktop đều có SQLite bên trong. Không cần server, toàn bộ database là một file duy nhất. D. Richard Hipp viết cho US Navy, giờ là public domain - không có license, hoàn toàn tự do.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2000</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">1T+</div><div class="label">Deployments</div></div>
+        <div class="stat"><div class="num">1 file</div><div class="label">Toàn bộ DB</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Zero Config</span>
+        <span class="tag good">Public Domain</span>
+        <span class="tag">Embedded</span>
+        <span class="tag warn">Single Writer</span>
+      </div>
+    </div>
+
+    <!-- MongoDB -->
+    <div class="vendor-card mongodb">
+      <div class="vendor-logo">🍃</div>
+      <h3>MongoDB</h3>
+      <div class="vendor-type">Document Store / NoSQL</div>
+      <p>Database NoSQL phổ biến nhất. Lưu documents dạng BSON (Binary JSON). Schema linh hoạt, aggregation pipeline mạnh mẽ, Atlas (cloud) rất dễ dùng. Từng bị chê "mất dữ liệu" thời đầu, nhưng từ v4.0+ đã có multi-document ACID transactions. Tuy vậy, nhiều người vẫn dùng sai cách.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2009</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">NoSQL</div></div>
+        <div class="stat"><div class="num">SSPL</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Flexible Schema</span>
+        <span class="tag">BSON</span>
+        <span class="tag warn">SSPL License</span>
+        <span class="tag">Atlas Cloud</span>
+      </div>
+    </div>
+
+    <!-- Redis -->
+    <div class="vendor-card redis">
+      <div class="vendor-logo">🔴</div>
+      <h3>Redis</h3>
+      <div class="vendor-type">Key-Value / In-Memory</div>
+      <p>"Remote Dictionary Server" - nhanh nhất trong tất cả. Toàn bộ dữ liệu trong RAM, single-threaded nhưng đạt 100K+ ops/sec. Không chỉ là cache: pub/sub, streams, Lua scripting, RedisJSON, RedisSearch, RedisGraph. Antirez (Salvatore Sanfilippo) tạo ra một tuyệt phẩm.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2009</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">100K+</div><div class="label">ops/sec</div></div>
+        <div class="stat"><div class="num">~1ms</div><div class="label">Latency</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Fastest</span>
+        <span class="tag">In-Memory</span>
+        <span class="tag hot">RAM limited</span>
+        <span class="tag">Pub/Sub</span>
+      </div>
+    </div>
+
+    <!-- Cassandra -->
+    <div class="vendor-card cassandra">
+      <div class="vendor-logo">👁️</div>
+      <h3>Apache Cassandra</h3>
+      <div class="vendor-type">Column-Family / Distributed</div>
+      <p>Sinh ra tại Facebook, mã nguồn mở từ 2008. Masterless architecture - mọi node đều ngang hàng, không single point of failure. Viết cực nhanh, scale linear. Netflix, Apple, Discord đều dùng. Nhưng modeling data trong Cassandra hoàn toàn khác SQL - phải "query-first design".</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2008</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">0</div><div class="label">SPOF</div></div>
+        <div class="stat"><div class="num">Linear</div><div class="label">Scale</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">No SPOF</span>
+        <span class="tag good">Write-optimized</span>
+        <span class="tag warn">Query-first Design</span>
+        <span class="tag hot">Steep Learning</span>
+      </div>
+    </div>
+
+    <!-- ClickHouse -->
+    <div class="vendor-card clickhouse">
+      <div class="vendor-logo">⚡</div>
+      <h3>ClickHouse</h3>
+      <div class="vendor-type">Columnar / OLAP Analytics</div>
+      <p>Được Yandex phát triển, open-source 2016. Column-oriented storage engine cho analytics. Quét hàng tỷ dòng trong giây đơn vị. SQL-compatible nhưng tối ưu cho aggregation queries. Thay thế cho Hadoop/Spark trong nhiều use case analytics mà đơn giản hơn gấp 10 lần.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2016</div><div class="label">Open Source</div></div>
+        <div class="stat"><div class="num">1B+</div><div class="label">rows/sec scan</div></div>
+        <div class="stat"><div class="num">10x</div><div class="label">Compression</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Blazing Fast</span>
+        <span class="tag">Columnar</span>
+        <span class="tag">Analytics</span>
+        <span class="tag warn">Not for OLTP</span>
+      </div>
+    </div>
+
+    <!-- Elasticsearch -->
+    <div class="vendor-card elastic">
+      <div class="vendor-logo">🔍</div>
+      <h3>Elasticsearch</h3>
+      <div class="vendor-type">Search & Analytics Engine</div>
+      <p>Xây trên Apache Lucene. Full-text search, log analytics (ELK stack: Elasticsearch + Logstash + Kibana). Inverted index cho phép tìm kiếm text cực nhanh. Dùng rộng rãi cho search bars, log analysis, APM. Lưu ý: KHÔNG phải primary database - dùng như secondary index.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2010</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">ELK</div><div class="label">Stack</div></div>
+        <div class="stat"><div class="num">SSPL</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Full-text Search</span>
+        <span class="tag">Lucene</span>
+        <span class="tag warn">Memory Hungry</span>
+        <span class="tag hot">Not Primary DB</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE CONCEPTS -->
+<section id="concepts">
+  <h2 class="section-title" style="color: var(--accent);">Core Concepts - Xương Sống Của Mọi Database</h2>
+  <p class="section-subtitle">Hiểu những khái niệm này, bạn sẽ debug nhanh hơn 10x và thiết kế hệ thống tốt hơn</p>
+
+  <h3 style="color: var(--accent2); margin-bottom: 1.5rem;">Indexing - Tại sao query nhanh hay chậm</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>🌳 B-tree Index</h4>
+      <p>Index mặc định của hầu hết database. Cấu trúc cây cân bằng, tìm kiếm O(log n). Tuyệt vời cho equality (=) và range queries (&lt;, &gt;, BETWEEN). Mỗi node chứa nhiều key, giảm disk I/O. PostgreSQL và MySQL đều dùng B-tree là mặc định.</p>
+      <div class="tag-row"><span class="tag good">Default</span><span class="tag">Range Query</span><span class="tag">O(log n)</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>#️⃣ Hash Index</h4>
+      <p>Chỉ hỗ trợ equality (=), không hỗ trợ range. O(1) cho lookup - nhanh hơn B-tree cho exact match. Redis bản chất là một hash table khổng lồ. Trong PostgreSQL, hash index ít được dùng vì B-tree đủ tốt và linh hoạt hơn.</p>
+      <div class="tag-row"><span class="tag good">O(1) Lookup</span><span class="tag hot">No Range</span><span class="tag">Equality Only</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>🔤 GIN Index (Generalized Inverted)</h4>
+      <p>Dành cho full-text search, JSONB, arrays trong PostgreSQL. "Inverted index" - thay vì "document → words", nó lưu "word → documents". Khi bạn search text trong PostgreSQL mà không muốn dùng Elasticsearch, GIN là câu trả lời.</p>
+      <div class="tag-row"><span class="tag good">Full-text</span><span class="tag">JSONB</span><span class="tag">Arrays</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>🌐 GiST Index (Generalized Search Tree)</h4>
+      <p>Index cho dữ liệu "không truyền thống": geometric, geographic (PostGIS), range types, text search. Khi bạn cần "tìm tất cả nhà hàng trong bán kính 5km", GiST index trên PostGIS xử lý việc đó cực nhanh.</p>
+      <div class="tag-row"><span class="tag">Geometry</span><span class="tag good">PostGIS</span><span class="tag">Range</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent2); margin: 3rem 0 1.5rem;">Query Optimization & EXPLAIN ANALYZE</h3>
+
+  <div class="code-flow">
+    <div class="flow-title">EXPLAIN ANALYZE - Bạn thân nhất của DBA</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+<span style="color: var(--accent);">-- Query chậm: Full Table Scan (Sequential Scan)</span>
+EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_email = 'alice@example.com';
+
+  Seq Scan on orders  (cost=0.00..35811.00 rows=1 width=256)
+    Filter: (customer_email = 'alice@example.com')
+    <span style="color: var(--accent5);">Rows Removed by Filter: 1000000   ← Quét 1 triệu dòng để tìm 1!</span>
+    Planning Time: 0.1 ms
+    <span style="color: var(--accent5);">Execution Time: 245.3 ms          ← Chậm!</span>
+
+<span style="color: var(--accent3);">-- Thêm index:</span>
+CREATE INDEX idx_orders_email ON orders(customer_email);
+
+<span style="color: var(--accent);">-- Query sau khi có index:</span>
+EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_email = 'alice@example.com';
+
+  Index Scan using idx_orders_email on orders  (cost=0.42..8.44 rows=1 width=256)
+    Index Cond: (customer_email = 'alice@example.com')
+    Planning Time: 0.1 ms
+    <span style="color: var(--accent3);">Execution Time: 0.05 ms           ← Nhanh gấp 5000 lần!</span>
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Connection Pooling - Đừng mở 1000 connections</h4>
+    <p>Mỗi connection đến PostgreSQL tốn ~10MB RAM và một process riêng. 100 connections = 1GB RAM chỉ cho overhead. Giải pháp: <strong>PgBouncer</strong> hoặc <strong>Pgpool-II</strong> - proxy đứng giữa app và database, tái sử dụng connections. 1000 app connections có thể chia sẻ 20 database connections thực sự. Đây là bước tối ưu đầu tiên mọi production setup cần làm.</p>
+  </div>
+
+  <div class="concept-grid" style="margin-top: 2rem;">
+    <div class="concept-card">
+      <h4>🔄 MVCC (Multi-Version Concurrency Control)</h4>
+      <p>PostgreSQL không lock row khi đọc. Thay vào đó, mỗi transaction thấy một "snapshot" riêng của dữ liệu. Readers không block writers, writers không block readers. Đây là lý do PostgreSQL xử lý concurrent workload tốt hơn MySQL (trước InnoDB).</p>
+    </div>
+
+    <div class="concept-card">
+      <h4>📊 VACUUM & Bloat (PostgreSQL)</h4>
+      <p>Do MVCC, PostgreSQL giữ lại old row versions (dead tuples). VACUUM dọn dẹp chúng. Nếu quên VACUUM, bảng "phình" ra (bloat), query chậm dần. autovacuum mặc định bật, nhưng cần tune cho bảng lớn. Đây là "hidden cost" mà người mới hay bỏ qua.</p>
+    </div>
+
+    <div class="concept-card">
+      <h4>📝 WAL (Write-Ahead Log)</h4>
+      <p>Trước khi ghi data vào disk, database ghi log trước. Nếu crash, đọc WAL để khôi phục. Đây là cách ACID property "Durability" được thực hiện. WAL cũng là nền tảng cho streaming replication - replica đọc WAL từ primary để đồng bộ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REPLICATION & HA -->
+<section id="replication">
+  <h2 class="section-title" style="color: var(--accent4);">Replication & High Availability</h2>
+  <p class="section-subtitle">Database chạy trên một server là single point of failure - hãy nhân bản nó lên</p>
+
+  <div class="topology-container">
+    <div class="topo-card">
+      <h4>Master-Slave (Primary-Replica)</h4>
+      <svg width="220" height="160" viewBox="0 0 220 160" style="display: block; margin: 0 auto;">
+        <rect x="80" y="10" width="60" height="36" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+        <text x="110" y="33" text-anchor="middle" fill="#3b82f6" font-size="11">Primary</text>
+        <rect x="10" y="110" width="56" height="36" rx="8" fill="none" stroke="#10b981" stroke-width="2"/>
+        <text x="38" y="133" text-anchor="middle" fill="#10b981" font-size="10">Replica 1</text>
+        <rect x="82" y="110" width="56" height="36" rx="8" fill="none" stroke="#10b981" stroke-width="2"/>
+        <text x="110" y="133" text-anchor="middle" fill="#10b981" font-size="10">Replica 2</text>
+        <rect x="154" y="110" width="56" height="36" rx="8" fill="none" stroke="#10b981" stroke-width="2"/>
+        <text x="182" y="133" text-anchor="middle" fill="#10b981" font-size="10">Replica 3</text>
+        <line x1="100" y1="46" x2="38" y2="110" stroke="#334155" stroke-width="1.5"/>
+        <line x1="110" y1="46" x2="110" y2="110" stroke="#334155" stroke-width="1.5"/>
+        <line x1="120" y1="46" x2="182" y2="110" stroke="#334155" stroke-width="1.5"/>
+      </svg>
+      <p>Write vào Primary, đọc từ Replica. Đơn giản, phổ biến nhất. PostgreSQL streaming replication, MySQL replication đều theo mô hình này. Nhược điểm: Primary chết = phải failover thủ công hoặc tự động.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Master-Master (Multi-Primary)</h4>
+      <svg width="220" height="160" viewBox="0 0 220 160" style="display: block; margin: 0 auto;">
+        <rect x="20" y="55" width="70" height="40" rx="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+        <text x="55" y="80" text-anchor="middle" fill="#f59e0b" font-size="11">Primary A</text>
+        <rect x="130" y="55" width="70" height="40" rx="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+        <text x="165" y="80" text-anchor="middle" fill="#f59e0b" font-size="11">Primary B</text>
+        <line x1="90" y1="70" x2="130" y2="70" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/>
+        <line x1="130" y1="80" x2="90" y2="80" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="110" y="65" text-anchor="middle" fill="#94a3b8" font-size="9">sync</text>
+      </svg>
+      <p>Cả hai node đều nhận write. Conflict resolution phức tạp. Galera Cluster (MariaDB), MySQL Group Replication. Cẩn thận: auto-increment conflicts, split-brain. Chỉ dùng khi thực sự cần multi-region write.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Galera Cluster (Synchronous)</h4>
+      <svg width="220" height="160" viewBox="0 0 220 160" style="display: block; margin: 0 auto;">
+        <circle cx="110" cy="40" r="25" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="110" y="44" text-anchor="middle" fill="#8b5cf6" font-size="10">Node 1</text>
+        <circle cx="50" cy="120" r="25" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="50" y="124" text-anchor="middle" fill="#8b5cf6" font-size="10">Node 2</text>
+        <circle cx="170" cy="120" r="25" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="170" y="124" text-anchor="middle" fill="#8b5cf6" font-size="10">Node 3</text>
+        <line x1="95" y1="60" x2="65" y2="100" stroke="#8b5cf6" stroke-width="1.5"/>
+        <line x1="125" y1="60" x2="155" y2="100" stroke="#8b5cf6" stroke-width="1.5"/>
+        <line x1="75" y1="120" x2="145" y2="120" stroke="#8b5cf6" stroke-width="1.5"/>
+      </svg>
+      <p>Mọi node đều là master, đồng bộ synchronous (wsrep). Virtually synchronous replication. Tối thiểu 3 nodes. MariaDB Galera Cluster rất phổ biến cho HA MySQL/MariaDB trong production.</p>
+    </div>
+  </div>
+
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">PostgreSQL HA Stack - Production Ready</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">🖥️</div>
+        <h4>Application</h4>
+        <p>App server<br>Connection string</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">⚖️</div>
+        <h4>HAProxy / PgBouncer</h4>
+        <p>Load balancer<br>Connection pooling</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">🐘</div>
+        <h4>Primary (RW)</h4>
+        <p>Patroni manages<br>Write + Read</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">📋</div>
+        <h4>Standby (RO)</h4>
+        <p>Streaming replication<br>Read-only queries</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Patroni + etcd = PostgreSQL HA tự động</h4>
+    <p><strong>Patroni</strong> là công cụ tốt nhất hiện tại cho PostgreSQL HA. Nó dùng etcd/Consul/ZooKeeper để bầu leader, tự động failover khi primary chết, tự động provision replica mới. Kết hợp với HAProxy hoặc PgBouncer phía trước, bạn có một PostgreSQL cluster production-grade mà không cần trả tiền cho enterprise license nào.</p>
+  </div>
+</section>
+
+<!-- SHARDING & PARTITIONING -->
+<section id="sharding">
+  <h2 class="section-title" style="color: var(--accent5);">Sharding & Partitioning</h2>
+  <p class="section-subtitle">Khi một server không còn đủ sức chứa - hãy chia dữ liệu ra nhiều nơi</p>
+
+  <div class="topology-container">
+    <div class="topo-card">
+      <h4>Vertical Partitioning</h4>
+      <svg width="220" height="150" viewBox="0 0 220 150" style="display: block; margin: 0 auto;">
+        <rect x="10" y="10" width="200" height="40" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+        <text x="110" y="35" text-anchor="middle" fill="#3b82f6" font-size="11">users (id, name, email, bio, avatar, prefs)</text>
+        <text x="110" y="70" text-anchor="middle" fill="#94a3b8" font-size="16">↓ chia cột ↓</text>
+        <rect x="10" y="85" width="95" height="40" rx="8" fill="none" stroke="#10b981" stroke-width="2"/>
+        <text x="57" y="108" text-anchor="middle" fill="#10b981" font-size="9">users_core (id, name, email)</text>
+        <rect x="115" y="85" width="95" height="40" rx="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+        <text x="162" y="108" text-anchor="middle" fill="#f59e0b" font-size="9">users_extra (bio, avatar, prefs)</text>
+      </svg>
+      <p>Chia bảng theo cột. Cột thường dùng (id, name) tách khỏi cột ít dùng (bio, avatar). Giúp giảm I/O vì đọc ít data hơn mỗi query. PostgreSQL hỗ trợ table inheritance cho vertical partitioning.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Horizontal Partitioning (Sharding)</h4>
+      <svg width="220" height="150" viewBox="0 0 220 150" style="display: block; margin: 0 auto;">
+        <rect x="60" y="5" width="100" height="35" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+        <text x="110" y="27" text-anchor="middle" fill="#3b82f6" font-size="11">orders (10M rows)</text>
+        <text x="110" y="58" text-anchor="middle" fill="#94a3b8" font-size="16">↓ chia hàng ↓</text>
+        <rect x="5" y="75" width="65" height="35" rx="8" fill="none" stroke="#10b981" stroke-width="2"/>
+        <text x="37" y="96" text-anchor="middle" fill="#10b981" font-size="9">Shard A (1-3M)</text>
+        <rect x="78" y="75" width="65" height="35" rx="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+        <text x="110" y="96" text-anchor="middle" fill="#f59e0b" font-size="9">Shard B (3-6M)</text>
+        <rect x="150" y="75" width="65" height="35" rx="8" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="182" y="96" text-anchor="middle" fill="#8b5cf6" font-size="9">Shard C (6-10M)</text>
+        <text x="110" y="130" text-anchor="middle" fill="#94a3b8" font-size="9">Mỗi shard nằm trên server khác nhau</text>
+      </svg>
+      <p>Chia bảng theo hàng, mỗi phần trên một server riêng. Shard key quyết định dữ liệu đi đâu. Consistent hashing đảm bảo thêm/bớt shard không phải di chuyển toàn bộ data. Citus (PostgreSQL), Vitess (MySQL) hỗ trợ auto-sharding.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Consistent Hashing</h4>
+      <svg width="220" height="150" viewBox="0 0 220 150" style="display: block; margin: 0 auto;">
+        <circle cx="110" cy="75" r="55" fill="none" stroke="#3b82f6" stroke-width="2"/>
+        <circle cx="110" cy="20" r="8" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="2"/>
+        <text x="110" y="8" text-anchor="middle" fill="#10b981" font-size="9">Node A</text>
+        <circle cx="162" cy="97" r="8" fill="rgba(245,158,11,0.3)" stroke="#f59e0b" stroke-width="2"/>
+        <text x="185" y="100" text-anchor="middle" fill="#f59e0b" font-size="9">Node B</text>
+        <circle cx="58" cy="97" r="8" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="35" y="100" text-anchor="middle" fill="#8b5cf6" font-size="9">Node C</text>
+        <circle cx="140" cy="38" r="4" fill="#ef4444"/>
+        <text x="158" y="35" fill="#ef4444" font-size="8">key1</text>
+        <circle cx="78" cy="43" r="4" fill="#ef4444"/>
+        <text x="62" y="40" fill="#ef4444" font-size="8">key2</text>
+        <circle cx="143" cy="110" r="4" fill="#ef4444"/>
+        <text x="155" y="122" fill="#ef4444" font-size="8">key3</text>
+      </svg>
+      <p>Hash ring: mỗi key được map vào vòng tròn, đi theo chiều kim đồng hồ đến node gần nhất. Thêm/bớt node chỉ di chuyển 1/N dữ liệu thay vì toàn bộ. DynamoDB, Cassandra, Redis Cluster đều dùng.</p>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Lời khuyên vàng: Đừng shard quá sớm!</h4>
+    <p>Sharding thêm complexity khổng lồ: cross-shard queries, distributed transactions, operational burden. PostgreSQL trên một server mạnh (64 cores, 512GB RAM, NVMe SSD) có thể xử lý <strong>hàng trăm triệu rows</strong> thoải mái. Hãy tối ưu query, thêm index, dùng partitioning trước. Chỉ shard khi thực sự cần - và khi đó, dùng Citus hoặc Vitess thay vì tự xây.</p>
+  </div>
+</section>
+
+<!-- BACKUP & RECOVERY -->
+<section id="backup">
+  <h2 class="section-title" style="color: var(--accent3);">Backup & Recovery</h2>
+  <p class="section-subtitle">Không có backup = không có database. Đơn giản vậy thôi.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>💾 Logical Backup (pg_dump / mysqldump)</h4>
+      <p>Export dữ liệu thành SQL statements hoặc custom format. Dễ hiểu, portable, có thể restore vào version khác. Nhược điểm: chậm với database lớn (hàng trăm GB), lock tables khi dump (mysqldump --single-transaction giải quyết vấn đề này cho InnoDB).</p>
+      <div class="tag-row"><span class="tag good">Portable</span><span class="tag">SQL format</span><span class="tag warn">Slow for large DB</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>📸 Physical Backup (pg_basebackup / Barman)</h4>
+      <p>Copy toàn bộ data directory ở mức file system. Nhanh hơn nhiều so với logical backup. pg_basebackup cho PostgreSQL, Percona XtraBackup cho MySQL/MariaDB. Barman (Backup and Recovery Manager) là tool enterprise-grade cho PostgreSQL.</p>
+      <div class="tag-row"><span class="tag good">Fast</span><span class="tag">File-level</span><span class="tag warn">Same version only</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>⏰ Point-in-Time Recovery (PITR)</h4>
+      <p>Khôi phục database về BẤT KỲ thời điểm nào trong quá khứ. Dựa trên base backup + replay WAL logs đến thời điểm mong muốn. "Ối, ai đó chạy DELETE FROM users lúc 14:35!" → Restore về 14:34. Đây là lý do bạn phải archive WAL.</p>
+      <div class="tag-row"><span class="tag good">Any point in time</span><span class="tag">WAL-based</span><span class="tag good">Life saver</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>📦 WAL Archiving & Shipping</h4>
+      <p>PostgreSQL ghi mọi thay đổi vào WAL. Archive WAL ra nơi an toàn (S3, NFS) cho phép PITR và tạo standby servers. pgBackRest là tool tốt nhất hiện tại: parallel backup/restore, compression, encryption, S3/GCS/Azure support.</p>
+      <div class="tag-row"><span class="tag good">pgBackRest</span><span class="tag">Continuous</span><span class="tag">Cloud Storage</span></div>
+    </div>
+  </div>
+
+  <div class="code-flow" style="margin-top: 2rem;">
+    <div class="flow-title">Backup Strategy cho Production - Quy tắc 3-2-1</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+<span style="color: var(--accent);">Quy tắc 3-2-1:</span>
+  <span style="color: var(--accent3);">3</span> bản copy của dữ liệu
+  <span style="color: var(--accent3);">2</span> loại storage media khác nhau
+  <span style="color: var(--accent3);">1</span> bản off-site (cloud/remote)
+
+<span style="color: var(--accent);">Ví dụ setup PostgreSQL backup:</span>
+  ┌─────────────────────────────────────────────────┐
+  │  Hàng ngày: pg_basebackup → local NAS          │
+  │  Liên tục:  WAL archiving → S3 bucket           │
+  │  Hàng tuần: Full backup → remote site            │
+  │  Test:      Restore test mỗi tháng!             │
+  └─────────────────────────────────────────────────┘
+
+<span style="color: var(--accent5);">⚠ QUAN TRỌNG: Backup mà không test restore = KHÔNG CÓ backup.
+  Schrodinger's backup: trạng thái của backup là unknown cho đến khi bạn restore.</span>
+    </pre>
+  </div>
+</section>
+
+<!-- CAP THEOREM -->
+<section id="cap">
+  <h2 class="section-title" style="color: var(--accent2);">CAP Theorem & Distributed Databases</h2>
+  <p class="section-subtitle">Định lý khiến mọi kiến trúc sư phần mềm mất ngủ</p>
+
+  <div class="intro-box">
+    <h2 style="font-size: 1.4rem;">Định lý CAP (Eric Brewer, 2000)</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem;">
+      Trong một hệ thống phân tán, bạn chỉ có thể đảm bảo <strong>2 trong 3</strong> tính chất sau cùng lúc. Đây không phải lựa chọn "pick 2" cứng nhắc, mà là trade-off liên tục mà bạn phải cân nhắc.
+    </p>
+
+    <div class="cap-container">
+      <div class="cap-triangle">
+        <div class="cap-node c-node">
+          <div class="cap-label">C</div>
+          <div>Consistency</div>
+        </div>
+        <div class="cap-node a-node">
+          <div class="cap-label">A</div>
+          <div>Availability</div>
+        </div>
+        <div class="cap-node p-node">
+          <div class="cap-label">P</div>
+          <div>Partition<br>Tolerance</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acid-grid">
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent);">C</div>
+        <h4>Consistency</h4>
+        <p>Mọi node trả về dữ liệu giống nhau tại cùng một thời điểm. Đọc sau khi ghi luôn thấy giá trị mới nhất. Ví dụ: PostgreSQL synchronous replication.</p>
+      </div>
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent3);">A</div>
+        <h4>Availability</h4>
+        <p>Mọi request đều nhận response (không timeout), kể cả khi một số node chết. Hệ thống luôn "sống". Ví dụ: Cassandra - vẫn trả lời dù mất vài node.</p>
+      </div>
+      <div class="acid-card">
+        <div class="acid-letter" style="color: var(--accent4);">P</div>
+        <h4>Partition Tolerance</h4>
+        <p>Hệ thống vẫn hoạt động khi mạng giữa các node bị đứt. Trong thực tế, network partition LUÔN có thể xảy ra, nên P là bắt buộc → chọn C hoặc A.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Database</th>
+          <th>CAP</th>
+          <th>Consistency Model</th>
+          <th>Giải thích</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PostgreSQL (single)</td>
+          <td style="color: var(--accent);">CA</td>
+          <td>Strong</td>
+          <td>Không phân tán → không cần P. ACID đầy đủ.</td>
+        </tr>
+        <tr>
+          <td>MongoDB (replica set)</td>
+          <td style="color: var(--accent);">CP</td>
+          <td>Strong (default)</td>
+          <td>Khi primary chết, cluster bầu primary mới → không available trong vài giây.</td>
+        </tr>
+        <tr>
+          <td>Cassandra</td>
+          <td style="color: var(--accent3);">AP</td>
+          <td>Eventual / Tunable</td>
+          <td>Ưu tiên availability. Consistency tunable qua quorum (ONE, QUORUM, ALL).</td>
+        </tr>
+        <tr>
+          <td>Redis Cluster</td>
+          <td style="color: var(--accent);">CP</td>
+          <td>Strong</td>
+          <td>Khi master chết, failover → unavailable tạm thời.</td>
+        </tr>
+        <tr>
+          <td>CockroachDB</td>
+          <td style="color: var(--accent);">CP</td>
+          <td>Serializable</td>
+          <td>Strong consistency qua Raft consensus. Sacrifice availability khi partition.</td>
+        </tr>
+        <tr>
+          <td>DynamoDB</td>
+          <td style="color: var(--accent3);">AP</td>
+          <td>Eventual (default)</td>
+          <td>Eventually consistent reads mặc định. Strong reads tốn gấp đôi cost.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Sự thật về CAP: Không phải "chọn 2 trong 3"</h4>
+    <p>CAP theorem thường bị hiểu sai. Trong thực tế, partition là sự kiện hiếm gặp. Hầu hết thời gian, hệ thống vừa consistent vừa available. CAP chỉ bắt bạn chọn khi <strong>partition thực sự xảy ra</strong>. Và "consistency" trong CAP (linearizability) khác với "consistency" trong ACID. Đừng nhầm lẫn!</p>
+  </div>
+</section>
+
+<!-- DATABASE TRONG HOMELAB -->
+<section id="homelab">
+  <h2 class="section-title" style="color: var(--accent4);">Database Trong Homelab</h2>
+  <p class="section-subtitle">Tự host database trong homelab - vì bạn muốn kiểm soát dữ liệu của mình</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>🐘 PostgreSQL trên Docker</h4>
+      <p>Cách phổ biến nhất để chạy PostgreSQL trong homelab. Mount volume cho data persistence, set password qua environment variable. Kết hợp với Adminer hoặc pgAdmin để quản lý qua web UI. Nhớ: backup volume thường xuyên!</p>
+      <div class="tag-row"><span class="tag good">Recommended</span><span class="tag">Docker</span><span class="tag">Volume Mount</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>🐬 MariaDB cho WordPress/Nextcloud</h4>
+      <p>Hầu hết self-hosted apps (WordPress, Nextcloud, Gitea, Bookstack) cần MySQL/MariaDB. Chạy một instance MariaDB dùng chung cho nhiều app, mỗi app một database riêng. Tiết kiệm RAM hơn chạy riêng từng container.</p>
+      <div class="tag-row"><span class="tag good">Self-hosted Apps</span><span class="tag">Shared Instance</span><span class="tag">Low RAM</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>🔴 Redis làm Cache Layer</h4>
+      <p>Nextcloud, Authentik, Gitea đều hưởng lợi từ Redis cache. Chạy một Redis container, trỏ các app vào. Cấu hình maxmemory và eviction policy (allkeys-lru là lựa chọn tốt). 256MB RAM là đủ cho homelab.</p>
+      <div class="tag-row"><span class="tag good">Cache</span><span class="tag">256MB đủ</span><span class="tag">Multi-app</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4>📊 Monitoring với InfluxDB/Prometheus</h4>
+      <p>Time-series database cho metrics. Grafana + Prometheus hoặc InfluxDB + Telegraf. Monitor CPU, RAM, disk, network của toàn bộ homelab. InfluxDB tốn RAM hơn nhưng query language (Flux) mạnh hơn. Prometheus nhẹ hơn, cộng đồng lớn hơn.</p>
+      <div class="tag-row"><span class="tag good">Monitoring</span><span class="tag">Grafana</span><span class="tag">Time-series</span></div>
+    </div>
+  </div>
+
+  <div class="code-flow" style="margin-top: 2rem;">
+    <div class="flow-title">Docker Compose - PostgreSQL + Redis cho Homelab</div>
+    <pre style="color: var(--text-dim); line-height: 1.8; font-size: 0.82rem;">
+<span style="color: var(--accent);">version: "3.8"</span>
+services:
+  <span style="color: var(--accent3);">postgres:</span>
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: homelab
+      POSTGRES_PASSWORD: <span style="color: var(--accent5);">${DB_PASSWORD}</span>    <span style="color: var(--accent4);"># .env file!</span>
+      POSTGRES_DB: homelab
+    volumes:
+      - <span style="color: var(--accent4);">pgdata:/var/lib/postgresql/data</span>  <span style="color: var(--accent4);"># QUAN TRỌNG!</span>
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homelab"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  <span style="color: var(--accent5);">redis:</span>
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"
+
+  <span style="color: var(--accent2);">adminer:</span>
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"          <span style="color: var(--accent4);"># Web UI quản lý DB</span>
+
+volumes:
+  pgdata:
+  redisdata:
+
+<span style="color: var(--accent);"># Backup cron (thêm vào crontab):</span>
+<span style="color: var(--accent3);"># 0 2 * * * docker exec postgres pg_dumpall -U homelab > /backup/db_$(date +\%F).sql</span>
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Mẹo Homelab: Đừng expose database ra internet!</h4>
+    <p>Database KHÔNG BAO GIỜ nên mở port ra public internet. Dùng <strong>reverse proxy</strong> (Nginx Proxy Manager, Traefik) cho web apps, và giữ database trong <strong>internal Docker network</strong>. Nếu cần remote access, dùng VPN (WireGuard) hoặc SSH tunnel. Một database bị expose là tấm vé mời hacker vào nhà bạn.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Hiểu Nhầm Phổ Biến</h2>
+  <p class="section-subtitle">Những myth sai lầm mà ngay cả developer kinh nghiệm cũng mắc phải</p>
+
+  <div class="myth-grid">
+    <!-- Myth 1 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"NoSQL luôn nhanh hơn SQL"</h4>
+      <p>Một trong những myth nguy hiểm nhất. NoSQL nhanh hơn cho <em>một số workload cụ thể</em> (key-value lookup, write-heavy). Nhưng PostgreSQL với đúng index có thể trả lời query trong &lt;1ms, và cho phép JOIN phức tạp mà NoSQL phải fetch nhiều lần.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Tốc độ phụ thuộc vào <strong>data model, query pattern, indexing</strong> - không phải "SQL hay NoSQL". MongoDB không có magic nào làm nó nhanh hơn PostgreSQL cho mọi use case.</p>
+    </div>
+
+    <!-- Myth 2 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"MongoDB không cần schema"</h4>
+      <p>MongoDB là "schema-flexible", KHÔNG phải "schema-less". Dữ liệu vẫn có cấu trúc - chỉ là database không enforce. Kết quả: app code phải validate, bugs khó tìm hơn, data inconsistency rất phổ biến.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Bạn vẫn cần thiết kế schema. MongoDB từ v3.6+ có <strong>JSON Schema Validation</strong>. Schema nên ở database level, không phải chỉ ở application level. "Schema-less" là marketing, không phải engineering practice.</p>
+    </div>
+
+    <!-- Myth 3 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Index giải quyết mọi vấn đề performance"</h4>
+      <p>Thêm index vào mọi cột? Mỗi index tốn disk space, RAM, và làm chậm INSERT/UPDATE vì phải cập nhật index. Một bảng với 20 indexes sẽ write cực chậm.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Index là trade-off: <strong>đọc nhanh hơn, ghi chậm hơn</strong>. Chỉ tạo index cho cột thực sự được query. Dùng EXPLAIN ANALYZE để xác nhận index có được dùng không. Composite index thường hiệu quả hơn nhiều single-column indexes.</p>
+    </div>
+
+    <!-- Myth 4 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"PostgreSQL chậm hơn MySQL"</h4>
+      <p>Myth từ thời PostgreSQL 7.x (2000s). Ngày nay PostgreSQL thường nhanh hơn hoặc ngang MySQL cho hầu hết workload, đặc biệt khi cần complex queries, JSON, full-text search, concurrent writes.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>PostgreSQL có <strong>query planner tiên tiến hơn</strong>, MVCC tốt hơn, và hỗ trợ parallel query từ v9.6. MySQL/MariaDB vẫn nhỉnh hơn cho simple read-heavy workloads (nhiều SELECT đơn giản). Cả hai đều "đủ nhanh" cho 99% use cases.</p>
+    </div>
+
+    <!-- Myth 5 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Redis chỉ là cache"</h4>
+      <p>Redis bắt đầu như cache, nhưng giờ là "data structure server" đa năng: pub/sub (real-time messaging), streams (event sourcing), sorted sets (leaderboards), Lua scripting (atomic operations), RedisJSON, RediSearch.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Redis là <strong>Swiss Army Knife</strong> của infrastructure. Session store, rate limiter, message queue, real-time analytics, distributed lock - tất cả trong một. Nhiều startup dùng Redis làm primary database (kết hợp AOF persistence).</p>
+    </div>
+
+    <!-- Myth 6 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"ORM thay thế việc học SQL"</h4>
+      <p>Django ORM, SQLAlchemy, Prisma giúp viết code nhanh hơn. Nhưng khi ORM generate query tệ (N+1 problem, missing joins, full table scan), bạn không biết fix vì không hiểu SQL.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>ORM là <strong>abstraction layer, không phải replacement</strong>. Mọi senior developer đều phải thành thạo raw SQL. Biết đọc EXPLAIN ANALYZE, viết CTE, dùng window functions - đây là kỹ năng không ORM nào thay thế được.</p>
+    </div>
+
+    <!-- Myth 7 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Database trong Docker là production-ready"</h4>
+      <p>Docker cho development thì tuyệt vời. Nhưng production database trong Docker có risks: volume mounting issues, I/O overhead, container restart mất data nếu quên volume, resource limits phức tạp.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Nhiều công ty lớn vẫn chạy database trên <strong>bare metal hoặc VM</strong> cho production. Docker OK nếu bạn hiểu rõ volume management, resource limits, và có backup strategy. Cho homelab thì Docker hoàn toàn ổn. Cho production business-critical, cần cân nhắc kỹ.</p>
+    </div>
+
+    <!-- Myth 8 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Normalize mọi thứ / Denormalize mọi thứ"</h4>
+      <p>Cực đoan nào cũng sai. Normalize quá mức tạo ra 50 bảng JOIN 10 tầng cho một query đơn giản. Denormalize quá mức tạo ra data inconsistency và storage waste.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p><strong>Pragmatic normalization</strong>: normalize cho data integrity, denormalize có chọn lọc cho performance. PostgreSQL JSONB cho phép "semi-structured data trong relational world" - best of both worlds. Đo lường trước khi tối ưu.</p>
+    </div>
+
+    <!-- Myth 9 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Elasticsearch có thể thay thế database chính"</h4>
+      <p>Elasticsearch tuyệt vời cho search và analytics. Nhưng nó không có transactions, data loss possible khi node chết giữa chừng, update/delete chậm, và near-real-time (không phải real-time).</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Elasticsearch là <strong>secondary index</strong>, không phải source of truth. Pattern đúng: ghi vào PostgreSQL (primary) → sync sang Elasticsearch (search). Mất Elasticsearch? Rebuild từ PostgreSQL. Mất PostgreSQL? Bạn gặp vấn đề lớn.</p>
+    </div>
+
+    <!-- Myth 10 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Scale up đã hết đường, phải scale out"</h4>
+      <p>Nhiều team vội vàng chuyển sang distributed database khi server hiện tại mới dùng 20% capacity. Chưa optimize query, chưa thêm index, chưa dùng connection pooling mà đã nghĩ đến sharding.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Một PostgreSQL server với <strong>NVMe SSD, 64GB RAM, proper tuning</strong> xử lý được workload mà 90% startups cần. Stack Overflow chạy trên 2 SQL Server instances. Optimize trước, scale sau. <strong>"Premature optimization is the root of all evil, but premature distribution is worse."</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent);">Cheat Sheet</h2>
+  <p class="section-subtitle">Những lệnh và kiến thức thiết yếu để bắt đầu ngay</p>
+
+  <h3 style="color: var(--accent2); margin-bottom: 1.5rem;">SQL Essentials</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Tạo bảng & ràng buộc</h4>
+      <code>CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id),
+  total DECIMAL(10,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending'
+);</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>JOIN - Kết hợp bảng</h4>
+      <code>-- INNER JOIN: chỉ lấy matching rows
+SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id;
+
+-- LEFT JOIN: tất cả users, kể cả chưa order
+SELECT u.name, COUNT(o.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+GROUP BY u.name;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Window Functions</h4>
+      <code>-- Rank users by total spending
+SELECT
+  name,
+  SUM(total) as spending,
+  RANK() OVER (ORDER BY SUM(total) DESC)
+    as rank
+FROM users u
+JOIN orders o ON u.id = o.user_id
+GROUP BY u.name;
+
+-- Running total
+SELECT date, amount,
+  SUM(amount) OVER (ORDER BY date)
+    as running_total
+FROM transactions;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>CTE (Common Table Expression)</h4>
+      <code>-- Đọc dễ hơn subquery
+WITH active_users AS (
+  SELECT user_id, COUNT(*) as orders
+  FROM orders
+  WHERE created_at > NOW() - INTERVAL '30 days'
+  GROUP BY user_id
+  HAVING COUNT(*) >= 3
+)
+SELECT u.name, a.orders
+FROM users u
+JOIN active_users a ON u.id = a.user_id
+ORDER BY a.orders DESC;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>EXPLAIN ANALYZE</h4>
+      <code>-- Xem query plan thực tế
+EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT * FROM orders
+WHERE status = 'pending'
+  AND created_at > '2024-01-01';
+
+-- Tìm: Seq Scan = BAD (cho bảng lớn)
+--       Index Scan = GOOD
+--       Rows Removed by Filter = quá nhiều?</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Index hiệu quả</h4>
+      <code>-- Composite index (thứ tự cột quan trọng!)
+CREATE INDEX idx_orders_status_date
+  ON orders(status, created_at DESC);
+
+-- Partial index (chỉ index rows cần thiết)
+CREATE INDEX idx_orders_pending
+  ON orders(created_at)
+  WHERE status = 'pending';
+
+-- Covering index (tránh table lookup)
+CREATE INDEX idx_users_email_name
+  ON users(email) INCLUDE (name);</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent2); margin: 3rem 0 1.5rem;">psql Commands - PostgreSQL CLI</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Kết nối & Navigation</h4>
+      <code>psql -h localhost -U postgres -d mydb
+\l        -- list databases
+\c mydb   -- connect to database
+\dt       -- list tables
+\d users  -- describe table
+\di       -- list indexes
+\df       -- list functions
+\q        -- quit</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Quản lý & Monitoring</h4>
+      <code>-- Xem queries đang chạy
+SELECT pid, now()-query_start as duration,
+  query, state
+FROM pg_stat_activity
+WHERE state != 'idle'
+ORDER BY duration DESC;
+
+-- Kill query chậm
+SELECT pg_terminate_backend(pid);
+
+-- Database size
+SELECT pg_size_pretty(
+  pg_database_size('mydb'));</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Backup & Restore</h4>
+      <code># Backup một database
+pg_dump -Fc mydb > mydb.dump
+
+# Backup toàn bộ cluster
+pg_dumpall > all_databases.sql
+
+# Restore
+pg_restore -d mydb mydb.dump
+
+# Chỉ backup schema (không data)
+pg_dump -s mydb > schema.sql</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent2); margin: 3rem 0 1.5rem;">mysql/mariadb Commands</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Kết nối & Navigation</h4>
+      <code>mysql -h localhost -u root -p
+SHOW DATABASES;
+USE mydb;
+SHOW TABLES;
+DESCRIBE users;
+SHOW INDEX FROM users;
+SHOW PROCESSLIST;
+EXIT;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Backup & Maintenance</h4>
+      <code># Backup
+mysqldump -u root -p mydb > backup.sql
+mysqldump --all-databases > all.sql
+mysqldump --single-transaction mydb > safe.sql
+
+# Restore
+mysql -u root -p mydb < backup.sql
+
+# Check & repair
+mysqlcheck --all-databases --auto-repair</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>User Management</h4>
+      <code>-- Tạo user
+CREATE USER 'app'@'%'
+  IDENTIFIED BY 'password';
+
+-- Cấp quyền
+GRANT ALL ON mydb.* TO 'app'@'%';
+GRANT SELECT ON mydb.* TO 'readonly'@'%';
+
+-- Xem quyền
+SHOW GRANTS FOR 'app'@'%';
+
+FLUSH PRIVILEGES;</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent2); margin: 3rem 0 1.5rem;">Performance Tuning Checklist</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>PostgreSQL Tuning (postgresql.conf)</h4>
+      <code># RAM = 16GB server
+shared_buffers = 4GB        # 25% RAM
+effective_cache_size = 12GB  # 75% RAM
+work_mem = 256MB             # per-sort
+maintenance_work_mem = 1GB   # VACUUM/INDEX
+wal_buffers = 64MB
+random_page_cost = 1.1       # SSD
+effective_io_concurrency = 200  # SSD
+max_connections = 200</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>MySQL/MariaDB Tuning (my.cnf)</h4>
+      <code># RAM = 16GB server
+[mysqld]
+innodb_buffer_pool_size = 12G  # 75% RAM
+innodb_log_file_size = 2G
+innodb_flush_log_at_trx_commit = 1
+innodb_file_per_table = 1
+max_connections = 200
+query_cache_type = 0  # disable in 8.0+
+tmp_table_size = 256M
+max_heap_table_size = 256M</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Checklist tối ưu</h4>
+      <p>1. EXPLAIN ANALYZE mọi slow query</p>
+      <p>2. Thêm index cho WHERE/JOIN columns</p>
+      <p>3. Connection pooling (PgBouncer)</p>
+      <p>4. Tune shared_buffers/buffer_pool</p>
+      <p>5. Monitor với pg_stat_statements</p>
+      <p>6. VACUUM ANALYZE thường xuyên</p>
+      <p>7. Tránh SELECT * - chỉ lấy cột cần</p>
+      <p>8. Pagination: keyset thay vì OFFSET</p>
+      <p>9. Batch INSERT thay vì từng row</p>
+      <p>10. Read replica cho read-heavy workload</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Thế Giới Database - Tổng hợp kiến thức từ documentation chính thức, kinh nghiệm thực tế, và cộng đồng open source.</p>
+  <p style="margin-top: 0.5rem; color: var(--accent);">Được tạo cho Homelab enthusiasts. Dữ liệu là tài sản - hãy bảo vệ nó. 🗄️</p>
+</footer>
+
+</body>
+</html>

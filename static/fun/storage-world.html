@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Storage - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: diskSpin 3s ease-in-out infinite;
+  }
+
+  @keyframes diskSpin {
+    0%, 100% { transform: rotateY(0deg); }
+    25% { transform: rotateY(15deg) scale(1.05); }
+    50% { transform: rotateY(0deg); }
+    75% { transform: rotateY(-15deg) scale(1.05); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .storage-analogy {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Cards Grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .card .card-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .card.blue::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .card.purple::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .card.green::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .card.orange::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .card.red::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .card.pink::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .card.teal::before { background: linear-gradient(90deg, #14b8a6, #0d9488); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Story Box */
+  .story-box {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 1.5rem 0;
+    border-left: 4px solid var(--accent5);
+  }
+
+  .story-box h4 { color: var(--accent5); font-size: 1.15rem; margin-bottom: 1rem; }
+  .story-box p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 0.8rem; }
+  .story-box .lesson {
+    background: rgba(16,185,129,0.08);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+    border: 1px solid rgba(16,185,129,0.2);
+  }
+  .story-box .lesson h5 { color: var(--accent3); margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .story-box .lesson p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 0; }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* RAID Visual */
+  .raid-visual {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .raid-block {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .raid-block:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .raid-block .raid-disks {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 0.8rem 0;
+  }
+
+  .raid-block .disk {
+    width: 20px;
+    height: 36px;
+    border-radius: 3px;
+    font-size: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+  }
+
+  .disk.data { background: var(--accent); }
+  .disk.parity { background: var(--accent4); }
+  .disk.mirror { background: var(--accent3); }
+  .disk.stripe { background: var(--accent2); }
+
+  .raid-block h4 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .raid-block p { color: var(--text-dim); font-size: 0.78rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .storage-analogy { grid-template-columns: 1fr; }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .raid-visual { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Storage World</a>
+  <a href="#what">Storage là gì?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#raid">RAID</a>
+  <a href="#filesystems">Filesystems</a>
+  <a href="#network-storage">Network Storage</a>
+  <a href="#distributed">Distributed</a>
+  <a href="#ssd">SSD Endurance</a>
+  <a href="#stories">Câu chuyện</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">💾</div>
+  <h1>Thế Giới Storage</h1>
+  <p class="subtitle">Từ cuộn băng từ đến distributed storage - Hành trình lưu trữ dữ liệu của nhân loại. Mọi thứ bạn cần biết về RAID, filesystems, Ceph, ZFS, và tại sao mất dữ liệu luôn xảy ra vào lúc bạn ít ngờ nhất.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS STORAGE -->
+<section id="what">
+  <div class="intro-box">
+    <h2 class="section-title">Storage là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Storage</strong> - Không đơn giản chỉ là "chỗ để lưu file". Trong thế giới IT hạ tầng, storage là xương sống quyết định hiệu năng, độ tin cậy, và khả năng phục hồi của toàn bộ hệ thống. Mỗi byte dữ liệu bạn tạo ra đều cần một nơi trú ngụ an toàn, và cách bạn tổ chức "ngôi nhà" đó quyết định sống còn của doanh nghiệp.
+    </p>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      Có ba mô hình lưu trữ cơ bản, mỗi loại phục vụ mục đích khác nhau. Hiểu sự khác biệt giữa chúng là bước đầu tiên để thiết kế hệ thống storage đúng đắn.
+    </p>
+
+    <div class="storage-analogy">
+      <div class="analogy-box">
+        <div class="icon">🧱</div>
+        <h3>Block Storage</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu chia thành block cố định. Như ổ cứng vật lý - raw, nhanh, low-level. Dùng cho VM disk, database.<br><strong style="color: var(--accent);">VD: iSCSI, FC LUN, EBS</strong></p>
+      </div>
+      <div class="analogy-box">
+        <div class="icon">📂</div>
+        <h3>File Storage</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu tổ chức theo file/folder hierarchy. Quen thuộc nhất với con người. Chia sẻ qua mạng dễ dàng.<br><strong style="color: var(--accent);">VD: NFS, SMB, CephFS</strong></p>
+      </div>
+      <div class="analogy-box">
+        <div class="icon">🪣</div>
+        <h3>Object Storage</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu lưu kèm metadata. Flat namespace, truy cập qua API (HTTP). Scale vô hạn, giá rẻ.<br><strong style="color: var(--accent);">VD: S3, MinIO, Ceph RGW</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>Sai lầm phổ biến nhất là cố dùng một loại storage cho mọi workload. Database cần <strong>block storage</strong> (IOPS cao, latency thấp). Chia sẻ file giữa các user cần <strong>file storage</strong> (permission, locking). Backup, media, log cần <strong>object storage</strong> (rẻ, scale tốt). Hiểu workload rồi mới chọn storage - không phải ngược lại.</p>
+    </div>
+
+    <!-- Block vs File vs Object Comparison -->
+    <div class="comparison-wrap" style="margin-top: 2rem;">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Tiêu chí</th>
+            <th>Block</th>
+            <th>File</th>
+            <th>Object</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Truy cập</td>
+            <td>Raw device / LUN</td>
+            <td>File path (mount)</td>
+            <td>HTTP API (REST)</td>
+          </tr>
+          <tr>
+            <td>Hiệu năng</td>
+            <td style="color: var(--accent3);">Cao nhất</td>
+            <td style="color: var(--accent4);">Trung bình</td>
+            <td style="color: var(--accent4);">Phụ thuộc network</td>
+          </tr>
+          <tr>
+            <td>Scale</td>
+            <td>TB-level</td>
+            <td>TB-PB</td>
+            <td style="color: var(--accent3);">Gần vô hạn (EB)</td>
+          </tr>
+          <tr>
+            <td>Use case chính</td>
+            <td>VM, Database</td>
+            <td>Home dir, Share</td>
+            <td>Backup, Media, Log</td>
+          </tr>
+          <tr>
+            <td>Metadata</td>
+            <td>Không</td>
+            <td>Cơ bản (permission)</td>
+            <td style="color: var(--accent3);">Phong phú (custom)</td>
+          </tr>
+          <tr>
+            <td>Chi phí / GB</td>
+            <td style="color: var(--accent5);">Đắt nhất</td>
+            <td style="color: var(--accent4);">Trung bình</td>
+            <td style="color: var(--accent3);">Rẻ nhất</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian Storage</h2>
+  <p class="section-subtitle">70 năm tiến hóa - từ băng từ khổng lồ đến chip nhỏ hơn móng tay</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1951 - 1960s</span>
+        <h3>Kỷ nguyên Băng Từ (Magnetic Tape)</h3>
+        <p>UNIVAC I dùng băng từ kim loại để lưu dữ liệu. Truy cập tuần tự, chậm kinh khủng, nhưng là bước đột phá so với thẻ đục lỗ. IBM 726 tape drive nặng gần 1 tấn, lưu được... 2MB. Ngày nay tape vẫn sống khỏe cho cold storage (LTO-9: 18TB/cuộn).</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1956 - 1980s</span>
+        <h3>HDD ra đời - IBM RAMAC 350</h3>
+        <p>Ổ cứng đầu tiên: 50 đĩa từ 24 inch, nặng 1 tấn, chứa 3.75MB, giá thuê $3,200/tháng (tương đương $35,000 ngày nay). Lần đầu tiên con người có thể truy cập dữ liệu ngẫu nhiên (random access) thay vì đọc tuần tự. Cuộc cách mạng thực sự.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1988</span>
+        <h3>RAID - Bài báo thay đổi mọi thứ</h3>
+        <p>Patterson, Gibson, Katz tại UC Berkeley công bố paper "A Case for Redundant Arrays of Inexpensive Disks". Ý tưởng: dùng nhiều ổ rẻ thay vì một ổ đắt. Từ đây RAID trở thành nền tảng của mọi hệ thống storage enterprise.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2000s</span>
+        <h3>SAN & NAS thương mại hóa</h3>
+        <p>NetApp, EMC, Dell trở thành những ông lớn storage. Fibre Channel SAN cho enterprise, iSCSI cho mid-market. NAS (Network Attached Storage) đi vào mọi văn phòng. Synology, QNAP ra đời phục vụ SMB. Storage tách khỏi server, trở thành tầng riêng.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2006-2010</span>
+        <h3>SSD thương mại & ZFS</h3>
+        <p>SSD đầu tiên cho consumer ra đời. Sun Microsystems phát hành ZFS (2005) - filesystem cách mạng với copy-on-write, checksumming, pooled storage. Flash storage bắt đầu thay thế spinning disk cho workload đòi hỏi hiệu năng. Game đã thay đổi mãi mãi.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2010-2015</span>
+        <h3>NVMe & Distributed Storage</h3>
+        <p>NVMe protocol ra đời - nói chuyện trực tiếp với CPU qua PCIe, bỏ qua bottleneck SATA/SAS. Ceph, GlusterFS, HDFS trưởng thành. Software-Defined Storage (SDS) thay thế hardware SAN đắt đỏ. Dữ liệu không còn nằm trên một box - nó phân tán khắp nơi.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2020-nay</span>
+        <h3>CXL, PLC NAND, và Tương lai</h3>
+        <p>CXL (Compute Express Link) mở ra memory-semantic storage. PLC NAND (5 bit/cell) hứa hẹn SSD siêu rẻ. NVMe-oF (over Fabrics) cho phép truy cập NVMe qua mạng. Tiering tự động bằng AI. Ranh giới giữa RAM, storage, và network đang mờ dần.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- RAID -->
+<section id="raid">
+  <h2 class="section-title" style="color: var(--accent5);">RAID - Nghệ Thuật Bảo Vệ Dữ Liệu</h2>
+  <p class="section-subtitle">Redundant Array of Independent Disks - Không chỉ là ghép ổ cứng</p>
+
+  <div class="raid-visual">
+    <div class="raid-block">
+      <h4>RAID 0</h4>
+      <div class="raid-disks">
+        <div class="disk stripe">A1</div>
+        <div class="disk stripe">A2</div>
+      </div>
+      <p><strong style="color: var(--accent3);">Tốc độ x2</strong><br>Không dự phòng<br>1 ổ chết = mất hết<br><span style="color: var(--accent5);">Min: 2 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID 1</h4>
+      <div class="raid-disks">
+        <div class="disk mirror">A</div>
+        <div class="disk mirror">A</div>
+      </div>
+      <p><strong style="color: var(--accent3);">Mirror hoàn hảo</strong><br>Chịu 1 ổ chết<br>Mất 50% dung lượng<br><span style="color: var(--accent4);">Min: 2 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID 5</h4>
+      <div class="raid-disks">
+        <div class="disk data">A</div>
+        <div class="disk data">B</div>
+        <div class="disk parity">P</div>
+      </div>
+      <p><strong style="color: var(--accent4);">1 parity phân tán</strong><br>Chịu 1 ổ chết<br>Mất 1 ổ dung lượng<br><span style="color: var(--accent4);">Min: 3 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID 6</h4>
+      <div class="raid-disks">
+        <div class="disk data">A</div>
+        <div class="disk data">B</div>
+        <div class="disk parity">P</div>
+        <div class="disk parity">Q</div>
+      </div>
+      <p><strong style="color: var(--accent3);">2 parity phân tán</strong><br>Chịu 2 ổ chết<br>Mất 2 ổ dung lượng<br><span style="color: var(--accent3);">Min: 4 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID 10</h4>
+      <div class="raid-disks">
+        <div class="disk mirror">A</div>
+        <div class="disk mirror">A</div>
+        <div class="disk stripe">B</div>
+        <div class="disk stripe">B</div>
+      </div>
+      <p><strong style="color: var(--accent3);">Mirror + Stripe</strong><br>Nhanh + An toàn<br>Mất 50% dung lượng<br><span style="color: var(--accent3);">Min: 4 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID-Z1</h4>
+      <div class="raid-disks">
+        <div class="disk data">D</div>
+        <div class="disk data">D</div>
+        <div class="disk parity" style="background: #0d9488;">Z</div>
+      </div>
+      <p><strong style="color: #14b8a6;">ZFS single parity</strong><br>Như RAID 5 nhưng tốt hơn<br>Không bị write hole<br><span style="color: var(--accent4);">Min: 3 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID-Z2</h4>
+      <div class="raid-disks">
+        <div class="disk data">D</div>
+        <div class="disk data">D</div>
+        <div class="disk parity" style="background: #0d9488;">Z</div>
+        <div class="disk parity" style="background: #0d9488;">Z</div>
+      </div>
+      <p><strong style="color: #14b8a6;">ZFS double parity</strong><br>Chịu 2 ổ chết<br>Khuyến nghị cho HDD lớn<br><span style="color: var(--accent3);">Min: 4 ổ</span></p>
+    </div>
+
+    <div class="raid-block">
+      <h4>RAID-Z3</h4>
+      <div class="raid-disks">
+        <div class="disk data">D</div>
+        <div class="disk parity" style="background: #0d9488;">Z</div>
+        <div class="disk parity" style="background: #0d9488;">Z</div>
+        <div class="disk parity" style="background: #0d9488;">Z</div>
+      </div>
+      <p><strong style="color: #14b8a6;">ZFS triple parity</strong><br>Chịu 3 ổ chết<br>Cho ổ 10TB+ arrays<br><span style="color: var(--accent3);">Min: 5 ổ</span></p>
+    </div>
+  </div>
+
+  <!-- RAID Comparison Table -->
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>RAID Level</th>
+          <th>Ổ tối thiểu</th>
+          <th>Chịu lỗi</th>
+          <th>Dung lượng khả dụng</th>
+          <th>Write Speed</th>
+          <th>Use Case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RAID 0</td>
+          <td>2</td>
+          <td style="color: var(--accent5);">0 ổ</td>
+          <td style="color: var(--accent3);">100%</td>
+          <td style="color: var(--accent3);">Nhanh nhất</td>
+          <td>Scratch, temp data</td>
+        </tr>
+        <tr>
+          <td>RAID 1</td>
+          <td>2</td>
+          <td style="color: var(--accent3);">1 ổ</td>
+          <td style="color: var(--accent5);">50%</td>
+          <td>Bình thường</td>
+          <td>OS boot, critical data nhỏ</td>
+        </tr>
+        <tr>
+          <td>RAID 5</td>
+          <td>3</td>
+          <td style="color: var(--accent4);">1 ổ</td>
+          <td>(N-1)/N</td>
+          <td style="color: var(--accent4);">Chậm (parity)</td>
+          <td>File server (ổ nhỏ)</td>
+        </tr>
+        <tr>
+          <td>RAID 6</td>
+          <td>4</td>
+          <td style="color: var(--accent3);">2 ổ</td>
+          <td>(N-2)/N</td>
+          <td style="color: var(--accent5);">Chậm hơn R5</td>
+          <td>NAS, ổ lớn</td>
+        </tr>
+        <tr>
+          <td>RAID 10</td>
+          <td>4</td>
+          <td style="color: var(--accent3);">1 ổ/mirror</td>
+          <td style="color: var(--accent5);">50%</td>
+          <td style="color: var(--accent3);">Nhanh</td>
+          <td>Database, VM storage</td>
+        </tr>
+        <tr>
+          <td>RAID-Z1</td>
+          <td>3</td>
+          <td style="color: var(--accent4);">1 ổ</td>
+          <td>(N-1)/N</td>
+          <td>Khá</td>
+          <td>ZFS home NAS</td>
+        </tr>
+        <tr>
+          <td>RAID-Z2</td>
+          <td>4</td>
+          <td style="color: var(--accent3);">2 ổ</td>
+          <td>(N-2)/N</td>
+          <td>Trung bình</td>
+          <td>ZFS production</td>
+        </tr>
+        <tr>
+          <td>RAID-Z3</td>
+          <td>5</td>
+          <td style="color: var(--accent3);">3 ổ</td>
+          <td>(N-3)/N</td>
+          <td style="color: var(--accent4);">Chậm nhất</td>
+          <td>ZFS large HDD array</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box" style="border-left-color: var(--accent5);">
+    <h4 style="color: var(--accent5);">RAID KHÔNG PHẢI BACKUP - Ghi nhớ bằng xương bằng máu</h4>
+    <p>RAID bảo vệ bạn khỏi <strong>hỏng ổ cứng vật lý</strong>. RAID KHÔNG bảo vệ bạn khỏi: <strong>ransomware</strong> (mã hóa tất cả ổ cùng lúc), <strong>lỗi người dùng</strong> (xóa nhầm file - RAID xóa trên tất cả ổ), <strong>lỗi phần mềm</strong> (filesystem corruption lan trên cả array), <strong>thiên tai</strong> (cháy/lũ hủy cả server). RAID là <strong>availability</strong>, backup là <strong>recoverability</strong>. Bạn cần CẢ HAI. Luôn nhớ quy tắc 3-2-1: 3 bản sao, 2 loại media, 1 offsite.</p>
+  </div>
+
+  <div class="insight-box">
+    <h4>Tại sao RAID-Z tốt hơn RAID truyền thống?</h4>
+    <p>RAID 5/6 truyền thống có <strong>"write hole"</strong> - nếu mất điện giữa lúc ghi data và parity, dữ liệu sẽ không nhất quán. ZFS RAID-Z giải quyết triệt để bằng <strong>copy-on-write</strong>: không bao giờ ghi đè dữ liệu cũ, mà luôn ghi vào vị trí mới rồi cập nhật pointer. Thêm vào đó, ZFS tự <strong>checksum mọi block</strong> và phát hiện bit rot mà RAID truyền thống hoàn toàn mù tịt.</p>
+  </div>
+</section>
+
+<!-- FILESYSTEMS -->
+<section id="filesystems">
+  <h2 class="section-title" style="color: var(--accent2);">Filesystem - Bộ Não Của Storage</h2>
+  <p class="section-subtitle">Filesystem quyết định cách dữ liệu được tổ chức, bảo vệ, và truy cập trên ổ đĩa</p>
+
+  <div class="card-grid">
+    <!-- ZFS -->
+    <div class="card green">
+      <div class="card-icon">🏆</div>
+      <h3>ZFS</h3>
+      <div class="card-type">King of Data Integrity</div>
+      <p>Được Sun Microsystems tạo ra (2005), giờ sống dưới dạng OpenZFS. Filesystem + Volume Manager trong một. Copy-on-write, checksumming mọi block, compression, deduplication, snapshots, send/receive. "Filesystem cuối cùng bạn cần học."</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">256</div><div class="label">Trilion YB max</div></div>
+        <div class="stat"><div class="num">CoW</div><div class="label">Copy-on-Write</div></div>
+        <div class="stat"><div class="num">SHA</div><div class="label">Checksum</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Data Integrity</span>
+        <span class="tag good">Snapshots</span>
+        <span class="tag good">Compression</span>
+        <span class="tag warn">RAM hungry</span>
+        <span class="tag">RAID-Z</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>ZFS yêu cầu <strong>1GB RAM / 1TB storage</strong> là minimum. Nếu bật dedup, nhân lên x5. ARC (Adaptive Replacement Cache) của ZFS cực kỳ hiệu quả nhưng ngốn RAM. Đừng tiếc RAM cho ZFS - đó là đầu tư xứng đáng nhất.</p>
+      </div>
+    </div>
+
+    <!-- Btrfs -->
+    <div class="card purple">
+      <div class="card-icon">🌲</div>
+      <h3>Btrfs</h3>
+      <div class="card-type">Linux-native CoW Filesystem</div>
+      <p>B-tree filesystem, "Butter FS". Mục tiêu ban đầu là thay thế ext4 trên Linux. Copy-on-write, snapshots, subvolumes, compression, checksumming. Synology dùng Btrfs làm default. Tuy nhiên, RAID 5/6 của Btrfs vẫn chưa ổn định sau nhiều năm.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">16EB</div><div class="label">Max size</div></div>
+        <div class="stat"><div class="num">CoW</div><div class="label">Copy-on-Write</div></div>
+        <div class="stat"><div class="num">CRC32</div><div class="label">Checksum</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Snapshots</span>
+        <span class="tag good">Subvolumes</span>
+        <span class="tag good">Linux native</span>
+        <span class="tag hot">RAID 5/6 unstable</span>
+        <span class="tag warn">Fragmentation</span>
+      </div>
+    </div>
+
+    <!-- ext4 -->
+    <div class="card orange">
+      <div class="card-icon">🐧</div>
+      <h3>ext4</h3>
+      <div class="card-type">Linux Default Workhorse</div>
+      <p>Extended filesystem version 4. Default trên hầu hết distro Linux. Ổn định, đáng tin cậy, battle-tested hàng thập kỷ. Không có CoW, không có checksum native, không có snapshot. Nhưng đơn giản, nhanh, và gần như không bao giờ gây rắc rối.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1EB</div><div class="label">Max size</div></div>
+        <div class="stat"><div class="num">2009</div><div class="label">Stable</div></div>
+        <div class="stat"><div class="num">0</div><div class="label">RAM overhead</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Ổn định tuyệt đối</span>
+        <span class="tag good">Đơn giản</span>
+        <span class="tag">Journaling</span>
+        <span class="tag warn">Không CoW</span>
+        <span class="tag warn">Không checksum</span>
+      </div>
+    </div>
+
+    <!-- XFS -->
+    <div class="card blue">
+      <div class="card-icon">🚀</div>
+      <h3>XFS</h3>
+      <div class="card-type">Performance Champion</div>
+      <p>Silicon Graphics tạo ra (1993), giờ là default của RHEL/CentOS. Tối ưu cho file lớn và I/O song song. Allocation groups cho phép multi-threaded writes cực kỳ hiệu quả. Không shrink được - chỉ grow. Hoàn hảo cho media storage, database, VM images.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">8EB</div><div class="label">Max size</div></div>
+        <div class="stat"><div class="num">1993</div><div class="label">Since</div></div>
+        <div class="stat"><div class="num">RHEL</div><div class="label">Default</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">File lớn</span>
+        <span class="tag good">Parallel I/O</span>
+        <span class="tag">Journaling</span>
+        <span class="tag warn">Không shrink</span>
+        <span class="tag">RHEL default</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FS Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>ZFS</th>
+          <th>Btrfs</th>
+          <th>ext4</th>
+          <th>XFS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Copy-on-Write</td>
+          <td style="color: var(--accent3);">Co</td>
+          <td style="color: var(--accent3);">Co</td>
+          <td style="color: var(--accent5);">Khong</td>
+          <td style="color: var(--accent5);">Khong</td>
+        </tr>
+        <tr>
+          <td>Checksum data</td>
+          <td style="color: var(--accent3);">SHA-256/Fletcher</td>
+          <td style="color: var(--accent3);">CRC32C</td>
+          <td style="color: var(--accent5);">Metadata only</td>
+          <td style="color: var(--accent5);">Metadata only</td>
+        </tr>
+        <tr>
+          <td>Snapshot</td>
+          <td style="color: var(--accent3);">Native (nhanh)</td>
+          <td style="color: var(--accent3);">Native (nhanh)</td>
+          <td style="color: var(--accent4);">Cần LVM</td>
+          <td style="color: var(--accent4);">Cần LVM</td>
+        </tr>
+        <tr>
+          <td>Compression</td>
+          <td style="color: var(--accent3);">LZ4, ZSTD, GZIP</td>
+          <td style="color: var(--accent3);">LZO, ZSTD, ZLIB</td>
+          <td style="color: var(--accent5);">Khong</td>
+          <td style="color: var(--accent5);">Khong</td>
+        </tr>
+        <tr>
+          <td>Yeu cau RAM</td>
+          <td style="color: var(--accent5);">Cao (1GB/TB)</td>
+          <td style="color: var(--accent4);">Trung binh</td>
+          <td style="color: var(--accent3);">Thap</td>
+          <td style="color: var(--accent3);">Thap</td>
+        </tr>
+        <tr>
+          <td>RAID tich hop</td>
+          <td style="color: var(--accent3);">RAID-Z1/2/3, Mirror</td>
+          <td style="color: var(--accent4);">RAID 0/1 (5/6 chua on)</td>
+          <td style="color: var(--accent5);">Can mdadm</td>
+          <td style="color: var(--accent5);">Can mdadm</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>NAS, VM, Backup</td>
+          <td>Desktop, Synology</td>
+          <td>Boot, General</td>
+          <td>Media, DB, Large files</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Chon filesystem nao?</h4>
+    <p>Quy tac don gian: <strong>NAS/Proxmox/TrueNAS = ZFS</strong> (data integrity la so 1). <strong>Linux desktop/server thong thuong = ext4</strong> (don gian, on dinh). <strong>RHEL/CentOS + file lon = XFS</strong>. <strong>Synology NAS = Btrfs</strong> (Synology da tune tot). Dung chon filesystem vi "nghe noi hay" - chon vi no <strong>phu hop workload cua ban</strong>.</p>
+  </div>
+</section>
+
+<!-- NETWORK STORAGE -->
+<section id="network-storage">
+  <h2 class="section-title" style="color: var(--accent3);">Network Storage - Khi Dữ Liệu Bay Qua Dây Mạng</h2>
+  <p class="section-subtitle">Các giao thức cho phép truy cập storage từ xa - mỗi cái sinh ra cho một mục đích</p>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> NFS (Network File System)</h4>
+      <p><strong>Vua chia sẻ file trên Linux/Unix.</strong> Sun Microsystems tạo ra (1984). NFSv3 phổ biến nhất, NFSv4 thêm security (Kerberos), stateful. Mount từ xa như ổ local. Đơn giản, nhanh, nhưng permission model phụ thuộc UID/GID. Dùng cho VM storage, home directories, shared data.</p>
+      <div class="tag-row"><span class="tag good">Linux native</span><span class="tag good">Đơn giản</span><span class="tag warn">UID/GID mapping</span><span class="tag">File-level</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SMB/CIFS (Samba)</h4>
+      <p><strong>Ngôn ngữ của Windows.</strong> Microsoft protocol, Samba là implementation trên Linux. SMBv3 có encryption, multichannel, transparent failover. Dùng khi cần chia sẻ file với Windows clients. Active Directory integration tốt. Chậm hơn NFS trên Linux-to-Linux.</p>
+      <div class="tag-row"><span class="tag good">Windows native</span><span class="tag">AD Integration</span><span class="tag warn">Overhead cao hơn NFS</span><span class="tag">File-level</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> iSCSI</h4>
+      <p><strong>Block storage qua Ethernet.</strong> SCSI commands đóng gói trong TCP/IP. Tạo virtual disk (LUN) truy cập qua mạng như ổ local. Rẻ hơn Fibre Channel nhiều lần. Cần VLAN riêng, jumbo frames, multipath cho production. Dùng cho VM disks, database.</p>
+      <div class="tag-row"><span class="tag good">Block-level</span><span class="tag good">Giá rẻ</span><span class="tag warn">Nhạy cảm latency</span><span class="tag">TCP/IP</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Fibre Channel (FC)</h4>
+      <p><strong>Premium block storage.</strong> Mạng chuyên dụng cho storage, tốc độ 8/16/32/64 Gbps. Latency cực thấp, throughput cực cao. Cần switch FC riêng ($$$), HBA card riêng. Dùng trong enterprise lớn, ngân hàng, bệnh viện. Đang bị NVMe-oF đe dọa.</p>
+      <div class="tag-row"><span class="tag good">Latency thấp nhất</span><span class="tag hot">Rất đắt</span><span class="tag">Block-level</span><span class="tag warn">Cần hạ tầng riêng</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> NVMe-oF (NVMe over Fabrics)</h4>
+      <p><strong>Tương lai của network storage.</strong> NVMe commands chạy qua RDMA, TCP, hoặc FC. Latency gần bằng NVMe local. Biến remote NVMe SSD thành gần như local disk. Đang thay thế dần iSCSI và FC cho high-performance workload.</p>
+      <div class="tag-row"><span class="tag good">Ultra low latency</span><span class="tag good">Tương lai</span><span class="tag">Block-level</span><span class="tag warn">Cần hardware mới</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> S3 API (Object Storage)</h4>
+      <p><strong>De facto standard cho object storage.</strong> Amazon tạo ra, giờ là tiêu chuẩn ngành. HTTP REST API đơn giản (PUT, GET, DELETE). MinIO, Ceph RGW, Wasabi đều nói S3. Dùng cho backup, media, static assets, data lake. Không phải mount - gọi API.</p>
+      <div class="tag-row"><span class="tag good">Tiêu chuẩn ngành</span><span class="tag good">Scale vô hạn</span><span class="tag">HTTP/REST</span><span class="tag">Object-level</span></div>
+    </div>
+  </div>
+
+  <!-- Network Storage Architecture -->
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">NAS vs SAN - Hai triết lý khác nhau</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">💻</div>
+        <h4>Client/Server</h4>
+        <p>Ứng dụng cần<br>truy cập dữ liệu</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🌐</div>
+        <h4>Network</h4>
+        <p>Ethernet (NAS/iSCSI)<br>hoặc FC (SAN)</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">📦</div>
+        <h4>Storage System</h4>
+        <p>NAS: File protocol<br>SAN: Block protocol</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">💾</div>
+        <h4>Physical Disks</h4>
+        <p>HDD, SSD, NVMe<br>RAID arrays</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>NAS hay SAN? Câu hỏi muôn thuở</h4>
+    <p><strong>NAS</strong> (Network Attached Storage) chia sẻ <strong>files</strong> qua NFS/SMB - đơn giản, rẻ, ai cũng dùng được. <strong>SAN</strong> (Storage Area Network) chia sẻ <strong>block devices</strong> qua iSCSI/FC - hiệu năng cao, cho VM/database. Trong homelab, NAS là đủ cho 90% nhu cầu. SAN (iSCSI) cần khi chạy Proxmox cluster với shared storage cho live migration.</p>
+  </div>
+</section>
+
+<!-- DISTRIBUTED STORAGE -->
+<section id="distributed">
+  <h2 class="section-title" style="color: var(--accent);">Distributed Storage - Khi Một Máy Là Không Đủ</h2>
+  <p class="section-subtitle">Phân tán dữ liệu qua nhiều node - scalability, fault tolerance, và sự phức tạp đáng sợ</p>
+
+  <div class="card-grid">
+    <!-- Ceph -->
+    <div class="card blue">
+      <div class="card-icon">🐙</div>
+      <h3>Ceph</h3>
+      <div class="card-type">Unified Distributed Storage</div>
+      <p>Ceph là "Swiss Army knife" của distributed storage. Một cluster Ceph cung cấp đồng thời block (RBD), file (CephFS), và object (RGW) storage. Dựa trên RADOS - layer phân tán dữ liệu bên dưới. Proxmox tích hợp native. Không cần vendor lock-in.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">RADOS</div><div class="label">Core engine</div></div>
+        <div class="stat"><div class="num">3-in-1</div><div class="label">Block/File/Object</div></div>
+        <div class="stat"><div class="num">EB+</div><div class="label">Max scale</div></div>
+      </div>
+      <p style="margin-top: 0.5rem;"><strong>RADOS</strong> - Reliable Autonomic Distributed Object Store. Nền tảng của mọi thứ trong Ceph. Mọi data (block, file, object) cuối cùng đều thành RADOS objects.<br>
+      <strong>RBD</strong> - RADOS Block Device. Virtual disk cho VM. Proxmox dùng RBD cho VM storage. Thin provisioning, snapshots, live migration.<br>
+      <strong>CephFS</strong> - POSIX-compliant distributed filesystem. Mount được như NFS. Multi-MDS cho metadata scaling.<br>
+      <strong>RGW</strong> - RADOS Gateway. S3/Swift compatible object storage. Self-hosted S3 alternative.</p>
+      <div class="tag-row">
+        <span class="tag good">Proxmox native</span>
+        <span class="tag good">Self-healing</span>
+        <span class="tag good">No SPOF</span>
+        <span class="tag warn">Min 3 nodes</span>
+        <span class="tag hot">Phức tạp</span>
+        <span class="tag">CRUSH map</span>
+      </div>
+    </div>
+
+    <!-- MinIO -->
+    <div class="card green">
+      <div class="card-icon">🪣</div>
+      <h3>MinIO</h3>
+      <div class="card-type">S3-Compatible Object Storage</div>
+      <p>MinIO là cách đơn giản nhất để tự host S3-compatible object storage. Viết bằng Go, hiệu năng cực cao (325 GiB/s trên 32 node benchmark). Erasure coding tự động. API 100% tương thích S3. Deployment đơn giản: 1 binary, 1 command. Từ single-node đến distributed cluster.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">S3</div><div class="label">Compatible</div></div>
+        <div class="stat"><div class="num">Go</div><div class="label">Language</div></div>
+        <div class="stat"><div class="num">1 min</div><div class="label">Deploy time</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">S3 100%</span>
+        <span class="tag good">Đơn giản</span>
+        <span class="tag good">Nhanh</span>
+        <span class="tag">Object only</span>
+        <span class="tag">Erasure coding</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Use case hoàn hảo</h4>
+        <p>Homelab cần S3 cho Proxmox backup (PBS), Terraform state, Docker registry, media storage? <strong>MinIO single-node</strong> là câu trả lời. 5 phút setup, 0 phức tạp. Khi cần scale, chuyển sang distributed mode.</p>
+      </div>
+    </div>
+
+    <!-- GlusterFS -->
+    <div class="card orange">
+      <div class="card-icon">🧱</div>
+      <h3>GlusterFS</h3>
+      <div class="card-type">Scale-Out Network Filesystem</div>
+      <p>Red Hat GlusterFS - distributed filesystem thuần túy. Không cần metadata server riêng (khác Ceph). Elastic hashing phân tán data. Replicate hoặc distribute-replicate volumes. Đơn giản hơn Ceph cho use case file storage thuần túy. Tuy nhiên, hiệu năng random I/O kém hơn Ceph RBD.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">No MDS</div><div class="label">Metadata</div></div>
+        <div class="stat"><div class="num">FUSE</div><div class="label">Client mount</div></div>
+        <div class="stat"><div class="num">Red Hat</div><div class="label">Backer</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Đơn giản hơn Ceph</span>
+        <span class="tag good">No metadata server</span>
+        <span class="tag warn">Random I/O chậm</span>
+        <span class="tag">File only</span>
+        <span class="tag hot">Red Hat EOL dần</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ceph Architecture -->
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Kiến trúc Ceph - Từ OSD đến Client</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">💻</div>
+        <h4>Clients</h4>
+        <p>RBD, CephFS<br>RGW (S3)</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🗺️</div>
+        <h4>CRUSH Map</h4>
+        <p>Thuật toán phân tán<br>Không cần lookup table</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">👁️</div>
+        <h4>MON + MGR</h4>
+        <p>Monitor: cluster map<br>Manager: metrics, dashboard</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">💾</div>
+        <h4>OSDs</h4>
+        <p>1 OSD = 1 disk<br>Lưu trữ thực tế</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Ceph hay không Ceph? Câu hỏi cho Homelab</h4>
+    <p>Ceph mạnh nhưng <strong>minimum 3 node</strong> (khuyến nghị), mỗi node cần ổ riêng cho OSD. Nếu bạn có cụm Proxmox 3+ node, Ceph là lựa chọn tuyệt vời - <strong>live migration, HA, self-healing</strong> tự động. Nếu chỉ có 1-2 node, hãy dùng <strong>ZFS local + NFS share</strong> hoặc <strong>Proxmox Backup Server</strong>. Đừng ép Ceph vào nơi nó không thuộc về.</p>
+  </div>
+</section>
+
+<!-- SSD ENDURANCE -->
+<section id="ssd">
+  <h2 class="section-title" style="color: var(--accent4);">SSD Endurance - Tuổi Thọ Của Flash Storage</h2>
+  <p class="section-subtitle">Mọi ô NAND đều có ngày chết - câu hỏi là khi nào, và bạn chuẩn bị thế nào</p>
+
+  <div class="card-grid">
+    <div class="card red">
+      <div class="card-icon">📊</div>
+      <h3>TBW & DWPD - Hai chỉ số sống còn</h3>
+      <div class="card-type">Endurance Metrics</div>
+      <p><strong>TBW (Terabytes Written)</strong> - Tổng dung lượng bạn có thể ghi vào SSD trước khi nó "hết tuổi thọ". Ví dụ: Samsung 870 EVO 1TB có TBW 600TB. Nghĩa là bạn có thể ghi 600TB dữ liệu vào ổ này.</p>
+      <p><strong>DWPD (Drive Writes Per Day)</strong> - Số lần ghi đầy ổ mỗi ngày trong thời gian bảo hành (thường 5 năm). Enterprise SSD: 1-10 DWPD. Consumer: 0.3-0.6 DWPD.</p>
+      <p><strong>Công thức:</strong> DWPD = TBW / (dung lượng x 365 x số năm bảo hành)</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">600TB</div><div class="label">870 EVO 1TB TBW</div></div>
+        <div class="stat"><div class="num">0.33</div><div class="label">DWPD (5yr)</div></div>
+        <div class="stat"><div class="num">~328GB</div><div class="label">Ghi/ngày</div></div>
+      </div>
+    </div>
+
+    <div class="card purple">
+      <div class="card-icon">🔬</div>
+      <h3>NAND Types - Từ SLC đến QLC</h3>
+      <div class="card-type">Bit per Cell = Trade-off</div>
+      <p>Mỗi ô nhớ NAND lưu được bao nhiêu bit quyết định tốc độ, tuổi thọ, và giá thành. Càng nhiều bit/cell = càng rẻ nhưng càng chậm và chết sớm hơn.</p>
+
+      <div class="stats-row">
+        <div class="stat"><div class="num">SLC</div><div class="label">1 bit/cell</div></div>
+        <div class="stat"><div class="num">MLC</div><div class="label">2 bit/cell</div></div>
+        <div class="stat"><div class="num">TLC</div><div class="label">3 bit/cell</div></div>
+        <div class="stat"><div class="num">QLC</div><div class="label">4 bit/cell</div></div>
+      </div>
+
+      <div class="comparison-wrap" style="margin-top: 1rem;">
+        <table class="comparison-table" style="min-width: 500px;">
+          <thead>
+            <tr>
+              <th>Loại NAND</th>
+              <th>Bit/Cell</th>
+              <th>Tuổi thọ (P/E cycles)</th>
+              <th>Tốc độ</th>
+              <th>Giá</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SLC</td>
+              <td>1</td>
+              <td style="color: var(--accent3);">100,000+</td>
+              <td style="color: var(--accent3);">Nhanh nhất</td>
+              <td style="color: var(--accent5);">$$$$$</td>
+            </tr>
+            <tr>
+              <td>MLC</td>
+              <td>2</td>
+              <td style="color: var(--accent3);">10,000</td>
+              <td style="color: var(--accent3);">Nhanh</td>
+              <td style="color: var(--accent4);">$$$</td>
+            </tr>
+            <tr>
+              <td>TLC</td>
+              <td>3</td>
+              <td style="color: var(--accent4);">3,000</td>
+              <td>Khá</td>
+              <td style="color: var(--accent3);">$$</td>
+            </tr>
+            <tr>
+              <td>QLC</td>
+              <td>4</td>
+              <td style="color: var(--accent5);">1,000</td>
+              <td style="color: var(--accent5);">Chậm nhất</td>
+              <td style="color: var(--accent3);">$</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag good">SLC: Enterprise cache</span>
+        <span class="tag">MLC: Enterprise SSD</span>
+        <span class="tag warn">TLC: Consumer phổ biến</span>
+        <span class="tag hot">QLC: Read-heavy, cold data</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Thực tế về SSD endurance trong Homelab</h4>
+    <p>Đừng quá lo lắng về TBW cho consumer workload. Một SSD 1TB TLC hiện đại (600TBW) chạy 24/7 với 50GB ghi/ngày sẽ sống <strong>~33 năm</strong> trước khi hết TBW. Bạn sẽ thay ổ vì lý do khác (dung lượng, tốc độ) trước khi nó chết vì endurance. <strong>Tuy nhiên</strong>, với ZFS metadata devices, Ceph WAL/DB, hoặc database write-heavy, hãy dùng ổ enterprise (MLC/high-endurance TLC). Kiểm tra SMART thường xuyên: <code>smartctl -a /dev/sda</code> - tìm Media_Wearout_Indicator hoặc Percentage_Used.</p>
+  </div>
+
+  <div class="insight-box">
+    <h4>SSD overprovisioning - Bí mật ít người biết</h4>
+    <p>SSD luôn có dung lượng NAND thực nhiều hơn dung lượng quảng cáo. Phần "thừa" này dùng cho wear leveling, bad block replacement, và garbage collection. Enterprise SSD (800GB thay vì 1TB) có <strong>~28% OP</strong> vs consumer (~7% OP). Bạn có thể tăng OP bằng cách <strong>không partition hết ổ</strong> - để trống 10-20% cuối ổ giúp SSD sống lâu hơn đáng kể.</p>
+  </div>
+</section>
+
+<!-- DATA LOSS STORIES -->
+<section id="stories">
+  <h2 class="section-title" style="color: var(--accent5);">Câu Chuyện Mất Dữ Liệu Kinh Điển</h2>
+  <p class="section-subtitle">Học từ nỗi đau của người khác - rẻ hơn nhiều so với tự trải nghiệm</p>
+
+  <div class="story-box">
+    <h4>GitLab - "Chúng tôi đã xóa production database" (2017)</h4>
+    <p>Một kỹ sư GitLab chạy <code>rm -rf</code> trên thư mục database của production server thay vì staging. 300GB dữ liệu PostgreSQL biến mất trong tích tắc. Điều đáng sợ hơn: trong 5 phương pháp backup họ có, <strong>không phương pháp nào hoạt động đúng</strong>. LVM snapshots không được cấu hình. pg_dump chạy nhưng file rỗng. Azure disk snapshots chỉ backup 24 tiếng một lần.</p>
+    <p>GitLab phải livestream quá trình khôi phục trên YouTube. Cuối cùng họ khôi phục được từ bản pg_dump 6 tiếng trước - mất 6 tiếng dữ liệu của hàng triệu user.</p>
+    <div class="lesson">
+      <h5>Bài học</h5>
+      <p><strong>Test backup thường xuyên.</strong> Backup không được test = không có backup. Và đừng bao giờ để một người có quyền <code>rm -rf</code> production database lúc 11 giờ đêm khi đang mệt.</p>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h4>OVH Strasbourg - Cháy data center (2021)</h4>
+    <p>Đám cháy thiêu rụi hoàn toàn data center SBG2 của OVH (nhà cung cấp cloud lớn nhất châu Âu). 3.6 triệu website offline. Nhiều khách hàng <strong>mất dữ liệu vĩnh viễn</strong> vì họ tưởng "dữ liệu trên cloud = đã được backup". Sai. Cloud provider cung cấp hạ tầng, KHÔNG tự động backup dữ liệu của bạn.</p>
+    <div class="lesson">
+      <h5>Bài học</h5>
+      <p><strong>Cloud không phải backup.</strong> "Nhà cung cấp sẽ lo" là ảo tưởng nguy hiểm nhất. Luôn có backup <strong>offsite</strong>, ở một geographical location khác. Quy tắc 3-2-1 tồn tại là có lý do.</p>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h4>Toy Story 2 - Suýt mất cả bộ phim (1998)</h4>
+    <p>Một ai đó chạy <code>rm -rf /</code> trên server chứa toàn bộ file animation Toy Story 2. 90% bộ phim bị xóa. Hệ thống backup cũng hỏng - không ai kiểm tra. May mắn thay, Galyn Susman (technical director) đang nghỉ thai sản và có một bản copy trên máy tính ở nhà - bản này đã cứu cả dự án trị giá hàng trăm triệu đô.</p>
+    <div class="lesson">
+      <h5>Bài học</h5>
+      <p>Bản backup ngẫu nhiên trên máy tính cá nhân đã cứu Pixar. Nhưng đó là <strong>may mắn, không phải chiến lược</strong>. Hãy có chiến lược backup rõ ràng, test định kỳ, và có nhiều bản copy ở nhiều nơi.</p>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h4>Homelab classic - "RAID controller chết, mang ổ sang máy khác"</h4>
+    <p>Một câu chuyện quen thuộc trong cộng đồng homelab: RAID controller hardware hỏng, người dùng cắm ổ cứng vào máy khác (controller khác) và bật lên. Controller mới không nhận array cũ, khởi tạo lại các ổ, <strong>xóa sạch metadata RAID</strong>. 20TB dữ liệu ảnh gia đình, video, tài liệu - biến mất.</p>
+    <div class="lesson">
+      <h5>Bài học</h5>
+      <p><strong>Hardware RAID = vendor lock-in cho dữ liệu.</strong> Đây là lý do cộng đồng homelab khuyến nghị software RAID (ZFS, mdadm). Ổ cứng ZFS mang sang bất kỳ máy nào có ZFS đều import được pool. Không phụ thuộc controller hardware cụ thể.</p>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h4>Silent data corruption - Kẻ giết người thầm lặng</h4>
+    <p>Một sysadmin nhận ra ảnh trong kho lưu trữ 5 năm bắt đầu có pixel lạ. Không phải virus, không phải lỗi phần mềm. Đó là <strong>bit rot</strong> - các bit trên ổ cứng tự thay đổi theo thời gian do từ tính suy giảm. ext4 và XFS KHÔNG phát hiện được vì không checksum data blocks. Khi phát hiện, file đã bị corrupt từ lâu, backup cũng chứa bản corrupt.</p>
+    <div class="lesson">
+      <h5>Bài học</h5>
+      <p>Dùng filesystem có <strong>data checksumming</strong> (ZFS, Btrfs) cho dữ liệu quan trọng. ZFS scrub định kỳ phát hiện và tự sửa bit rot. Chạy <code>zpool scrub</code> hàng tháng - đó là "khám sức khỏe" cho dữ liệu.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">8 Hiểu Nhầm Chết Người Về Storage</h2>
+  <p class="section-subtitle">Những điều "ai cũng nghĩ đúng" nhưng khiến bạn mất dữ liệu</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #1</span>
+      <h4>"RAID là backup"</h4>
+      <p>Đã nói ở trên nhưng phải nhắc lại vì quá nhiều người vẫn tin. RAID bảo vệ khỏi hỏng ổ vật lý. Ransomware mã hóa tất cả ổ trong RAID cùng lúc. <code>rm -rf</code> xóa trên tất cả ổ. Controller chết có thể kéo cả array đi theo.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>RAID = <strong>uptime</strong>. Backup = <strong>recovery</strong>. Bạn cần CẢ HAI. RAID giúp server không downtime khi ổ chết. Backup giúp bạn lấy lại dữ liệu khi mọi thứ khác đều thất bại.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #2</span>
+      <h4>"SSD không bao giờ chết đột ngột"</h4>
+      <p>HDD thường có dấu hiệu trước khi chết (tiếng kêu, chậm dần). SSD thì không - nó có thể hoạt động hoàn hảo rồi <strong>biến mất hoàn toàn</strong> trong nháy mắt khi controller chết. Firmware bug có thể brick cả ổ. Samsung 840 EVO có bug firmware làm đọc chậm dần theo thời gian.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Theo dõi SMART data (<code>smartctl</code>), đặc biệt Reallocated_Sector_Ct, Media_Wearout_Indicator. Nhưng đừng phụ thuộc 100% - <strong>luôn có backup</strong> bất kể loại ổ.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #3</span>
+      <h4>"Dữ liệu trên cloud thì an toàn"</h4>
+      <p>Cloud provider cam kết độ bền (durability) của hạ tầng, KHÔNG cam kết backup dữ liệu của bạn. S3 có 99.999999999% durability cho objects, nhưng nếu bạn xóa nhầm bucket - nó sẽ vui vẻ xóa. OVH cháy rụi data center, khách hàng mất dữ liệu vĩnh viễn.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Cloud là <strong>hạ tầng, không phải chiến lược backup</strong>. Bạn vẫn cần backup offsite, versioning, immutable backups. "Somebody else's computer" không có nghĩa là "somebody else's responsibility".</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #4</span>
+      <h4>"ZFS cần ECC RAM, không có thì không dùng"</h4>
+      <p>Tin đồn bắt nguồn từ một bài post của một ZFS developer bị hiểu sai. ZFS không YÊU CẦU ECC RAM. Nó KHUYẾN NGHỊ ECC - giống như MỌI hệ thống lưu trữ dữ liệu quan trọng đều nên có ECC. ext4 trên non-ECC RAM cũng dễ corrupt dữ liệu.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>ZFS trên non-ECC RAM vẫn <strong>tốt hơn ext4 trên non-ECC RAM</strong> nhờ checksumming. ECC RAM tốt cho mọi thứ, nhưng <strong>thiếu ECC không phải lý do để tránh ZFS</strong>.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #5</span>
+      <h4>"NVMe nhanh hơn SSD SATA mọi lúc"</h4>
+      <p>NVMe có bandwidth lý thuyết cao hơn nhiều lần (7GB/s vs 550MB/s). Nhưng với workload đọc ngẫu nhiên file nhỏ (4K random read) - sự khác biệt nhỏ hơn nhiều so với bạn nghĩ. Database nhỏ, web server, VM boot - SATA SSD vẫn đủ nhanh.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>NVMe tỏa sáng ở <strong>sequential read/write lớn</strong> và <strong>queue depth cao</strong>. Cho homelab thông thường, tiền chênh lệch tốt hơn nên <strong>đầu tư vào dung lượng</strong> (2x SATA SSD vs 1x NVMe cùng giá) hoặc backup.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #6</span>
+      <h4>"Ceph có thể chạy trên 2 node"</h4>
+      <p>Về kỹ thuật, có thể. Về thực tế, ĐỪNG. Ceph cần quorum cho MON (monitors). 2 node = không có quorum khi 1 node chết = <strong>split-brain</strong> = data corruption tiềm tàng. Minimum 3 node cho production Ceph là quy tắc sắt.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Ceph minimum <strong>3 node</strong> (hoặc 2 node + 1 arbiter cho mon). Nếu có ít hơn 3 node, hãy dùng <strong>ZFS replication</strong> hoặc <strong>DRBD</strong> thay vì cố ép Ceph.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #7</span>
+      <h4>"Ổ cứng enterprise luôn tốt hơn consumer"</h4>
+      <p>Enterprise HDD (như WD Ultrastar) thiết kế cho 24/7, vibration tolerance, 5 năm bảo hành. Nhưng chúng cũng NÓNG hơn, ỒN hơn, và ĐẮT gấp 2-3 lần. Trong homelab yên tĩnh, không rung, consumer NAS drive (WD Red Plus, Seagate IronWolf) hoàn toàn đủ dùng.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Chọn dựa trên <strong>workload thực tế</strong>. Homelab 24/7 nhẹ nhàng = NAS drives. Write-intensive, vibration, rack server = enterprise. Tiền tiết kiệm được hãy mua thêm ổ để <strong>tăng redundancy</strong>.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #8</span>
+      <h4>"Defrag SSD giúp nó nhanh hơn"</h4>
+      <p>SSD không có đầu đọc vật lý - random access nhanh như sequential. Defrag KHÔNG giúp SSD nhanh hơn. Tệ hơn, defrag ghi thêm dữ liệu không cần thiết, <strong>giảm tuổi thọ SSD</strong>. Windows 10+ đã biết không defrag SSD (nó gửi TRIM thay vì defrag).</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>SSD cần <strong>TRIM</strong> (báo controller biết block nào đã xóa), không cần defrag. Trên Linux: <code>fstrim -av</code> hoặc enable <code>discard</code> mount option. ZFS: <code>autotrim=on</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Storage Cheat Sheet</h2>
+  <p class="section-subtitle">Những lệnh và kiến thức cần nhớ sẵn trong đầu</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>ZFS - Quản lý Pool & Dataset</h4>
+      <code>zpool create tank mirror sda sdb  # Mirror
+zpool create tank raidz2 sd{a..f} # RAID-Z2
+zpool status                    # Tình trạng pool
+zpool scrub tank                # Kiểm tra integrity
+zfs create tank/data            # Tạo dataset
+zfs set compression=lz4 tank    # Bật nén
+zfs set recordsize=1M tank/media # Tune cho file lớn</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>ZFS - Snapshot & Send/Receive</h4>
+      <code># Tạo snapshot
+zfs snapshot tank/data@today
+
+# List snapshots
+zfs list -t snapshot
+
+# Rollback
+zfs rollback tank/data@today
+
+# Send snapshot sang máy khác (backup!)
+zfs send tank/data@today | \
+  ssh backup-server zfs recv backup/data
+
+# Incremental send
+zfs send -i @yesterday @today | \
+  ssh backup zfs recv backup/data</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SMART - Kiểm tra sức khỏe ổ đĩa</h4>
+      <code># Xem SMART data
+smartctl -a /dev/sda
+
+# Chạy self-test
+smartctl -t short /dev/sda
+smartctl -t long /dev/sda
+
+# Các chỉ số quan trọng:
+# Reallocated_Sector_Ct > 0 = cảnh báo
+# Current_Pending_Sector > 0 = lo lắng
+# Media_Wearout_Indicator < 10 = thay SSD
+# Temperature > 55°C = cải thiện tản nhiệt</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Ceph - Quản lý Cluster</h4>
+      <code># Tình trạng cluster
+ceph status
+ceph health detail
+
+# Xem OSD tree
+ceph osd tree
+
+# Tạo pool
+ceph osd pool create mypool 128
+
+# Xem usage
+ceph df
+rados df
+
+# Performance
+ceph osd perf</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>iSCSI & NFS - Cấu hình nhanh</h4>
+      <code># NFS server (exports)
+echo "/data 10.0.0.0/24(rw,sync,\
+no_subtree_check)" >> /etc/exports
+exportfs -ra
+
+# NFS client mount
+mount -t nfs server:/data /mnt/nfs
+
+# iSCSI discovery
+iscsiadm -m discovery -t st \
+  -p 10.0.0.1:3260
+
+# iSCSI login
+iscsiadm -m node --login</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Disk Performance Testing</h4>
+      <code># Sequential write
+fio --name=seqwrite --rw=write \
+  --bs=1M --size=1G --numjobs=1
+
+# Random 4K read (IOPS test)
+fio --name=randread --rw=randread \
+  --bs=4k --size=1G --numjobs=4 \
+  --iodepth=32
+
+# Quick dd test (thô)
+dd if=/dev/zero of=test bs=1M \
+  count=1024 oflag=direct
+
+# iostat monitoring
+iostat -xz 1</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Quy tắc 3-2-1 Backup</h4>
+      <code>3 bản sao dữ liệu:
+  [1] Production (ZFS pool)
+  [2] Local backup (NAS/USB)
+  [3] Offsite (cloud/remote)
+
+2 loại media khác nhau:
+  - SSD/HDD + Cloud
+  - hoặc SSD/HDD + Tape
+
+1 bản offsite:
+  - Khác building/thành phố
+  - Rsync, ZFS send, Borg, Restic
+  - Hoặc Backblaze B2 ($6/TB/tháng)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Tính toán nhanh dung lượng</h4>
+      <code># RAID 5: (N-1) x disk_size
+# 4x 4TB RAID 5 = 12TB usable
+
+# RAID 6: (N-2) x disk_size
+# 6x 4TB RAID 6 = 16TB usable
+
+# RAID 10: N/2 x disk_size
+# 4x 4TB RAID 10 = 8TB usable
+
+# RAID-Z2: (N-2) x disk_size
+# 6x 8TB RAIDZ2 = 32TB usable
+
+# ZFS compression ratio (LZ4):
+# Thường tiết kiệm 1.3-2x
+# VM images: ~1.5x | Text/log: ~3x</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>MinIO - Quick Deploy</h4>
+      <code># Single node, single drive
+minio server /data --console-address :9001
+
+# Distributed (4 node, 4 drive each)
+minio server http://node{1..4}/data{1..4}
+
+# mc client
+mc alias set myminio http://localhost:9000 \
+  minioadmin minioadmin
+
+mc mb myminio/mybucket
+mc cp file.txt myminio/mybucket/
+
+# Dùng với aws cli
+aws --endpoint-url http://localhost:9000 \
+  s3 ls</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Lời khuyên cuối cùng</h4>
+    <p>Storage là nền tảng thầm lặng nhất nhưng quan trọng nhất trong hạ tầng IT. Khi nó hoạt động tốt, không ai nhớ đến. Khi nó chết, <strong>tất cả đều chết theo</strong>. Hãy đầu tư thời gian hiểu sâu về storage - từ cách NAND flash hoạt động đến cách Ceph phân tán dữ liệu. Đừng tiết kiệm ở storage để rồi trả giá bằng dữ liệu. Và nhớ: <strong>dữ liệu không tồn tại nếu nó chỉ có một bản sao</strong>. Test backup của bạn ngay hôm nay - đừng đợi đến khi cần mới phát hiện nó không hoạt động.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Storage World Visualization | Built for engineers who want to truly understand data storage</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">ZFS, Ceph, RAID, NVMe | "No backup, no sympathy." - Quy tắc bất thành văn của sysadmin</p>
+</footer>
+
+<script>
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .myth-card, .protocol-card, .cheat-card, .timeline-content, .story-box, .raid-block').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('nav a:not(.brand)');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>

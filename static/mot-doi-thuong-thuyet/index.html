@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Một Đời Thương Thuyết – GS. Phan Văn Trường</title>
+<style>
+  :root {
+    --purple: #6B21A8;
+    --purple-light: #9333EA;
+    --purple-dark: #4C1D95;
+    --teal: #0F766E;
+    --teal-light: #14B8A6;
+    --rose: #E11D48;
+    --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --white: #FFFFFF;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.7; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #4C1D95 0%, #6B21A8 40%, #0F766E 100%);
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    padding: 6px 20px;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  .hero .author {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .hero .tagline {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto 32px;
+    font-style: italic;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  .stat-item { text-align: center; }
+  .stat-number { font-size: 2rem; font-weight: 800; color: #FDE68A; }
+  .stat-label { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* QUOTE BOX */
+  .quote-section { background: white; padding: 60px 20px; }
+  .quote-box {
+    max-width: 800px; margin: 0 auto;
+    background: linear-gradient(135deg, #F5F3FF, #ECFDF5);
+    border-left: 6px solid var(--purple);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+  }
+  .quote-box::before {
+    content: '"';
+    font-size: 8rem;
+    color: var(--purple-light);
+    opacity: 0.15;
+    position: absolute; top: -20px; left: 20px;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .quote-text {
+    font-size: 1.3rem;
+    color: var(--purple-dark);
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.6;
+    position: relative; z-index: 1;
+  }
+  .quote-author { margin-top: 16px; color: var(--teal); font-weight: 600; }
+
+  /* THEMES */
+  .themes-section { padding: 60px 20px; background: var(--gray-50); }
+  .section-title { text-align: center; margin-bottom: 40px; }
+  .section-title h2 { font-size: 2rem; color: var(--purple-dark); margin-bottom: 8px; }
+  .section-title p { color: #6B7280; font-size: 1.05rem; }
+  .themes-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  .theme-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-top: 4px solid transparent;
+  }
+  .theme-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+  .theme-card:nth-child(1) { border-top-color: var(--purple); }
+  .theme-card:nth-child(2) { border-top-color: var(--teal); }
+  .theme-card:nth-child(3) { border-top-color: var(--rose); }
+  .theme-card:nth-child(4) { border-top-color: var(--amber); }
+  .theme-card:nth-child(5) { border-top-color: #8B5CF6; }
+  .theme-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+  .theme-title { font-size: 0.95rem; font-weight: 700; color: var(--gray-800); margin-bottom: 8px; }
+  .theme-chapters { font-size: 0.8rem; color: #9CA3AF; }
+
+  /* TOC */
+  .toc-section { padding: 60px 20px; background: white; }
+  .toc-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .toc-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: var(--gray-800);
+    transition: all 0.2s;
+    border: 1px solid #E5E7EB;
+  }
+  .toc-card:hover {
+    background: linear-gradient(135deg, #F5F3FF, #ECFDF5);
+    border-color: var(--purple-light);
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(107,33,168,0.1);
+  }
+  .toc-num {
+    min-width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem;
+    color: white;
+  }
+  .toc-card:nth-child(1) .toc-num { background: linear-gradient(135deg, #8B5CF6, #6B21A8); }
+  .toc-card:nth-child(2) .toc-num { background: linear-gradient(135deg, #6B21A8, #9333EA); }
+  .toc-card:nth-child(3) .toc-num { background: linear-gradient(135deg, #9333EA, #7C3AED); }
+  .toc-card:nth-child(4) .toc-num { background: linear-gradient(135deg, #0F766E, #14B8A6); }
+  .toc-card:nth-child(5) .toc-num { background: linear-gradient(135deg, #14B8A6, #0F766E); }
+  .toc-card:nth-child(6) .toc-num { background: linear-gradient(135deg, #0D9488, #0F766E); }
+  .toc-card:nth-child(7) .toc-num { background: linear-gradient(135deg, #E11D48, #FB7185); }
+  .toc-card:nth-child(8) .toc-num { background: linear-gradient(135deg, #BE185D, #E11D48); }
+  .toc-card:nth-child(9) .toc-num { background: linear-gradient(135deg, #F59E0B, #D97706); }
+  .toc-card:nth-child(10) .toc-num { background: linear-gradient(135deg, #D97706, #F59E0B); }
+  .toc-card:nth-child(11) .toc-num { background: linear-gradient(135deg, #B45309, #D97706); }
+  .toc-card:nth-child(12) .toc-num { background: linear-gradient(135deg, #6B21A8, #4C1D95); }
+  .toc-card:nth-child(13) .toc-num { background: linear-gradient(135deg, #0F766E, #0D9488); }
+  .toc-card:nth-child(14) .toc-num { background: linear-gradient(135deg, #E11D48, #BE185D); }
+  .toc-card:nth-child(15) .toc-num { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+  .toc-card:nth-child(16) .toc-num { background: linear-gradient(135deg, #F59E0B, #EF4444); }
+  .toc-card:nth-child(17) .toc-num { background: linear-gradient(135deg, #0F766E, #6B21A8); }
+  .toc-card:nth-child(18) .toc-num { background: linear-gradient(135deg, #E11D48, #8B5CF6); }
+  .toc-info { flex: 1; }
+  .toc-label { font-size: 0.75rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; }
+  .toc-name { font-weight: 600; font-size: 0.95rem; color: var(--gray-800); }
+
+  /* FOOTER */
+  .footer {
+    background: linear-gradient(135deg, #1F2937, #111827);
+    color: white;
+    padding: 50px 20px;
+    text-align: center;
+  }
+  .footer h3 { font-size: 1.3rem; margin-bottom: 12px; color: #FDE68A; }
+  .footer p { opacity: 0.7; max-width: 600px; margin: 0 auto; font-size: 0.95rem; }
+  .footer .tags {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin-top: 20px;
+  }
+  .tag {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 600px) {
+    .hero-stats { gap: 20px; }
+    .hero h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">📚 Cẩm Nang Thương Thuyết</div>
+  <h1>🤝 Một Đời Thương Thuyết</h1>
+  <div class="author">GS. Phan Văn Trường</div>
+  <div class="tagline">Thương thuyết là nghệ thuật – không phải khoa học. Hãy để từng trang sách dẫn bạn vào cuộc chơi đầy thú vị.</div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-number">40</div>
+      <div class="stat-label">Năm bôn ba</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">80+</div>
+      <div class="stat-label">Quốc gia</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">60+ tỷ</div>
+      <div class="stat-label">USD thương thuyết</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">17</div>
+      <div class="stat-label">Chương bài học</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="quote-box">
+    <div class="quote-text">
+      "Thương thuyết là tìm sự đồng tình, thỏa thuận có thể chấp nhận được cho cả đôi bên; là một sự nhìn nhận khách quan rằng giải pháp của đôi bên vừa công bằng vừa thực tế."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+</section>
+
+<!-- 5 THEMES -->
+<section class="themes-section">
+  <div class="section-title">
+    <h2>🗺️ 5 Chủ Đề Lớn</h2>
+    <p>Toàn bộ cuốn sách xoay quanh 5 trục tư tưởng cốt lõi</p>
+  </div>
+  <div class="themes-grid">
+    <div class="theme-card">
+      <div class="theme-emoji">🎭</div>
+      <div class="theme-title">Nghệ Thuật Thương Thuyết</div>
+      <div class="theme-chapters">Lời mở đầu · Ch.1 · Ch.12</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">🧠</div>
+      <div class="theme-title">Tâm Lý & Chuẩn Bị</div>
+      <div class="theme-chapters">Ch.2 · Ch.3 · Ch.4 · Ch.5</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">🎪</div>
+      <div class="theme-title">Các Kịch Sĩ Trên Sân Khấu</div>
+      <div class="theme-chapters">Ch.6 · Ch.7 · Ch.8</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">🌍</div>
+      <div class="theme-title">Thực Chiến Quốc Tế</div>
+      <div class="theme-chapters">Ch.9 · Ch.10 · Ch.11 · Ch.14 · Ch.15</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">⭐</div>
+      <div class="theme-title">Đạo Lý & Sự Nghiệp</div>
+      <div class="theme-chapters">Ch.13 · Ch.16 · Ch.17</div>
+    </div>
+  </div>
+</section>
+
+<!-- TABLE OF CONTENTS -->
+<section class="toc-section">
+  <div class="section-title">
+    <h2>📋 Mục Lục Chi Tiết</h2>
+    <p>Nhấp vào từng chương để khám phá nội dung</p>
+  </div>
+  <div class="toc-grid">
+    <a href="loi-mo-dau.html" class="toc-card">
+      <div class="toc-num">✨</div>
+      <div class="toc-info">
+        <div class="toc-label">Mở đầu</div>
+        <div class="toc-name">Lời Mở Đầu</div>
+      </div>
+    </a>
+    <a href="chuong-01.html" class="toc-card">
+      <div class="toc-num">01</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 1</div>
+        <div class="toc-name">Thằng Bờm và Phú Ông: Hai Tay Cao Thủ</div>
+      </div>
+    </a>
+    <a href="chuong-02.html" class="toc-card">
+      <div class="toc-num">02</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 2</div>
+        <div class="toc-name">Trời Phú Hay Học Tập?</div>
+      </div>
+    </a>
+    <a href="chuong-03.html" class="toc-card">
+      <div class="toc-num">03</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 3</div>
+        <div class="toc-name">Tâm Lý Chiến</div>
+      </div>
+    </a>
+    <a href="chuong-04.html" class="toc-card">
+      <div class="toc-num">04</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 4</div>
+        <div class="toc-name">Chuẩn Bị Cho Một Cuộc Thương Thuyết</div>
+      </div>
+    </a>
+    <a href="chuong-05.html" class="toc-card">
+      <div class="toc-num">05</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 5</div>
+        <div class="toc-name">Bản Đồ Kịch Sĩ</div>
+      </div>
+    </a>
+    <a href="chuong-06.html" class="toc-card">
+      <div class="toc-num">06</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 6</div>
+        <div class="toc-name">Người Trung Gian</div>
+      </div>
+    </a>
+    <a href="chuong-07.html" class="toc-card">
+      <div class="toc-num">07</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 7</div>
+        <div class="toc-name">Ngân Hàng, Chỗ Nương Tựa Kín Đáo</div>
+      </div>
+    </a>
+    <a href="chuong-08.html" class="toc-card">
+      <div class="toc-num">08</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 8</div>
+        <div class="toc-name">Luật Pháp và Luật Sư, Bạn Của Chúng Ta?</div>
+      </div>
+    </a>
+    <a href="chuong-09.html" class="toc-card">
+      <div class="toc-num">09</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 9</div>
+        <div class="toc-name">Chủ Quan và Khách Quan Trong Thương Thuyết</div>
+      </div>
+    </a>
+    <a href="chuong-10.html" class="toc-card">
+      <div class="toc-num">10</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 10</div>
+        <div class="toc-name">Sáp Nhập và Mua Bán Công Ty</div>
+      </div>
+    </a>
+    <a href="chuong-11.html" class="toc-card">
+      <div class="toc-num">11</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 11</div>
+        <div class="toc-name">Giao Thiệp Với Người Nước Ngoài</div>
+      </div>
+    </a>
+    <a href="chuong-12.html" class="toc-card">
+      <div class="toc-num">12</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 12</div>
+        <div class="toc-name">Những Nguyên Tắc Của Người Thương Thuyết</div>
+      </div>
+    </a>
+    <a href="chuong-13.html" class="toc-card">
+      <div class="toc-num">13</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 13</div>
+        <div class="toc-name">Những Trường Hợp Thương Thảo Thất Bại</div>
+      </div>
+    </a>
+    <a href="chuong-14.html" class="toc-card">
+      <div class="toc-num">14</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 14</div>
+        <div class="toc-name">Trong Rừng Sâu Của Thương Thuyết</div>
+      </div>
+    </a>
+    <a href="chuong-15.html" class="toc-card">
+      <div class="toc-num">15</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 15</div>
+        <div class="toc-name">Những Bất Ngờ "Ngộ Nghĩnh" Trên Lộ Trình</div>
+      </div>
+    </a>
+    <a href="chuong-16.html" class="toc-card">
+      <div class="toc-num">16</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 16</div>
+        <div class="toc-name">Nghề Nghiệp, Chức Vụ và Lương Bổng</div>
+      </div>
+    </a>
+    <a href="chuong-17.html" class="toc-card">
+      <div class="toc-num">17</div>
+      <div class="toc-info">
+        <div class="toc-label">Chương 17</div>
+        <div class="toc-name">Đạo Lý và Phúc Lành</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <h3>👨‍🏫 GS. Phan Văn Trường</h3>
+  <p>Giáo Sư – Kỹ Sư – Hiệp Sĩ – Cố vấn Chính phủ Cộng Hòa Pháp. Tác giả đã sống và làm việc tại hơn 80 quốc gia, thương thuyết hợp đồng trị giá hơn 60 tỷ USD trong suốt 40 năm sự nghiệp.</p>
+  <div class="tags">
+    <span class="tag">🤝 Thương Thuyết</span>
+    <span class="tag">🧠 Tâm Lý</span>
+    <span class="tag">🌍 Quốc Tế</span>
+    <span class="tag">💼 Kinh Doanh</span>
+    <span class="tag">⭐ Đạo Lý</span>
+  </div>
+</footer>
+
+</body>
+</html>

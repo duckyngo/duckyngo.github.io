@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giới Thiệu & Lời Nói Đầu — Quản Trị Dựa Vào Tri Thức</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #312E81; --indigo-light: #4338CA; --indigo-pale: #EEF2FF;
+    --emerald: #059669; --emerald-light: #10B981; --emerald-pale: #ECFDF5;
+    --cyan: #0891B2; --cyan-light: #06B6D4; --cyan-pale: #ECFEFF;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FFFBEB;
+    --gray: #6B7280; --gray-light: #F9FAFB; --gray-border: #E5E7EB;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10); --shadow-hover: 0 8px 32px rgba(0,0,0,0.16);
+    --radius: 12px; --radius-lg: 20px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #F8FAFF; color: #1F2937; line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  nav { background: var(--indigo); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .nav-home { font-size: 0.85rem; opacity: 0.8; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
+  .nav-home:hover { opacity: 1; }
+  .nav-arrows { display: flex; gap: 10px; }
+  .nav-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 7px 16px; font-size: 0.85rem; color: white; transition: background 0.2s; white-space: nowrap; }
+  .nav-btn:hover { background: rgba(255,255,255,0.28); }
+  .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #1D4ED8 100%); color: white; padding: 70px 24px 50px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.4) 0%, transparent 60%); }
+  .hero-inner { position: relative; max-width: 800px; margin: 0 auto; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; padding: 6px 20px; font-size: 0.82rem; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
+  .hero-desc { font-size: 1rem; opacity: 0.8; max-width: 600px; margin: 0 auto; }
+
+  /* CONTENT */
+  .container { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+  .section-title { font-size: 1.4rem; font-weight: 800; color: var(--indigo); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--indigo), var(--cyan)); border-radius: 99px; margin-bottom: 20px; width: 50px; }
+  .prose { color: #374151; font-size: 0.97rem; line-height: 1.8; margin-bottom: 16px; }
+
+  /* CALLOUT */
+  .callout { border-radius: var(--radius); padding: 20px 24px; margin: 24px 0; border-left: 4px solid; }
+  .callout-indigo { background: var(--indigo-pale); border-color: var(--indigo); }
+  .callout-emerald { background: var(--emerald-pale); border-color: var(--emerald); }
+  .callout-amber { background: var(--amber-pale); border-color: var(--amber); }
+  .callout-cyan { background: var(--cyan-pale); border-color: var(--cyan); }
+  .callout-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .callout-indigo .callout-title { color: var(--indigo); }
+  .callout-emerald .callout-title { color: var(--emerald); }
+  .callout-amber .callout-title { color: #92400E; }
+  .callout-cyan .callout-title { color: var(--cyan); }
+  .callout p { font-size: 0.93rem; }
+
+  /* QUOTE */
+  .quote-box { background: linear-gradient(135deg, #FFF8F0, #FFFBEB); border: 1px solid #FDE68A; border-radius: var(--radius-lg); padding: 32px 36px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--amber-light); position: absolute; top: -16px; left: 18px; line-height: 1; opacity: 0.3; font-family: Georgia, serif; }
+  .quote-box p { font-size: 1.08rem; font-style: italic; color: #78350F; font-weight: 500; line-height: 1.7; padding-left: 10px; }
+  .quote-box cite { display: block; margin-top: 10px; font-size: 0.85rem; color: var(--amber); font-style: normal; font-weight: 600; padding-left: 10px; }
+
+  /* CARDS */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+  .card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border-top: 3px solid; }
+  .card:nth-child(1) { border-color: var(--indigo); }
+  .card:nth-child(2) { border-color: var(--emerald); }
+  .card:nth-child(3) { border-color: var(--amber); }
+  .card:nth-child(4) { border-color: var(--cyan); }
+  .card-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+  .card-title { font-weight: 700; font-size: 0.92rem; color: var(--indigo); margin-bottom: 6px; }
+  .card-desc { font-size: 0.83rem; color: #4B5563; line-height: 1.5; }
+
+  /* KEY POINTS */
+  .key-point { display: flex; gap: 16px; background: white; border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); margin: 12px 0; border: 1px solid var(--gray-border); }
+  .key-point-num { width: 32px; height: 32px; border-radius: 50%; background: var(--indigo); color: white; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .key-point-text { flex: 1; }
+  .key-point-title { font-weight: 700; font-size: 0.93rem; color: var(--indigo); margin-bottom: 4px; }
+  .key-point-desc { font-size: 0.87rem; color: #4B5563; line-height: 1.5; }
+
+  /* LESSON */
+  .lesson-box { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border: 1px solid #6EE7B7; border-radius: var(--radius-lg); padding: 28px 32px; margin-top: 40px; }
+  .lesson-title { font-size: 1.1rem; font-weight: 800; color: var(--emerald); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 6px 0 6px 28px; position: relative; font-size: 0.93rem; color: #064E3B; }
+  .lesson-list li::before { content: '✓'; position: absolute; left: 0; color: var(--emerald); font-weight: 800; }
+
+  /* BOTTOM NAV */
+  .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--gray-border); flex-wrap: wrap; gap: 12px; }
+  .btn-nav { display: inline-flex; align-items: center; gap: 8px; background: var(--indigo); color: white; border-radius: var(--radius); padding: 12px 22px; font-weight: 600; font-size: 0.9rem; transition: background 0.2s, transform 0.2s; }
+  .btn-nav:hover { background: var(--indigo-light); transform: translateY(-2px); }
+  .btn-nav.secondary { background: white; color: var(--indigo); border: 2px solid var(--indigo); }
+  .btn-nav.secondary:hover { background: var(--indigo-pale); }
+
+  @media (max-width: 640px) { .container { padding: 28px 16px; } .quote-box { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-home">🏠 Trang Chủ</a>
+  <div class="nav-arrows">
+    <span class="nav-btn disabled">← Trước</span>
+    <a href="chuong-01.html" class="nav-btn">Chương 1 →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🌅 Phần Mở Đầu</div>
+    <h1>Giới Thiệu & Lời Nói Đầu</h1>
+    <p class="hero-desc">Từ quản lý R&D đến quản trị tri thức — hành trình 40 năm và "Peter Drucker mới" của thế giới quản trị</p>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- Nonaka as new Drucker -->
+  <div class="divider"></div>
+  <h2 class="section-title">🏆 Nonaka — "Peter Drucker Mới"</h2>
+  <p class="prose">David J. Teece — giáo sư Đại học California, Berkeley — mở đầu cuốn sách với một nhận định rất mạnh: trong vài thập kỷ qua, <strong>không ai đóng góp nhiều hơn Ikujiro Nonaka</strong> trong việc định hình lĩnh vực quản lý. Năm 2005, ông là người châu Á duy nhất được nhật báo Phố Wall bầu chọn là "một trong 20 nhà tư tưởng quản trị có ảnh hưởng nhất thế giới".</p>
+
+  <div class="callout callout-indigo">
+    <div class="callout-title">🎓 Hành Trình Học Thuật</div>
+    <p>Nonaka tốt nghiệp Đại học California, Berkeley — nơi ông sau này trở thành <strong>Giáo sư xuất sắc Xerox</strong> tại Trường Kinh doanh Haas. Nghiên cứu của ông được biết đến ở Mỹ và Châu Âu còn nhiều hơn ở Nhật Bản — quê hương của ông.</p>
+  </div>
+
+  <!-- 40 years history -->
+  <div class="divider"></div>
+  <h2 class="section-title">📜 40 Năm Lịch Sử: Từ R&D Đến Tri Thức</h2>
+  <p class="prose">Nếu cách đây 40 năm có ai nói chuyện về "quản lý tri thức", người đó sẽ nhận được những cái nhìn lạ lẫm. Lúc đó, khái niệm gần nhất là "quản lý nghiên cứu và phát triển (R&D)". Giáo sư Edwin Mansfield (Wharton) đã tiên phong nghiên cứu về đổi mới công nghệ từ 1967.</p>
+  <p class="prose">Thập kỷ 1980–1990 mang lại thay đổi lớn: sự vươn lên của Nhật Bản và các nền kinh tế châu Á, công nghệ thông tin bùng nổ, và nhận thức mới rằng <strong>lợi thế cạnh tranh không đến từ quy mô mà từ sự đổi mới liên tục</strong>. Peter Drucker đã nói về "knowledge worker" từ năm 1959 — nhưng phải mãi sau này mọi người mới thực sự lắng nghe.</p>
+
+  <!-- Nonaka's core opposition -->
+  <div class="divider"></div>
+  <h2 class="section-title">⚡ Nonaka Phản Đối: Doanh Nghiệp KHÔNG Phải Cỗ Máy</h2>
+
+  <div class="quote-box">
+    <p>"Doanh nghiệp phải được xem là một chủ thể sáng tạo tri thức và định hình lại môi trường cũng như bản thân trong quá trình sáng tạo tri thức — chứ không phải là một cỗ máy xử lý thông tin."</p>
+    <cite>— Ikujiro Nonaka</cite>
+  </div>
+
+  <p class="prose">Quan điểm truyền thống xem doanh nghiệp như một cỗ máy: lấy thông tin từ môi trường, xử lý, và đưa ra đầu ra. Nonaka bác bỏ hoàn toàn điều này. Ông dựa trên <strong>triết học về quá trình (process philosophy)</strong> của Alfred North Whitehead: thế giới là một "dòng chảy" (flow) liên tục — <em>panta rhei</em>.</p>
+
+  <div class="callout callout-cyan">
+    <div class="callout-title">💡 Tri Thức ≠ Thông Tin</div>
+    <p>Thông tin là dữ liệu có bối cảnh. Tri thức là quá trình năng động của con người tương tác với thông tin và với nhau. Tri thức không thể tách rời khỏi người nắm giữ nó — nó <em>chủ quan</em>, <em>có bối cảnh</em> và luôn <em>vận động</em>.</p>
+  </div>
+
+  <!-- 4 loại công ty -->
+  <div class="divider"></div>
+  <h2 class="section-title">🏢 4 Loại Hình Công Ty</h2>
+  <p class="prose">Nhìn từ góc độ cách thức tạo ra giá trị, có thể phân loại doanh nghiệp thành 4 loại:</p>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-emoji">🔑</div>
+      <div class="card-title">Công Ty Đặc Quyền</div>
+      <div class="card-desc">Kiếm tiền chủ yếu nhờ quan hệ đặc quyền tài nguyên hoặc trục lợi chính sách. Không bền vững khi chính sách thay đổi.</div>
+    </div>
+    <div class="card">
+      <div class="card-emoji">🎲</div>
+      <div class="card-title">Công Ty Đầu Cơ</div>
+      <div class="card-desc">Kiếm tiền nhờ giới đầu cơ, chụp giật, ăn xổi ở thì. Rủi ro cao và không tạo ra giá trị thực sự.</div>
+    </div>
+    <div class="card">
+      <div class="card-emoji">💪</div>
+      <div class="card-title">Công Ty Cơ Bắp</div>
+      <div class="card-desc">Kiếm tiền chủ yếu từ lao động phổ thông, nhân công giá rẻ. Đang dần lỗi thời trong kinh tế toàn cầu.</div>
+    </div>
+    <div class="card">
+      <div class="card-emoji">🧠</div>
+      <div class="card-title">Công Ty Tri Thức</div>
+      <div class="card-desc">Tạo ra giá trị cao chủ yếu từ chất xám và trí tuệ của đội ngũ. Lợi thế cạnh tranh bền vững nhất trong thời đại mới.</div>
+    </div>
+  </div>
+
+  <!-- Cuộc cách mạng -->
+  <div class="divider"></div>
+  <h2 class="section-title">🌊 Cuộc Cách Mạng Công Nghiệp Thứ Ba</h2>
+  <p class="prose">Lester Thurow (MIT) mô tả chúng ta đang ở ngưỡng cửa của cuộc cách mạng công nghiệp thứ ba — nơi tri thức thay thế tài nguyên thiên nhiên và lao động giá rẻ như nguồn lực cạnh tranh số một.</p>
+
+  <div class="callout callout-emerald">
+    <div class="callout-title">🌿 Nền Kinh Tế Tri Thức</div>
+    <p>Cụm từ "knowledge-based economy" (nền kinh tế tạo ra giá trị và phát triển chủ yếu dựa vào tri thức) đã trở thành từ khóa của thời đại. Nhưng ở cấp độ doanh nghiệp, khái niệm "công ty tri thức" và "nhân viên tri thức" vẫn còn rất mới mẻ — đặc biệt tại Việt Nam.</p>
+  </div>
+
+  <!-- Key quotes -->
+  <div class="divider"></div>
+  <h2 class="section-title">💬 Những Câu Nói Đáng Nhớ</h2>
+
+  <div class="key-point">
+    <div class="key-point-num">1</div>
+    <div class="key-point-text">
+      <div class="key-point-title">"Panta rhei — mọi vật đều trong dòng chảy"</div>
+      <div class="key-point-desc">Triết lý Heraclitus mà Nonaka kế thừa: thế giới không tĩnh tại, tri thức không tĩnh tại, doanh nghiệp không tĩnh tại. Quản trị là quản trị quá trình chuyển động, không phải vật thể cố định.</div>
+    </div>
+  </div>
+
+  <div class="key-point">
+    <div class="key-point-num">2</div>
+    <div class="key-point-text">
+      <div class="key-point-title">"Doanh nghiệp khác nhau vì họ muốn và nỗ lực để trở nên khác biệt"</div>
+      <div class="key-point-desc">Nonaka phá vỡ lý thuyết tân cổ điển: doanh nghiệp không khác nhau chỉ vì nguồn lực bất đối xứng, mà vì tầm nhìn khác nhau về tương lai và cấu trúc khác nhau để hiện thực hóa tầm nhìn đó.</div>
+    </div>
+  </div>
+
+  <div class="key-point">
+    <div class="key-point-num">3</div>
+    <div class="key-point-text">
+      <div class="key-point-title">"Sáng tạo tri thức bao gồm ý tưởng (idea) lẫn lý tưởng (ideal)"</div>
+      <div class="key-point-desc">Không thể tách rời tri thức kỹ thuật khỏi giá trị đạo đức. Doanh nghiệp tri thức luôn vận hành với một tầm nhìn vượt lên trên những tính toán tài chính thuần túy.</div>
+    </div>
+  </div>
+
+  <!-- LESSON BOX -->
+  <div class="lesson-box">
+    <div class="lesson-title">🌱 Bài Học Rút Ra Từ Phần Giới Thiệu</div>
+    <ul class="lesson-list">
+      <li>Tri thức và thông tin là hai thứ hoàn toàn khác nhau về bản chất — đừng nhầm lẫn</li>
+      <li>Quản trị tri thức không phải là cài phần mềm hay xây cơ sở dữ liệu — đó là quản trị con người</li>
+      <li>Thời đại "kinh tế cơ bắp" đang lỗi thời — "công ty tri thức" là mô hình của tương lai</li>
+      <li>Nonaka mang người quản lý trở lại vị trí trung tâm trong lý thuyết về doanh nghiệp</li>
+      <li>Tầm nhìn chiến lược không thể chỉ là con số — nó phải là sứ mệnh tạo ra giá trị cho xã hội</li>
+    </ul>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <span class="btn-nav secondary" style="opacity:0.3; pointer-events:none;">← Trước</span>
+    <a href="index.html" class="btn-nav secondary">🏠 Mục Lục</a>
+    <a href="chuong-01.html" class="btn-nav">Chương 1: Đặc Điểm Tri Thức →</a>
+  </div>
+
+</div>
+</body>
+</html>

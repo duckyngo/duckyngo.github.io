@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 12: Nguyên Tắc Thương Thuyết – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #4C1D95 0%, #6B21A8 50%, #0F766E 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: var(--purple-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .principles-grid { display: grid; gap: 12px; margin: 20px 0; }
+  .principle-card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    display: flex; gap: 16px; align-items: flex-start;
+    border-left: 4px solid var(--purple); transition: transform 0.2s;
+  }
+  .principle-card:hover { transform: translateX(4px); }
+  .principle-card:nth-child(2n) { border-left-color: var(--teal); }
+  .principle-card:nth-child(3n) { border-left-color: var(--rose); }
+  .principle-num {
+    min-width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-light));
+    color: white; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .principle-card:nth-child(2n) .principle-num { background: linear-gradient(135deg, var(--teal), var(--teal-light)); }
+  .principle-card:nth-child(3n) .principle-num { background: linear-gradient(135deg, var(--rose), var(--rose-light)); }
+  .principle-content strong { font-weight: 700; color: var(--gray-800); display: block; margin-bottom: 4px; font-size: 1rem; }
+  .principle-content p { font-size: 0.9rem; color: #6B7280; }
+  .quote-box { background: linear-gradient(135deg, #F5F3FF, #ECFDF5); border-left: 5px solid var(--purple); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--purple-light); opacity: 0.15; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: var(--purple-dark); font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #1E1B4B, #022c22); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #A7F3D0; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">📜 Chương 12</div>
+  <div class="hero-emoji">⚡</div>
+  <h1>Những Nguyên Tắc Của Người Thương Thuyết</h1>
+  <div class="subtitle">10 nguyên tắc cốt lõi – bộ luật bất thành văn của nhà thương thuyết chuyên nghiệp</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">📋 10 Nguyên Tắc Cốt Lõi</div>
+
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-num">1</div>
+      <div class="principle-content">
+        <strong>Win-Win – Thắng Cùng Nhau</strong>
+        <p>Mục tiêu là cả hai bên đều có lợi, không phải "ta thắng người thua". Thỏa thuận bền vững nhất là thỏa thuận mà cả hai bên muốn duy trì.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">2</div>
+      <div class="principle-content">
+        <strong>Bình Đẳng Tuyệt Đối</strong>
+        <p>Dù đối tác là công ty khổng lồ hay cá nhân nhỏ, dù là mèo hay chuột – trên bàn đàm phán đều hoàn toàn bình đẳng. Không ai có quyền ép buộc ai.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">3</div>
+      <div class="principle-content">
+        <strong>Đàm Phán Phải Vui</strong>
+        <p>Bầu không khí vui vẻ, thân thiện không phải là xa xỉ – đó là điều kiện để đạt kết quả tốt. Khi hai bên vui, thỏa hiệp đến tự nhiên hơn.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">4</div>
+      <div class="principle-content">
+        <strong>Lắng Nghe Trước Khi Nói</strong>
+        <p>Người nói nhiều nhất không phải người thắng – người hiểu nhiều nhất mới thắng. Lắng nghe tích cực là kỹ năng quan trọng nhất.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">5</div>
+      <div class="principle-content">
+        <strong>Không Hứa Những Gì Không Làm Được</strong>
+        <p>Hứa suông phá hoại uy tín nhanh hơn mọi thứ khác. Thà từ chối thẳng thắn còn hơn hứa rồi không giữ lời.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">6</div>
+      <div class="principle-content">
+        <strong>Tôn Trọng Thời Gian Của Mọi Người</strong>
+        <p>Đúng giờ là hình thức tôn trọng cơ bản nhất. Làm người khác chờ mà không có lý do chính đáng là tín hiệu thiếu tôn trọng.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">7</div>
+      <div class="principle-content">
+        <strong>Giữ Bí Mật Như Điều Kiện Sống Còn</strong>
+        <p>Thông tin nội bộ, chiến lược, điểm dừng – tất cả phải được bảo vệ tuyệt đối. Một lần để lộ có thể phá hủy cả cuộc đàm phán.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">8</div>
+      <div class="principle-content">
+        <strong>Kiên Nhẫn Là Vũ Khí</strong>
+        <p>Nhiều dự án kéo dài 3-4 năm. Người nóng vội thường chấp nhận điều kiện kém hơn. Kiên nhẫn không phải thụ động – là chiến thuật chủ động.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">9</div>
+      <div class="principle-content">
+        <strong>Không Có Gì Là Chắc Chắn Cho Đến Khi Ký</strong>
+        <p>Trong xã hội pháp quyền, bạn không có cam kết gì khi chưa ký vào văn bản. Đừng ăn mừng quá sớm – và đừng tuyệt vọng quá sớm.</p>
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">10</div>
+      <div class="principle-content">
+        <strong>Xây Dựng Quan Hệ Dài Hạn</strong>
+        <p>Mỗi cuộc đàm phán là cơ hội xây dựng quan hệ, dù thành công hay thất bại. Người bại hôm nay có thể là đối tác quan trọng ngày mai.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Dù có mèo với chuột cũng vẫn hoàn toàn bình đẳng trên bàn đàm phán! Sức mạnh kinh tế không cho phép ai ép buộc ai trong một thỏa thuận tự nguyện."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Nguyên tắc quan trọng nhất: Hiểu đối tác muốn gì</strong>
+      <p>Cái chìa khóa thực sự của mọi nguyên tắc trên là: "Hiểu và nhìn nhận mỗi bên muốn gì". Nếu bạn thực sự hiểu đối tác muốn gì, bạn đã giải quyết được hơn nửa cuộc đàm phán.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚡</div>
+    <div class="callout-body">
+      <strong>Khi nguyên tắc đụng nhau</strong>
+      <p>Đôi khi các nguyên tắc mâu thuẫn nhau – ví dụ, "giữ bí mật" vs "thành thật". Nhà thương thuyết giỏi biết cách cân bằng, biết nguyên tắc nào ưu tiên trong từng tình huống cụ thể.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-body">
+      <strong>Nguyên tắc là công cụ, không phải xiềng xích</strong>
+      <p>10 nguyên tắc này là hướng dẫn, không phải luật cứng nhắc. Nhà thương thuyết giỏi hiểu khi nào cần linh hoạt và khi nào phải giữ vững lập trường.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 12</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Win-win là mục tiêu đích thực – không phải "ta thắng người thua" mà là cả hai bên hài lòng.</li>
+      <li><span class="lesson-num">2</span>Bình đẳng tuyệt đối trên bàn đàm phán – dù là mèo hay chuột, tất cả đều có quyền nói không.</li>
+      <li><span class="lesson-num">3</span>Đàm phán phải vui – bầu không khí tích cực là điều kiện để đạt kết quả tốt nhất.</li>
+      <li><span class="lesson-num">4</span>Kiên nhẫn là vũ khí chiến lược – người nóng vội thường chấp nhận kết quả tệ hơn.</li>
+      <li><span class="lesson-num">5</span>Chưa ký là chưa có gì – đừng ăn mừng sớm và đừng tuyệt vọng sớm.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-11.html" class="nav-btn nav-btn-prev">← Chương 11</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-13.html" class="nav-btn nav-btn-next">Chương 13 →</a>
+  </div>
+
+</div>
+</body>
+</html>

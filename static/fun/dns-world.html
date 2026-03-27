@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới DNS - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.3); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is DNS */
+  .dns-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .dns-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .dns-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Record/Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.rec-a::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.rec-aaaa::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.rec-cname::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.rec-mx::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .vendor-card.rec-txt::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.rec-srv::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.rec-ptr::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+  .vendor-card.rec-ns::before { background: linear-gradient(90deg, #f97316, #ea580c); }
+  .vendor-card.rec-soa::before { background: linear-gradient(90deg, #84cc16, #65a30d); }
+
+  .vendor-card.bind::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.unbound::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.coredns::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.pihole::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.adguard::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.cloudflare::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .vendor-card.google::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol/Record Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* DNS Flow */
+  .dns-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .dns-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Topology */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Mindset Cards */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dns-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">DNS World</a>
+  <a href="#what">DNS la gi?</a>
+  <a href="#history">Lich su</a>
+  <a href="#how">Cach hoat dong</a>
+  <a href="#records">Record Types</a>
+  <a href="#security">Bao mat</a>
+  <a href="#providers">Ong lon DNS</a>
+  <a href="#homelab">DNS Homelab</a>
+  <a href="#myths">Hieu nham</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">🌐</div>
+  <h1>Thế Giới DNS</h1>
+  <p class="subtitle">Danh bạ điện thoại của Internet - Hệ thống phân giải tên miền mà không có nó, mọi thứ trên mạng chỉ là những con số vô nghĩa. Từ HOSTS.TXT đến DoH, từ "it's always DNS" đến kiến trúc phân tán lớn nhất hành tinh.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS DNS -->
+<section id="what">
+  <div class="dns-what">
+    <h2 class="section-title">DNS là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Domain Name System</strong> - Hệ thống phân giải tên miền. Nôm na là "danh bạ điện thoại" của Internet. Con người nhớ tên (google.com), máy tính hiểu số (142.250.199.46). DNS là cầu nối giữa hai thế giới đó. Mỗi lần bạn gõ một URL vào trình duyệt, DNS thầm lặng làm việc phía sau để biến cái tên đó thành địa chỉ IP mà máy tính có thể kết nối tới.
+    </p>
+
+    <div class="dns-analogy">
+      <div class="analogy-box">
+        <div class="icon">🧑</div>
+        <h3>Con người</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Nhớ tên: <strong>google.com</strong><br>Dễ đọc, dễ nhớ, có nghĩa</p>
+      </div>
+      <div class="analogy-arrow">⇄</div>
+      <div class="analogy-box">
+        <div class="icon">💻</div>
+        <h3>Máy tính</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Cần số: <strong>142.250.199.46</strong><br>Địa chỉ IP để định tuyến gói tin</p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>DNS không chỉ là "tra cứu tên miền ra IP". Nó là <strong>cơ sở dữ liệu phân tán lớn nhất thế giới</strong>, chạy trên hàng triệu máy chủ, phục vụ hàng nghìn tỷ truy vấn mỗi ngày. DNS còn phục vụ email routing (MX records), xác thực (SPF/DKIM qua TXT records), service discovery (SRV records), và hàng tá mục đích khác. Nếu Internet là thành phố, DNS chính là <strong>hệ thống bảng chỉ đường</strong> mà không có nó, bạn chỉ có thể đi lạc.</p>
+    </div>
+
+    <div class="stats-row" style="margin-top: 2rem;">
+      <div class="stat"><div class="num">1.5 nghìn tỷ</div><div class="label">Truy vấn/ngày</div></div>
+      <div class="stat"><div class="num">372M+</div><div class="label">Tên miền đăng ký</div></div>
+      <div class="stat"><div class="num">13</div><div class="label">Root Servers (clusters)</div></div>
+      <div class="stat"><div class="num">&lt;50ms</div><div class="label">Thời gian phân giải</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian DNS</h2>
+  <p class="section-subtitle">Từ một file text duy nhất đến hệ thống phân tán phục vụ cả hành tinh</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1960s - 1983</span>
+        <h3>Kỷ nguyên HOSTS.TXT</h3>
+        <p>Trước khi DNS tồn tại, mọi máy tính trên ARPANET dùng chung một file duy nhất: HOSTS.TXT, được quản lý bởi SRI-NIC. Mỗi khi có máy mới, ai đó phải gọi điện hoặc email để cập nhật file này, rồi mọi người FTP về. Với vài trăm máy thì ổn, nhưng khi mạng bắt đầu nổ...</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1983 - 1984</span>
+        <h3>DNS ra đời - RFC 882 & 883</h3>
+        <p>Paul Mockapetris phát minh DNS. Ý tưởng thiên tài: thay vì một file tập trung, tạo hệ thống phân tán dạng cây (hierarchy). Mỗi tổ chức quản lý phần tên miền của mình. RFC 1034 và 1035 (1987) trở thành nền tảng DNS hiện đại.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1984 - 1990s</span>
+        <h3>BIND thống trị</h3>
+        <p>Berkeley Internet Name Domain (BIND), viết bởi sinh viên UC Berkeley, trở thành DNS server phổ biến nhất. Gần như mọi DNS server trên Internet đều chạy BIND. Phiên bản BIND 4, rồi BIND 8, rồi BIND 9 (viết lại từ đầu bởi ISC năm 2000).</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1997 - 2005</span>
+        <h3>DNSSEC & Cuộc chiến bảo mật</h3>
+        <p>Nhận ra DNS không có cơ chế xác thực, DNSSEC được đề xuất. Nhưng triển khai cực kỳ phức tạp. Sự kiện DNS cache poisoning của Dan Kaminsky (2008) là hồi chuông cảnh tỉnh, đẩy nhanh việc áp dụng DNSSEC. Root zone được ký DNSSEC năm 2010.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2015 - 2020</span>
+        <h3>DNS mã hóa: DoH & DoT</h3>
+        <p>DNS truyền thống gửi plaintext qua UDP port 53 - ai cũng đọc được. DNS over TLS (DoT, port 853) và DNS over HTTPS (DoH, port 443) ra đời. Cloudflare 1.1.1.1 (2018) và Firefox bật DoH mặc định tạo làn sóng thay đổi lớn. Cuộc tranh cãi privacy vs. network control bùng nổ.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2020 - Nay</span>
+        <h3>DNS hiện đại & Homelab Revolution</h3>
+        <p>Pi-hole, AdGuard Home biến DNS thành vũ khí chống quảng cáo. CoreDNS trở thành DNS mặc định trong Kubernetes. Oblivious DoH (ODoH) thêm lớp ẩn danh. DNS trở thành công cụ bảo mật, riêng tư, và tùy biến trong tay mỗi người dùng.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW DNS WORKS -->
+<section id="how">
+  <h2 class="section-title" style="color: var(--accent3);">Cách DNS Hoạt Động</h2>
+  <p class="section-subtitle">Hành trình của một truy vấn DNS - từ trình duyệt đến root server và quay lại</p>
+
+  <!-- Recursive vs Authoritative -->
+  <div class="dns-analogy" style="margin-bottom: 3rem;">
+    <div class="analogy-box">
+      <div class="icon">🔄</div>
+      <h3>Recursive Resolver</h3>
+      <p style="color: var(--text-dim); font-size: 0.9rem;">"Người đi hỏi thay bạn"<br>Nhận câu hỏi, đi tìm câu trả lời<br>VD: 1.1.1.1, 8.8.8.8, router nhà bạn</p>
+    </div>
+    <div class="analogy-arrow">vs</div>
+    <div class="analogy-box">
+      <div class="icon">📖</div>
+      <h3>Authoritative Server</h3>
+      <p style="color: var(--text-dim); font-size: 0.9rem;">"Người giữ sổ chính thức"<br>Biết chính xác câu trả lời cho zone mình quản lý<br>VD: ns1.google.com cho google.com</p>
+    </div>
+  </div>
+
+  <!-- DNS Resolution Flow -->
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Luồng phân giải DNS khi bạn gõ "blog.example.com"</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">💻</div>
+        <h4>Trình duyệt</h4>
+        <p>Kiểm tra cache nội bộ<br>OS cache (hosts file)</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🔄</div>
+        <h4>Recursive Resolver</h4>
+        <p>ISP hoặc 1.1.1.1/8.8.8.8<br>Kiểm tra cache trước</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🌍</div>
+        <h4>Root Server</h4>
+        <p>13 cụm root (.)<br>"Hỏi .com ở đâu"</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🏛️</div>
+        <h4>TLD Server</h4>
+        <p>.com, .vn, .org...<br>"Hỏi example.com ở đâu"</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">📖</div>
+        <h4>Authoritative NS</h4>
+        <p>ns1.example.com<br>Trả về IP chính xác</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DNS Query Flow Diagram -->
+  <div class="dns-flow">
+    <div class="flow-title">DNS Resolution Flow - Chi tiết từng bước</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  Browser                Recursive Resolver         Root Server       .com TLD       Authoritative NS
+     |                          |                       |                |                  |
+     |── "blog.example.com?" ──>|                       |                |                  |
+     |                          |── "blog.example.com?" >|               |                  |
+     |                          |<── "Hoi .com server" ─|               |                  |
+     |                          |                       |                |                  |
+     |                          |── "blog.example.com?" ────────────────>|                  |
+     |                          |<── "Hoi ns1.example.com" ─────────────|                  |
+     |                          |                       |                |                  |
+     |                          |── "blog.example.com?" ──────────────────────────────────>|
+     |                          |<── <span style="color:var(--accent3);">"93.184.216.34"</span> ───────────────────────────────────|
+     |                          |                       |                |                  |
+     |<── <span style="color:var(--accent3);">"93.184.216.34"</span> ──────|  <span style="color:var(--accent4);">Cache lai!</span>          |                |                  |
+     |                          |                       |                |                  |
+     |  <span style="color:var(--accent2);">Ket noi HTTP toi 93.184.216.34...</span>                  |                |                  |
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: TTL - Bí mật của tốc độ DNS</h4>
+    <p><strong>Time To Live (TTL)</strong> là thời gian mà kết quả DNS được cache. TTL = 3600 nghĩa là resolver sẽ nhớ câu trả lời trong 1 giờ mà không cần hỏi lại. TTL thấp (60s) giúp thay đổi nhanh nhưng tăng tải DNS server. TTL cao (86400s) giảm tải nhưng khi bạn đổi IP, phải đợi rất lâu. <strong>Mẹo:</strong> Trước khi migration, hạ TTL xuống 60-300s vài ngày trước, đổi IP, rồi tăng TTL lại sau.</p>
+  </div>
+
+  <!-- Iterative vs Recursive explanation -->
+  <div class="protocol-map" style="margin-top: 2rem;">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Recursive Query</h4>
+      <p><strong>Client hỏi resolver:</strong> "Cho tôi IP của example.com" - resolver phải đi tìm bằng mọi cách và trả kết quả cuối cùng. Đây là kiểu query từ máy tính bạn đến DNS server.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Iterative Query</h4>
+      <p><strong>Resolver hỏi các server khác:</strong> "Bạn có biết example.com?" - server trả lời "không, nhưng hỏi server kia". Resolver tự đi hỏi tiếp. Đây là cách resolver nói chuyện với root/TLD/authoritative.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> DNS Caching</h4>
+      <p><strong>Bộ nhớ đệm ở mọi tầng:</strong> Trình duyệt cache, OS cache, router cache, resolver cache. Nhờ cache, 90%+ truy vấn không cần đi đến root server. Đây là lý do DNS nhanh đến kinh ngạc dù kiến trúc phức tạp.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> Negative Caching</h4>
+      <p><strong>Cache cả "không tìm thấy":</strong> Khi domain không tồn tại (NXDOMAIN), kết quả cũng được cache. Điều này giải thích tại sao sau khi tạo record mới, đôi khi phải đợi vài phút mới hoạt động - vì NXDOMAIN cũ vẫn nằm trong cache.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RECORD TYPES -->
+<section id="records">
+  <h2 class="section-title" style="color: var(--accent2);">DNS Record Types</h2>
+  <p class="section-subtitle">Mỗi loại record phục vụ một mục đích riêng - hiểu chúng là hiểu cách Internet vận hành</p>
+
+  <div class="vendor-grid">
+    <!-- A Record -->
+    <div class="vendor-card rec-a">
+      <div class="vendor-logo">🅰️</div>
+      <h3>A Record</h3>
+      <div class="vendor-type">Address Record / IPv4</div>
+      <p>Record cơ bản nhất. Ánh xạ tên miền sang địa chỉ IPv4 (32-bit). Đây là loại record bạn sẽ dùng nhiều nhất. Một domain có thể có nhiều A record (round-robin load balancing).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">IPv4</div><div class="label">Phiên bản</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Phổ biến nhất</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>example.com.  300  IN  A  93.184.216.34</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Essential</span>
+        <span class="tag">IPv4</span>
+        <span class="tag">32-bit</span>
+      </div>
+    </div>
+
+    <!-- AAAA Record -->
+    <div class="vendor-card rec-aaaa">
+      <div class="vendor-logo">6️⃣</div>
+      <h3>AAAA Record</h3>
+      <div class="vendor-type">Quad-A / IPv6</div>
+      <p>Giống A record nhưng cho IPv6 (128-bit). Tên "AAAA" vì IPv6 dài gấp 4 lần IPv4. Với sự cạn kiệt IPv4, AAAA ngày càng quan trọng. Hầu hết website lớn đã có AAAA record.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">IPv6</div><div class="label">Phiên bản</div></div>
+        <div class="stat"><div class="num">128-bit</div><div class="label">Địa chỉ</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>example.com.  300  IN  AAAA  2606:2800:220:1:248:1893:25c8:1946</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tương lai</span>
+        <span class="tag">IPv6</span>
+        <span class="tag">128-bit</span>
+      </div>
+    </div>
+
+    <!-- CNAME Record -->
+    <div class="vendor-card rec-cname">
+      <div class="vendor-logo">🔗</div>
+      <h3>CNAME Record</h3>
+      <div class="vendor-type">Canonical Name / Alias</div>
+      <p>Tạo bí danh (alias) cho một domain khác. www.example.com CNAME example.com nghĩa là "www đi theo example.com". Lưu ý: CNAME không thể đặt ở apex domain (zone root) và không thể kết hợp với record khác cùng tên.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Alias</div><div class="label">Chức năng</div></div>
+        <div class="stat"><div class="num">1 hop</div><div class="label">Thêm lookup</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>www.example.com.  300  IN  CNAME  example.com.</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tiện lợi</span>
+        <span class="tag warn">Không dùng ở apex</span>
+        <span class="tag">Alias</span>
+      </div>
+    </div>
+
+    <!-- MX Record -->
+    <div class="vendor-card rec-mx">
+      <div class="vendor-logo">📧</div>
+      <h3>MX Record</h3>
+      <div class="vendor-type">Mail Exchange</div>
+      <p>Chỉ định mail server nào nhận email cho domain. Có priority (số thấp = ưu tiên cao). MX 10 mail1.example.com nghĩa là thử mail1 trước. Nếu fail, thử MX 20. Không có MX record = không nhận được email.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Priority</div><div class="label">Có thứ tự</div></div>
+        <div class="stat"><div class="num">Email</div><div class="label">Routing</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>example.com.  300  IN  MX  10  mail1.example.com.
+example.com.  300  IN  MX  20  mail2.example.com.</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Email</span>
+        <span class="tag">Priority based</span>
+        <span class="tag warn">Trỏ đến hostname, không IP</span>
+      </div>
+    </div>
+
+    <!-- TXT Record -->
+    <div class="vendor-card rec-txt">
+      <div class="vendor-logo">📝</div>
+      <h3>TXT Record</h3>
+      <div class="vendor-type">Text Record / Đa năng</div>
+      <p>Lưu text tùy ý. Ban đầu chỉ để ghi chú, giờ TXT record là "dao Thụy Sĩ" của DNS: SPF (chống giả mạo email), DKIM (chữ ký email), DMARC, domain verification (Google, Let's Encrypt), và vô số mục đích khác.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">SPF</div><div class="label">Chống spam</div></div>
+        <div class="stat"><div class="num">DKIM</div><div class="label">Xác thực</div></div>
+        <div class="stat"><div class="num">255</div><div class="label">Ký tự/chuỗi</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>example.com.  IN  TXT  "v=spf1 include:_spf.google.com ~all"</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">SPF/DKIM/DMARC</span>
+        <span class="tag">Verification</span>
+        <span class="tag">Đa năng</span>
+      </div>
+    </div>
+
+    <!-- SRV Record -->
+    <div class="vendor-card rec-srv">
+      <div class="vendor-logo">🎯</div>
+      <h3>SRV Record</h3>
+      <div class="vendor-type">Service Locator</div>
+      <p>Chỉ định server cung cấp dịch vụ cụ thể. Format: _service._protocol.name. Dùng cho XMPP, SIP, LDAP, Minecraft server, và nhiều dịch vụ khác. Có priority và weight cho load balancing.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Port</div><div class="label">Chỉ định</div></div>
+        <div class="stat"><div class="num">Weight</div><div class="label">Load balance</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>_sip._tcp.example.com.  IN  SRV  10 60 5060 sip.example.com.</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Service discovery</span>
+        <span class="tag">SIP/XMPP/LDAP</span>
+        <span class="tag warn">Ít dùng cho web</span>
+      </div>
+    </div>
+
+    <!-- PTR Record -->
+    <div class="vendor-card rec-ptr">
+      <div class="vendor-logo">↩️</div>
+      <h3>PTR Record</h3>
+      <div class="vendor-type">Pointer / Reverse DNS</div>
+      <p>Ngược lại với A record: ánh xạ IP ngược về tên miền. Dùng trong zone đặc biệt "in-addr.arpa". Cực kỳ quan trọng cho email - nhiều mail server từ chối email nếu IP gửi không có PTR record hợp lệ.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Reverse</div><div class="label">Chức năng</div></div>
+        <div class="stat"><div class="num">Email</div><div class="label">Bắt buộc</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>34.216.184.93.in-addr.arpa.  IN  PTR  example.com.</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag warn">ISP quản lý</span>
+        <span class="tag hot">Bắt buộc cho mail</span>
+        <span class="tag">Reverse lookup</span>
+      </div>
+    </div>
+
+    <!-- NS Record -->
+    <div class="vendor-card rec-ns">
+      <div class="vendor-logo">🏛️</div>
+      <h3>NS Record</h3>
+      <div class="vendor-type">Name Server / Delegation</div>
+      <p>Chỉ định DNS server nào có thẩm quyền (authoritative) cho zone. Khi bạn đăng ký domain và trỏ nameserver, thực chất bạn đang tạo NS record ở TLD level. Mỗi zone nên có ít nhất 2 NS record để đảm bảo redundancy.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2+</div><div class="label">Tối thiểu</div></div>
+        <div class="stat"><div class="num">Delegation</div><div class="label">Chức năng</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>example.com.  IN  NS  ns1.example.com.
+example.com.  IN  NS  ns2.example.com.</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Essential</span>
+        <span class="tag">Delegation</span>
+        <span class="tag">Redundancy</span>
+      </div>
+    </div>
+
+    <!-- SOA Record -->
+    <div class="vendor-card rec-soa">
+      <div class="vendor-logo">👑</div>
+      <h3>SOA Record</h3>
+      <div class="vendor-type">Start of Authority</div>
+      <p>"Giấy khai sinh" của zone. Mỗi zone có đúng một SOA record. Chứa: primary NS, email admin, serial number (quan trọng cho zone transfer), và các timer (refresh, retry, expire, negative cache TTL). Serial phải tăng mỗi khi thay đổi zone.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1</div><div class="label">Mỗi zone</div></div>
+        <div class="stat"><div class="num">Serial</div><div class="label">Versioning</div></div>
+      </div>
+      <div class="cheat-card" style="margin-top: 0.5rem; padding: 0.8rem;">
+        <code>example.com.  IN  SOA  ns1.example.com. admin.example.com. (
+                    2024032701  ; Serial (YYYYMMDDNN)
+                    3600        ; Refresh
+                    900         ; Retry
+                    1209600     ; Expire
+                    86400 )     ; Negative TTL</code>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Bắt buộc</span>
+        <span class="tag">Zone metadata</span>
+        <span class="tag warn">Serial phải tăng</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Record</th>
+          <th>Chức năng</th>
+          <th>Ví dụ giá trị</th>
+          <th>Khi nào dùng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A</td>
+          <td>Tên → IPv4</td>
+          <td>93.184.216.34</td>
+          <td>Trỏ domain đến server</td>
+        </tr>
+        <tr>
+          <td>AAAA</td>
+          <td>Tên → IPv6</td>
+          <td>2606:2800:220:1::248</td>
+          <td>Server có IPv6</td>
+        </tr>
+        <tr>
+          <td>CNAME</td>
+          <td>Alias → Tên khác</td>
+          <td>example.com.</td>
+          <td>www, CDN, subdomains</td>
+        </tr>
+        <tr>
+          <td>MX</td>
+          <td>Mail routing</td>
+          <td>10 mail.example.com.</td>
+          <td>Nhận email</td>
+        </tr>
+        <tr>
+          <td>TXT</td>
+          <td>Text tùy ý</td>
+          <td>"v=spf1 ..."</td>
+          <td>SPF, DKIM, xác thực</td>
+        </tr>
+        <tr>
+          <td>SRV</td>
+          <td>Service locator</td>
+          <td>10 60 5060 sip.ex.com.</td>
+          <td>SIP, XMPP, game server</td>
+        </tr>
+        <tr>
+          <td>PTR</td>
+          <td>IP → Tên (reverse)</td>
+          <td>example.com.</td>
+          <td>Email, logging, audit</td>
+        </tr>
+        <tr>
+          <td>NS</td>
+          <td>Nameserver delegation</td>
+          <td>ns1.example.com.</td>
+          <td>Ủy quyền zone</td>
+        </tr>
+        <tr>
+          <td>SOA</td>
+          <td>Zone authority</td>
+          <td>ns1.ex.com. admin.ex.com. ...</td>
+          <td>Đầu mỗi zone file</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- DNS SECURITY -->
+<section id="security">
+  <h2 class="section-title" style="color: var(--accent5);">DNS Security</h2>
+  <p class="section-subtitle">DNS được thiết kế năm 1983 - thời mà bảo mật chưa phải ưu tiên. Giờ chúng ta phải vá lại từng lỗ hổng</p>
+
+  <div class="vendor-grid">
+    <!-- DNSSEC -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent3);">
+      <div class="vendor-logo">🔏</div>
+      <h3>DNSSEC</h3>
+      <div class="vendor-type">Chữ ký số cho DNS</div>
+      <p>Thêm chữ ký cryptographic vào DNS response. Resolver có thể xác minh rằng câu trả lời DNS thực sự đến từ authoritative server, không bị giả mạo trên đường truyền. Dùng chuỗi ký tin cậy (chain of trust) từ root zone xuống.</p>
+      <p><strong>Hạn chế:</strong> Không mã hóa nội dung (ai cũng vẫn thấy bạn hỏi gì), chỉ xác thực. Triển khai phức tạp, key rotation dễ gây sự cố. Nhiều domain lớn vẫn chưa bật DNSSEC.</p>
+      <div class="tag-row">
+        <span class="tag good">Xác thực</span>
+        <span class="tag warn">Phức tạp triển khai</span>
+        <span class="tag">Chain of Trust</span>
+        <span class="tag warn">Không mã hóa</span>
+      </div>
+    </div>
+
+    <!-- DoH -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent);">
+      <div class="vendor-logo">🔒</div>
+      <h3>DoH (DNS over HTTPS)</h3>
+      <div class="vendor-type">Mã hóa DNS qua HTTPS</div>
+      <p>Gói DNS query vào HTTPS request thông thường (port 443). ISP không thể thấy bạn đang truy vấn domain nào. Trông giống traffic HTTPS bình thường nên rất khó chặn. Firefox, Chrome, Windows 11 đều hỗ trợ.</p>
+      <p><strong>Tranh cãi:</strong> Sysadmin ghét DoH vì bypass được DNS filter nội bộ. Enterprise phải chặn DoH hoặc triển khai DoH server riêng. Pi-hole trở nên vô dụng nếu client dùng DoH đến 1.1.1.1.</p>
+      <div class="tag-row">
+        <span class="tag good">Privacy</span>
+        <span class="tag">Port 443</span>
+        <span class="tag hot">Bypass DNS filter</span>
+        <span class="tag">Browser native</span>
+      </div>
+    </div>
+
+    <!-- DoT -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent2);">
+      <div class="vendor-logo">🛡️</div>
+      <h3>DoT (DNS over TLS)</h3>
+      <div class="vendor-type">Mã hóa DNS qua TLS</div>
+      <p>Mã hóa DNS query bằng TLS trên port 853 riêng. Sysadmin thích DoT hơn DoH vì dễ quản lý: block port 853 = block DoT. Android 9+ hỗ trợ "Private DNS" chính là DoT. Nhanh hơn DoH một chút vì không có HTTP overhead.</p>
+      <div class="tag-row">
+        <span class="tag good">Privacy</span>
+        <span class="tag good">Dễ quản lý</span>
+        <span class="tag">Port 853</span>
+        <span class="tag">Android native</span>
+      </div>
+    </div>
+
+    <!-- DNS Poisoning -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent5);">
+      <div class="vendor-logo">☠️</div>
+      <h3>DNS Cache Poisoning</h3>
+      <div class="vendor-type">Tấn công giả mạo cache</div>
+      <p>Kẻ tấn công gửi DNS response giả vào cache của resolver, khiến mọi người hỏi "bank.com" đều nhận được IP của trang giả. Dan Kaminsky (2008) phát hiện lỗ hổng cho phép poisoning dễ dàng, gây chấn động toàn ngành.</p>
+      <p><strong>Phòng chống:</strong> DNSSEC, source port randomization, 0x20 encoding (randomize viết hoa/thường trong query), dùng DoH/DoT.</p>
+      <div class="tag-row">
+        <span class="tag hot">Nguy hiểm</span>
+        <span class="tag">Kaminsky Attack</span>
+        <span class="tag good">DNSSEC phòng chống</span>
+      </div>
+    </div>
+
+    <!-- DNS Amplification -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent4);">
+      <div class="vendor-logo">💥</div>
+      <h3>DNS Amplification Attack</h3>
+      <div class="vendor-type">DDoS qua DNS</div>
+      <p>Kẻ tấn công gửi DNS query nhỏ (60 bytes) với IP nguồn giả (của nạn nhân) đến open resolver. Resolver trả response lớn (4000+ bytes) về nạn nhân. Hệ số khuếch đại lên đến 70x. Đây là một trong những kiểu DDoS phổ biến nhất.</p>
+      <p><strong>Phòng chống:</strong> Không chạy open resolver, Response Rate Limiting (RRL), BCP38 (ingress filtering chống IP spoofing).</p>
+      <div class="tag-row">
+        <span class="tag hot">DDoS</span>
+        <span class="tag warn">70x khuếch đại</span>
+        <span class="tag">Open resolver</span>
+        <span class="tag good">RRL phòng chống</span>
+      </div>
+    </div>
+
+    <!-- DNS Tunneling -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent4);">
+      <div class="vendor-logo">🕳️</div>
+      <h3>DNS Tunneling</h3>
+      <div class="vendor-type">Đường hầm dữ liệu qua DNS</div>
+      <p>Mã hóa dữ liệu vào DNS query/response để bypass firewall. Vì DNS query hầu như luôn được cho phép, kẻ tấn công có thể exfiltrate dữ liệu hoặc tạo C2 channel. Tools: iodine, dnscat2. Rất chậm nhưng rất lén lút.</p>
+      <p><strong>Phát hiện:</strong> Monitor query length bất thường, entropy cao trong subdomain, volume query đến một domain đột biến.</p>
+      <div class="tag-row">
+        <span class="tag hot">Data exfiltration</span>
+        <span class="tag warn">Khó phát hiện</span>
+        <span class="tag">Bypass firewall</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>DNSSEC vs DoH/DoT - Khác nhau hoàn toàn</h4>
+    <p><strong>DNSSEC = xác thực</strong> (đảm bảo câu trả lời DNS không bị giả mạo, nhưng ai cũng đọc được). <strong>DoH/DoT = mã hóa</strong> (ẩn nội dung query khỏi bên thứ ba, nhưng không đảm bảo câu trả lời đúng). Cần CẢ HAI để có DNS thực sự an toàn. Hiện tại, rất ít hệ thống triển khai đồng thời cả hai.</p>
+  </div>
+</section>
+
+<!-- DNS PROVIDERS -->
+<section id="providers">
+  <h2 class="section-title" style="color: var(--accent4);">Các "Ông Lớn" DNS</h2>
+  <p class="section-subtitle">Từ phần mềm DNS server đến dịch vụ resolver công cộng - mỗi lựa chọn có triết lý riêng</p>
+
+  <div class="vendor-grid">
+    <!-- BIND -->
+    <div class="vendor-card bind">
+      <div class="vendor-logo">📦</div>
+      <h3>BIND 9</h3>
+      <div class="vendor-type">Authoritative & Recursive / Open Source</div>
+      <p>"Ông tổ" DNS server. Chạy phần lớn DNS trên Internet từ thập niên 80. Cực kỳ mạnh mẽ, hỗ trợ mọi tính năng DNS có thể tưởng tượng. Nhưng config phức tạp, và lịch sử nhiều CVE bảo mật khiến nhiều người chuyển sang alternative.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1984</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">ISC</div><div class="label">Maintainer</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Full-featured</span>
+        <span class="tag warn">Config phức tạp</span>
+        <span class="tag hot">Nhiều CVE</span>
+        <span class="tag">Auth + Recursive</span>
+      </div>
+    </div>
+
+    <!-- Unbound -->
+    <div class="vendor-card unbound">
+      <div class="vendor-logo">🔓</div>
+      <h3>Unbound</h3>
+      <div class="vendor-type">Recursive Resolver / Security-focused</div>
+      <p>Recursive resolver được viết bởi NLnet Labs (Hà Lan). Thiết kế từ đầu với bảo mật làm ưu tiên. DNSSEC validation mặc định. Nhẹ, nhanh, config đơn giản hơn BIND nhiều. Lựa chọn hàng đầu khi bạn cần recursive resolver riêng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2007</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">DNSSEC</div><div class="label">Mặc định</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">BSD License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Bảo mật</span>
+        <span class="tag good">Nhẹ</span>
+        <span class="tag">Recursive only</span>
+        <span class="tag good">DNSSEC native</span>
+      </div>
+    </div>
+
+    <!-- CoreDNS -->
+    <div class="vendor-card coredns">
+      <div class="vendor-logo">⚙️</div>
+      <h3>CoreDNS</h3>
+      <div class="vendor-type">Cloud-native DNS / Kubernetes</div>
+      <p>DNS server viết bằng Go, thiết kế dạng plugin chain. DNS mặc định trong Kubernetes (thay thế kube-dns). Cực kỳ linh hoạt: mỗi plugin xử lý một tính năng (cache, forward, rewrite, prometheus metrics...). Nhẹ và dễ mở rộng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">K8s</div><div class="label">Default DNS</div></div>
+        <div class="stat"><div class="num">Go</div><div class="label">Ngôn ngữ</div></div>
+        <div class="stat"><div class="num">CNCF</div><div class="label">Graduated</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Cloud-native</span>
+        <span class="tag">Plugin-based</span>
+        <span class="tag good">Kubernetes</span>
+        <span class="tag">Prometheus</span>
+      </div>
+    </div>
+
+    <!-- Pi-hole -->
+    <div class="vendor-card pihole">
+      <div class="vendor-logo">🕳️</div>
+      <h3>Pi-hole</h3>
+      <div class="vendor-type">DNS Sinkhole / Ad Blocker</div>
+      <p>Biến DNS thành "hố đen" nuốt quảng cáo. Chạy trên Raspberry Pi hoặc bất kỳ Linux nào. Chặn ads/tracking ở tầng DNS - mọi thiết bị trong mạng đều được bảo vệ mà không cần cài extension. Dashboard đẹp, cộng đồng khổng lồ. "Thần tượng" của dân homelab.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">46M+</div><div class="label">Queries blocked/day (avg install)</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+        <div class="stat"><div class="num">RPi</div><div class="label">Chạy trên</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Ad blocking</span>
+        <span class="tag good">Homelab favorite</span>
+        <span class="tag">Blocklist</span>
+        <span class="tag good">Dashboard đẹp</span>
+      </div>
+    </div>
+
+    <!-- AdGuard Home -->
+    <div class="vendor-card adguard">
+      <div class="vendor-logo">🛡️</div>
+      <h3>AdGuard Home</h3>
+      <div class="vendor-type">DNS Filter / Modern Alternative</div>
+      <p>Đối thủ của Pi-hole. Viết bằng Go, hỗ trợ DoH/DoT/DNSCrypt server built-in. Giao diện modern hơn Pi-hole. Hỗ trợ per-client settings. Nhược điểm: ít blocklist community hơn Pi-hole, nhưng đang bắt kịp nhanh.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">DoH</div><div class="label">Built-in</div></div>
+        <div class="stat"><div class="num">Go</div><div class="label">Ngôn ngữ</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Open Source</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Modern</span>
+        <span class="tag good">DoH/DoT native</span>
+        <span class="tag">Per-client config</span>
+        <span class="tag good">Ad blocking</span>
+      </div>
+    </div>
+
+    <!-- Cloudflare 1.1.1.1 -->
+    <div class="vendor-card cloudflare">
+      <div class="vendor-logo">☁️</div>
+      <h3>Cloudflare 1.1.1.1</h3>
+      <div class="vendor-type">Public Resolver / Privacy-focused</div>
+      <p>Resolver nhanh nhất thế giới (theo benchmark). Cam kết không log IP người dùng, audit bởi KPMG. Hỗ trợ DoH, DoT, WARP (VPN). 1.1.1.1 cho thường, 1.1.1.2 cho malware blocking, 1.1.1.3 cho family filter. Miễn phí hoàn toàn.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1.1.1.1</div><div class="label">IPv4</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Tốc độ</div></div>
+        <div class="stat"><div class="num">2018</div><div class="label">Ra mắt</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Nhanh nhất</span>
+        <span class="tag good">Privacy</span>
+        <span class="tag">Free</span>
+        <span class="tag">WARP VPN</span>
+      </div>
+    </div>
+
+    <!-- Google 8.8.8.8 -->
+    <div class="vendor-card google">
+      <div class="vendor-logo">🔍</div>
+      <h3>Google 8.8.8.8</h3>
+      <div class="vendor-type">Public Resolver / Pioneer</div>
+      <p>Public DNS đầu tiên phổ biến toàn cầu (2009). Dễ nhớ: 8.8.8.8 và 8.8.4.4. Nhanh, ổn định, hỗ trợ DNSSEC, DoH, DoT. Nhược điểm: Google biết mọi DNS query của bạn. Phù hợp khi cần reliability, ít phù hợp khi cần privacy tuyệt đối.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">8.8.8.8</div><div class="label">IPv4</div></div>
+        <div class="stat"><div class="num">2009</div><div class="label">Ra mắt</div></div>
+        <div class="stat"><div class="num">1T+</div><div class="label">Queries/ngày</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Ổn định</span>
+        <span class="tag warn">Privacy concern</span>
+        <span class="tag">Free</span>
+        <span class="tag good">DNSSEC</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>BIND 9</th>
+          <th>Unbound</th>
+          <th>CoreDNS</th>
+          <th>Pi-hole</th>
+          <th>AdGuard Home</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Kiểu</td>
+          <td>Auth + Recursive</td>
+          <td>Recursive</td>
+          <td>Auth + Forward</td>
+          <td>DNS sinkhole</td>
+          <td>DNS filter</td>
+        </tr>
+        <tr>
+          <td>Ngôn ngữ</td>
+          <td>C</td>
+          <td>C</td>
+          <td>Go</td>
+          <td>Bash/PHP/Python</td>
+          <td>Go</td>
+        </tr>
+        <tr>
+          <td>DNSSEC</td>
+          <td style="color: var(--accent3);">Full</td>
+          <td style="color: var(--accent3);">Full</td>
+          <td style="color: var(--accent4);">Plugin</td>
+          <td style="color: var(--accent4);">Via upstream</td>
+          <td style="color: var(--accent4);">Via upstream</td>
+        </tr>
+        <tr>
+          <td>DoH/DoT</td>
+          <td style="color: var(--accent4);">DoT only</td>
+          <td style="color: var(--accent4);">DoT (stub)</td>
+          <td style="color: var(--accent3);">Plugin</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent3);">Built-in</td>
+        </tr>
+        <tr>
+          <td>Ad blocking</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent4);">RPZ (manual)</td>
+          <td style="color: var(--accent4);">Plugin</td>
+          <td style="color: var(--accent3);">Core feature</td>
+          <td style="color: var(--accent3);">Core feature</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>Enterprise DNS</td>
+          <td>Resolver riêng</td>
+          <td>Kubernetes</td>
+          <td>Homelab</td>
+          <td>Modern homelab</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SPLIT-HORIZON & HOMELAB -->
+<section id="homelab">
+  <h2 class="section-title" style="color: var(--accent);">DNS Trong Homelab</h2>
+  <p class="section-subtitle">Split-horizon DNS, local domain resolution, và những bí kíp mà dân homelab cần biết</p>
+
+  <!-- Split-horizon DNS -->
+  <div class="dns-what" style="margin-bottom: 2rem;">
+    <h3 style="color: var(--accent); margin-bottom: 1rem;">Split-Horizon DNS (Split-Brain DNS)</h3>
+    <p style="color: var(--text-dim); font-size: 1rem; margin-bottom: 1.5rem;">
+      Cùng một tên miền nhưng trả về IP khác nhau tùy thuộc vào người hỏi ở đâu. Khi bạn ở trong mạng nội bộ, <strong>app.company.com</strong> trả về IP private (192.168.1.10). Khi ở ngoài Internet, cùng tên đó trả về IP public. Rất phổ biến trong enterprise và homelab.
+    </p>
+
+    <div class="dns-analogy">
+      <div class="analogy-box">
+        <div class="icon">🏠</div>
+        <h3>Từ nội bộ</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">app.home.lab → <strong style="color: var(--accent3);">192.168.1.10</strong><br>Truy cập trực tiếp, nhanh</p>
+      </div>
+      <div class="analogy-arrow">≠</div>
+      <div class="analogy-box">
+        <div class="icon">🌍</div>
+        <h3>Từ Internet</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">app.home.lab → <strong style="color: var(--accent4);">203.0.113.5</strong><br>Qua reverse proxy, NAT</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Homelab DNS Tips -->
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>Dùng domain riêng cho homelab</h4>
+      <p>Đừng dùng .local (dành cho mDNS), .home, hay .lan (không chính thức). Tốt nhất: mua domain thật (home.yourdomain.com) hoặc dùng domain đã dành riêng cho testing (.test). Nếu dùng domain không hợp lệ, một ngày nào đó ICANN có thể cấp cho ai đó và bạn sẽ gặp vấn đề.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>Pi-hole + Unbound = Combo hoàn hảo</h4>
+      <p>Pi-hole chặn ads, Unbound làm recursive resolver riêng. DNS query không cần gửi ra bên ngoài (trừ khi cache miss). Privacy tốt hơn, không phụ thuộc Cloudflare/Google. Setup: Pi-hole forward đến Unbound trên localhost:5353.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>Wildcard DNS cho reverse proxy</h4>
+      <p>Thay vì tạo A record cho mỗi service, dùng wildcard: *.home.lab → IP của reverse proxy (Traefik/Nginx). Proxy dựa vào Host header để route đến đúng container. Một record, vô số services.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">4</div>
+      <h4>Conditional forwarding</h4>
+      <p>Router forward DNS đến Pi-hole. Pi-hole forward .home.lab đến DNS server nội bộ (ví dụ trên pfSense hoặc OPNsense), mọi thứ khác forward ra Unbound/Cloudflare. Mỗi tầng xử lý phần mình giỏi nhất.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">5</div>
+      <h4>HA cho DNS nội bộ</h4>
+      <p>DNS down = mọi thứ down. Chạy ít nhất 2 instance Pi-hole/AdGuard. Dùng Keepalived + virtual IP, hoặc đơn giản hơn: DHCP phát 2 DNS server. Gravity Sync để đồng bộ blocklist giữa 2 Pi-hole.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">6</div>
+      <h4>SSL với local DNS</h4>
+      <p>HTTPS cho service nội bộ? Dùng Let's Encrypt DNS-01 challenge: chứng minh bạn sở hữu domain bằng cách tạo TXT record, không cần expose port 80 ra Internet. Traefik + Cloudflare API = auto-renew wildcard cert cho *.home.lab.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Kiến trúc DNS homelab gợi ý</h4>
+    <p>Thiết bị → <strong>Pi-hole/AdGuard</strong> (chặn ads, local DNS) → <strong>Unbound</strong> (recursive resolver, DNSSEC validation) → Root Servers. Cho nội bộ: Pi-hole có conditional forward cho zone .home.lab đến authoritative DNS (BIND/CoreDNS/dnsmasq trên router). Đơn giản, hiệu quả, private.</p>
+  </div>
+</section>
+
+<!-- MYTHS / MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">10 Hiểu Nhầm Về DNS</h2>
+  <p class="section-subtitle">Những điều "ai cũng tin" nhưng thực ra sai - bao gồm cả meme huyền thoại</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #1</span>
+      <h4>"It's always DNS" - DNS luôn là thủ phạm</h4>
+      <p>Meme nổi tiếng nhất ngành IT. Mỗi khi có sự cố mạng, câu đầu tiên mọi người nói là "chắc do DNS". Và buồn cười ở chỗ... nó đúng khá thường xuyên. Nhưng đây vừa là meme, vừa là bias.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>DNS liên quan đến <strong>mọi kết nối mạng</strong>, nên tất nhiên nó "dính" nhiều sự cố. Nhưng thường DNS chỉ là <strong>triệu chứng</strong>, không phải nguyên nhân gốc. Network down, firewall block, certificate expired - tất cả đều "trông giống DNS issue". Kiểm tra DNS trước là tốt, nhưng đừng dừng ở đó.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #2</span>
+      <h4>"Đổi DNS sang 8.8.8.8 là nhanh hơn"</h4>
+      <p>Nhiều người tin rằng đổi DNS từ ISP sang Google/Cloudflare sẽ làm Internet nhanh hơn đáng kể. Thậm chí có video YouTube hướng dẫn "tăng tốc Internet bằng cách đổi DNS".</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>DNS chỉ ảnh hưởng đến <strong>thời gian phân giải tên miền</strong> (thường dưới 50ms, và được cache). Tốc độ download/upload phụ thuộc vào bandwidth ISP, không liên quan đến DNS. Đổi DNS tốt cho <strong>reliability và privacy</strong>, không phải tốc độ download.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #3</span>
+      <h4>"DNS chỉ có 13 root server"</h4>
+      <p>Mọi tài liệu đều nói "có 13 root server" (A đến M). Nhiều người lo lắng: chỉ 13 máy phục vụ cả Internet? Nếu DDoS hết 13 cái thì Internet sập?</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Có 13 <strong>root server identities</strong> (địa chỉ IP), nhưng đằng sau mỗi identity là <strong>hàng trăm server vật lý</strong> phân bố khắp thế giới nhờ anycast. Tổng cộng hơn 1,700 instance. DDoS 13 IP thực chất phải DDoS 1,700+ server - gần như không thể.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #4</span>
+      <h4>"DNS propagation mất 24-48 giờ"</h4>
+      <p>Câu kinh điển từ mọi nhà cung cấp hosting: "DNS thay đổi sẽ mất 24-48 giờ để propagate". Nhiều người tin rằng có một quá trình "lan truyền" chậm chạp từ server này sang server khác.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Không có "propagation" theo nghĩa đen. Thứ bạn đang đợi là <strong>TTL cache hết hạn</strong>. Nếu TTL cũ là 86400 (24h), resolver đã cache kết quả cũ sẽ giữ nó tối đa 24h. Nếu bạn hạ TTL trước khi đổi, thay đổi có thể có hiệu lực trong <strong>vài phút</strong>.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #5</span>
+      <h4>"flush DNS trên máy tôi sẽ sửa mọi thứ"</h4>
+      <p>Khi DNS "có vấn đề", phản xạ đầu tiên: chạy ipconfig /flushdns. Và nhiều người tin rằng thao tác này sẽ giải quyết mọi vấn đề DNS.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Flush DNS trên máy bạn chỉ xóa <strong>OS cache cục bộ</strong>. ISP resolver vẫn cache kết quả cũ. Trình duyệt có cache DNS riêng. Và upstream authoritative server có thể chưa cập nhật zone. Flush giúp <strong>thỉnh thoảng</strong>, nhưng không phải "thuốc chữa bách bệnh".</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #6</span>
+      <h4>"DNS không quan trọng cho bảo mật"</h4>
+      <p>Nhiều sysadmin focus vào firewall, antivirus, IDS mà quên mất DNS. DNS "chỉ là tra cứu tên miền" mà, có gì nguy hiểm?</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>DNS là <strong>attack vector</strong> cực kỳ lợi hại: cache poisoning redirect sang phishing, DNS tunneling để exfiltrate data, DGA (Domain Generation Algorithm) cho botnet C2, DNS amplification cho DDoS. Monitoring DNS là một trong những cách <strong>hiệu quả nhất</strong> phát hiện malware trong mạng.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #7</span>
+      <h4>"CNAME và A record giống nhau"</h4>
+      <p>Cả hai đều "trỏ domain đến đâu đó", nên nhiều người dùng thay thế nhau tùy tiện. Đặc biệt phổ biến khi setup hosting hay CDN.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>A record trỏ đến <strong>IP cố định</strong>. CNAME trỏ đến <strong>tên miền khác</strong> (rồi resolver đi tìm IP của tên đó). CNAME <strong>không dùng được ở zone apex</strong> (example.com), không thể song song với record khác cùng tên, và thêm một bước lookup. Dùng sai CNAME gây loop và sự cố khó debug.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #8</span>
+      <h4>"DoH giải quyết mọi vấn đề privacy"</h4>
+      <p>DoH mã hóa DNS query, ISP không đọc được. Vậy là hoàn toàn ẩn danh, đúng không?</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>DoH ẩn <strong>nội dung DNS query</strong> khỏi ISP, nhưng: (1) ISP vẫn thấy IP bạn kết nối tới sau đó, (2) SNI trong TLS handshake lộ hostname (trừ khi dùng ECH), (3) DoH provider (Cloudflare/Google) vẫn thấy mọi query của bạn. DoH là <strong>một lớp</strong> trong nhiều lớp privacy cần thiết.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #9</span>
+      <h4>"DNS chỉ dùng UDP port 53"</h4>
+      <p>Ai cũng biết DNS = UDP 53. Nên khi config firewall, chỉ mở UDP 53 và nghĩ là xong.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>DNS dùng <strong>cả UDP và TCP port 53</strong>. TCP cho response lớn hơn 512 bytes (EDNS0 nâng lên 4096 nhưng vẫn cần TCP cho zone transfer AXFR/IXFR). DoT dùng <strong>TCP 853</strong>, DoH dùng <strong>TCP 443</strong>. Block TCP 53 = zone transfer fail, DNSSEC response bị cắt.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #10</span>
+      <h4>"TTL = 0 nghĩa là không cache"</h4>
+      <p>Muốn thay đổi DNS có hiệu lực ngay? Set TTL = 0. Record sẽ không bao giờ bị cache, phải không?</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>RFC nói TTL = 0 nghĩa là "không nên cache", nhưng thực tế <strong>nhiều resolver bỏ qua</strong> TTL cực thấp và áp dụng minimum TTL riêng (thường 30-300s). Một số CDN/resolver coi TTL = 0 là 30s. Và TTL = 0 tạo <strong>tải khổng lồ</strong> lên authoritative server vì mọi query đều phải hỏi lại.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">DNS Cheat Sheet</h2>
+  <p class="section-subtitle">Các lệnh và kỹ thuật troubleshooting DNS mà mọi sysadmin cần thuộc lòng</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>dig - Tra cứu DNS cơ bản</h4>
+      <p>Công cụ #1 cho DNS troubleshooting. Có trên mọi Linux/macOS.</p>
+      <code>dig example.com
+dig example.com A
+dig example.com AAAA
+dig example.com MX
+dig example.com TXT
+dig example.com ANY</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>dig - Chỉ định DNS server</h4>
+      <p>Hỏi DNS server cụ thể thay vì dùng mặc định.</p>
+      <code>dig @8.8.8.8 example.com
+dig @1.1.1.1 example.com
+dig @192.168.1.1 home.lab</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>dig - Output ngắn gọn</h4>
+      <p>Bỏ phần thừa, chỉ lấy kết quả cần thiết.</p>
+      <code>dig +short example.com
+dig +short example.com MX
+dig +noall +answer example.com</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>dig - Trace toàn bộ resolution</h4>
+      <p>Xem từng bước DNS resolution từ root đến authoritative.</p>
+      <code>dig +trace example.com
+dig +trace +additional example.com</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>dig - Kiểm tra SOA & NS</h4>
+      <p>Xem authoritative server và zone info.</p>
+      <code>dig example.com SOA
+dig example.com NS
+dig +nssearch example.com</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>dig - Reverse DNS lookup</h4>
+      <p>Tìm hostname từ IP address.</p>
+      <code>dig -x 8.8.8.8
+dig -x 192.168.1.1</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>nslookup - Quick lookup</h4>
+      <p>Có sẵn trên Windows, Linux, macOS. Đơn giản hơn dig.</p>
+      <code>nslookup example.com
+nslookup example.com 8.8.8.8
+nslookup -type=MX example.com
+nslookup -type=TXT example.com</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>host - Lookup nhanh</h4>
+      <p>Output clean nhất. Tốt cho scripting.</p>
+      <code>host example.com
+host -t MX example.com
+host -t TXT example.com
+host 8.8.8.8</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Flush DNS Cache</h4>
+      <p>Xóa cache DNS cục bộ trên các OS.</p>
+      <code># macOS
+sudo dscacheutil -flushcache
+sudo killall -HUP mDNSResponder
+
+# Windows
+ipconfig /flushdns
+
+# Linux (systemd-resolved)
+sudo systemd-resolve --flush-caches</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Kiểm tra DNSSEC</h4>
+      <p>Xác minh DNSSEC có hoạt động cho domain.</p>
+      <code>dig +dnssec example.com
+dig +short example.com DNSKEY
+dig +short example.com DS
+# Flag "ad" = Authenticated Data</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Kiểm tra DNS over HTTPS</h4>
+      <p>Test DoH bằng curl.</p>
+      <code># Cloudflare DoH
+curl -s -H 'accept: application/dns-json' \
+  'https://1.1.1.1/dns-query?name=example.com'
+
+# Google DoH
+curl -s \
+  'https://dns.google/resolve?name=example.com'</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug: DNS không phân giải</h4>
+      <p>Checklist khi "DNS không hoạt động".</p>
+      <code># 1. Kiểm tra resolver đang dùng
+cat /etc/resolv.conf
+
+# 2. Ping trực tiếp IP (bypass DNS)
+ping 1.1.1.1
+
+# 3. Test DNS server cụ thể
+dig @1.1.1.1 example.com
+
+# 4. Trace toàn bộ chain
+dig +trace example.com
+
+# 5. Kiểm tra firewall
+sudo tcpdump -i any port 53</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Zone Transfer test</h4>
+      <p>Kiểm tra zone transfer (nên bị chặn trên production).</p>
+      <code># Thử AXFR (full zone transfer)
+dig @ns1.example.com example.com AXFR
+
+# Nếu thành công = misconfigured!
+# Zone transfer nên bị restrict</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Kiểm tra TTL còn lại</h4>
+      <p>Xem record còn cache bao lâu nữa.</p>
+      <code># TTL hiển thị trong cột thứ 2
+dig example.com | grep -A1 "ANSWER"
+# Chạy lại sau vài giây,
+# TTL sẽ giảm = đang đọc cache</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SPF/DKIM/DMARC check</h4>
+      <p>Kiểm tra email authentication records.</p>
+      <code># SPF
+dig +short example.com TXT | grep spf
+
+# DKIM
+dig +short selector._domainkey.example.com TXT
+
+# DMARC
+dig +short _dmarc.example.com TXT</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Pro tip: dig vs nslookup</h4>
+    <p><strong>dig</strong> là công cụ chuyên nghiệp: output chi tiết, hỗ trợ mọi record type, trace, DNSSEC. <strong>nslookup</strong> đơn giản hơn, có trên mọi OS (kể cả Windows mặc định). Trong thực tế, <strong>hãy học dig</strong> - nó sẽ cho bạn thông tin cần thiết để debug bất kỳ vấn đề DNS nào. nslookup đã bị coi là deprecated trên nhiều hệ thống (dù vẫn hoạt động).</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Thế Giới DNS - Deep Dive | Nội dung giáo dục cho Homelab & SysAdmin</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">Tham khảo: RFC 1034/1035 (DNS), RFC 4033-4035 (DNSSEC), RFC 8484 (DoH), RFC 7858 (DoT)</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">"It's not always DNS... but it's always DNS." - Every SysAdmin Ever</p>
+</footer>
+
+</body>
+</html>

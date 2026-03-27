@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Một Đời Quản Trị — GS. Phan Văn Trường</title>
+<style>
+  :root {
+    --orange: #FF6B35;
+    --navy: #1A3A5C;
+    --gold: #F7C948;
+    --green: #2D6A4F;
+    --light-orange: #FFF0E8;
+    --light-blue: #E8F0F8;
+    --white: #FFFFFF;
+    --gray: #F5F5F5;
+    --text: #2C2C2C;
+    --shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); background: #FAFAFA; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #2A5F8F 50%, var(--orange) 100%);
+    color: white; text-align: center; padding: 80px 20px 100px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(247,201,72,0.1) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  .hero-badge {
+    display: inline-block; background: var(--gold); color: var(--navy);
+    padding: 6px 18px; border-radius: 20px; font-size: 0.85rem;
+    font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
+    line-height: 1.1; margin-bottom: 16px; position: relative;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-author {
+    font-size: 1.3rem; opacity: 0.9; margin-bottom: 12px; font-weight: 300; letter-spacing: 2px;
+  }
+  .hero-tagline {
+    font-size: 1.1rem; opacity: 0.8; max-width: 600px; margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; position: relative;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 900; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* Quote */
+  .quote-section {
+    background: linear-gradient(135deg, var(--gold) 0%, #F0A500 100%);
+    padding: 60px 20px; text-align: center;
+  }
+  .big-quote {
+    max-width: 800px; margin: 0 auto;
+  }
+  .big-quote .q-mark { font-size: 5rem; color: var(--navy); opacity: 0.3; line-height: 1; }
+  .big-quote p {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--navy);
+    font-style: italic; font-weight: 600; line-height: 1.7; margin: -10px 0 16px;
+  }
+  .big-quote cite { color: var(--navy); opacity: 0.7; font-size: 0.95rem; }
+
+  /* Themes */
+  .section { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+  .section-title {
+    text-align: center; font-size: 2rem; font-weight: 800; color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .section-subtitle { text-align: center; color: #666; margin-bottom: 40px; font-size: 1rem; }
+  .themes-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
+  }
+  .theme-card {
+    background: white; border-radius: 16px; padding: 28px 20px; text-align: center;
+    box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s;
+    border-top: 4px solid var(--orange);
+  }
+  .theme-card:nth-child(2) { border-top-color: var(--gold); }
+  .theme-card:nth-child(3) { border-top-color: var(--green); }
+  .theme-card:nth-child(4) { border-top-color: #9B59B6; }
+  .theme-card:nth-child(5) { border-top-color: #E74C3C; }
+  .theme-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+  .theme-emoji { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+  .theme-title { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .theme-chapters { font-size: 0.78rem; color: #888; }
+
+  /* TOC */
+  .toc-section { background: var(--gray); padding: 60px 20px; }
+  .toc-inner { max-width: 1200px; margin: 0 auto; }
+  .chapters-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
+    margin-top: 40px;
+  }
+  .chapter-card {
+    background: white; border-radius: 12px; padding: 20px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07); display: flex; align-items: flex-start; gap: 14px;
+    text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid transparent;
+  }
+  .chapter-card:hover {
+    transform: translateX(4px); box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    border-left-color: var(--orange);
+  }
+  .chapter-num {
+    background: linear-gradient(135deg, var(--orange), #FF9A62);
+    color: white; font-size: 0.75rem; font-weight: 800;
+    width: 36px; height: 36px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .chapter-card.intro .chapter-num { background: linear-gradient(135deg, var(--navy), #2A5F8F); }
+  .chapter-card.finale .chapter-num { background: linear-gradient(135deg, var(--gold), #F0A500); }
+  .chapter-emoji { font-size: 1.4rem; flex-shrink: 0; }
+  .chapter-info { flex: 1; }
+  .chapter-name { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .chapter-hook { font-size: 0.8rem; color: #777; line-height: 1.4; }
+
+  /* Footer */
+  footer {
+    background: var(--navy); color: white; padding: 50px 20px; text-align: center;
+  }
+  .footer-inner { max-width: 800px; margin: 0 auto; }
+  .footer-author { font-size: 1.2rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+  .footer-bio { font-size: 0.9rem; opacity: 0.7; line-height: 1.7; }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 24px 0; }
+
+  @media (max-width: 600px) {
+    .hero-stats { gap: 20px; }
+    .chapters-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">📚 Sách Quản Trị Doanh Nghiệp</div>
+  <h1>Một Đời <span>Quản Trị</span></h1>
+  <div class="hero-author">GS. Phan Văn Trường</div>
+  <div class="hero-tagline">
+    Hành trình 40 năm dẫn dắt 20.000 nhân viên trên 60 quốc gia —<br>
+    những bài học không có trong sách giáo khoa.
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Năm kinh nghiệm</div></div>
+    <div class="stat"><div class="stat-num">60</div><div class="stat-label">Quốc gia</div></div>
+    <div class="stat"><div class="stat-num">20K</div><div class="stat-label">Nhân viên</div></div>
+    <div class="stat"><div class="stat-num">23</div><div class="stat-label">Chương sách</div></div>
+  </div>
+</section>
+
+<!-- Drucker Quote -->
+<section class="quote-section">
+  <div class="big-quote">
+    <div class="q-mark">"</div>
+    <p>Quản lý là thực hiện tốt mọi việc.<br>Quản trị là làm đúng việc.</p>
+    <cite>— Peter Drucker</cite>
+  </div>
+</section>
+
+<!-- 5 Themes -->
+<div class="section">
+  <div class="section-title">5 Chủ Đề Cốt Lõi</div>
+  <div class="section-subtitle">Toàn bộ cuốn sách xoay quanh 5 trụ cột tư duy quản trị</div>
+  <div class="themes-grid">
+    <div class="theme-card">
+      <span class="theme-emoji">⚖️</span>
+      <div class="theme-title">Quản trị vs Quản lý</div>
+      <div class="theme-chapters">Dẫn nhập · Ch.4 · Ch.Cuối</div>
+    </div>
+    <div class="theme-card">
+      <span class="theme-emoji">🌱</span>
+      <div class="theme-title">Văn hóa Doanh nghiệp</div>
+      <div class="theme-chapters">Ch.3 · Ch.5 · Ch.Cuối</div>
+    </div>
+    <div class="theme-card">
+      <span class="theme-emoji">👥</span>
+      <div class="theme-title">Con người & Nhân tài</div>
+      <div class="theme-chapters">Ch.7 · Ch.8 · Ch.9 · Ch.20</div>
+    </div>
+    <div class="theme-card">
+      <span class="theme-emoji">🎯</span>
+      <div class="theme-title">Lãnh đạo & Phong cách</div>
+      <div class="theme-chapters">Ch.1 · Ch.12 · Ch.13</div>
+    </div>
+    <div class="theme-card">
+      <span class="theme-emoji">🚀</span>
+      <div class="theme-title">Chiến lược & Đổi mới</div>
+      <div class="theme-chapters">Ch.14 · Ch.15 · Ch.16 · Ch.17 · Ch.18</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<section class="toc-section">
+  <div class="toc-inner">
+    <div class="section-title">Mục Lục</div>
+    <div class="section-subtitle">23 chương — mỗi chương một bài học cuộc đời</div>
+    <div class="chapters-grid">
+
+      <a href="dan-nhap.html" class="chapter-card intro">
+        <div class="chapter-num">DN</div>
+        <div class="chapter-emoji">🌅</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Dẫn Nhập: Từ một lời của cha...</div>
+          <div class="chapter-hook">Nokia giỏi quản lý, nhưng chết vì quản trị yếu — bài học mở đầu</div>
+        </div>
+      </a>
+
+      <a href="chuong-01.html" class="chapter-card">
+        <div class="chapter-num">1</div>
+        <div class="chapter-emoji">👦</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 1: Trời phú hay học tập?</div>
+          <div class="chapter-hook">Cậu bé Ben 11 tuổi và 5 yếu tố lãnh đạo bẩm sinh</div>
+        </div>
+      </a>
+
+      <a href="chuong-02.html" class="chapter-card">
+        <div class="chapter-num">2</div>
+        <div class="chapter-emoji">🚪</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 2: Đường vào quản trị</div>
+          <div class="chapter-hook">Từ gia đình Nho giáo đến 20.000 nhân viên tại Alsthom</div>
+        </div>
+      </a>
+
+      <a href="chuong-03.html" class="chapter-card">
+        <div class="chapter-num">3</div>
+        <div class="chapter-emoji">🌟</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 3: Những quí nhân của tôi</div>
+          <div class="chapter-hook">Người đi thực địa 150 ngày/năm và bữa tiệc cho nhân viên nghèo nhất</div>
+        </div>
+      </a>
+
+      <a href="chuong-04.html" class="chapter-card">
+        <div class="chapter-num">4</div>
+        <div class="chapter-emoji">🎵</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 4: "Đố Ai?" — Ca dao và triết lý</div>
+          <div class="chapter-hook">Có thứ đo được, có thứ không đo được — nhưng đều quan trọng</div>
+        </div>
+      </a>
+
+      <a href="chuong-05.html" class="chapter-card">
+        <div class="chapter-num">5</div>
+        <div class="chapter-emoji">☕</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 5: Văn hóa doanh nghiệp</div>
+          <div class="chapter-hook">Hai bà nội và nghi lễ trà chiều giữa trận bom</div>
+        </div>
+      </a>
+
+      <a href="chuong-06.html" class="chapter-card">
+        <div class="chapter-num">6</div>
+        <div class="chapter-emoji">🏥</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 6: Khám và chữa bệnh DN</div>
+          <div class="chapter-hook">7 căn bệnh nguy hiểm và cách lãnh đạo chữa lành tổ chức</div>
+        </div>
+      </a>
+
+      <a href="chuong-07.html" class="chapter-card">
+        <div class="chapter-num">7</div>
+        <div class="chapter-emoji">👋</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 7: Gia nhập và chia tay</div>
+          <div class="chapter-hook">Onboarding & offboarding — hai khoảnh khắc định hình văn hóa</div>
+        </div>
+      </a>
+
+      <a href="chuong-08.html" class="chapter-card">
+        <div class="chapter-num">8</div>
+        <div class="chapter-emoji">💎</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 8: Tìm kiếm nhân tài</div>
+          <div class="chapter-hook">Nhân tài không sợ nghèo — họ sợ bị coi thường</div>
+        </div>
+      </a>
+
+      <a href="chuong-09.html" class="chapter-card">
+        <div class="chapter-num">9</div>
+        <div class="chapter-emoji">🏛️</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 9: Cột trụ trong đội của tôi</div>
+          <div class="chapter-hook">Philippe, Julien, Durai — những người giỏi hơn tôi</div>
+        </div>
+      </a>
+
+      <a href="chuong-10.html" class="chapter-card">
+        <div class="chapter-num">10</div>
+        <div class="chapter-emoji">🌏</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 10: Công dân toàn cầu</div>
+          <div class="chapter-hook">Global citizen là tư duy, không phải tờ hộ chiếu</div>
+        </div>
+      </a>
+
+      <a href="chuong-11.html" class="chapter-card">
+        <div class="chapter-num">11</div>
+        <div class="chapter-emoji">📊</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 11: Sơ đồ tổ chức</div>
+          <div class="chapter-hook">Sơ đồ là công cụ chính trị, không phải vận hành thực</div>
+        </div>
+      </a>
+
+      <a href="chuong-12.html" class="chapter-card">
+        <div class="chapter-num">12</div>
+        <div class="chapter-emoji">🪞</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 12: Lãnh đạo xấu - đẹp, sai - đúng</div>
+          <div class="chapter-hook">Uy quyền tự nhiên vs kẻ phân biệt chủng tộc trở thành cấp dưới</div>
+        </div>
+      </a>
+
+      <a href="chuong-13.html" class="chapter-card">
+        <div class="chapter-num">13</div>
+        <div class="chapter-emoji">🎓</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 13: Nghề làm lãnh đạo</div>
+          <div class="chapter-hook">Vào HĐQT năm 33 tuổi và bài học về sự may mắn</div>
+        </div>
+      </a>
+
+      <a href="chuong-14.html" class="chapter-card">
+        <div class="chapter-num">14</div>
+        <div class="chapter-emoji">🌐</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 14: Môi trường kinh doanh</div>
+          <div class="chapter-hook">Bilderberg, CFR — những lobby groups vô hình định hình thế giới</div>
+        </div>
+      </a>
+
+      <a href="chuong-15.html" class="chapter-card">
+        <div class="chapter-num">15</div>
+        <div class="chapter-emoji">⚔️</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 15: Đại chiến Tuxpan-Mexico</div>
+          <div class="chapter-hook">$300 triệu, Siemens, nội phản — trận chiến trưởng thành nhất</div>
+        </div>
+      </a>
+
+      <a href="chuong-16.html" class="chapter-card">
+        <div class="chapter-num">16</div>
+        <div class="chapter-emoji">💡</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 16: Vài ý nghĩ về khởi nghiệp</div>
+          <div class="chapter-hook">4 loại startup thành công và tư duy ai cũng nên có</div>
+        </div>
+      </a>
+
+      <a href="chuong-17.html" class="chapter-card">
+        <div class="chapter-num">17</div>
+        <div class="chapter-emoji">🗺️</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 17: Xây dựng chiến lược</div>
+          <div class="chapter-hook">Hōshi Ryokan (718) và Beretta (1526) — triết lý trường tồn</div>
+        </div>
+      </a>
+
+      <a href="chuong-18.html" class="chapter-card">
+        <div class="chapter-num">18</div>
+        <div class="chapter-emoji">🎨</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 18: Khai phóng óc sáng tạo</div>
+          <div class="chapter-hook">Thêm tài xế taxi và họa sĩ vào buổi brainstorm</div>
+        </div>
+      </a>
+
+      <a href="chuong-19.html" class="chapter-card">
+        <div class="chapter-num">19</div>
+        <div class="chapter-emoji">⏰</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 19: Thời gian</div>
+          <div class="chapter-hook">Jeffrey Koo và nghệ thuật làm chủ thời gian lãnh đạo</div>
+        </div>
+      </a>
+
+      <a href="chuong-20.html" class="chapter-card">
+        <div class="chapter-num">20</div>
+        <div class="chapter-emoji">🥷</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 20: Những nana tác chiến</div>
+          <div class="chapter-hook">Nicole Chan Kwa và cảnh báo bí mật ở Istanbul</div>
+        </div>
+      </a>
+
+      <a href="chuong-21.html" class="chapter-card">
+        <div class="chapter-num">21</div>
+        <div class="chapter-emoji">👑</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương 21: Kế thừa</div>
+          <div class="chapter-hook">Francis Bouygues, Rothschild 200 năm — nghệ thuật trao quyền</div>
+        </div>
+      </a>
+
+      <a href="chuong-cuoi.html" class="chapter-card finale">
+        <div class="chapter-num">CC</div>
+        <div class="chapter-emoji">🌈</div>
+        <div class="chapter-info">
+          <div class="chapter-name">Chương Cuối: Một ngàn lý do lạc quan</div>
+          <div class="chapter-hook">Viettel, FPT, Vingroup — Việt Nam và những giấc mơ lớn</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-author">GS. Phan Văn Trường</div>
+    <hr class="footer-divider">
+    <p class="footer-bio">
+      Giáo sư thỉnh giảng tại nhiều đại học quốc tế · Cố vấn cao cấp Chính phủ Việt Nam ·
+      Hơn 40 năm quản trị doanh nghiệp đa quốc gia · Nguyên Tổng Giám đốc khu vực
+      châu Á–Thái Bình Dương tại Alsthom
+    </p>
+    <hr class="footer-divider">
+    <p style="opacity:0.4; font-size:0.8rem;">© Nội dung tóm tắt — "Một Đời Quản Trị" — GS. Phan Văn Trường</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 13: Nghề làm lãnh đạo — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,var(--gold) 0%,var(--orange) 40%,var(--navy) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--gold);}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .success-formula{background:linear-gradient(135deg,var(--navy),#2A5F8F);border-radius:16px;padding:32px;margin:28px 0;color:white;}
+  .success-formula h3{color:var(--gold);font-size:1.1rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .formula-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+  .formula-item{background:rgba(255,255,255,0.1);border-radius:10px;padding:16px;text-align:center;}
+  .formula-item .pct{font-size:2rem;font-weight:900;color:var(--gold);}
+  .formula-item .label{font-size:0.82rem;margin-top:4px;opacity:0.9;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-12.html" class="nav-btn">← Chương 12</a>
+    <a href="chuong-14.html" class="nav-btn">Chương 14 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🎓 Chương 13</div>
+  <span class="hero-emoji">👔</span>
+  <h1>Nghề <span>Làm Lãnh Đạo</span></h1>
+  <p class="hero-sub">Vào HĐQT năm 33 tuổi, và bí mật mà ít ai dám thừa nhận: 40% thành công là nhờ may mắn.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Lãnh đạo là một <em>nghề</em> — có thể học, có thể rèn luyện, nhưng cũng cần vận may. GS. Phan Văn Trường chia sẻ thẳng thắn về hành trình của mình và điều mà nhiều lãnh đạo thành công không dám thừa nhận: sự may mắn đóng vai trò lớn hơn chúng ta muốn tin.
+  </div>
+
+  <div class="success-formula">
+    <h3>📊 Công Thức Thành Công Thật Sự</h3>
+    <div class="formula-items">
+      <div class="formula-item">
+        <div class="pct">40%</div>
+        <div class="label">May mắn & Thời điểm</div>
+      </div>
+      <div class="formula-item">
+        <div class="pct">35%</div>
+        <div class="label">Năng lực & Kỹ năng</div>
+      </div>
+      <div class="formula-item">
+        <div class="pct">25%</div>
+        <div class="label">Quan hệ & Mạng lưới</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Những Bài Học Về Nghề Lãnh Đạo</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🎲</div>
+      <div class="card-num">01</div>
+      <h3>Thừa nhận vai trò của may mắn</h3>
+      <p>Lãnh đạo thành công thường không may mắn hơn người khác — họ chỉ sẵn sàng hơn khi may mắn xuất hiện. Và họ dám thừa nhận điều đó.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">⚡</div>
+      <div class="card-num">02</div>
+      <h3>Sai nhanh, sửa nhanh</h3>
+      <p>Không có lãnh đạo nào không bao giờ sai. Điều phân biệt người giỏi là tốc độ nhận ra và sửa sai — trước khi hệ quả trở nên không thể đảo ngược.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">03</div>
+      <h3>HĐQT là trường học</h3>
+      <p>Vào HĐQT năm 33 tuổi — trẻ hơn hầu hết thành viên. Học cách quan sát, lắng nghe, và hiểu rằng quyết định HĐQT đòi hỏi tư duy khác hẳn quản lý vận hành.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">04</div>
+      <h3>Lãnh đạo cần được dẫn dắt</h3>
+      <p>Ngay cả lãnh đạo cao nhất cũng cần mentor, cần phản hồi thật sự, cần người dám nói thẳng. Cô đơn ở đỉnh cao là nguy hiểm nhất.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Lãnh đạo không phải là người không bao giờ sai.<br>Đó là người biết sửa sai nhanh nhất."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>"Thành công do tôi, thất bại do hoàn cảnh" — cái bẫy tư duy:</strong> Lãnh đạo thành công dễ rơi vào thiên kiến quy kết — tự nhận công khi thành công, đổ lỗi ngoại cảnh khi thất bại. Khiêm tốn trí tuệ đòi hỏi nhìn nhận vai trò của may mắn và hoàn cảnh trong cả hai chiều.
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Nguy hiểm của vị trí lãnh đạo:</strong> Càng lên cao, càng ít người dám nói thật với bạn. Mọi người nói những gì họ nghĩ bạn muốn nghe. Đây là lý do lãnh đạo cần chủ động tìm kiếm phản hồi thật sự, không chỉ chờ đợi nó tự đến.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>40% thành công là may mắn — không phải để giảm bớt nỗ lực, mà để có sự khiêm tốn và biết ơn.</li>
+      <li>Lãnh đạo giỏi không phải không bao giờ sai — họ sửa sai nhanh và học được từ mỗi lần sai.</li>
+      <li>HĐQT là môi trường học tập đặc biệt — tư duy quản trị (governance) khác hẳn quản lý (management).</li>
+      <li>Lãnh đạo cũng cần được dẫn dắt — mentor và phản hồi thật sự là thiết yếu ở mọi cấp độ.</li>
+      <li>Tránh thiên kiến quy kết: nhận trách nhiệm cả thất bại, không chỉ nhận công khi thành công.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-12.html" class="bnav-btn">← Chương 12</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-14.html" class="bnav-btn next">Chương 14: Môi trường kinh doanh →</a>
+  </div>
+</div>
+
+</body>
+</html>

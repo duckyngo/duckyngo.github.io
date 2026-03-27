@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 9: Chủ Quan và Khách Quan – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #B45309 0%, #D97706 50%, #F59E0B 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #92400E; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .iran-example { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 20px 0; }
+  .iran-example h3 { color: #B45309; font-size: 1.05rem; margin-bottom: 16px; }
+  .person-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; margin-top: 8px; }
+  .person-icon { background: #FEF3C7; border-radius: 8px; padding: 8px; text-align: center; font-size: 0.7rem; color: #92400E; }
+  .person-icon span { display: block; font-size: 1.2rem; }
+  .iran-note { margin-top: 12px; font-size: 0.9rem; color: #6B7280; font-style: italic; }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid var(--amber); transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--purple); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--teal); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--rose); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .story-box { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border: 1px solid #FDE68A; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .story-box h3 { color: #B45309; font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .story-box p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .golf-story { background: linear-gradient(135deg, #F0FDF4, #DCFCE7); border: 1px solid #BBF7D0; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .golf-story h3 { color: #166534; font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .golf-story p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .quote-box { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-left: 5px solid var(--amber); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--amber); opacity: 0.2; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: #92400E; font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #451A03, #78350F); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #FDE68A; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">🌍 Chương 9</div>
+  <div class="hero-emoji">🔭</div>
+  <h1>Chủ Quan và Khách Quan Trong Thương Thuyết</h1>
+  <div class="subtitle">30 người, 30 góc nhìn – và cách đếm đùi rung ở Iran định đoạt hàng triệu đô</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🇮🇷 Thí Nghiệm Iran – 30 Người, 30 Nhận Định</div>
+
+  <div class="iran-example">
+    <h3>🧪 Một Buổi Họp, Vô Số Góc Nhìn</h3>
+    <p style="font-size: 0.95rem; color: #6B7280; margin-bottom: 16px;">Tác giả từng tập hợp 30 người từ cùng một cuộc họp tại Iran và hỏi họ nhận định thế nào về kết quả. Câu trả lời: 30 nhận định <em>hoàn toàn khác nhau</em>.</p>
+    <div class="person-grid">
+      <div class="person-icon"><span>😊</span>Lạc quan</div>
+      <div class="person-icon"><span>😟</span>Lo lắng</div>
+      <div class="person-icon"><span>🤔</span>Nghi ngờ</div>
+      <div class="person-icon"><span>😤</span>Thất vọng</div>
+      <div class="person-icon"><span>😎</span>Tự tin</div>
+      <div class="person-icon"><span>😐</span>Trung lập</div>
+      <div class="person-icon"><span>🙄</span>Hoài nghi</div>
+      <div class="person-icon"><span>🥰</span>Hài lòng</div>
+    </div>
+    <div class="iran-note">Cùng một cuộc họp, nhưng mỗi người lọc qua lăng kính riêng của mình – kinh nghiệm, kỳ vọng, văn hóa, tâm trạng.</div>
+  </div>
+
+  <div class="section-title">🦵 Bí Quyết Đếm Đùi Rung Ở Phái Đoàn Trung Quốc</div>
+
+  <div class="story-box">
+    <h3>🔍 Quan Sát Tỉ Mỉ – Đọc Hiệu Quả Thực Sự</h3>
+    <p>Trong một cuộc đàm phán với phái đoàn Trung Quốc, khi cả phòng im lặng và mặt ai cũng tỏ ra lạnh lùng trung lập, tác giả để ý đến những đùi rung nhẹ bên dưới bàn. Đây là tín hiệu không lời về sự lo lắng, kích động hoặc căng thẳng của phía đối tác.</p>
+    <p>Bài học: quan sát ngôn ngữ cơ thể toàn diện, không chỉ khuôn mặt. Người châu Á thường "kiểm soát mặt" rất tốt, nhưng cơ thể lại phát ra tín hiệu khác.</p>
+  </div>
+
+  <div class="section-title">⛳ 2 Năm Chơi Golf → 470 Triệu USD Tại Phuket</div>
+
+  <div class="golf-story">
+    <h3>⛳ Câu Chuyện "Super-K" Và Sân Golf</h3>
+    <p>Tác giả dành 2 năm chơi golf với một nhân vật quan trọng (gọi là "Super-K") – không phải để thắng golf, mà để xây dựng quan hệ, hiểu tính cách, tạo niềm tin.</p>
+    <p>Kết quả: một buổi sáng tại Phuket, trên sân golf, trong bầu không khí hoàn toàn không chính thức và thư giãn, hợp đồng 470 triệu USD được ký kết.</p>
+    <p><strong>Bí quyết:</strong> Khi hai người đã hiểu nhau sâu sắc, khi không khí thoải mái và tin tưởng đã được xây dựng qua thời gian – thương thuyết trở nên gần như tự nhiên. "Chủ quan đến độ không cần nhiều lời nữa."</p>
+  </div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🎯</div>
+      <div class="takeaway-title">Chủ quan có giá trị</div>
+      <div class="takeaway-text">Đừng loại bỏ hoàn toàn tính chủ quan. Trực giác từ quan sát sâu sắc và quan hệ lâu dài đôi khi chính xác hơn phân tích số liệu khô khan.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">👁️</div>
+      <div class="takeaway-title">Quan sát toàn diện</div>
+      <div class="takeaway-text">Đọc ngôn ngữ cơ thể, nhịp thở, cử chỉ nhỏ – không chỉ nghe lời nói. Người châu Á đặc biệt giỏi "giấu mặt" nhưng cơ thể thì khó kiểm soát hơn.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">⏳</div>
+      <div class="takeaway-title">Đầu tư thời gian</div>
+      <div class="takeaway-text">2 năm xây dựng quan hệ cho một hợp đồng 470 triệu USD – tỉ lệ đó có hợp lý không? Trong nhiều nền văn hóa, đây là điều hoàn toàn bình thường.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🌐</div>
+      <div class="takeaway-title">Môi trường phi chính thức</div>
+      <div class="takeaway-text">Sân golf, bàn ăn tối, chuyến đi du lịch – đây là nơi nhiều quyết định lớn được đưa ra. Đừng đánh giá thấp sức mạnh của "thời gian ngoài văn phòng".</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Càng chủ quan càng tốt, đôi khi chủ quan đến độ không cần phải nhiều lời nữa. Khi hai bên đã hiểu nhau, thương thuyết tự nhiên đến."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Cân bằng chủ quan và khách quan</strong>
+      <p>Số liệu và phân tích (khách quan) cho bạn nền tảng. Trực giác và quan hệ (chủ quan) cho bạn lợi thế. Nhà thương thuyết giỏi dùng cả hai, biết khi nào dùng cái nào.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">🔍</div>
+    <div class="callout-body">
+      <strong>Mỗi người nhìn một phía</strong>
+      <p>Thí nghiệm 30 người Iran nhắc nhở: mỗi thành viên trong đoàn của bạn có góc nhìn khác nhau. Hội ý sau mỗi buổi họp để tổng hợp nhiều quan sát – bức tranh toàn diện hơn bất kỳ một người nào.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 9</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>30 người cùng họp → 30 nhận định khác nhau: nhắc nhở về giới hạn của mọi quan sát cá nhân.</li>
+      <li><span class="lesson-num">2</span>Quan sát ngôn ngữ cơ thể toàn diện, không chỉ khuôn mặt – đặc biệt với người châu Á và Trung Đông.</li>
+      <li><span class="lesson-num">3</span>Chủ quan được xây dựng từ quan hệ sâu sắc có giá trị cao hơn phân tích số liệu bề mặt.</li>
+      <li><span class="lesson-num">4</span>Đầu tư thời gian dài hạn vào quan hệ cá nhân với người ra quyết định là chiến lược hợp lý trong nhiều nền văn hóa.</li>
+      <li><span class="lesson-num">5</span>Môi trường phi chính thức (sân golf, bàn ăn) thường là nơi quyết định lớn được thực sự đưa ra.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-08.html" class="nav-btn nav-btn-prev">← Chương 8</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-10.html" class="nav-btn nav-btn-next">Chương 10 →</a>
+  </div>
+
+</div>
+</body>
+</html>

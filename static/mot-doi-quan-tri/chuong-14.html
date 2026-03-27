@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 14: Môi trường kinh doanh — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#1A3A5C 0%,#34495E 50%,#2C3E50 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #34495E;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .lobby-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:28px 0;}
+  .lobby-card{background:white;border-radius:12px;padding:22px;box-shadow:var(--shadow);border-top:4px solid var(--navy);}
+  .lobby-card:nth-child(2){border-top-color:#8E44AD;}
+  .lobby-card:nth-child(3){border-top-color:#C0392B;}
+  .lobby-card-icon{font-size:2rem;margin-bottom:10px;}
+  .lobby-card-name{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:6px;}
+  .lobby-card-full{font-size:0.78rem;color:var(--orange);margin-bottom:10px;}
+  .lobby-card-desc{font-size:0.85rem;color:#666;line-height:1.6;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--navy),#2A5F8F);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(255,255,255,0.05);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:white;font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--gold);font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-13.html" class="nav-btn">← Chương 13</a>
+    <a href="chuong-15.html" class="nav-btn">Chương 15 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🌐 Chương 14</div>
+  <span class="hero-emoji">🕵️</span>
+  <h1>Môi Trường <span>Kinh Doanh</span></h1>
+  <p class="hero-sub">Phía sau những quyết định kinh doanh lớn nhất thế giới là những nhóm ảnh hưởng mà không ai nhìn thấy trên bản tin.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Kinh doanh toàn cầu không chỉ diễn ra trên thị trường tự do. Có những lực lượng vô hình — các nhóm lobby, các tổ chức siêu quốc gia — định hình quy tắc của trò chơi. Ai không biết điều này thì chơi mà không hiểu luật chơi thật sự.
+  </div>
+
+  <div class="cards-title">🔍 Những Tổ Chức Vô Hình</div>
+  <div class="lobby-grid">
+    <div class="lobby-card">
+      <div class="lobby-card-icon">🏰</div>
+      <div class="lobby-card-name">Bilderberg Group</div>
+      <div class="lobby-card-full">Thành lập 1954, họp kín hàng năm</div>
+      <div class="lobby-card-desc">Tập hợp các nhà lãnh đạo chính trị, kinh doanh, học thuật từ Bắc Mỹ và châu Âu. Không có tuyên bố chính thức, không có biên bản họp công khai.</div>
+    </div>
+    <div class="lobby-card">
+      <div class="lobby-card-icon">🌐</div>
+      <div class="lobby-card-name">CFR</div>
+      <div class="lobby-card-full">Council on Foreign Relations</div>
+      <div class="lobby-card-desc">Tổ chức tư vấn chính sách đối ngoại Mỹ, ảnh hưởng mạnh đến chính sách ngoại giao và thương mại quốc tế của Hoa Kỳ.</div>
+    </div>
+    <div class="lobby-card">
+      <div class="lobby-card-icon">🔺</div>
+      <div class="lobby-card-name">Trilateral Commission</div>
+      <div class="lobby-card-full">Ủy ban Ba bên, thành lập 1973</div>
+      <div class="lobby-card-desc">Kết nối Bắc Mỹ, Tây Âu, và Nhật Bản. Ảnh hưởng đến chính sách thương mại và kinh tế toàn cầu qua mạng lưới thành viên quyền lực.</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Bài Học Về Môi Trường Kinh Doanh</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">📜</div>
+      <div class="card-num">01</div>
+      <h3>Luật viết và luật không viết</h3>
+      <p>Trong kinh doanh quốc tế, luật pháp chỉ là một phần. Các quy tắc không chính thức, thông lệ ngầm, và mạng lưới quan hệ thường quan trọng hơn.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🕸️</div>
+      <div class="card-num">02</div>
+      <h3>Mạng lưới vô hình</h3>
+      <p>Ai biết ai, ai nợ ai, ai có thể gọi cho ai lúc nửa đêm — đây là mạng lưới thật sự định hình kết quả của các deal lớn.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌍</div>
+      <div class="card-num">03</div>
+      <h3>Địa chính trị ảnh hưởng kinh doanh</h3>
+      <p>Không có kinh doanh thuần túy tách rời chính trị ở cấp độ quốc tế. Hiểu địa chính trị là kỹ năng bắt buộc của lãnh đạo toàn cầu.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🎓</div>
+      <div class="card-num">04</div>
+      <h3>Học để hiểu, không để sợ</h3>
+      <p>Hiểu những lực lượng này không phải để tham gia hay phục tùng, mà để không bị bất ngờ và có thể điều hướng thông minh hơn.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Muốn thành công trong kinh doanh, phải hiểu<br>cả những gì không được viết trong luật."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Với doanh nghiệp Việt Nam:</strong> Khi bước ra thị trường quốc tế, người Việt thường bị bất ngờ bởi những quy tắc không viết, những mạng lưới quan hệ vô hình, và những ảnh hưởng phi chính thức. Hiểu điều này sớm sẽ tránh nhiều cú vấp ngã đắt giá.
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Không phải âm mưu luận:</strong> GS. Phan Văn Trường không cổ xúy thuyết âm mưu. Ông đơn giản chỉ ra rằng thế giới thực tế phức tạp hơn những gì được dạy trong sách giáo khoa, và người lãnh đạo khôn ngoan cần nhận ra điều đó.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Kinh doanh quốc tế có cả luật viết và "luật không viết" — người thành công biết cả hai.</li>
+      <li>Các nhóm ảnh hưởng như Bilderberg, CFR không phải huyền thoại — họ là thực tế của quyền lực toàn cầu.</li>
+      <li>Địa chính trị và kinh doanh không thể tách rời ở cấp độ toàn cầu.</li>
+      <li>Hiểu môi trường để không bị bất ngờ — không phải để tham gia hay sợ hãi.</li>
+      <li>Doanh nghiệp Việt Nam muốn ra thế giới cần trang bị kiến thức về "luật không viết" này.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-13.html" class="bnav-btn">← Chương 13</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-15.html" class="bnav-btn next">Chương 15: Đại chiến Tuxpan-Mexico →</a>
+  </div>
+</div>
+
+</body>
+</html>

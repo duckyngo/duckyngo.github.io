@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 10: Công dân toàn cầu — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#2980B9 0%,var(--navy) 40%,var(--green) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #2980B9;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .mindset-compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0;}
+  .mindset-card{border-radius:14px;padding:28px;box-shadow:var(--shadow);}
+  .mindset-card.local{background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-top:5px solid var(--orange);}
+  .mindset-card.global{background:linear-gradient(135deg,#E3F2FD,#BBDEFB);border-top:5px solid #2980B9;}
+  .mindset-card h3{font-size:1rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .mindset-card.local h3{color:var(--orange);}
+  .mindset-card.global h3{color:#1565C0;}
+  .mindset-card li{font-size:0.85rem;color:#555;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);list-style:none;display:flex;gap:8px;}
+  .mindset-card li:last-child{border-bottom:none;}
+  .mindset-card.local li::before{content:'×';color:var(--orange);font-weight:900;}
+  .mindset-card.global li::before{content:'✓';color:#1565C0;font-weight:700;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card.blue .card-num{background:#2980B9;}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,#2980B9,#1A5276);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(255,255,255,0.06);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:white;font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--gold);font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.mindset-compare{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-09.html" class="nav-btn">← Chương 9</a>
+    <a href="chuong-11.html" class="nav-btn">Chương 11 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🌏 Chương 10</div>
+  <span class="hero-emoji">🗺️</span>
+  <h1>Công Dân <span>Toàn Cầu</span></h1>
+  <p class="hero-sub">Global citizen không phải là người có nhiều hộ chiếu — đó là người cảm thấy ở nhà ở mọi nơi trên thế giới.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Trong thế kỷ 21, tư duy toàn cầu không còn là lợi thế — nó là yêu cầu bắt buộc. GS. Phan Văn Trường, với 40 năm làm việc trên 60 quốc gia, chia sẻ triết lý về "công dân toàn cầu" — không phải về địa lý hay hộ chiếu, mà về tư duy và trái tim.
+  </div>
+
+  <div class="cards-title">🔄 Tư Duy Cục Bộ vs Tư Duy Toàn Cầu</div>
+  <div class="mindset-compare">
+    <div class="mindset-card local">
+      <h3>🏠 Tư Duy Cục Bộ</h3>
+      <ul>
+        <li>Cách của tôi là đúng nhất</li>
+        <li>Họ phải hiểu văn hóa của tôi</li>
+        <li>Ngôn ngữ rào cản giao tiếp</li>
+        <li>Sợ cái lạ, cái khác</li>
+        <li>Thành công ở đây = thành công ở đâu cũng vậy</li>
+      </ul>
+    </div>
+    <div class="mindset-card global">
+      <h3>🌍 Tư Duy Toàn Cầu</h3>
+      <ul>
+        <li>Mỗi văn hóa có trí tuệ riêng</li>
+        <li>Tôi cần thích nghi, không ép buộc</li>
+        <li>Ngôn ngữ là cầu nối — học thêm</li>
+        <li>Cái lạ là cơ hội học hỏi</li>
+        <li>Thành công đòi hỏi đọc bối cảnh địa phương</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Những Phẩm Chất Của Global Citizen</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">👂</div>
+      <div class="card-num">01</div>
+      <h3>Lắng nghe vượt văn hóa</h3>
+      <p>Không chỉ nghe ngôn ngữ — còn nghe được những gì không nói ra, những tín hiệu phi ngôn ngữ đặc trưng của từng văn hóa.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🤸</div>
+      <div class="card-num">02</div>
+      <h3>Thích nghi linh hoạt</h3>
+      <p>Giữ giá trị cốt lõi nhưng linh hoạt trong phong cách. Ở Nhật nói ít và nhẹ nhàng hơn. Ở Mỹ Latinh thì nhiệt tình và trực tiếp hơn.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">03</div>
+      <h3>Tò mò thật sự</h3>
+      <p>Quan tâm đến lịch sử, ẩm thực, nghệ thuật, và giá trị của mỗi nơi — không phải vì cần thiết, mà vì thật sự muốn hiểu.</p>
+    </div>
+    <div class="card blue">
+      <div class="card-icon">🏠</div>
+      <div class="card-num">04</div>
+      <h3>Cảm giác "ở nhà"</h3>
+      <p>Khi có thể thấy thoải mái và hiệu quả ở bất kỳ đâu trên thế giới — bạn đã trở thành công dân toàn cầu thật sự.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Công dân toàn cầu không phải là người sống ở nhiều nước.<br>Đó là người cảm thấy ở nhà ở mọi nơi."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Với người Việt Nam — cơ hội và thách thức:</strong> Người Việt Nam có nhiều lợi thế tự nhiên để trở thành công dân toàn cầu: tính thích nghi cao, tinh thần học hỏi, và nền văn hóa đã từng giao thoa với nhiều nền văn minh lớn. Điều còn thiếu thường là sự tự tin và tư duy "mình có thể".
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-text">
+      <strong>Thực hành mỗi ngày:</strong> Đọc tin tức quốc tế. Kết bạn với người từ văn hóa khác. Học thêm ngôn ngữ. Du lịch với tư duy học hỏi, không chỉ tham quan. Mỗi bước nhỏ đều mở rộng góc nhìn của bạn.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Global citizen là tư duy và thái độ, không phải số lần xuất ngoại hay số trang hộ chiếu.</li>
+      <li>Tư duy toàn cầu đòi hỏi sự thích nghi linh hoạt trong khi vẫn giữ giá trị cốt lõi.</li>
+      <li>Người Việt Nam có nền tảng văn hóa tốt để trở thành công dân toàn cầu — cần thêm tự tin.</li>
+      <li>Lắng nghe vượt văn hóa, thích nghi linh hoạt, tò mò thật sự — ba phẩm chất cốt lõi.</li>
+      <li>Thực hành mỗi ngày: đọc tin quốc tế, kết bạn đa văn hóa, học ngôn ngữ mới.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-09.html" class="bnav-btn">← Chương 9</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-11.html" class="bnav-btn next">Chương 11: Sơ đồ tổ chức →</a>
+  </div>
+</div>
+
+</body>
+</html>

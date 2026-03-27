@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lời Mở Đầu – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+
+  .hero {
+    background: linear-gradient(135deg, #4C1D95 0%, #6B21A8 50%, #7C3AED 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge {
+    display: inline-block; background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 50px;
+    padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 12px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin: 32px 0;
+  }
+  .stat-card {
+    background: white; border-radius: 16px; padding: 24px 16px; text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-top: 4px solid var(--purple);
+  }
+  .stat-card:nth-child(2) { border-top-color: var(--teal); }
+  .stat-card:nth-child(3) { border-top-color: var(--rose); }
+  .stat-card:nth-child(4) { border-top-color: var(--amber); }
+  .stat-num { font-size: 2rem; font-weight: 800; color: var(--purple); }
+  .stat-card:nth-child(2) .stat-num { color: var(--teal); }
+  .stat-card:nth-child(3) .stat-num { color: var(--rose); }
+  .stat-card:nth-child(4) .stat-num { color: var(--amber); }
+  .stat-label { font-size: 0.85rem; color: #6B7280; margin-top: 4px; }
+
+  .section-title { font-size: 1.3rem; font-weight: 700; color: var(--purple-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border-left: 4px solid var(--purple);
+    transition: transform 0.2s;
+  }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--teal); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--rose); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--amber); }
+  .takeaway-card:nth-child(5) { border-left-color: #8B5CF6; }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+
+  .quote-box {
+    background: linear-gradient(135deg, #F5F3FF, #ECFDF5);
+    border-left: 5px solid var(--purple);
+    border-radius: 12px; padding: 28px 32px; margin: 32px 0;
+    position: relative;
+  }
+  .quote-box::before {
+    content: '"'; font-size: 6rem; color: var(--purple-light); opacity: 0.15;
+    position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1;
+  }
+  .quote-text { font-size: 1.15rem; color: var(--purple-dark); font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+
+  .callout {
+    border-radius: 12px; padding: 20px 24px; margin: 24px 0;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { color: var(--purple-dark); display: block; margin-bottom: 4px; }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+
+  .lesson-section {
+    background: linear-gradient(135deg, #1E1B4B, #312E81);
+    border-radius: 16px; padding: 32px; margin: 32px 0; color: white;
+  }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #FDE68A; }
+  .lesson-list { list-style: none; }
+  .lesson-list li {
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem;
+  }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+
+  .nav-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    background: white; border-radius: 12px; padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .nav-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 8px; text-decoration: none;
+    font-weight: 600; font-size: 0.9rem; transition: all 0.2s;
+  }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">✨ Mở Đầu Hành Trình</div>
+  <div class="hero-emoji">📖</div>
+  <h1>Lời Mở Đầu</h1>
+  <div class="subtitle">40 năm bôn ba – một cuộc đời thương thuyết từ trái tim người Việt</div>
+</div>
+
+<div class="content">
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num">40</div>
+      <div class="stat-label">Năm sự nghiệp</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">80+</div>
+      <div class="stat-label">Quốc gia đã đến</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">60+ tỷ</div>
+      <div class="stat-label">USD đã thương thuyết</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">30</div>
+      <div class="stat-label">Thủ đô ký hợp đồng</div>
+    </div>
+  </div>
+
+  <div class="section-title">💡 Tại Sao Cuốn Sách Này?</div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">📚</div>
+      <div class="takeaway-title">Không phải sách giáo khoa</div>
+      <div class="takeaway-text">Các sách thương thuyết khác mang tính giáo điều. Cuốn này kể chuyện thật – lỗi lầm có, thành công có, tất cả từ chiến trường thực tế.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🎭</div>
+      <div class="takeaway-title">Nghệ thuật, không phải khoa học</div>
+      <div class="takeaway-text">Thương thuyết không phải kỹ thuật cần học thuộc. Đó là nghệ thuật phải thấm nhuần như bản năng – phải vui, phải đáng ghi nhớ.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🤝</div>
+      <div class="takeaway-title">Nội bộ quan trọng không kém</div>
+      <div class="takeaway-text">Thương thuyết nội bộ trước khi ra ngoài đàm phán – điều các sách khác thường bỏ qua, nhưng tác giả xem là then chốt.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🌍</div>
+      <div class="takeaway-title">Góc nhìn người Việt toàn cầu</div>
+      <div class="takeaway-text">Viết bằng tiếng Việt, từ tim Việt, cho người Việt – nhưng từ kinh nghiệm thực chiến với 80+ nền văn hóa.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Thương thuyết chỉ đơn giản là tìm cái lợi cho cả đôi/đa bên, một phương án công bằng, cân bằng sau khi các bên đã hiểu rõ thật kỹ lưỡng bên kia thực sự muốn gì."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="section-title">⚡ Những Điều Sách Này Không Làm</div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Không có công thức cứng nhắc</strong>
+      <p>Bạn sẽ không tìm thấy những giải pháp ngắn gọn cụ thể. Thay vào đó, bạn sẽ hiểu được thái độ phải có, văn hóa phải học, nhân sinh quan phải hấp thụ.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">✅</div>
+    <div class="callout-body">
+      <strong>Thay vào đó – bạn sẽ đạt được</strong>
+      <p>Sau khi đọc sách, bạn sẽ không còn "khớp" trước bàn đàm phán, không sợ đàm phán bằng tiếng của người khác ngay tại xứ họ, không lo khi một mình đối diện phái đoàn 30–40 người.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Chìa khóa của thành công</strong>
+      <p>"Hiểu và nhìn nhận mỗi bên muốn gì" – trông dễ nhưng hầu hết các cuộc thương thuyết thất bại vì không nắm vững điều căn bản này.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra Từ Lời Mở Đầu</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Thương thuyết là nghệ thuật – phải vui, phải thú vị, phải đáng ghi nhớ cho cả hai bên.</li>
+      <li><span class="lesson-num">2</span>Chìa khóa thành công: hiểu thật rõ bên kia <em>thực sự muốn gì</em>, không chỉ những gì họ nói.</li>
+      <li><span class="lesson-num">3</span>Kinh nghiệm thực địa quan trọng hơn lý thuyết – không có trường lớp nào dạy được bằng thực chiến.</li>
+      <li><span class="lesson-num">4</span>Thương thuyết nội bộ (trong tổ chức mình) quan trọng không kém thương thuyết bên ngoài.</li>
+      <li><span class="lesson-num">5</span>Mọi người đều thương thuyết mỗi ngày – từ mua táo đến hỏi vợ lấy chồng, đến ký hợp đồng tỷ đô.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <span class="nav-btn nav-btn-prev" style="visibility:hidden;">← Trước</span>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-01.html" class="nav-btn nav-btn-next">Chương 1 →</a>
+  </div>
+
+</div>
+</body>
+</html>

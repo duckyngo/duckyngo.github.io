@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới VPN - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.3); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* VPN What */
+  .vpn-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .vpn-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .vpn-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* VPN Types Grid */
+  .vpn-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .vpn-type-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .vpn-type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vpn-type-card .type-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vpn-type-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .vpn-type-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.wireguard::before { background: linear-gradient(90deg, #88171a, #ef4444); }
+  .vendor-card.openvpn::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.tailscale::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.zerotier::before { background: linear-gradient(90deg, #f59e0b, #eab308); }
+  .vendor-card.netbird::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.headscale::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.strongswan::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.pfsense::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Tunnel Flow */
+  .tunnel-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .tunnel-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Topology */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Encryption Grid */
+  .encrypt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .encrypt-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .encrypt-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .encrypt-card .encrypt-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .encrypt-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .encrypt-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Performance */
+  .perf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .perf-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+  }
+
+  .perf-card h4 { color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+  .perf-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Mindset Cards */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .vpn-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .vpn-types-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">VPN World</a>
+  <a href="#what">VPN l&agrave; g&igrave;?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#types">Loại VPN</a>
+  <a href="#protocols">Protocols</a>
+  <a href="#tools">C&ocirc;ng cụ</a>
+  <a href="#encryption">M&atilde; h&oacute;a</a>
+  <a href="#performance">Hiệu năng</a>
+  <a href="#homelab">Homelab</a>
+  <a href="#enterprise">Enterprise</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">🔗</div>
+  <h1>Thế Giới VPN</h1>
+  <p class="subtitle">Từ đường hầm dial-up đến mesh network phi tập trung - Hành trình của công nghệ bảo mật kết nối. Mọi thứ bạn cần biết về VPN, những hiểu nhầm cần tránh, và cách áp dụng cho homelab của bạn.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS VPN -->
+<section id="what">
+  <div class="vpn-what">
+    <h2 class="section-title">VPN là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Virtual Private Network</strong> - Nôm na là một "đường hầm bí mật" xuyên qua mạng Internet công cộng. Thay vì gửi dữ liệu trần trụi trên Internet (ai cũng có thể đọc), VPN đóng gói (encapsulate) và mã hóa (encrypt) dữ liệu của bạn, tạo ra một kết nối riêng tư ngay trên hạ tầng công cộng.
+    </p>
+
+    <div class="vpn-analogy">
+      <div class="analogy-box">
+        <div class="icon">🌐</div>
+        <h3>Không có VPN</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu đi "trần" qua Internet<br>ISP, hacker, chính phủ đều đọc được<br>Như gửi <strong style="color: var(--accent5);">bưu thiếp</strong> - ai cũng thấy nội dung</p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🔒</div>
+        <h3>Có VPN</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu được mã hóa trong tunnel<br>Chỉ hai đầu mới giải mã được<br>Như gửi <strong style="color: var(--accent3);">thư bảo đảm trong két sắt</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Tunneling giải thích đơn giản</h4>
+      <p>Hãy tưởng tượng Internet là một hệ thống đường cao tốc công cộng. <strong>Tunneling</strong> giống như xây một đường hầm riêng bên dưới - xe của bạn (dữ liệu) chạy trong đường hầm đó, không ai bên ngoài thấy được. Kỹ thuật cốt lõi là <strong>encapsulation</strong>: gói tin gốc được "bọc" thêm một lớp header mới, giống như đặt một bức thư vào trong một phong bì khác rồi mới gửi đi. Người ngoài chỉ thấy phong bì ngoài (VPN header), không thấy nội dung bên trong.</p>
+    </div>
+
+    <!-- Three main VPN models -->
+    <h3 style="color: var(--accent2); margin: 2rem 0 1rem;">Ba mô hình VPN cơ bản</h3>
+    <div class="vpn-types-grid">
+      <div class="vpn-type-card">
+        <div class="type-icon">🏢↔️🏢</div>
+        <h3>Site-to-Site VPN</h3>
+        <p>Kết nối hai mạng LAN ở hai địa điểm khác nhau thành một mạng thống nhất. Ví dụ: văn phòng Hà Nội nối với văn phòng HCM. Router/firewall ở mỗi đầu tự động mã hóa mọi traffic giữa hai site. Người dùng không cần biết VPN tồn tại.</p>
+      </div>
+      <div class="vpn-type-card">
+        <div class="type-icon">👤→🏢</div>
+        <h3>Remote Access VPN</h3>
+        <p>Một người dùng từ xa kết nối vào mạng công ty. Nhân viên làm việc từ nhà, mở VPN client, nhập credentials, và truy cập được mọi tài nguyên nội bộ như đang ngồi trong văn phòng. Đây là loại VPN phổ biến nhất.</p>
+      </div>
+      <div class="vpn-type-card">
+        <div class="type-icon">🔀</div>
+        <h3>Mesh VPN</h3>
+        <p>Mọi node kết nối trực tiếp với nhau, không qua server trung tâm. Tailscale, ZeroTier, Netbird là ví dụ. Không có single point of failure. Peer-to-peer tunnels được thiết lập tự động giữa các thiết bị cần giao tiếp.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian VPN</h2>
+  <p class="section-subtitle">Từ dial-up đơn giản đến WireGuard hiện đại - hành trình 30 năm của công nghệ đường hầm bảo mật</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1996</span>
+        <h3>PPTP - Khởi đầu của VPN</h3>
+        <p>Microsoft phát triển PPTP (Point-to-Point Tunneling Protocol) cho Windows NT. Lần đầu tiên, người dùng dial-up có thể tạo "đường hầm" qua Internet. Bảo mật yếu nhưng đặt nền móng cho toàn bộ ngành VPN. Sử dụng GRE encapsulation và MS-CHAPv2.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1998-2005</span>
+        <h3>IPsec - Tiêu chuẩn hóa bảo mật</h3>
+        <p>IETF chuẩn hóa IPsec (RFC 2401). Hai mode: Transport (mã hóa payload) và Tunnel (mã hóa toàn bộ gói tin). IKE (Internet Key Exchange) để trao đổi khóa tự động. Trở thành "vua" của site-to-site VPN trong enterprise. Phức tạp nhưng cực kỳ mạnh mẽ và được tin cậy.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2001</span>
+        <h3>OpenVPN ra đời</h3>
+        <p>James Yonan tạo OpenVPN - giải pháp VPN open source đầu tiên thực sự mạnh mẽ. Chạy trên SSL/TLS, dùng được cả UDP và TCP. Cực kỳ linh hoạt, chạy trên mọi OS. Trở thành "Swiss Army Knife" của VPN, phổ biến nhất thế giới trong gần 20 năm.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2005-2010</span>
+        <h3>SSL VPN - VPN qua trình duyệt</h3>
+        <p>Cisco AnyConnect, Juniper Pulse, F5 BIG-IP. Ý tưởng: VPN không cần cài client, chỉ cần trình duyệt web. Thực tế vẫn cần plugin/agent nhưng đơn giản hơn IPsec nhiều. Firewall-friendly vì chạy trên port 443 (HTTPS). Thống trị enterprise remote access.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2015-2018</span>
+        <h3>Mesh VPN &amp; SD-WAN</h3>
+        <p>ZeroTier (2015), Tailscale concept hình thành. SD-WAN bùng nổ trong enterprise. Ý tưởng: không cần VPN server trung tâm, mọi node kết nối peer-to-peer. NAT traversal tự động, zero-config. Bắt đầu thay đổi cách chúng ta nghĩ về VPN.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2018-nay</span>
+        <h3>WireGuard - Cuộc cách mạng</h3>
+        <p>Jason Donenfeld tạo WireGuard với triết lý: đơn giản, nhanh, an toàn. Chỉ ~4.000 dòng code (vs 100.000+ của OpenVPN). Được merge vào Linux kernel 5.6 (2020). Sử dụng cryptography hiện đại: ChaCha20, Poly1305, Curve25519. Nhanh hơn mọi VPN protocol trước đó.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VPN TYPES -->
+<section id="types">
+  <h2 class="section-title" style="color: var(--accent3);">Các Loại VPN Chi Tiết</h2>
+  <p class="section-subtitle">Mỗi loại VPN giải quyết một bài toán khác nhau - hiểu đúng loại cần dùng là bước đầu tiên</p>
+
+  <div class="vpn-types-grid">
+    <div class="vpn-type-card">
+      <div class="type-icon">🏗️</div>
+      <h3>Site-to-Site VPN</h3>
+      <p>Nối hai hoặc nhiều mạng LAN lại với nhau qua Internet. Thường triển khai trên router/firewall (pfSense, OPNsense, Cisco ASA). Dùng IPsec hoặc WireGuard. Người dùng cuối không biết VPN tồn tại - hoàn toàn transparent. Phổ biến nhất trong doanh nghiệp có nhiều chi nhánh.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">IPsec</div><div class="label">Protocol phổ biến</div></div>
+        <div class="stat"><div class="num">24/7</div><div class="label">Always-on</div></div>
+        <div class="stat"><div class="num">LAN↔LAN</div><div class="label">Kết nối</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Transparent</span>
+        <span class="tag">Gateway-based</span>
+        <span class="tag">Enterprise</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🧳</div>
+      <h3>Remote Access VPN</h3>
+      <p>Cho phép một thiết bị cá nhân (laptop, điện thoại) kết nối vào mạng công ty từ bất kỳ đâu. Cần VPN client trên thiết bị. Thường có xác thực đa yếu tố (MFA). COVID-19 đã biến loại VPN này từ "nice to have" thành "mission critical" cho mọi tổ chức.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">SSL/TLS</div><div class="label">Phổ biến nhất</div></div>
+        <div class="stat"><div class="num">MFA</div><div class="label">Bắt buộc</div></div>
+        <div class="stat"><div class="num">User↔LAN</div><div class="label">Kết nối</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Client required</span>
+        <span class="tag good">Flexible</span>
+        <span class="tag warn">User management</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🕸️</div>
+      <h3>Mesh VPN</h3>
+      <p>Mọi node kết nối trực tiếp peer-to-peer, không qua hub trung tâm. NAT traversal tự động (STUN/TURN). Tailscale, ZeroTier, Netbird là các giải pháp nổi bật. Latency thấp vì traffic đi đường ngắn nhất. Tự động scale - thêm node mới chỉ cần cài agent.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">P2P</div><div class="label">Kiến trúc</div></div>
+        <div class="stat"><div class="num">Auto</div><div class="label">NAT traversal</div></div>
+        <div class="stat"><div class="num">N↔N</div><div class="label">Kết nối</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Zero-config</span>
+        <span class="tag good">Low latency</span>
+        <span class="tag">Modern</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">✂️</div>
+      <h3>Split Tunneling</h3>
+      <p>Chỉ một phần traffic đi qua VPN, phần còn lại đi Internet bình thường. Ví dụ: traffic đến 10.0.0.0/8 đi qua VPN, còn YouTube/Netflix đi trực tiếp. Tiết kiệm bandwidth VPN server, giảm latency cho traffic không cần bảo mật. Nhưng có rủi ro bảo mật nếu máy bị compromised.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">50%</div><div class="label">Bandwidth saved</div></div>
+        <div class="stat"><div class="num">Low</div><div class="label">Latency impact</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Bandwidth efficient</span>
+        <span class="tag warn">Security trade-off</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🛡️</div>
+      <h3>Full Tunnel</h3>
+      <p>MỌI traffic đi qua VPN - kể cả truy cập Internet thông thường. VPN server trở thành "exit node" cho toàn bộ kết nối. Bảo mật cao nhất vì công ty kiểm soát 100% traffic. Nhưng bandwidth VPN server phải gánh rất nặng và latency tăng cho mọi kết nối.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">100%</div><div class="label">Traffic qua VPN</div></div>
+        <div class="stat"><div class="num">High</div><div class="label">Security</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Maximum security</span>
+        <span class="tag hot">High bandwidth</span>
+        <span class="tag warn">Higher latency</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">📱</div>
+      <h3>Mobile VPN</h3>
+      <p>VPN thiết kế cho thiết bị di động - xử lý được việc chuyển đổi mạng (WiFi sang 4G/5G) mà không đứt kết nối. IKEv2 là protocol phổ biến nhất cho mobile VPN vì hỗ trợ MOBIKE. WireGuard cũng rất tốt cho mobile nhờ handshake nhanh và ít battery drain.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">IKEv2</div><div class="label">Tốt nhất</div></div>
+        <div class="stat"><div class="num">Roaming</div><div class="label">Hỗ trợ</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Seamless roaming</span>
+        <span class="tag">Battery efficient</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Split Tunnel vs Full Tunnel - Cuộc tranh luận không hồi kết</h4>
+    <p><strong>Split tunnel</strong> là lựa chọn thông minh cho hiệu năng: Netflix 4K không cần đi qua VPN server ở Singapore. Nhưng <strong>security team</strong> ghét nó vì nếu laptop bạn bị malware, nó có thể exfiltrate data qua đường Internet trực tiếp, bypass mọi DLP (Data Loss Prevention). <strong>Quy tắc vàng</strong>: dùng split tunnel cho homelab, full tunnel cho doanh nghiệp xử lý dữ liệu nhạy cảm.</p>
+  </div>
+</section>
+
+<!-- PROTOCOLS -->
+<section id="protocols">
+  <h2 class="section-title" style="color: var(--accent2);">Protocols Deep Dive</h2>
+  <p class="section-subtitle">Mỗi protocol VPN có triết lý thiết kế, điểm mạnh và điểm yếu riêng</p>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> WireGuard</h4>
+      <p><strong>Vua mới.</strong> Chỉ ~4.000 dòng code, chạy trong Linux kernel. Sử dụng ChaCha20-Poly1305 cho encryption, Curve25519 cho key exchange, BLAKE2s cho hashing. UDP only, port mặc định 51820. Handshake cực nhanh (1-RTT). Không có state negotiation phức tạp - "Cryptokey Routing" đơn giản đẹp đẽ.</p>
+      <div class="tag-row"><span class="tag good">Modern</span><span class="tag good">In-kernel</span><span class="tag">UDP only</span><span class="tag good">~4K LoC</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> OpenVPN</h4>
+      <p><strong>Workhorse đáng tin cậy.</strong> SSL/TLS-based, hỗ trợ cả UDP và TCP. Chạy trong userspace. Có thể hoạt động trên port 443 (giả dạng HTTPS traffic). Cực kỳ configurable - hàng trăm options. Certificate-based authentication. Hỗ trợ mọi nền tảng. Nhược điểm: chậm hơn WireGuard do userspace overhead.</p>
+      <div class="tag-row"><span class="tag good">Mature</span><span class="tag good">UDP+TCP</span><span class="tag">Userspace</span><span class="tag warn">Complex config</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> IPsec/IKEv2</h4>
+      <p><strong>Enterprise standard.</strong> IKEv2 là bản cải tiến của IKE, nhanh hơn, hỗ trợ MOBIKE (roaming). Tích hợp sẵn trong Windows, macOS, iOS, Android. Hai mode: Tunnel (phổ biến) và Transport. ESP (Encapsulating Security Payload) cho encryption. Phức tạp để debug nhưng cực kỳ robust.</p>
+      <div class="tag-row"><span class="tag good">Native OS support</span><span class="tag good">MOBIKE</span><span class="tag warn">Complex</span><span class="tag">Enterprise</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> L2TP/IPsec</h4>
+      <p><strong>Combo cũ nhưng vẫn dùng.</strong> L2TP tạo tunnel, IPsec mã hóa. Double encapsulation nên overhead cao. Tích hợp sẵn trong mọi OS. Port UDP 1701 (L2TP) + 500/4500 (IPsec). Bị nhiều firewall block. Đang dần bị thay thế bởi IKEv2 và WireGuard nhưng vẫn thấy trong legacy systems.</p>
+      <div class="tag-row"><span class="tag warn">Legacy</span><span class="tag">Double encap</span><span class="tag hot">High overhead</span><span class="tag">Built-in OS</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> SSTP</h4>
+      <p><strong>Microsoft's SSL VPN.</strong> Chạy trên HTTPS port 443. Vượt qua mọi firewall. Nhưng chỉ native support trên Windows. Proprietary protocol, không open source (dù đã được document). Ít được dùng ngoài môi trường Windows-only. Tương đương OpenVPN về khả năng vượt firewall.</p>
+      <div class="tag-row"><span class="tag warn">Windows only</span><span class="tag">Port 443</span><span class="tag hot">Proprietary</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status dead"></span> PPTP (Legacy)</h4>
+      <p><strong>Ông tổ đã chết.</strong> Bảo mật bị phá hoàn toàn - MS-CHAPv2 có thể crack trong vài giờ. GRE protocol bị nhiều NAT/firewall block. Tuy nhiên, setup cực kỳ đơn giản và vẫn tồn tại trong một số router cũ. KHÔNG BAO GIỜ dùng PPTP cho bất kỳ thứ gì cần bảo mật.</p>
+      <div class="tag-row"><span class="tag hot">Broken crypto</span><span class="tag hot">NEVER use</span><span class="tag">GRE-based</span><span class="tag warn">Legacy only</span></div>
+    </div>
+  </div>
+
+  <!-- Tunnel Visualization -->
+  <div class="tunnel-flow">
+    <div class="flow-title">WireGuard Tunnel - Điều gì xảy ra khi bạn gửi một gói tin?</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  Ứng dụng (App)           WireGuard Interface          Internet              VPN Peer
+       |                          |                        |                     |
+       |─── IP Packet ───────────>|                        |                     |
+       |   (src: 10.0.0.2)        |                        |                     |
+       |   (dst: 10.0.0.5)        |                        |                     |
+       |                          |                        |                     |
+       |              <span style="color:var(--accent4);">Cryptokey Routing Table:</span>                                    |
+       |              <span style="color:var(--accent4);">10.0.0.5/32 → peer XYZ (public key)</span>                        |
+       |                          |                        |                     |
+       |                          |── <span style="color:var(--accent3);">Encrypt</span> ────────────>|                     |
+       |                          |   ChaCha20-Poly1305    |                     |
+       |                          |   + UDP encapsulate    |                     |
+       |                          |   src: 1.2.3.4:51820   |                     |
+       |                          |   dst: 5.6.7.8:51820   |──── UDP Packet ────>|
+       |                          |                        |                     |
+       |                          |                        |     <span style="color:var(--accent3);">Decrypt</span>         |
+       |                          |                        |     Verify Poly1305 |
+       |                          |                        |     Extract IP pkt  |
+       |                          |                        |     Route to 10.0.0.5
+    </pre>
+  </div>
+
+  <!-- Protocol Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>WireGuard</th>
+          <th>OpenVPN</th>
+          <th>IPsec/IKEv2</th>
+          <th>L2TP/IPsec</th>
+          <th>PPTP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tốc độ</td>
+          <td style="color: var(--accent3);">Rất nhanh</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent3);">Nhanh</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent3);">Nhanh</td>
+        </tr>
+        <tr>
+          <td>Bảo mật</td>
+          <td style="color: var(--accent3);">Rất cao</td>
+          <td style="color: var(--accent3);">Cao</td>
+          <td style="color: var(--accent3);">Cao</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent5);">Đã bị phá</td>
+        </tr>
+        <tr>
+          <td>Độ phức tạp</td>
+          <td style="color: var(--accent3);">Thấp</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent5);">Cao</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent3);">Rất thấp</td>
+        </tr>
+        <tr>
+          <td>Code base</td>
+          <td>~4.000 LoC</td>
+          <td>~100.000 LoC</td>
+          <td>~400.000 LoC</td>
+          <td>Kế thừa IPsec</td>
+          <td>~5.000 LoC</td>
+        </tr>
+        <tr>
+          <td>Transport</td>
+          <td>UDP only</td>
+          <td>UDP + TCP</td>
+          <td>UDP 500/4500</td>
+          <td>UDP 1701/500</td>
+          <td>GRE + TCP 1723</td>
+        </tr>
+        <tr>
+          <td>NAT traversal</td>
+          <td style="color: var(--accent3);">Tốt</td>
+          <td style="color: var(--accent3);">Rất tốt</td>
+          <td style="color: var(--accent3);">Tốt (NAT-T)</td>
+          <td style="color: var(--accent4);">Khó</td>
+          <td style="color: var(--accent5);">Rất khó</td>
+        </tr>
+        <tr>
+          <td>Mobile roaming</td>
+          <td style="color: var(--accent3);">Tốt</td>
+          <td style="color: var(--accent4);">Kém</td>
+          <td style="color: var(--accent3);">Rất tốt (MOBIKE)</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Khuyến nghị</td>
+          <td style="color: var(--accent3);">Ưu tiên #1</td>
+          <td>Khi cần TCP</td>
+          <td>Enterprise/Mobile</td>
+          <td style="color: var(--accent4);">Tránh nếu được</td>
+          <td style="color: var(--accent5);">KHÔNG DÙNG</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: Tại sao WireGuard nhanh hơn?</h4>
+    <p>WireGuard chạy <strong>trong Linux kernel</strong> (kernel module), không cần copy dữ liệu giữa kernel space và user space như OpenVPN. Đây là lý do lớn nhất. Ngoài ra, ChaCha20 nhanh hơn AES trên CPU không có AES-NI (phổ biến trên ARM/mobile). Và cuối cùng, WireGuard không có state machine phức tạp - mỗi gói tin được xử lý độc lập, tối ưu cho CPU pipeline hiện đại.</p>
+  </div>
+</section>
+
+<!-- TOOLS & VENDORS -->
+<section id="tools">
+  <h2 class="section-title" style="color: var(--accent4);">Các Ông Lớn &amp; Công Cụ VPN</h2>
+  <p class="section-subtitle">Từ kernel module đến giải pháp SaaS - mỗi công cụ có vị trí riêng trong hệ sinh thái</p>
+
+  <div class="vendor-grid">
+    <!-- WireGuard -->
+    <div class="vendor-card wireguard">
+      <div class="vendor-logo">🛡️</div>
+      <h3>WireGuard</h3>
+      <div class="vendor-type">Kernel Module / Protocol</div>
+      <p>Không phải "phần mềm VPN" theo nghĩa truyền thống mà là một <strong>protocol + kernel module</strong>. Cài đặt bằng vài lệnh, config chỉ là file text đơn giản. Mỗi peer có một cặp public/private key. Routing dựa trên "AllowedIPs" - elegantly simple. Là nền tảng cho Tailscale, Netbird, và nhiều giải pháp khác.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2018</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">4K</div><div class="label">Dòng code</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">In-kernel</span>
+        <span class="tag good">Fast</span>
+        <span class="tag good">Simple config</span>
+        <span class="tag">UDP 51820</span>
+      </div>
+    </div>
+
+    <!-- OpenVPN -->
+    <div class="vendor-card openvpn">
+      <div class="vendor-logo">🔐</div>
+      <h3>OpenVPN</h3>
+      <div class="vendor-type">Open Source / Software VPN</div>
+      <p>VPN open source phổ biến nhất thế giới suốt gần 20 năm. Certificate-based PKI, hỗ trợ cả UDP và TCP, chạy được trên port 443 để vượt firewall. OpenVPN Access Server (thương mại) có web UI. Community Edition hoàn toàn free. Hàng triệu deployment toàn cầu.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2001</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">60M+</div><div class="label">Downloads</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Community</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Battle-tested</span>
+        <span class="tag good">TCP fallback</span>
+        <span class="tag warn">Complex PKI</span>
+        <span class="tag">Cross-platform</span>
+      </div>
+    </div>
+
+    <!-- Tailscale -->
+    <div class="vendor-card tailscale">
+      <div class="vendor-logo">🌊</div>
+      <h3>Tailscale</h3>
+      <div class="vendor-type">Mesh VPN / SaaS</div>
+      <p>Xây trên WireGuard, thêm lớp quản lý thông minh: coordination server (control plane), NAT traversal tự động (DERP relay), SSO integration. Cài xong là dùng - zero config. Free cho cá nhân (lên đến 100 thiết bị). MagicDNS cho tên miền nội bộ. Taildrop chia sẻ file. Exit node biến bất kỳ máy nào thành VPN gateway.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2019</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">100</div><div class="label">Free devices</div></div>
+        <div class="stat"><div class="num">WireGuard</div><div class="label">Nền tảng</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Zero-config</span>
+        <span class="tag good">MagicDNS</span>
+        <span class="tag">SaaS control</span>
+        <span class="tag good">Free tier</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>Tailscale coordination server (control plane) chạy trên cloud của Tailscale. Nếu bạn muốn self-host hoàn toàn, hãy dùng <strong>Headscale</strong> - open source implementation của Tailscale control server.</p>
+      </div>
+    </div>
+
+    <!-- ZeroTier -->
+    <div class="vendor-card zerotier">
+      <div class="vendor-logo">🌐</div>
+      <h3>ZeroTier</h3>
+      <div class="vendor-type">Mesh VPN / Peer-to-Peer</div>
+      <p>Tạo virtual Ethernet network trên Internet. Mỗi network có một 16-digit ID. Cài agent, join network, xong. Hoạt động ở Layer 2 (Ethernet level) - nghĩa là có thể bridge, DHCP, broadcast. Phù hợp cho gaming LAN party qua Internet, hoặc kết nối thiết bị IoT. Self-hosted controller có thể dùng ztncui.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2015</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">L2</div><div class="label">Layer</div></div>
+        <div class="stat"><div class="num">25</div><div class="label">Free devices</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Layer 2</span>
+        <span class="tag">Virtual Ethernet</span>
+        <span class="tag good">Gaming friendly</span>
+        <span class="tag">Self-hostable</span>
+      </div>
+    </div>
+
+    <!-- Netbird -->
+    <div class="vendor-card netbird">
+      <div class="vendor-logo">🐦</div>
+      <h3>Netbird</h3>
+      <div class="vendor-type">Open Source / Mesh VPN</div>
+      <p>Đối thủ open source của Tailscale. Xây trên WireGuard, có management UI đẹp, tích hợp SSO (Keycloak, Auth0, Google). Self-hosted hoàn toàn miễn phí. Access control policies, DNS management, route distribution. Đang phát triển rất nhanh. Phù hợp cho ai muốn giải pháp mesh VPN tự quản lý.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2022</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Self-hosted</div></div>
+        <div class="stat"><div class="num">WireGuard</div><div class="label">Nền tảng</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Self-hosted</span>
+        <span class="tag">SSO native</span>
+        <span class="tag good">ACL policies</span>
+      </div>
+    </div>
+
+    <!-- Headscale -->
+    <div class="vendor-card headscale">
+      <div class="vendor-logo">🗄️</div>
+      <h3>Headscale</h3>
+      <div class="vendor-type">Open Source / Tailscale Control Server</div>
+      <p>Self-hosted, open source implementation của Tailscale coordination server. Viết bằng Go. Dùng với Tailscale client chính thức. Không cần phụ thuộc vào cloud Tailscale. Hỗ trợ ACL, MagicDNS, preauth keys. Hoàn hảo cho người muốn sức mạnh của Tailscale mà vẫn kiểm soát 100% data.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2021</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Go</div><div class="label">Ngôn ngữ</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">Self-hosted</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Full control</span>
+        <span class="tag good">Open Source</span>
+        <span class="tag">Tailscale compatible</span>
+        <span class="tag warn">Community support</span>
+      </div>
+    </div>
+
+    <!-- strongSwan -->
+    <div class="vendor-card strongswan">
+      <div class="vendor-logo">🦢</div>
+      <h3>strongSwan</h3>
+      <div class="vendor-type">Open Source / IPsec Implementation</div>
+      <p>IPsec implementation mạnh nhất trên Linux. Hỗ trợ IKEv1, IKEv2, MOBIKE. Certificate management, EAP authentication, RADIUS integration. Phổ biến trong enterprise site-to-site và roadwarrior VPN. Tài liệu tốt, community active. Phức tạp để config nhưng cực kỳ powerful.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2005</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">IKEv2</div><div class="label">Protocol</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Enterprise grade</span>
+        <span class="tag">IPsec</span>
+        <span class="tag warn">Steep learning</span>
+        <span class="tag">RADIUS</span>
+      </div>
+    </div>
+
+    <!-- pfSense/OPNsense -->
+    <div class="vendor-card pfsense">
+      <div class="vendor-logo">🔥</div>
+      <h3>pfSense / OPNsense</h3>
+      <div class="vendor-type">Firewall + VPN Gateway</div>
+      <p>Firewall/router distributions dựa trên FreeBSD với VPN tích hợp sẵn. Hỗ trợ OpenVPN, IPsec, WireGuard qua GUI đẹp. Phổ biến nhất trong homelab và SMB. pfSense của Netgate (community edition free), OPNsense hoàn toàn open source. Một box làm tất cả: firewall, VPN, IDS, DHCP, DNS.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2004</div><div class="label">pfSense</div></div>
+        <div class="stat"><div class="num">2015</div><div class="label">OPNsense</div></div>
+        <div class="stat"><div class="num">All-in-1</div><div class="label">Solution</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">GUI management</span>
+        <span class="tag good">Multi-VPN</span>
+        <span class="tag">FreeBSD</span>
+        <span class="tag good">Homelab favorite</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENCRYPTION -->
+<section id="encryption">
+  <h2 class="section-title" style="color: var(--accent);">Mã Hóa &amp; Xác Thực</h2>
+  <p class="section-subtitle">Trái tim của VPN - nếu mã hóa yếu, đường hầm cũng vô nghĩa</p>
+
+  <div class="encrypt-grid">
+    <div class="encrypt-card">
+      <div class="encrypt-icon">🔑</div>
+      <h3>Symmetric Encryption</h3>
+      <p>Cùng một khóa để mã hóa và giải mã. <strong>AES-256-GCM</strong> (OpenVPN, IPsec) hoặc <strong>ChaCha20-Poly1305</strong> (WireGuard). Nhanh, hiệu quả. Vấn đề: làm sao chia sẻ khóa bí mật qua Internet không an toàn? Đó là lý do cần key exchange.</p>
+      <div class="tag-row">
+        <span class="tag good">Nhanh</span>
+        <span class="tag">AES-256</span>
+        <span class="tag">ChaCha20</span>
+      </div>
+    </div>
+
+    <div class="encrypt-card">
+      <div class="encrypt-icon">🔐</div>
+      <h3>Asymmetric Encryption</h3>
+      <p>Hai khóa khác nhau: public key (ai cũng biết) và private key (chỉ mình biết). <strong>RSA</strong> (OpenVPN), <strong>Curve25519</strong> (WireGuard), <strong>ECDH</strong> (IPsec). Chậm hơn symmetric nên chỉ dùng cho key exchange và authentication, không mã hóa bulk data.</p>
+      <div class="tag-row">
+        <span class="tag">RSA</span>
+        <span class="tag good">Curve25519</span>
+        <span class="tag">ECDH</span>
+      </div>
+    </div>
+
+    <div class="encrypt-card">
+      <div class="encrypt-icon">🤝</div>
+      <h3>Key Exchange</h3>
+      <p><strong>Diffie-Hellman</strong> (DH) cho phép hai bên thỏa thuận một khóa chung mà không bao giờ gửi khóa đó qua mạng. Kẻ nghe lén thấy các thông tin trao đổi nhưng không thể tính ra khóa. WireGuard dùng <strong>Noise Protocol Framework</strong> với 1-RTT handshake cực nhanh.</p>
+      <div class="tag-row">
+        <span class="tag">DH</span>
+        <span class="tag good">ECDH</span>
+        <span class="tag good">Noise Protocol</span>
+      </div>
+    </div>
+
+    <div class="encrypt-card">
+      <div class="encrypt-icon">📜</div>
+      <h3>Certificates (PKI)</h3>
+      <p>OpenVPN và IPsec thường dùng <strong>X.509 certificates</strong> để xác thực. Cần Certificate Authority (CA) để ký cert. EasyRSA tạo PKI cho OpenVPN. Let's Encrypt KHÔNG dùng cho VPN (khác mục đích). Certificate cho phép revoke user mà không đổi shared secret.</p>
+      <div class="tag-row">
+        <span class="tag">X.509</span>
+        <span class="tag">EasyRSA</span>
+        <span class="tag good">Revokable</span>
+      </div>
+    </div>
+
+    <div class="encrypt-card">
+      <div class="encrypt-icon">🗝️</div>
+      <h3>Pre-Shared Key (PSK)</h3>
+      <p>Cách đơn giản nhất: hai bên cùng biết một "mật khẩu". WireGuard dùng PSK như lớp bảo mật bổ sung (optional). IPsec có thể dùng PSK thay cho certificate. Vấn đề: khó quản lý khi có nhiều peer, và nếu PSK bị lộ thì mọi kết nối đều compromised.</p>
+      <div class="tag-row">
+        <span class="tag warn">Khó scale</span>
+        <span class="tag">Đơn giản</span>
+        <span class="tag hot">Rủi ro nếu lộ</span>
+      </div>
+    </div>
+
+    <div class="encrypt-card">
+      <div class="encrypt-icon">📲</div>
+      <h3>MFA (Multi-Factor Auth)</h3>
+      <p>Thêm lớp xác thực ngoài certificate/password: OTP (Google Authenticator), hardware token (YubiKey), push notification. OpenVPN hỗ trợ qua plugin (google-authenticator-libpam). Tailscale/Netbird dùng SSO provider đã có MFA sẵn. <strong>Bắt buộc</strong> cho enterprise VPN.</p>
+      <div class="tag-row">
+        <span class="tag good">Essential</span>
+        <span class="tag">TOTP/HOTP</span>
+        <span class="tag">YubiKey</span>
+        <span class="tag good">SSO integration</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tunnel-flow">
+    <div class="flow-title">Quy trình mã hóa một gói tin VPN (simplified)</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  <span style="color:var(--accent);">Bước 1: Handshake (chỉ lần đầu)</span>
+  ┌─────────────┐                          ┌─────────────┐
+  │  Client      │──── Public Key ─────────>│  Server      │
+  │              │<─── Public Key ──────────│              │
+  │              │     + DH Exchange        │              │
+  │  <span style="color:var(--accent3);">→ Shared Secret được tính ra ở CẢ HAI BÊN</span>                │
+  │  <span style="color:var(--accent3);">→ Mà KHÔNG BAO GIỜ gửi qua mạng!</span>                      │
+  └─────────────┘                          └─────────────┘
+
+  <span style="color:var(--accent);">Bước 2: Mã hóa data (mỗi gói tin)</span>
+  ┌──────────────────────────────────────────────────────────┐
+  │ Original IP Packet:                                       │
+  │ [IP Header: src=10.0.0.2, dst=10.0.0.5] [TCP] [Data]    │
+  └──────────────────────────────────────────────────────────┘
+                              ↓ <span style="color:var(--accent4);">Encrypt with shared secret</span>
+  ┌──────────────────────────────────────────────────────────┐
+  │ VPN Packet:                                               │
+  │ [New IP: src=1.2.3.4, dst=5.6.7.8] [UDP 51820]          │
+  │ [<span style="color:var(--accent5);">████ ENCRYPTED PAYLOAD ████████████████</span>]           │
+  │ [Poly1305 Auth Tag]                                       │
+  └──────────────────────────────────────────────────────────┘
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Perfect Forward Secrecy (PFS)</h4>
+    <p>PFS đảm bảo rằng nếu private key bị lộ <strong>trong tương lai</strong>, kẻ tấn công vẫn không giải mã được traffic đã bắt trước đó. Mỗi phiên dùng ephemeral key riêng, sau đó hủy. WireGuard có PFS nhờ handshake mỗi 2 phút. OpenVPN cần bật <code style="color: var(--accent3);">tls-crypt</code> hoặc <code style="color: var(--accent3);">tls-auth</code>. Đây là lý do NSA thu thập encrypted traffic - hy vọng ngày nào đó sẽ crack được key. PFS ngăn chặn chính xác kịch bản này.</p>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section id="performance">
+  <h2 class="section-title" style="color: var(--accent3);">Hiệu Năng VPN</h2>
+  <p class="section-subtitle">VPN luôn có overhead - câu hỏi là bao nhiêu và làm sao tối ưu</p>
+
+  <div class="perf-grid">
+    <div class="perf-card">
+      <h4>📐 MTU - Vấn đề muôn thuở</h4>
+      <p>Ethernet MTU mặc định: <strong>1500 bytes</strong>. VPN thêm header → gói tin vượt quá MTU → bị fragment → giảm hiệu năng nghiêm trọng. <strong>Giải pháp</strong>: giảm MTU trên VPN interface. WireGuard: MTU 1420. OpenVPN UDP: MTU 1400. OpenVPN TCP: MTU 1380. Luôn test bằng <code style="color: var(--accent3);">ping -M do -s 1400 peer_ip</code></p>
+    </div>
+
+    <div class="perf-card">
+      <h4>⚡ UDP vs TCP cho VPN</h4>
+      <p><strong>Luôn ưu tiên UDP.</strong> VPN trên TCP gây "TCP-over-TCP" problem: khi gói tin ngoài bị mất, TCP ngoài retransmit, nhưng TCP trong cũng retransmit → exponential backoff → throughput sụp. OpenVPN TCP chỉ nên dùng khi UDP bị block (corporate firewall). WireGuard chỉ hỗ trợ UDP - đây là design choice đúng đắn.</p>
+    </div>
+
+    <div class="perf-card">
+      <h4>📊 Overhead tính toán</h4>
+      <p><strong>WireGuard overhead:</strong> ~60 bytes/packet (IP + UDP + WG header). Trên 1500 MTU, hiệu suất payload ~96%. <strong>OpenVPN UDP:</strong> ~70 bytes. <strong>OpenVPN TCP:</strong> ~90 bytes + TCP overhead. <strong>IPsec ESP tunnel:</strong> ~50-70 bytes. Overhead nhỏ nhưng tích lũy trên hàng triệu gói tin.</p>
+    </div>
+
+    <div class="perf-card">
+      <h4>🧪 Speed Testing đúng cách</h4>
+      <p>KHÔNG dùng speedtest.net qua VPN để đánh giá. Dùng <code style="color: var(--accent3);">iperf3</code> giữa hai đầu tunnel để đo throughput thuần. So sánh iperf3 có VPN vs không VPN trên cùng route. Chú ý: CPU có thể là bottleneck cho encryption. Kiểm tra CPU usage khi chạy iperf3. Server nhỏ (Raspberry Pi) có thể bị giới hạn bởi CPU, không phải bandwidth.</p>
+    </div>
+
+    <div class="perf-card">
+      <h4>🔧 Tối ưu WireGuard</h4>
+      <p>Bật <code style="color: var(--accent3);">net.core.rmem_max = 2500000</code> và <code style="color: var(--accent3);">net.core.wmem_max = 2500000</code> trong sysctl. Dùng <code style="color: var(--accent3);">nftables</code> thay iptables cho forwarding rules. Trên server nhiều peer, cân nhắc dùng nhiều WireGuard interface để tận dụng multi-core. Kernel 5.6+ có performance tốt nhất.</p>
+    </div>
+
+    <div class="perf-card">
+      <h4>🌍 Latency &amp; Geography</h4>
+      <p>VPN không thể nhanh hơn tốc độ ánh sáng. Server VPN ở Singapore, bạn ở Hà Nội → thêm ~30ms latency. Server ở Mỹ → thêm ~200ms. <strong>Mesh VPN</strong> (Tailscale) giải quyết bằng cách tạo direct tunnel P2P, traffic đi đường ngắn nhất thay vì qua server trung tâm.</p>
+    </div>
+  </div>
+
+  <!-- Benchmark comparison -->
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Protocol</th>
+          <th>Throughput (1Gbps link)</th>
+          <th>Latency overhead</th>
+          <th>CPU usage</th>
+          <th>Battery (mobile)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>WireGuard</td>
+          <td style="color: var(--accent3);">~950 Mbps</td>
+          <td style="color: var(--accent3);">&lt;1ms</td>
+          <td style="color: var(--accent3);">Thấp</td>
+          <td style="color: var(--accent3);">Tốt</td>
+        </tr>
+        <tr>
+          <td>OpenVPN UDP</td>
+          <td style="color: var(--accent4);">~400-600 Mbps</td>
+          <td style="color: var(--accent4);">2-5ms</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+        </tr>
+        <tr>
+          <td>OpenVPN TCP</td>
+          <td style="color: var(--accent5);">~200-400 Mbps</td>
+          <td style="color: var(--accent5);">5-15ms</td>
+          <td style="color: var(--accent5);">Cao</td>
+          <td style="color: var(--accent5);">Kém</td>
+        </tr>
+        <tr>
+          <td>IPsec/IKEv2</td>
+          <td style="color: var(--accent3);">~800-950 Mbps</td>
+          <td style="color: var(--accent3);">&lt;1ms</td>
+          <td style="color: var(--accent3);">Thấp (AES-NI)</td>
+          <td style="color: var(--accent3);">Tốt</td>
+        </tr>
+        <tr>
+          <td>L2TP/IPsec</td>
+          <td style="color: var(--accent4);">~500-700 Mbps</td>
+          <td style="color: var(--accent4);">2-3ms</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+          <td style="color: var(--accent4);">Trung bình</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Thực tế về tốc độ VPN</h4>
+    <p>Con số benchmark trên là lý tưởng trên hardware mạnh (Intel Xeon, AES-NI). Trên <strong>Raspberry Pi 4</strong>, WireGuard đạt ~300-400 Mbps, OpenVPN chỉ ~50-80 Mbps. Trên <strong>ARM router</strong> giá rẻ, có thể còn thấp hơn. <strong>Quy tắc</strong>: nếu ISP cho bạn 100 Mbps, hầu hết VPN protocol đều đủ nhanh. Chỉ khi có gigabit fiber thì sự khác biệt WireGuard vs OpenVPN mới thực sự quan trọng.</p>
+  </div>
+</section>
+
+<!-- HOMELAB VPN -->
+<section id="homelab">
+  <h2 class="section-title" style="color: var(--accent2);">VPN Cho Homelab</h2>
+  <p class="section-subtitle">Truy cập homelab từ bất kỳ đâu - đây là lý do #1 mà homelabber cần VPN</p>
+
+  <div class="vpn-types-grid">
+    <div class="vpn-type-card">
+      <div class="type-icon">🛡️</div>
+      <h3>WireGuard Trực Tiếp</h3>
+      <p>Cách "thuần" nhất: cài WireGuard trên server homelab, port forward UDP 51820 từ router. Tạo config cho mỗi thiết bị client. Ưu điểm: full control, không phụ thuộc bên thứ ba, nhanh nhất. Nhược điểm: cần public IP hoặc DDNS, phải tự quản lý keys.</p>
+      <div class="tag-row">
+        <span class="tag good">Full control</span>
+        <span class="tag good">Fastest</span>
+        <span class="tag warn">Cần port forward</span>
+        <span class="tag warn">Manual key mgmt</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🌊</div>
+      <h3>Tailscale Mesh</h3>
+      <p>Cài Tailscale trên mọi thiết bị (homelab server, laptop, điện thoại). Tất cả tự động kết nối với nhau. Bật "subnet router" trên một node để expose toàn bộ homelab LAN. MagicDNS cho tên miền đẹp. Không cần port forward, không cần public IP. Zero maintenance.</p>
+      <div class="tag-row">
+        <span class="tag good">Zero-config</span>
+        <span class="tag good">No port forward</span>
+        <span class="tag">SaaS dependency</span>
+        <span class="tag good">Subnet routing</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🏠</div>
+      <h3>Headscale Self-Hosted</h3>
+      <p>Muốn Tailscale nhưng không muốn phụ thuộc cloud? Chạy Headscale trên một VPS giá rẻ hoặc ngay trên homelab. Dùng với Tailscale client chính thức. Cần domain name và reverse proxy. Phức tạp hơn nhưng hoàn toàn tự chủ.</p>
+      <div class="tag-row">
+        <span class="tag good">Self-hosted</span>
+        <span class="tag good">Privacy</span>
+        <span class="tag warn">Phức tạp hơn</span>
+        <span class="tag">Cần VPS/domain</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture diagram for homelab -->
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Kiến trúc VPN Homelab điển hình</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">📱</div>
+        <h4>Mobile / Laptop</h4>
+        <p>Thiết bị di động<br>WireGuard / Tailscale client</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🌐</div>
+        <h4>Internet</h4>
+        <p>Encrypted tunnel<br>UDP 51820</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">🛡️</div>
+        <h4>VPN Gateway</h4>
+        <p>WireGuard server<br>NAT / Routing</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🖥️</div>
+        <h4>Homelab LAN</h4>
+        <p>Proxmox, NAS, Docker<br>192.168.1.0/24</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Lời khuyên thực tế cho Homelabber</h4>
+    <p>Nếu bạn mới bắt đầu: <strong>dùng Tailscale</strong>. Cài 2 phút, hoạt động ngay, free cho cá nhân. Khi đã hiểu rõ networking, chuyển sang <strong>WireGuard thuần</strong> hoặc <strong>Headscale</strong> để học sâu hơn. Đừng dùng OpenVPN cho homelab mới trong 2026 - WireGuard tốt hơn ở mọi khía cạnh trừ khi bạn cần TCP tunneling (hiếm khi cần). <strong>Mẹo hay</strong>: chạy WireGuard trên Proxmox LXC container, chỉ tốn ~30MB RAM.</p>
+  </div>
+</section>
+
+<!-- ENTERPRISE VPN -->
+<section id="enterprise">
+  <h2 class="section-title" style="color: var(--accent4);">Enterprise VPN &amp; ZTNA</h2>
+  <p class="section-subtitle">VPN truyền thống đang bị thách thức bởi Zero Trust - nhưng chưa chết</p>
+
+  <div class="vpn-types-grid">
+    <div class="vpn-type-card">
+      <div class="type-icon">🏰</div>
+      <h3>VPN Truyền Thống (Castle-and-Moat)</h3>
+      <p>Triết lý cũ: "bên trong an toàn, bên ngoài nguy hiểm". Kết nối VPN = bạn vào trong tường thành, truy cập mọi thứ. Vấn đề: một khi attacker vào được VPN, họ lateral movement thoải mái. Flat network + VPN = công thức cho disaster. SolarWinds hack là ví dụ kinh điển.</p>
+      <div class="tag-row">
+        <span class="tag hot">Perimeter-based</span>
+        <span class="tag warn">Lateral movement risk</span>
+        <span class="tag">Legacy mindset</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🔍</div>
+      <h3>ZTNA (Zero Trust Network Access)</h3>
+      <p>"Never trust, always verify." Không có khái niệm "bên trong/bên ngoài". Mỗi request phải authenticate và authorize, bất kể từ đâu. Micro-segmentation: user chỉ thấy đúng resource cần, không thấy cả network. Cloudflare Access, Zscaler, Google BeyondCorp là các giải pháp ZTNA nổi tiếng.</p>
+      <div class="tag-row">
+        <span class="tag good">Modern</span>
+        <span class="tag good">Micro-segmentation</span>
+        <span class="tag good">Per-request auth</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🌐</div>
+      <h3>SD-WAN + VPN</h3>
+      <p>Software-Defined WAN kết hợp nhiều đường truyền (MPLS, Internet, 4G) thành một overlay network thông minh. VPN là một phần của SD-WAN. Tự động chọn đường tốt nhất cho mỗi loại traffic. Cisco Viptela, VMware VeloCloud, Fortinet SD-WAN. Chi phí cao nhưng enterprise lớn rất cần.</p>
+      <div class="tag-row">
+        <span class="tag">Multi-path</span>
+        <span class="tag">Smart routing</span>
+        <span class="tag hot">Expensive</span>
+        <span class="tag">Enterprise only</span>
+      </div>
+    </div>
+
+    <div class="vpn-type-card">
+      <div class="type-icon">🔄</div>
+      <h3>SASE (Secure Access Service Edge)</h3>
+      <p>Gartner coined term. Kết hợp SD-WAN + ZTNA + CASB + FWaaS + SWG vào một nền tảng cloud. Thay vì traffic chạy về data center rồi ra Internet (hairpin), traffic đi thẳng ra cloud security edge gần nhất. Zscaler, Palo Alto Prisma, Netskope. Đang là xu hướng "hot" nhất 2024-2026.</p>
+      <div class="tag-row">
+        <span class="tag good">Cloud-native</span>
+        <span class="tag">Converged</span>
+        <span class="tag warn">Vendor lock-in</span>
+        <span class="tag">Trend 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>VPN truyền thống</th>
+          <th>ZTNA</th>
+          <th>SASE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Trust model</td>
+          <td style="color: var(--accent5);">Network-based</td>
+          <td style="color: var(--accent3);">Identity-based</td>
+          <td style="color: var(--accent3);">Identity + Context</td>
+        </tr>
+        <tr>
+          <td>Access scope</td>
+          <td style="color: var(--accent5);">Full network</td>
+          <td style="color: var(--accent3);">Per-application</td>
+          <td style="color: var(--accent3);">Per-application</td>
+        </tr>
+        <tr>
+          <td>Lateral movement</td>
+          <td style="color: var(--accent5);">Dễ</td>
+          <td style="color: var(--accent3);">Khó</td>
+          <td style="color: var(--accent3);">Rất khó</td>
+        </tr>
+        <tr>
+          <td>User experience</td>
+          <td>VPN client connect/disconnect</td>
+          <td>Transparent (browser/agent)</td>
+          <td>Transparent</td>
+        </tr>
+        <tr>
+          <td>Chi phí</td>
+          <td style="color: var(--accent3);">Thấp-Trung bình</td>
+          <td style="color: var(--accent4);">Trung bình-Cao</td>
+          <td style="color: var(--accent5);">Cao</td>
+        </tr>
+        <tr>
+          <td>Phù hợp</td>
+          <td>SMB, Homelab</td>
+          <td>Enterprise hiện đại</td>
+          <td>Enterprise lớn, multi-cloud</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>VPN có chết không?</h4>
+    <p>Không. <strong>ZTNA bổ sung, không thay thế VPN.</strong> ZTNA tuyệt vời cho application access (truy cập web app, database). Nhưng khi bạn cần full network access (admin SSH vào 50 servers, troubleshoot network), VPN vẫn là vua. Thực tế enterprise đang dùng <strong>hybrid</strong>: ZTNA cho daily user access, VPN cho IT admin. Với homelab, VPN sẽ còn phổ biến rất lâu.</p>
+  </div>
+</section>
+
+<!-- MYTHS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Những Hiểu Nhầm Về VPN</h2>
+  <p class="section-subtitle">Internet đầy rẫy marketing VPN sai lệch - đây là sự thật</p>
+
+  <div class="myth-grid">
+    <!-- Myth 1 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"VPN giúp bạn ẩn danh hoàn toàn trên Internet"</h4>
+      <p>VPN thay đổi IP address nhưng KHÔNG ẩn danh. Browser fingerprinting, cookies, login sessions, DNS leaks - tất cả vẫn theo dõi được bạn. ISP không thấy traffic nhưng VPN provider thấy TẤT CẢ. Bạn chỉ chuyển niềm tin từ ISP sang VPN provider.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>VPN cung cấp <strong>privacy</strong> (riêng tư) chứ không phải <strong>anonymity</strong> (ẩn danh). Muốn ẩn danh thật sự cần Tor, và ngay cả Tor cũng không hoàn hảo. VPN tốt cho: bảo vệ traffic trên WiFi công cộng, vượt geo-restriction, truy cập mạng nội bộ từ xa.</p>
+    </div>
+
+    <!-- Myth 2 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"VPN luôn làm chậm kết nối"</h4>
+      <p>Nhiều người nghĩ VPN = chậm. Thực tế WireGuard overhead chưa tới 5%. Trên kết nối 100 Mbps, bạn vẫn được ~95 Mbps qua WireGuard. Thậm chí trong một số trường hợp, VPN có thể NHANH HƠN vì tránh được ISP throttling.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Tốc độ phụ thuộc vào: khoảng cách đến VPN server, server load, protocol dùng, và CPU power. <strong>WireGuard local</strong> (cùng thành phố) gần như không thấy giảm tốc. Chỉ khi dùng server ở continent khác (VN → US) mới thấy latency tăng rõ rệt.</p>
+    </div>
+
+    <!-- Myth 3 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"VPN miễn phí cũng tốt như VPN trả phí"</h4>
+      <p>Nếu bạn không trả tiền, BẠN là sản phẩm. VPN miễn phí kiếm tiền bằng: bán dữ liệu browsing, inject ads, mining crypto trên máy bạn, hoặc biến thiết bị thành exit node (Hola VPN scandal). Nhiều "free VPN" trên app store là malware trá hình.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Free VPN <strong>đáng tin cậy</strong> tồn tại: Tailscale free tier, WireGuard tự host, ProtonVPN free tier (có audit). Nhưng các app VPN miễn phí random trên Google Play/App Store? <strong>Tránh xa.</strong> Nghiên cứu của CSIRO cho thấy 38% free VPN Android chứa malware.</p>
+    </div>
+
+    <!-- Myth 4 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"VPN bảo vệ khỏi virus và hacker"</h4>
+      <p>VPN mã hóa đường truyền, KHÔNG phải endpoint. Nếu bạn download malware qua VPN, malware vẫn chạy bình thường. Nếu bạn nhập password vào phishing site qua VPN, password vẫn bị đánh cắp. VPN không phải antivirus, không phải firewall.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>VPN bảo vệ <strong>data in transit</strong> (dữ liệu đang truyền) khỏi eavesdropping. Nó KHÔNG bảo vệ: phishing attacks, malware, weak passwords, social engineering. Bạn vẫn cần antivirus, firewall, MFA, và quan trọng nhất - <strong>common sense</strong>.</p>
+    </div>
+
+    <!-- Myth 5 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"No-log VPN nghĩa là không lưu gì cả"</h4>
+      <p>Hầu hết VPN provider claim "no logs" nhưng thực tế rất khó verify. Một số vẫn lưu connection logs (timestamps, bandwidth), metadata, payment info. Nhiều vụ "no-log VPN" bị phát hiện giao dữ liệu cho cơ quan chức năng (PureVPN 2017, IPVanish 2018).</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Chỉ tin "no-log" khi có <strong>independent audit</strong> (Mullvad, ProtonVPN) hoặc <strong>kiến trúc không thể log</strong> (RAM-only servers). Tốt nhất? <strong>Self-host VPN</strong> - bạn kiểm soát 100% logs. WireGuard trên server của bạn = zero trust issue với bên thứ ba.</p>
+    </div>
+
+    <!-- Myth 6 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Tất cả VPN protocol đều giống nhau"</h4>
+      <p>Nhiều người chọn VPN chỉ dựa trên giá mà bỏ qua protocol. PPTP và WireGuard khác nhau như trời với đất. PPTP đã bị crack hoàn toàn, WireGuard dùng cryptography state-of-the-art. Protocol quyết định bảo mật, tốc độ, và khả năng vượt firewall.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Thứ tự ưu tiên: <strong>WireGuard → IKEv2 → OpenVPN UDP → OpenVPN TCP → L2TP/IPsec</strong>. Tuyệt đối KHÔNG DÙNG PPTP. Khi chọn VPN provider, kiểm tra họ hỗ trợ protocol nào. Nếu chỉ có PPTP/L2TP, chạy ngay.</p>
+    </div>
+
+    <!-- Myth 7 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"VPN cần thiết cho mọi kết nối"</h4>
+      <p>Năm 2026, hầu hết web traffic đã được mã hóa bằng HTTPS/TLS. ISP biết bạn truy cập domain nào (qua DNS/SNI) nhưng không đọc được nội dung. VPN cho mọi kết nối là overkill cho đa số người dùng thông thường. Nó chỉ thêm latency và phức tạp.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>VPN <strong>cần thiết</strong> khi: dùng WiFi công cộng, truy cập mạng nội bộ từ xa, bypass geo-restriction, tránh ISP throttling. VPN <strong>không cần</strong> khi: browsing thông thường trên mạng nhà tin cậy. Dùng <strong>DNS over HTTPS</strong> (DoH) để bảo vệ DNS queries thay vì full VPN.</p>
+    </div>
+
+    <!-- Myth 8 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Double VPN / Multi-hop an toàn gấp đôi"</h4>
+      <p>Một số VPN provider quảng cáo "Double VPN" - traffic đi qua 2 server. Nghe có vẻ an toàn hơn nhưng thực tế: nếu cùng một provider quản lý cả 2 server, họ vẫn thấy traffic vào và ra. Thêm hop = thêm latency, giảm tốc độ, mà bảo mật không tăng đáng kể.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Multi-hop chỉ có ý nghĩa khi <strong>mỗi hop thuộc provider khác nhau</strong> và bạn tin rằng họ không collude. Tor làm điều này đúng cách (3 node độc lập). "Double VPN" của NordVPN hay Surfshark chủ yếu là <strong>marketing</strong>. Đối với 99.9% use cases, single hop VPN đủ an toàn.</p>
+    </div>
+
+    <!-- Myth 9 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"VPN hợp pháp ở mọi nơi"</h4>
+      <p>Nhiều nước hạn chế hoặc cấm VPN: Trung Quốc (Great Firewall chặn hầu hết VPN), Nga, Iran, UAE, Turkmenistan, Belarus. Sử dụng VPN ở những nước này có thể bị phạt tiền hoặc tù. Ngay cả ở các nước cho phép, dùng VPN cho hoạt động phi pháp vẫn là phạm luật.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>VPN là <strong>công cụ</strong>, như dao: hợp pháp để nấu ăn, phạm pháp để đâm người. Ở Việt Nam, VPN <strong>hoàn toàn hợp pháp</strong> cho mục đích cá nhân và doanh nghiệp. Nhưng dùng VPN để truy cập nội dung bị cấm hoặc thực hiện hành vi vi phạm pháp luật thì vẫn bị xử lý theo luật hiện hành.</p>
+    </div>
+
+    <!-- Myth 10 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Chỉ cần bật VPN là an toàn, không cần hiểu gì thêm"</h4>
+      <p>DNS leak, WebRTC leak, IPv6 leak, kill switch không hoạt động, split tunneling misconfigured - có hàng chục cách VPN "bật rồi mà vẫn lộ". Nhiều VPN client mặc định không bật kill switch, nghĩa là khi VPN đứt, traffic đi trực tiếp mà bạn không biết.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Luôn kiểm tra: <strong>DNS leak test</strong> (dnsleaktest.com), <strong>WebRTC leak</strong> (browserleaks.com), <strong>IPv6 leak</strong>. Bật <strong>kill switch</strong>. Disable <strong>WebRTC</strong> trong browser nếu cần privacy. Hiểu cách VPN hoạt động còn quan trọng hơn việc bật nó lên.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent);">Cheat Sheet VPN</h2>
+  <p class="section-subtitle">Copy-paste những lệnh và config thường dùng nhất</p>
+
+  <div class="cheat-grid">
+    <!-- WireGuard Setup -->
+    <div class="cheat-card">
+      <h4>WireGuard: Tạo Key Pair</h4>
+      <p>Tạo private key và public key cho server/client</p>
+      <code>wg genkey | tee privatekey | wg pubkey > publickey
+cat privatekey
+cat publickey</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>WireGuard: Server Config</h4>
+      <p>File /etc/wireguard/wg0.conf trên server</p>
+      <code>[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = &lt;server_private_key&gt;
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+PublicKey = &lt;client_public_key&gt;
+AllowedIPs = 10.0.0.2/32</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>WireGuard: Client Config</h4>
+      <p>File wg0.conf trên client</p>
+      <code>[Interface]
+Address = 10.0.0.2/24
+PrivateKey = &lt;client_private_key&gt;
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = &lt;server_public_key&gt;
+Endpoint = vpn.example.com:51820
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>WireGuard: Quản lý</h4>
+      <p>Các lệnh wg thường dùng</p>
+      <code># Bật/tắt interface
+wg-quick up wg0
+wg-quick down wg0
+
+# Xem trạng thái
+wg show
+wg show wg0
+
+# Thêm peer (runtime)
+wg set wg0 peer &lt;pubkey&gt; \
+  allowed-ips 10.0.0.3/32
+
+# Enable auto-start
+systemctl enable wg-quick@wg0</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>OpenVPN: Server Config Cơ Bản</h4>
+      <p>File server.conf cho OpenVPN</p>
+      <code>port 1194
+proto udp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+server 10.8.0.0 255.255.255.0
+push "redirect-gateway def1"
+push "dhcp-option DNS 1.1.1.1"
+keepalive 10 120
+cipher AES-256-GCM
+persist-key
+persist-tun
+verb 3</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>OpenVPN: EasyRSA PKI</h4>
+      <p>Tạo Certificate Authority và certs</p>
+      <code># Init PKI
+./easyrsa init-pki
+./easyrsa build-ca
+
+# Server cert
+./easyrsa gen-req server nopass
+./easyrsa sign-req server server
+
+# Client cert
+./easyrsa gen-req client1 nopass
+./easyrsa sign-req client client1
+
+# DH parameters
+./easyrsa gen-dh</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>iptables cho VPN Server</h4>
+      <p>Firewall rules cho WireGuard server</p>
+      <code># Allow WireGuard port
+iptables -A INPUT -p udp --dport 51820 -j ACCEPT
+
+# Allow forwarding from VPN
+iptables -A FORWARD -i wg0 -j ACCEPT
+iptables -A FORWARD -o wg0 -j ACCEPT
+
+# NAT masquerade
+iptables -t nat -A POSTROUTING \
+  -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+
+# Enable IP forwarding
+sysctl -w net.ipv4.ip_forward=1
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Tailscale: Quick Start</h4>
+      <p>Cài đặt và sử dụng Tailscale</p>
+      <code># Cài đặt
+curl -fsSL https://tailscale.com/install.sh | sh
+
+# Đăng nhập
+tailscale up
+
+# Subnet router (expose LAN)
+tailscale up --advertise-routes=192.168.1.0/24
+
+# Exit node (full tunnel)
+tailscale up --advertise-exit-node
+
+# Xem status
+tailscale status
+tailscale ping &lt;peer&gt;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Troubleshooting: DNS Leak</h4>
+      <p>Kiểm tra và sửa DNS leak</p>
+      <code># Kiểm tra DNS đang dùng
+dig +short myip.opendns.com @resolver1.opendns.com
+nslookup -type=txt o-o.myaddr.l.google.com ns1.google.com
+
+# Force DNS qua VPN (resolvconf)
+echo "nameserver 10.0.0.1" > /etc/resolv.conf
+
+# WireGuard: thêm DNS vào config
+[Interface]
+DNS = 10.0.0.1, 1.1.1.1</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Troubleshooting: MTU</h4>
+      <p>Tìm MTU tối ưu cho VPN tunnel</p>
+      <code># Tìm MTU bằng ping (giảm dần)
+ping -M do -s 1400 10.0.0.1
+ping -M do -s 1420 10.0.0.1
+ping -M do -s 1380 10.0.0.1
+
+# Set MTU trên WireGuard
+[Interface]
+MTU = 1420
+
+# Set MTU trên OpenVPN
+mssfix 1400
+tun-mtu 1400</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Troubleshooting: Connectivity</h4>
+      <p>Debug khi VPN không kết nối</p>
+      <code># Kiểm tra WireGuard handshake
+wg show wg0
+# "latest handshake" phải < 2 phút
+
+# Kiểm tra routing
+ip route show table main
+ip route show table 51820
+
+# Kiểm tra firewall
+iptables -L -n -v
+iptables -t nat -L -n -v
+
+# Packet capture
+tcpdump -i wg0 -n
+tcpdump -i eth0 port 51820</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Troubleshooting: OpenVPN Logs</h4>
+      <p>Đọc log OpenVPN để debug</p>
+      <code># Server log
+journalctl -u openvpn-server@server -f
+
+# Client log (verbose)
+openvpn --config client.ovpn --verb 5
+
+# Các lỗi phổ biến:
+# TLS handshake failed → cert/key sai
+# AUTH_FAILED → username/pass sai
+# RESOLVE: Cannot resolve → DNS issue
+# write UDPv4: Permission denied → firewall</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Workflow khuyến nghị cho Homelab VPN</h4>
+    <p><strong>Bước 1:</strong> Cài Tailscale trên mọi thiết bị để có kết nối ngay lập tức (5 phút). <strong>Bước 2:</strong> Thiết lập WireGuard server trên Proxmox LXC để học và hiểu sâu (1 giờ). <strong>Bước 3:</strong> Cấu hình subnet routing để truy cập toàn bộ homelab LAN qua VPN. <strong>Bước 4:</strong> Thêm DNS server nội bộ (Pi-hole/AdGuard) vào VPN config. <strong>Bước 5:</strong> Khi muốn tự chủ hoàn toàn, migrate sang Headscale hoặc Netbird.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Thế Giới VPN - Deep Dive &nbsp;|&nbsp; Tổng hợp kiến thức từ RFC documents, WireGuard whitepaper, OpenVPN documentation, và kinh nghiệm thực chiến homelab.</p>
+  <p style="margin-top: 0.5rem;">Cập nhật: 2026 &nbsp;|&nbsp; Không sử dụng thư viện bên ngoài &nbsp;|&nbsp; 100% vanilla HTML/CSS</p>
+</footer>
+
+</body>
+</html>

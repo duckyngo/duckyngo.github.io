@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Outsourcing trong Thời đại AI — Sống hay Chết?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root {
+    --bg-primary: #0a0a0b;
+    --bg-secondary: #111113;
+    --bg-card: #161618;
+    --bg-card-hover: #1c1c1f;
+    --bg-accent: #1a1a2e;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --text-muted: #5a5a5a;
+    --accent-blue: #4a9eff;
+    --accent-purple: #a855f7;
+    --accent-pink: #ec4899;
+    --accent-green: #10b981;
+    --accent-orange: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-cyan: #06b6d4;
+    --gradient-1: linear-gradient(135deg, #4a9eff, #a855f7);
+    --gradient-2: linear-gradient(135deg, #ec4899, #f59e0b);
+    --gradient-3: linear-gradient(135deg, #10b981, #06b6d4);
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-accent: rgba(74,158,255,0.2);
+    --glow-blue: 0 0 40px rgba(74,158,255,0.15);
+    --glow-purple: 0 0 40px rgba(168,85,247,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(168,85,247,0.3);
+    color: #fff;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(74,158,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 30% 70%, rgba(168,85,247,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 80% 20%, rgba(236,72,153,0.05) 0%, transparent 50%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 2rem; }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .hero-title .gradient-text {
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 300;
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto 3rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 0.5rem; }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+  }
+
+  .scroll-indicator .line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--accent-blue), transparent);
+  }
+
+  /* ─── LAYOUT ─── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .wide-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  section {
+    padding: 6rem 0;
+    position: relative;
+  }
+
+  /* ─── EDITORIAL TEXT ─── */
+  .editorial-text {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+  }
+
+  .editorial-text p { margin-bottom: 1.8rem; }
+
+  .editorial-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .editorial-text em {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    font-style: italic;
+  }
+
+  .highlight-text {
+    color: var(--accent-blue);
+    font-weight: 500;
+  }
+
+  .drop-cap::first-letter {
+    float: left;
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    line-height: 0.8;
+    padding-right: 0.6rem;
+    padding-top: 0.1rem;
+    color: var(--accent-purple);
+    font-weight: 700;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header {
+    margin-bottom: 4rem;
+  }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-lead {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    font-weight: 300;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem 0;
+  }
+
+  .divider .line {
+    width: 60px;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+
+  .divider .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+  }
+
+  /* ─── QUOTE ─── */
+  .pull-quote {
+    position: relative;
+    padding: 3rem 0;
+    margin: 4rem 0;
+    text-align: center;
+  }
+
+  .pull-quote::before {
+    content: '"';
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: rgba(168,85,247,0.15);
+    line-height: 1;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--text-primary);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .pull-quote cite {
+    display: block;
+    margin-top: 1.5rem;
+    font-style: normal;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* ─── IMPACT SECTION ─── */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin: 3rem 0;
+  }
+
+  .impact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .impact-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-1);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .impact-card:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(74,158,255,0.15);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-blue);
+  }
+
+  .impact-card:hover::before { opacity: 1; }
+
+  .impact-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .impact-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .impact-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .impact-detail {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+
+  /* ─── TIMELINE ─── */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple), var(--accent-pink), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 70px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideIn 0.6s forwards;
+  }
+
+  .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+  .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+  .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+  .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+  .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+
+  .timeline-dot {
+    position: absolute;
+    left: 16px;
+    top: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-blue);
+    background: var(--bg-primary);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent-blue);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .timeline-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ─── SELLING POINTS ─── */
+  .selling-points {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .sp-card {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 2.5rem;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sp-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(74,158,255,0.2), transparent, rgba(168,85,247,0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .sp-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .sp-card:hover::after { opacity: 1; }
+
+  .sp-number-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.3rem;
+  }
+
+  .sp-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .sp-icon {
+    font-size: 1.5rem;
+    margin-top: 0.8rem;
+  }
+
+  .sp-content h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .sp-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+    border: 1px solid;
+  }
+
+  .sp-tag.critical { color: var(--accent-green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+  .sp-tag.strong { color: var(--accent-blue); border-color: rgba(74,158,255,0.3); background: rgba(74,158,255,0.08); }
+  .sp-tag.emerging { color: var(--accent-purple); border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.08); }
+  .sp-tag.evolving { color: var(--accent-orange); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+
+  .sp-content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  /* ─── DEATH LIST ─── */
+  .death-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 3rem 0;
+  }
+
+  .death-card {
+    background: linear-gradient(135deg, rgba(239,68,68,0.05), rgba(239,68,68,0.02));
+    border: 1px solid rgba(239,68,68,0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .death-card::before {
+    content: '✕';
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(239,68,68,0.06);
+    line-height: 1;
+  }
+
+  .death-card h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--accent-red);
+    margin-bottom: 0.5rem;
+  }
+
+  .death-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .death-card .death-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.8rem;
+    display: block;
+  }
+
+  /* ─── ESCAPE ROUTES ─── */
+  .escape-routes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+
+  .escape-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 2.5rem;
+    position: relative;
+    transition: all 0.4s;
+  }
+
+  .escape-card:hover {
+    border-color: rgba(16,185,129,0.2);
+    box-shadow: 0 0 40px rgba(16,185,129,0.08);
+    transform: translateY(-4px);
+  }
+
+  .escape-phase {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-green);
+    margin-bottom: 1rem;
+  }
+
+  .escape-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .escape-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .escape-actions {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.5rem;
+  }
+
+  .escape-actions li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .escape-actions li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-green);
+    font-weight: 700;
+  }
+
+  /* ─── MARKET FORECAST ─── */
+  .forecast-chart {
+    position: relative;
+    padding: 3rem 0;
+    margin: 3rem 0;
+  }
+
+  .chart-bar-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chart-label {
+    width: 160px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .chart-bar-bg {
+    flex: 1;
+    height: 40px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .chart-bar {
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1));
+  }
+
+  .bar-blue { background: linear-gradient(90deg, rgba(74,158,255,0.8), var(--accent-blue)); }
+  .bar-purple { background: linear-gradient(90deg, rgba(168,85,247,0.8), var(--accent-purple)); }
+  .bar-green { background: linear-gradient(90deg, rgba(16,185,129,0.8), var(--accent-green)); }
+  .bar-pink { background: linear-gradient(90deg, rgba(236,72,153,0.8), var(--accent-pink)); }
+  .bar-orange { background: linear-gradient(90deg, rgba(245,158,11,0.8), var(--accent-orange)); }
+  .bar-cyan { background: linear-gradient(90deg, rgba(6,182,212,0.8), var(--accent-cyan)); }
+  .bar-red { background: linear-gradient(90deg, rgba(239,68,68,0.8), var(--accent-red)); }
+
+  .chart-note {
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
+
+  /* ─── SCENARIO TABLE ─── */
+  .scenario-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.9rem;
+  }
+
+  .scenario-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    font-weight: 500;
+  }
+
+  .scenario-table td {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: top;
+    color: var(--text-secondary);
+  }
+
+  .scenario-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .scenario-table .company-type {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+
+  .badge-thrive { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+  .badge-survive { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+  .badge-die { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+  .badge-transform { background: rgba(168,85,247,0.15); color: var(--accent-purple); }
+
+  /* ─── VIETNAM SECTION ─── */
+  .vn-spotlight {
+    background: linear-gradient(135deg, rgba(74,158,255,0.06), rgba(168,85,247,0.06));
+    border: 1px solid rgba(74,158,255,0.1);
+    border-radius: 24px;
+    padding: 3rem;
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vn-spotlight::before {
+    content: '🇻🇳';
+    position: absolute;
+    top: -20px;
+    right: 20px;
+    font-size: 6rem;
+    opacity: 0.1;
+  }
+
+  .vn-spotlight h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .vn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .vn-col h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .vn-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .vn-col li {
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: 1.2rem;
+  }
+
+  .vn-col li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent-blue);
+  }
+
+  /* ─── FINAL VERDICT ─── */
+  .verdict {
+    text-align: center;
+    padding: 6rem 2rem;
+    position: relative;
+  }
+
+  .verdict::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(168,85,247,0.08), transparent 60%);
+  }
+
+  .verdict-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 750px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+
+  .verdict-sub {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 550px;
+    margin: 0 auto;
+    font-weight: 300;
+    position: relative;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .footer a {
+    color: var(--accent-blue);
+    text-decoration: none;
+  }
+
+  /* ─── FLOATING NAV ─── */
+  .float-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .float-nav a {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.3;
+    transition: all 0.3s;
+    display: block;
+  }
+
+  .float-nav a:hover,
+  .float-nav a.active {
+    opacity: 1;
+    background: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(74,158,255,0.5);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .sp-card { grid-template-columns: 1fr; gap: 1rem; }
+    .sp-number-col { flex-direction: row; gap: 1rem; }
+    .chart-bar-group { flex-direction: column; align-items: stretch; }
+    .chart-label { width: auto; text-align: left; }
+    .vn-grid { grid-template-columns: 1fr; }
+    .float-nav { display: none; }
+    .scenario-table { font-size: 0.8rem; }
+    .scenario-table th, .scenario-table td { padding: 0.8rem; }
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--gradient-1);
+    z-index: 9999;
+    transition: width 0.1s;
+  }
+
+  /* ─── COMPARISON MATRIX ─── */
+  .comparison-section {
+    margin: 3rem 0;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .comparison-row.header {
+    border-bottom: 2px solid var(--border-subtle);
+  }
+
+  .comparison-cell {
+    padding: 1.2rem 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .comparison-cell.header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .comparison-cell.label {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .meter {
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+
+  .meter-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.5s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="float-nav" id="floatNav">
+  <a href="#hero" title="Mở đầu"></a>
+  <a href="#context" title="Bối cảnh"></a>
+  <a href="#impact" title="Tác động"></a>
+  <a href="#selling" title="Selling Points"></a>
+  <a href="#dead" title="Đã chết"></a>
+  <a href="#escape" title="Lối thoát"></a>
+  <a href="#market" title="Thị trường"></a>
+  <a href="#vietnam" title="Việt Nam"></a>
+  <a href="#verdict" title="Kết luận"></a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ HERO -->
+<header class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Long-form Editorial · Phân tích chuyên sâu</div>
+    <h1 class="hero-title">
+      IT Outsourcing trong<br>
+      <span class="gradient-text">Thời đại AI</span><br>
+      Sống hay Chết?
+    </h1>
+    <p class="hero-subtitle">
+      Khi một lập trình viên trung bình có thể làm việc bằng năm người nhờ AI, ngành outsourcing trị giá 430 tỷ USD đang đối mặt cuộc khủng hoảng hiện sinh lớn nhất kể từ khi ra đời.
+    </p>
+    <div class="hero-meta">
+      <span>📅 Tháng 3, 2026</span>
+      <span>⏱ 15 phút đọc</span>
+      <span>📊 Phân tích thị trường</span>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="line"></div>
+    cuộn xuống
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════ CONTEXT -->
+<section id="context">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 01 — Bối cảnh</span>
+      <h2 class="section-title">Cơn sóng thần đang đến</h2>
+    </div>
+
+    <div class="editorial-text fade-in">
+      <p class="drop-cap">
+        Năm 2023, GitHub Copilot ra mắt và người ta cười nhạo: "nó chỉ viết được mấy dòng boilerplate." Năm 2024, Claude, GPT-4, và hàng loạt AI coding agent bắt đầu <strong>viết được cả module, debug production code, và refactor hệ thống legacy</strong>. Đến 2025-2026, chúng ta chứng kiến điều không tưởng: <span class="highlight-text">một senior developer được trang bị AI có thể deliver output tương đương một team 5-8 người</span> chỉ vài năm trước.
+      </p>
+      <p>
+        Điều này không chỉ là tiến bộ công nghệ — nó là một <strong>cuộc tái cấu trúc toàn bộ chuỗi giá trị</strong> của ngành phần mềm. Và ngành IT outsourcing, với mô hình kinh doanh được xây trên nền tảng "lao động giá rẻ, số lượng lớn", đang đứng ngay tâm chấn.
+      </p>
+    </div>
+
+    <div class="pull-quote fade-in">
+      <p>Outsourcing được sinh ra từ arbitrage lao động. AI đang xóa sổ chính cái arbitrage đó.</p>
+      <cite>— Bản chất của vấn đề</cite>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2022 — Khởi đầu</div>
+        <div class="timeline-title">GitHub Copilot ra mắt public</div>
+        <div class="timeline-desc">Autocomplete thông minh. Ngành outsourcing chưa bận tâm. "Nó chỉ là IDE plugin thôi."</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color: var(--accent-purple)"></div>
+        <div class="timeline-year">2023 — Nhận thức</div>
+        <div class="timeline-title">ChatGPT + GPT-4 thay đổi nhận thức</div>
+        <div class="timeline-desc">Lần đầu tiên, non-developer có thể "nói chuyện" với code. Product manager bắt đầu tự prototype. Một số task junior bị thay thế.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color: var(--accent-pink)"></div>
+        <div class="timeline-year">2024 — Tăng tốc</div>
+        <div class="timeline-title">AI Agents, Claude Code, Cursor, Devin</div>
+        <div class="timeline-desc">AI không chỉ suggest code — nó <strong>tự chạy terminal, tự debug, tự viết test</strong>. Productivity tăng 3-5x. Một số công ty outsourcing bắt đầu freeze hiring.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color: var(--accent-orange)"></div>
+        <div class="timeline-year">2025 — Khủng hoảng</div>
+        <div class="timeline-title">Khách hàng bắt đầu cắt giảm headcount hợp đồng</div>
+        <div class="timeline-desc">Các enterprise lớn giảm 20-40% outsourcing budget. "Chúng tôi cần ít dev hơn, nhưng senior hơn." Body shopping model sụp đổ ở nhiều nơi.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color: var(--accent-red)"></div>
+        <div class="timeline-year">2026 — Tái cấu trúc</div>
+        <div class="timeline-title">Ngành outsourcing buộc phải biến hình hoặc chết</div>
+        <div class="timeline-desc">Những công ty nào kịp chuyển đổi sẽ sống sót mạnh mẽ hơn. Những công ty nào vẫn bán headcount — sẽ biến mất.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ IMPACT -->
+<section id="impact">
+  <div class="wide-container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 02 — Tác động</span>
+      <h2 class="section-title">Những con số không biết nói dối</h2>
+      <p class="section-lead">AI đang thay đổi phương trình kinh tế cơ bản của outsourcing.</p>
+    </div>
+
+    <div class="impact-grid fade-in">
+      <div class="impact-card">
+        <span class="impact-icon">⚡</span>
+        <div class="impact-number">3-10×</div>
+        <div class="impact-label">Tăng năng suất developer</div>
+        <div class="impact-detail">Một dev + AI = output của 3-10 dev thông thường, tùy task complexity</div>
+      </div>
+      <div class="impact-card">
+        <span class="impact-icon">📉</span>
+        <div class="impact-number">-40%</div>
+        <div class="impact-label">Giảm nhu cầu headcount</div>
+        <div class="impact-detail">Enterprise đang cắt giảm 20-40% outsourcing contract trong 2025-2026</div>
+      </div>
+      <div class="impact-card">
+        <span class="impact-icon">💰</span>
+        <div class="impact-number">$430B</div>
+        <div class="impact-label">Thị trường outsourcing toàn cầu</div>
+        <div class="impact-detail">Dự kiến giảm còn ~$350B vào 2028 nếu không tái cấu trúc mô hình</div>
+      </div>
+      <div class="impact-card">
+        <span class="impact-icon">🎯</span>
+        <div class="impact-number">70%</div>
+        <div class="impact-label">Task có thể tự động hóa</div>
+        <div class="impact-detail">CRUD, unit test, boilerplate, documentation — AI làm nhanh hơn, rẻ hơn</div>
+      </div>
+      <div class="impact-card">
+        <span class="impact-icon">🔄</span>
+        <div class="impact-number">2-3 năm</div>
+        <div class="impact-label">Cửa sổ chuyển đổi</div>
+        <div class="impact-detail">Window of opportunity để outsourcing tái định vị trước khi quá muộn</div>
+      </div>
+      <div class="impact-card">
+        <span class="impact-icon">🧠</span>
+        <div class="impact-number">+200%</div>
+        <div class="impact-label">Nhu cầu senior & architect</div>
+        <div class="impact-detail">AI cần người giỏi điều khiển. Demand cho "AI-fluent senior" tăng vọt</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ SELLING POINTS -->
+<section id="selling">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 03 — Selling Points còn sống</span>
+      <h2 class="section-title">7 lý do outsourcing<br>chưa chết được</h2>
+      <p class="section-lead">Không phải tất cả đều bi quan. Đây là những giá trị mà AI không thể thay thế — ít nhất là chưa.</p>
+    </div>
+
+    <div class="selling-points">
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">01</div>
+          <div class="sp-icon">🛡️</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag critical">Sống mạnh</span>
+          <h3>Con người vận hành, không chỉ code</h3>
+          <p>
+            AI viết code nhưng <strong>không trực on-call lúc 3h sáng</strong>, không họp với stakeholder, không chịu trách nhiệm pháp lý khi production sập. Outsourcing bán <em>đội ngũ có accountability</em> — có hợp đồng SLA, có người chịu trách nhiệm, có quy trình escalation. Đây là thứ enterprise sẽ luôn cần: ai đó để gọi khi mọi thứ cháy.
+          </p>
+        </div>
+      </div>
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">02</div>
+          <div class="sp-icon">🏥</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag critical">Sống mạnh</span>
+          <h3>Domain expertise chuyên sâu</h3>
+          <p>
+            Fintech cần hiểu PCI-DSS. Healthcare cần HIPAA. Telecom có hàng nghìn legacy protocol. AI có thể đọc spec nhưng <strong>không có 15 năm kinh nghiệm "đạp mìn"</strong> trong ngành. Outsourcing firm đã deliver 50 dự án banking biết chính xác cái gì sẽ fail ở production — đó là <em>tribal knowledge</em> không thể prompt ra được.
+          </p>
+        </div>
+      </div>
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">03</div>
+          <div class="sp-icon">👥</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag strong">Vẫn mạnh</span>
+          <h3>Managed team — giảm management overhead</h3>
+          <p>
+            Startup series B không muốn tuyển HR, không muốn quản lý 15 dev, không muốn lo chuyện PTO và performance review. Outsourcing bán <strong>"bạn nói cần gì, chúng tôi lo từ A đến Z"</strong>. AI giúp mỗi dev productive hơn nhưng không thay thế việc <em>tổ chức và quản lý con người</em> — đặc biệt khi scale.
+          </p>
+        </div>
+      </div>
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">04</div>
+          <div class="sp-icon">🏚️</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag strong">Vẫn mạnh</span>
+          <h3>Legacy system & Migration</h3>
+          <p>
+            COBOL trên mainframe. SAP customization 20 năm tuổi. Oracle Forms. AI coding tools yếu ở đây vì <strong>thiếu training data</strong> — ít ai public COBOL code lên GitHub. Người đã sờ vào những hệ thống đó suốt thập kỷ là <em>tài nguyên quý hiếm</em>, và outsourcing firm tập trung nhiều người như vậy nhất.
+          </p>
+        </div>
+      </div>
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">05</div>
+          <div class="sp-icon">🚀</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag emerging">Cơ hội mới</span>
+          <h3>AI-augmented delivery — bán năng suất mới</h3>
+          <p>
+            Đây là cơ hội lớn nhất. Thay vì sợ AI, firm thông minh <strong>trang bị AI cho toàn bộ đội ngũ</strong> và reposition: "Cùng giá cũ, deliver nhanh gấp 3-5 lần." Hoặc: "Cùng tốc độ cũ, nhưng giá giảm 50%." Chuyển từ bán headcount sang <em>bán outcome</em> — đây là cuộc cách mạng bên trong.
+          </p>
+        </div>
+      </div>
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">06</div>
+          <div class="sp-icon">🔐</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag emerging">Cơ hội mới</span>
+          <h3>Security & Compliance as a Service</h3>
+          <p>
+            Ngân hàng, chính phủ, quốc phòng — <strong>không được đưa code lên AI cloud</strong>. Họ cần on-premise AI, air-gapped environment, SOC2-compliant dev workflow. Outsourcing có thể bán <em>môi trường phát triển bảo mật</em> với AI được kiểm soát — thứ mà khách hàng tự build sẽ tốn rất nhiều.
+          </p>
+        </div>
+      </div>
+
+      <div class="sp-card fade-in">
+        <div class="sp-number-col">
+          <div class="sp-num">07</div>
+          <div class="sp-icon">💲</div>
+        </div>
+        <div class="sp-content">
+          <span class="sp-tag evolving">Đang thay đổi</span>
+          <h3>Cost arbitrage — hình dạng mới</h3>
+          <p>
+            Trước: 1 senior Mỹ ($180K) = 5 junior Việt Nam ($12K). Giờ AI san phẳng output của junior. Nhưng <strong>1 senior Việt Nam + AI ($30K) vẫn rẻ hơn nhiều so với 1 senior Mỹ + AI ($200K)</strong>. Cost arbitrage không mất — nó <em>dịch lên tier cao hơn</em>. Outsourcing phải bán senior, không phải bán headcount junior.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ DEAD -->
+<section id="dead">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 04 — Đã chết & đang chết</span>
+      <h2 class="section-title">Những selling point<br>cần được chôn cất</h2>
+    </div>
+
+    <div class="death-grid fade-in">
+      <div class="death-card">
+        <h4>Body Shopping / Bán Headcount</h4>
+        <p>"Chúng tôi có 2000 dev sẵn sàng." — Không ai cần 2000 dev nữa khi 200 dev + AI làm được nhiều hơn. Mô hình tính tiền per-head đang bị phá sản về mặt logic.</p>
+        <span class="death-year">☠️ Chết từ 2024-2025</span>
+      </div>
+      <div class="death-card">
+        <h4>CRUD & Boilerplate Factory</h4>
+        <p>REST API, admin panel, form validation — AI sinh ra trong vài phút. Không còn ai trả $50/giờ cho việc này khi Cursor làm trong 30 giây.</p>
+        <span class="death-year">☠️ Chết từ 2024</span>
+      </div>
+      <div class="death-card">
+        <h4>Manual Testing Thuần Túy</h4>
+        <p>Click-through testing, regression testing bằng tay. AI test generation + visual regression tools đang thay thế 80% manual QA.</p>
+        <span class="death-year">☠️ Đang chết, còn 1-2 năm</span>
+      </div>
+      <div class="death-card">
+        <h4>"Số Lượng" Là Lợi Thế</h4>
+        <p>"Chúng tôi có bench lớn, scale nhanh!" — Scale nhanh để làm gì khi mỗi dev đã productive gấp 5? Giá trị nằm ở chất lượng, không phải số lượng.</p>
+        <span class="death-year">☠️ Đang chết dần</span>
+      </div>
+      <div class="death-card">
+        <h4>Documentation & Technical Writing</h4>
+        <p>AI viết doc, README, API reference tốt hơn 90% tech writer. Outsource technical writing thuần túy không còn make sense.</p>
+        <span class="death-year">☠️ Chết từ 2024</span>
+      </div>
+      <div class="death-card">
+        <h4>Code Conversion / Porting đơn giản</h4>
+        <p>Java → Kotlin, Python 2 → 3, jQuery → React cho UI đơn giản. AI tools làm tốt hơn, nhanh hơn, ít bug hơn.</p>
+        <span class="death-year">☠️ Chết từ 2025</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ ESCAPE -->
+<section id="escape">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 05 — Lối thoát</span>
+      <h2 class="section-title">3 con đường sống sót</h2>
+      <p class="section-lead">Không có viên đạn bạc. Nhưng có 3 hướng đi rõ ràng cho các công ty outsourcing muốn tồn tại.</p>
+    </div>
+
+    <div class="escape-routes fade-in">
+
+      <div class="escape-card">
+        <div class="escape-phase">Con đường 1 — Ngắn hạn (6-18 tháng)</div>
+        <h3>AI-First Delivery:<br>Bán năng suất, không bán người</h3>
+        <p>
+          Trang bị AI cho toàn bộ dev team. Đào tạo "AI-fluent engineering." Chuyển từ hợp đồng T&M (time & material) sang <strong>fixed-outcome pricing</strong>.
+        </p>
+        <p>
+          Pitch mới: <em>"5 người của chúng tôi + AI sẽ deliver bằng 20 người không có AI, trong nửa thời gian, với cùng ngân sách."</em>
+        </p>
+        <ul class="escape-actions">
+          <li>Train toàn bộ dev sử dụng AI coding tools thành thạo</li>
+          <li>Xây internal AI toolchain (code review AI, test gen, doc gen)</li>
+          <li>Chuyển sang outcome-based contract</li>
+          <li>Đo và publish productivity metrics để prove value</li>
+        </ul>
+      </div>
+
+      <div class="escape-card">
+        <div class="escape-phase">Con đường 2 — Trung hạn (1-3 năm)</div>
+        <h3>Vertical Specialization:<br>Trở thành expert ngành</h3>
+        <p>
+          Chọn 2-3 vertical (fintech, healthtech, logistics...) và <strong>all-in</strong>. Xây domain knowledge sâu, compliance expertise, pre-built accelerators cho từng ngành.
+        </p>
+        <p>
+          Pitch mới: <em>"Chúng tôi không chỉ code — chúng tôi hiểu ngành banking hơn 90% dev house khác. Và chúng tôi có accelerators giảm 60% thời gian go-to-market."</em>
+        </p>
+        <ul class="escape-actions">
+          <li>Đầu tư vào domain consultants, không chỉ developers</li>
+          <li>Xây reusable frameworks theo ngành (compliance modules, industry templates)</li>
+          <li>Tuyển ex-industry people (cựu banker, cựu doctor...)</li>
+          <li>Build case study library cho từng vertical</li>
+        </ul>
+      </div>
+
+      <div class="escape-card">
+        <div class="escape-phase">Con đường 3 — Dài hạn (2-5 năm)</div>
+        <h3>Platform & Product:<br>Từ service sang product company</h3>
+        <p>
+          Dùng kinh nghiệm outsourcing để <strong>xây sản phẩm riêng</strong>. Chuyển từ bán giờ lao động sang bán IP (intellectual property). SaaS, platform, AI tools cho specific industry.
+        </p>
+        <p>
+          Pitch mới: <em>"Sau 10 năm build cho 50 khách hàng logistics, chúng tôi đã productize thành platform — bạn subscribe, không cần dev team."</em>
+        </p>
+        <ul class="escape-actions">
+          <li>Identify patterns từ client projects → product opportunities</li>
+          <li>Tách team R&D riêng, không phụ thuộc vào client revenue</li>
+          <li>Bắt đầu từ internal tools → B2B SaaS</li>
+          <li>Build AI-native products (không chỉ AI-assisted)</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="pull-quote fade-in">
+      <p>Công ty nào chọn cả 3 con đường song song — dùng AI delivery ngắn hạn để fund vertical specialization trung hạn, rồi product hóa dài hạn — sẽ là kẻ chiến thắng lớn nhất.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ MARKET -->
+<section id="market">
+  <div class="wide-container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 06 — Định hướng thị trường</span>
+      <h2 class="section-title">Thị trường sẽ<br>thay đổi thế nào?</h2>
+    </div>
+
+    <div class="editorial-text fade-in">
+      <p>
+        Thị trường outsourcing không biến mất — nó <strong>biến hình</strong>. Giống như cách cloud không giết data center mà biến nó thành hybrid infrastructure, AI sẽ không giết outsourcing mà <em>buộc nó tiến hóa thành dạng cao hơn</em>.
+      </p>
+    </div>
+
+    <!-- Revenue Mix Chart -->
+    <div class="forecast-chart fade-in">
+      <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2rem;">Dự báo cơ cấu revenue outsourcing 2028</h3>
+
+      <div class="chart-bar-group">
+        <div class="chart-label">AI-Augmented Delivery</div>
+        <div class="chart-bar-bg"><div class="chart-bar bar-blue" style="width: 85%;">35%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-label">Managed Services & Ops</div>
+        <div class="chart-bar-bg"><div class="chart-bar bar-green" style="width: 60%;">25%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-label">Domain Consulting</div>
+        <div class="chart-bar-bg"><div class="chart-bar bar-purple" style="width: 50%;">20%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-label">Security & Compliance</div>
+        <div class="chart-bar-bg"><div class="chart-bar bar-cyan" style="width: 30%;">12%</div></div>
+      </div>
+      <div class="chart-bar-group">
+        <div class="chart-label">Traditional Body Shop</div>
+        <div class="chart-bar-bg"><div class="chart-bar bar-red" style="width: 20%;">8%</div></div>
+      </div>
+
+      <div class="chart-note">* Ước tính dựa trên xu hướng hiện tại, có thể thay đổi theo tốc độ adoption AI</div>
+    </div>
+
+    <!-- Scenario Table -->
+    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 3rem 0 1.5rem;" class="fade-in">Ai sống, ai chết?</h3>
+
+    <div style="overflow-x: auto;" class="fade-in">
+      <table class="scenario-table">
+        <thead>
+          <tr>
+            <th>Loại công ty</th>
+            <th>Chiến lược</th>
+            <th>Kết cục 2028</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="company-type">Body shop truyền thống<br><small style="color: var(--text-muted)">500-2000 dev, bán T&M</small></td>
+            <td>Không thay đổi, vẫn pitch headcount và giá rẻ</td>
+            <td><span class="badge badge-die">CHẾT</span><br><small>Mất 60-80% khách hàng. Sáp nhập hoặc đóng cửa.</small></td>
+          </tr>
+          <tr>
+            <td class="company-type">Outsourcing cỡ vừa, đang chuyển đổi<br><small style="color: var(--text-muted)">200-500 dev, đang adopt AI</small></td>
+            <td>AI-first delivery + bắt đầu chọn vertical</td>
+            <td><span class="badge badge-survive">SỐNG SÓT</span><br><small>Revenue giảm 20-30% nhưng margin tăng. Ổn định sau 2027.</small></td>
+          </tr>
+          <tr>
+            <td class="company-type">Boutique chuyên ngành<br><small style="color: var(--text-muted)">50-200 dev, deep domain</small></td>
+            <td>AI + domain expertise → premium pricing</td>
+            <td><span class="badge badge-thrive">PHÁT TRIỂN</span><br><small>Revenue tăng 30-50%. Trở thành "consulting firm có tech" thay vì ngược lại.</small></td>
+          </tr>
+          <tr>
+            <td class="company-type">Tech giant outsourcing (TCS, Infosys...)<br><small style="color: var(--text-muted)">100K+ nhân viên</small></td>
+            <td>Massive AI transformation + acquire boutique firms</td>
+            <td><span class="badge badge-transform">BIẾN HÌNH</span><br><small>Headcount giảm 40%, revenue giữ nguyên, profit tăng mạnh.</small></td>
+          </tr>
+          <tr>
+            <td class="company-type">Outsourcing → Product company<br><small style="color: var(--text-muted)">Đang chuyển đổi mô hình</small></td>
+            <td>Productize domain knowledge thành SaaS/platform</td>
+            <td><span class="badge badge-thrive">PHÁT TRIỂN</span><br><small>Thoát hoàn toàn khỏi outsourcing. Revenue recurring, valuation x5-10.</small></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Market Shifts -->
+    <div class="editorial-text fade-in" style="margin-top: 3rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 1.5rem;">5 xu hướng định hình thị trường</h3>
+
+      <p>
+        <strong>1. Từ T&M sang Outcome-based.</strong> Khách hàng không muốn trả tiền cho "giờ ngồi code" — họ muốn trả cho kết quả. "Tôi cần feature X hoạt động trước ngày Y, giá Z." Outsourcing firm nào chuyển được sang mô hình này sẽ có competitive advantage cực lớn, vì <span class="highlight-text">AI cho phép deliver cùng outcome với ít effort hơn — margin tăng vọt</span>.
+      </p>
+      <p>
+        <strong>2. Consolidation — cá lớn nuốt cá bé.</strong> Thị trường sẽ consolidate mạnh. Firm nhỏ không đủ vốn đầu tư AI toolchain sẽ bị acquire hoặc chết. Firm lớn sẽ mua boutique firms để lấy domain expertise. Dự kiến 30-40% firm hiện tại sẽ biến mất hoặc sáp nhập trước 2028.
+      </p>
+      <p>
+        <strong>3. Nearshoring > Offshoring.</strong> Khi headcount giảm, chênh lệch chi phí giữa offshore và nearshore thu hẹp. Khách hàng sẽ ưu tiên <em>cùng timezone, cùng văn hóa</em> hơn là "rẻ nhất có thể." Mexico cho US, Eastern Europe cho EU, sẽ gain share từ India/SEA cho segment T&M.
+      </p>
+      <p>
+        <strong>4. AI Governance & Compliance — ngành mới.</strong> Ai kiểm soát AI trong enterprise? Ai đảm bảo AI-generated code không vi phạm license, không leak data, không có bias? Đây là <span class="highlight-text">vertical hoàn toàn mới</span> mà outsourcing firm có thể chiếm lĩnh — cần cả kỹ năng tech lẫn legal/compliance.
+      </p>
+      <p>
+        <strong>5. "Human-in-the-loop" premium.</strong> Paradox: AI càng phổ biến, <em>human oversight càng giá trị</em>. Regulated industries sẽ BẮT BUỘC phải có người review AI-generated output. Outsourcing có thể bán "certified human review" như một premium service — nghĩ như kiểm toán cho code.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ VIETNAM -->
+<section id="vietnam">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-number">Phần 07 — Góc nhìn Việt Nam</span>
+      <h2 class="section-title">Việt Nam —<br>Cơ hội trong khủng hoảng</h2>
+    </div>
+
+    <div class="editorial-text fade-in">
+      <p>
+        Việt Nam là một trong những hub outsourcing tăng trưởng nhanh nhất thế giới, với FPT Software, KMS, TMA, Rikkeisoft... phục vụ thị trường Nhật, Mỹ, EU. Nhưng <strong>phần lớn vẫn đang ở mô hình body shop hoặc T&M</strong>. Đây vừa là rủi ro lớn nhất, vừa là cơ hội nếu chuyển đổi kịp.
+      </p>
+    </div>
+
+    <div class="vn-spotlight fade-in">
+      <h3>SWOT của IT Outsourcing Việt Nam trong kỷ nguyên AI</h3>
+      <div class="vn-grid">
+        <div class="vn-col">
+          <h4 style="color: var(--accent-green);">✦ Điểm mạnh</h4>
+          <ul>
+            <li>Chi phí senior dev vẫn thấp hơn 5-7x so với Mỹ/EU</li>
+            <li>Workforce trẻ, adapt technology nhanh</li>
+            <li>Quan hệ sâu với thị trường Nhật (ổn định, ít bị disrupt)</li>
+            <li>Hệ sinh thái đào tạo CNTT lớn (mỗi năm 50K+ sinh viên IT)</li>
+            <li>Kinh nghiệm 15+ năm với Java, .NET enterprise stack</li>
+          </ul>
+        </div>
+        <div class="vn-col">
+          <h4 style="color: var(--accent-red);">✦ Điểm yếu</h4>
+          <ul>
+            <li>Phần lớn firm vẫn ở mô hình T&M / body shop</li>
+            <li>Thiếu domain expertise sâu (fintech, healthcare...)</li>
+            <li>English communication gap so với India, Philippines</li>
+            <li>Ít firm có brand recognition quốc tế</li>
+            <li>AI adoption rate ở developer level còn thấp</li>
+          </ul>
+        </div>
+        <div class="vn-col">
+          <h4 style="color: var(--accent-blue);">✦ Cơ hội</h4>
+          <ul>
+            <li>Thị trường Nhật vẫn chuộng "con người" hơn "AI" → buffer 2-3 năm</li>
+            <li>China+1 strategy: Nhiều công ty rời Trung Quốc, Việt Nam là lựa chọn</li>
+            <li>AI Governance consulting cho thị trường SEA</li>
+            <li>Xây AI-augmented delivery model trước India</li>
+            <li>Product hóa: Xây SaaS cho thị trường nội địa 100M dân</li>
+          </ul>
+        </div>
+        <div class="vn-col">
+          <h4 style="color: var(--accent-orange);">✦ Nguy cơ</h4>
+          <ul>
+            <li>India adopt AI nhanh hơn → khoảng cách thu hẹp</li>
+            <li>Khách hàng Mỹ/EU cắt giảm outsourcing budget 30-40%</li>
+            <li>Junior developer pipeline mất giá trị</li>
+            <li>Nearshoring trend bất lợi cho SEA (xa US/EU timezone)</li>
+            <li>Salary inflation nếu chỉ có senior mới có giá trị</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="editorial-text fade-in">
+      <p>
+        <strong>Hành động cụ thể cho firm Việt Nam:</strong> Đầu tư mạnh vào AI training cho developer (không chỉ dùng Copilot — mà hiểu cách architect AI-native systems). Chọn 1-2 vertical và đi sâu. Xây relationship với thị trường Nhật mạnh hơn (họ sẽ là khách hàng trung thành nhất trong 3-5 năm tới). Và quan trọng nhất: <span class="highlight-text">bắt đầu build product — dù nhỏ — thay vì 100% revenue từ service</span>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="dot"></div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════════════════════ VERDICT -->
+<section id="verdict" class="verdict">
+  <div class="container fade-in">
+    <span class="section-number" style="display: block; margin-bottom: 2rem;">Kết luận</span>
+    <div class="verdict-text">
+      IT Outsourcing không chết.<br>
+      <span style="background: var(--gradient-2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Body shopping chết.</span><br>
+      <span style="background: var(--gradient-3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Bán headcount chết.</span><br>
+      <span style="background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Bán outcome sống.</span>
+    </div>
+    <p class="verdict-sub">
+      Công ty nào chuyển từ "chúng tôi có nhiều người" sang "chúng tôi deliver kết quả nhanh hơn, rẻ hơn, đúng hơn — nhờ AI và domain expertise" sẽ không chỉ sống sót, mà sẽ thắng lớn hơn bao giờ hết.
+    </p>
+    <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-subtle);">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;">
+        Thời gian chuyển đổi: 2-3 năm &nbsp;·&nbsp; Sau đó: quá muộn.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Phân tích bởi AI · Tháng 3, 2026 · Dữ liệu và nhận định dựa trên xu hướng thị trường hiện tại</p>
+  <p style="margin-top: 0.5rem;">Được tạo với sự hỗ trợ của <a href="#">Claude Code</a></p>
+</footer>
+
+<script>
+  // Reading progress
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('readingProgress').style.width = progress + '%';
+  });
+
+  // Scroll-triggered fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Active nav dot
+  const sections = document.querySelectorAll('section, header.hero');
+  const navDots = document.querySelectorAll('.float-nav a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 200;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+    navDots.forEach(dot => {
+      dot.classList.remove('active');
+      if (dot.getAttribute('href') === '#' + current) {
+        dot.classList.add('active');
+      }
+    });
+  });
+
+  // Animate chart bars on scroll
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bars = entry.target.querySelectorAll('.chart-bar');
+        bars.forEach((bar, i) => {
+          const width = bar.style.width;
+          bar.style.width = '0%';
+          setTimeout(() => {
+            bar.style.width = width;
+          }, i * 150);
+        });
+        chartObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const chartSection = document.querySelector('.forecast-chart');
+  if (chartSection) chartObserver.observe(chartSection);
+</script>
+
+</body>
+</html>
