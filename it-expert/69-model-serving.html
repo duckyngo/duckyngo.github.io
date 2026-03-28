@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phục Vụ Mô Hình Thần Tốc - Model Serving Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,64,129,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.3em; color: #ff80ab; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(255,128,171,0.3); }
+        .header .title { font-size: 1.2em; color: #ff80ab; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(255,64,129,0.1); }
+        .card h2 { color: #ff80ab; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(255,64,129,0.3), rgba(200,40,100,0.2)); border: 1px solid rgba(255,128,171,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #ff80ab; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(255,64,129,0.5), rgba(200,40,100,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(255,64,129,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #ff4081, #ff80ab); border-radius: 50%; color: white; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #ff4081; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">⚡</span>
+            <h1>Phục Vụ Mô Hình Thần Tốc</h1>
+            <div class="title">TorchServe, Triton, vLLM, TGI, Ollama Expert</div>
+            <div class="quote">"Train model 3 ngày, serve model 3 tháng debug. Ai nói ML là về training?"</div>
+            <div class="badge-container">
+                <span class="badge">🔥 TorchServe</span>
+                <span class="badge">🔺 Triton</span>
+                <span class="badge">⚡ vLLM</span>
+                <span class="badge">🤗 TGI</span>
+                <span class="badge">🦙 Ollama</span>
+                <span class="badge">📦 Quantization</span>
+                <span class="badge">🚀 Optimization</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Phục Vụ Mô Hình Thần Tốc tên thật là <strong>Tốc Độ Quang</strong>, kỹ sư performance optimization chuyên biệt. "Data Scientists train model và nói 'done.' Tôi nhìn model và nói 'bắt đầu' — vì model chạy 5 giây per request trên laptop không phải production."</p>
+            <p>Anh từng biến model từ 5s/request → 50ms/request bằng quantization + batching + TensorRT. "Tăng tốc 100x mà không mất accuracy. Sếp nghĩ tôi là phù thủy. Thực ra tôi chỉ đọc documentation."</p>
+            <p>Hiện anh chuyên serve LLMs — "bài toán khó nhất vì model 70B parameters cần nhiều GPU hơn cả gaming rig." Phương châm: "Latency is user experience. Throughput is business viability. Cost is survival."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Serving</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Chọn Serving Framework</h3>
+                    <p><strong>Triton</strong> (NVIDIA): multi-model, multi-framework, GPU optimized. Best cho high-throughput production. <strong>vLLM</strong>: LLM-specific, PagedAttention, continuous batching. Best cho LLM serving. <strong>TGI</strong> (HuggingFace): LLM serving, easy setup, HF ecosystem. <strong>Ollama</strong>: local LLM, easiest setup, good cho development/personal. <strong>TorchServe</strong>: PyTorch native, good cho custom models. Decision: LLM → vLLM/TGI. Vision/custom → Triton. Local dev → Ollama.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Quantization — Nhỏ hơn, nhanh hơn</h3>
+                    <p>FP32 → FP16: 2x smaller, ~same quality. FP16 → INT8: 2x smaller, < 1% quality loss. INT8 → INT4: 2x smaller, 1-3% quality loss. Tools: <strong>GPTQ</strong> (post-training, good quality), <strong>AWQ</strong> (activation-aware, better than GPTQ), <strong>GGUF</strong> (llama.cpp format, CPU-friendly). LLM 70B: FP16 = 140GB, INT4 = 35GB → fit in single GPU 48GB. Luôn evaluate quality sau quantization trên your specific tasks.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Batching & Throughput Optimization</h3>
+                    <p><strong>Dynamic batching</strong>: group incoming requests, process together. Triton: <code>dynamic_batching { max_queue_delay_microseconds: 100 }</code>. <strong>Continuous batching</strong> (vLLM): không đợi batch đầy, add/remove requests dynamically. 2-3x throughput vs static batching. <strong>PagedAttention</strong> (vLLM): virtual memory cho KV cache, giảm waste 60-80%. Throughput optimization: batch_size tối đa mà GPU memory cho phép.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>GPU Utilization — Mỗi % đều đáng tiền</h3>
+                    <p>GPU idle = tiền đốt. Monitor: <code>nvidia-smi</code>, <code>nvitop</code>. Target: > 80% GPU utilization. Techniques: (1) Right-size batch. (2) Model parallelism cho large models. (3) Multi-model serving (share GPU). (4) Auto-scaling: scale to zero khi không có traffic. Cloud GPU: ~$2-4/hr cho A100. 24/7 = $1,500-3,000/month. Auto-scaling có thể tiết kiệm 60-80%.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Latency Optimization cho LLMs</h3>
+                    <p><strong>Time to First Token (TTFT)</strong>: user wait time trước khi thấy response. <strong>Tokens per Second (TPS)</strong>: generation speed. Optimize TTFT: prefix caching (cache system prompt), speculative decoding. Optimize TPS: quantization, tensor parallelism, Flash Attention. Streaming: gửi tokens ngay khi generate → perceived latency giảm đáng kể. Target: TTFT < 500ms, TPS > 30 cho interactive apps.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">💀 Chuyện 1: Model OOM in production</div>
+                <p>Deploy Llama 13B trên GPU A10 24GB. Test với 1 request: OK. Load test 10 concurrent: OK. Production launch: 50 concurrent users → <code>CUDA out of memory</code>. Service crash. Auto-restart. Crash again. Loop.</p>
+                <p>Root cause: KV cache grows linearly với concurrent requests × context length. 50 requests × 4096 tokens = massive KV cache. Fix: (1) Limit max concurrent, (2) vLLM PagedAttention, (3) Shorter max_tokens, (4) Upgrade GPU. Từ đó anh luôn load test với 2x expected peak traffic.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> LLM memory = model weights + KV cache (grows with requests). Test với realistic concurrent load, không chỉ single request. Set max concurrent requests limit. Monitor GPU memory continuously. PagedAttention (vLLM) giảm KV cache waste 60-80%.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🥶 Chuyện 2: Cold start giết trải nghiệm</div>
+                <p>LLM serving với auto-scaling (scale to zero khi không có traffic). Tiết kiệm 80% cost. Nhưng: user đầu tiên sau idle period → load model (45 giây) → TTFT 47 giây. User đã rời page.</p>
+                <p>Fix: minimum 1 replica luôn warm. Cost tăng nhưng UX acceptable. Hoặc: model preloading (load khi predict traffic spike), hoặc smaller quantized model cho instant response + quality model cho detailed response.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Cold start là trade-off: cost vs latency. Solutions: (1) Min replicas > 0, (2) Predictive scaling (dựa trên traffic patterns), (3) Model caching in memory, (4) Smaller fallback model. Users wait 2 seconds max — 45 seconds là unacceptable cho interactive apps.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">💰 Chuyện 3: Quantization cứu budget</div>
+                <p>Serve Llama 70B FP16: cần 4 × A100 80GB = ~$12,000/month. Company budget: $3,000/month. "Giảm model size?" "Không, boss muốn 70B." Anh Tốc Độ dùng AWQ INT4: fit trong 1 × A100 80GB = $3,000/month. Quality drop: 1.2% trên benchmarks, users không nhận thấy.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Quantization là free performance/cost optimization cho LLMs. INT4 giảm 4x memory với minimal quality loss. Luôn evaluate quantized model trên YOUR tasks — benchmark loss ≠ task-specific loss. AWQ > GPTQ cho most cases năm 2026.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Không load test trước deploy:</strong> Single request OK ≠ 100 concurrent OK. Load test với realistic traffic patterns.
+            </div>
+            <div class="mistake">
+                <strong>❌ Serve FP32 khi FP16 đủ:</strong> 2x memory, 2x slower, ~0% quality difference. Luôn dùng FP16 minimum.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không set max_tokens limit:</strong> User sends prompt, model generates 10,000 tokens. GPU blocked, other requests queue.
+            </div>
+            <div class="mistake">
+                <strong>❌ Single GPU, no fallback:</strong> GPU fails → service down. Cần redundancy hoặc CPU fallback.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không monitor GPU metrics:</strong> Memory leak, utilization drop, thermal throttling — cần monitoring liên tục.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>⚡ Phục Vụ Mô Hình Thần Tốc — "Train 3 ngày, optimize serving 3 tháng. Welcome to production ML."</p>
+            <p>Section 3: AI & Machine Learning · Expert #69</p>
+        </div>
+    </div>
+</body>
+</html>

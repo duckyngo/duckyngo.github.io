@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vô Máy Chủ Đại Sư - Serverless Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a2a 30%, #0a2a3a 60%, #1a3a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(6,182,212,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(6,182,212,0.2); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(6,182,212,0.1); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #06b6d4; text-shadow: 0 0 20px #06b6d440; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #06b6d4; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(6,182,212,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(6,182,212,0.2); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #06b6d4; transition: all 0.3s; }
+        .badge:hover { background: rgba(6,182,212,0.15); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #06b6d4; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(6,182,212,0.3); }
+        .tip { background: rgba(6,182,212,0.03); border-left: 4px solid #06b6d4; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #06b6d4; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">⚡</span>
+            <h1>Vô Máy Chủ Đại Sư</h1>
+            <div class="title">Chuyên Gia Serverless | Người Không Có Server Nhưng Vẫn Bị Gọi Lúc 3 Giờ Sáng</div>
+            <div class="quote">"Serverless không có nghĩa là không có server. Nó có nghĩa là server là vấn đề của người khác. Nhưng bug vẫn là vấn đề của bạn."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">⚡ AWS Lambda</span>
+            <span class="badge">🔵 Azure Functions</span>
+            <span class="badge">🟢 Cloud Functions</span>
+            <span class="badge">🏃 Cloud Run</span>
+            <span class="badge">🔄 Step Functions</span>
+            <span class="badge">📨 Event-Driven</span>
+            <span class="badge">💰 Pay-Per-Use</span>
+            <span class="badge">🔥 Serverless Framework</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Đại Sư từng quản lý 200 servers, thức đêm patch kernels, và sống trong nỗi sợ disk full. Một ngày, chàng ta đọc bài viết "Serverless: The Future of Cloud Computing" và như được khai sáng. "Không cần quản lý servers nữa? Sign me up!"</p>
+            <p>Chàng ta chuyển mọi thứ sang Lambda. Web app? Lambda + API Gateway. Batch job? Lambda. Image processing? Lambda. Cron job? Lambda + CloudWatch Events. Chàng ta trở thành "Lambda Man" trong team — mọi vấn đề đều có thể giải quyết bằng Lambda.</p>
+            <p>Cho đến khi bill tháng đó lên $8,000 — cao hơn 3 lần so với EC2 trước đây. Chàng ta giác ngộ: serverless tuyệt vời cho đúng use case, nhưng không phải silver bullet. Sau đó chàng ta dành 10 năm tiếp theo để giúp người khác tránh sai lầm tương tự.</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. Event-Driven Architecture — Tư Duy Đúng:</strong> Serverless hoạt động tốt nhất với event-driven patterns. API request → Lambda → DynamoDB. S3 upload → Lambda → image processing. SQS message → Lambda → notification. Nghĩ theo events, không phải processes. Mỗi function làm MỘT việc, làm tốt.
+            </div>
+            <div class="tip">
+                <strong>2. Cold Start — Kẻ Thù Số 1:</strong> Node.js/Python: 100-500ms. Java/C#: 1-10 giây. VPC: thêm 1-5 giây. Giảm thiểu: keep package small, avoid VPC khi không cần, Provisioned Concurrency cho latency-critical. SnapStart (Java) giảm cold start đáng kể. Hoặc dùng Cloud Run/Fargate cho container-based serverless.
+            </div>
+            <div class="tip">
+                <strong>3. Cost Model — Hiểu Trước Khi Build:</strong> Lambda pricing: requests + duration + memory. $0.20 per 1M requests + $0.0000166667 per GB-second. Cheap khi traffic thấp/sporadic. EXPENSIVE khi traffic cao, sustained. Break-even point: ~10M requests/tháng thường cheaper trên containers.
+            </div>
+            <div class="tip">
+                <strong>4. Step Functions — Orchestration Cho Complex Workflows:</strong> Khi logic cần nhiều steps, error handling, retries, parallel execution. Visual workflow editor. Standard Workflows cho long-running (up to 1 year). Express Workflows cho high-volume, short-duration. Đừng chain Lambdas bằng code — dùng Step Functions.
+            </div>
+            <div class="tip">
+                <strong>5. Observability — Khó Hơn Bạn Nghĩ:</strong> Distributed tracing quan trọng khi có 50 Lambda functions. X-Ray cho AWS, Application Insights cho Azure. Structured logging (JSON) để CloudWatch Insights query được. Custom metrics cho business logic. Powertools for Lambda simplifies everything.
+            </div>
+            <div class="tip">
+                <strong>6. Testing — Local vs Cloud:</strong> Serverless functions khó test locally vì phụ thuộc cloud services. SAM Local cho AWS, Azure Functions Core Tools. Nhưng không bao giờ 100% giống production. Integration tests trên cloud environment quan trọng hơn unit tests cho serverless.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>💸 Chuyện Serverless Đắt Hơn EC2</h3>
+                <p>Một team chuyển REST API từ 2 EC2 t3.medium ($60/tháng) sang Lambda + API Gateway. Ban đầu tuyệt vời: chi phí $5/tháng vì traffic thấp. Team manager khoe với CTO: "Tiết kiệm 90%!"</p>
+                <p>6 tháng sau, app có traction. Traffic tăng 100x. Lambda bill: $2,000/tháng. API Gateway bill: $1,500/tháng. CloudWatch Logs: $300/tháng. Tổng: $3,800/tháng cho workload mà 2 EC2 instances ($60) handle được thoải mái.</p>
+                <p>Đại Sư analyze: API Gateway per-request pricing killed them. Lambda running at 100% concurrency = always-on = expensive. Solution: move high-traffic API sang ALB + Fargate, keep event-driven async functions trên Lambda.</p>
+                <div class="lesson">💡 Bài học: Serverless cost-effective cho sporadic/unpredictable traffic. Cho sustained high traffic, containers hoặc VMs thường rẻ hơn. Calculate break-even point TRƯỚC khi migrate. Hybrid approach: serverless cho glue logic, containers cho core services.</div>
+            </div>
+            <div class="story">
+                <h3>⏰ Chuyện 15-Minute Timeout</h3>
+                <p>Team build video processing pipeline trên Lambda. Upload video → Lambda transcode → S3. Works great cho video dưới 5 phút. Một ngày, client upload video 2 giờ. Lambda hit 15-minute timeout. Function terminated mid-processing. Output file corrupted.</p>
+                <p>Team retry tự động. Lambda hit timeout lại. Retry. Timeout. 10 retries = 10 corrupted files + $50 in Lambda costs. DLQ (Dead Letter Queue) đầy messages. On-call engineer nhận 10 PagerDuty alerts.</p>
+                <p>Fix: chuyển video processing sang ECS Fargate task (no timeout limit), dùng Lambda chỉ để trigger Fargate task. Step Functions orchestrate workflow với error handling.</p>
+                <div class="lesson">💡 Bài học: Lambda max timeout = 15 phút. Cho long-running jobs: ECS Fargate, Step Functions, hoặc EC2. Lambda tốt cho glue logic và short tasks. Đừng force-fit long processes vào Lambda.</div>
+            </div>
+            <div class="story">
+                <h3>🔄 Chuyện Lambda Recursive Loop</h3>
+                <p>Developer viết Lambda trigger: S3 upload → Lambda process file → save result back to SAME S3 bucket. Lambda chạy → save result → trigger Lambda → save result → trigger Lambda... Infinite loop.</p>
+                <p>1000 concurrent executions in seconds. AWS account throttled. Bill chạy lên $500 trong 10 phút trước khi engineer nhận alert và disable trigger. May mắn là Lambda có concurrency limit mặc định 1000.</p>
+                <div class="lesson">💡 Bài học: NEVER trigger Lambda từ output mà Lambda writes to. Dùng separate buckets/prefixes cho input và output. Set Lambda reserved concurrency limit. Enable Lambda recursive loop detection (AWS tính năng mới).</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. "Serverless cho mọi thứ":</strong> Serverless tốt cho event-driven, glue logic, APIs traffic thấp. Không tốt cho: long-running processes, high-throughput sustained workloads, WebSocket heavy apps.
+            </div>
+            <div class="mistake">
+                <strong>2. Mega-function:</strong> Một Lambda function 5000 dòng code xử lý 20 use cases. Single Responsibility Principle áp dụng cho serverless. Mỗi function = 1 job.
+            </div>
+            <div class="mistake">
+                <strong>3. Bỏ qua cold start trong production:</strong> Demo thì smooth vì function đã warm. Production lúc 3am, function cold, user đầu tiên chờ 10 giây. Plan cho cold starts hoặc dùng Provisioned Concurrency.
+            </div>
+            <div class="mistake">
+                <strong>4. Không set concurrency limits:</strong> Traffic spike → thousands of Lambda invocations → overwhelm downstream database. Set reserved concurrency per function. Use SQS to buffer.
+            </div>
+            <div class="mistake">
+                <strong>5. Logging everything:</strong> CloudWatch Logs pricing by ingestion. Lambda logs mỗi request = $$$ khi traffic cao. Log selectively, use log levels, set retention policies.
+            </div>
+            <div class="mistake">
+                <strong>6. Ignoring API Gateway costs:</strong> API Gateway REST API: $3.50/million requests. Cho high-traffic API, ALB ($0.008/LCU-hour) thường rẻ hơn nhiều. HTTP API ($1.00/million) là alternative rẻ hơn.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #83</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

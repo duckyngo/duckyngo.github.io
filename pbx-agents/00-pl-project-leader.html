@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kỹ Thuật Chưởng Môn - Agent #00 | PBX Project Leader</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --bg-dark: #0a0f0a;
+            --bg-card: #111a11;
+            --bg-card-alt: #0d150d;
+            --green-electric: #00ff88;
+            --green-bright: #39ff14;
+            --green-soft: #4ade80;
+            --green-dark: #166534;
+            --green-muted: #22c55e;
+            --green-dim: #15803d;
+            --green-glow: rgba(0, 255, 136, 0.15);
+            --green-glow-strong: rgba(0, 255, 136, 0.3);
+            --charcoal: #1a1a2e;
+            --charcoal-light: #252540;
+            --text-primary: #e0f2e0;
+            --text-secondary: #9ca3af;
+            --text-dim: #6b7280;
+            --accent-gold: #fbbf24;
+            --accent-red: #ef4444;
+            --accent-blue: #60a5fa;
+            --accent-purple: #a78bfa;
+            --accent-cyan: #22d3ee;
+            --terminal-bg: #0c1210;
+            --terminal-border: #1a3a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(57, 255, 20, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.01) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Matrix rain background */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(0,255,136,0.03) 35px, rgba(0,255,136,0.03) 36px),
+                repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(0,255,136,0.02) 35px, rgba(0,255,136,0.02) 36px);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes terminalBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes floatBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.4), 0 0 80px rgba(0, 255, 136, 0.1); }
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes rotateOrbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes glitchFlicker {
+            0%, 92%, 100% { opacity: 1; transform: translate(0); }
+            93% { opacity: 0.8; transform: translate(-2px, 1px); }
+            94% { opacity: 1; transform: translate(1px, -1px); }
+            95% { opacity: 0.9; transform: translate(-1px, 0); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: var(--fill-width, 100%); }
+        }
+
+        /* ===== HEADER SECTION ===== */
+        .hero-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .hero-header::before {
+            content: '$ ./start-project --role=tech-lead --mode=legendary';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--green-electric);
+            opacity: 0.5;
+            white-space: nowrap;
+        }
+
+        .agent-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--green-electric);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .agent-number span {
+            background: linear-gradient(135deg, var(--green-electric), var(--green-bright));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        /* Avatar */
+        .avatar-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 25px auto;
+            animation: floatBounce 4s ease-in-out infinite;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--green-electric);
+            border-right-color: var(--green-bright);
+            animation: rotateOrbit 4s linear infinite;
+        }
+
+        .avatar-ring-2 {
+            position: absolute;
+            top: -18px;
+            left: -18px;
+            width: 216px;
+            height: 216px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-bottom-color: var(--green-soft);
+            border-left-color: var(--accent-cyan);
+            animation: rotateOrbit 6s linear infinite reverse;
+        }
+
+        .avatar-main {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0d2818, #1a4a2e, #0d3320);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            position: relative;
+            animation: pulseGlow 3s ease-in-out infinite;
+            border: 3px solid var(--green-dark);
+        }
+
+        .avatar-main::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, var(--green-electric), transparent, var(--green-bright), transparent);
+            z-index: -1;
+            animation: rotateOrbit 8s linear infinite;
+            opacity: 0.3;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--green-electric) 0%, var(--green-bright) 30%, var(--accent-cyan) 70%, var(--green-electric) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease infinite;
+            margin: 15px 0 5px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--green-soft);
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .hero-tagline {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+
+        /* Badges */
+        .badge-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            color: var(--green-soft);
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .badge:hover {
+            background: rgba(0, 255, 136, 0.15);
+            border-color: var(--green-electric);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .badge.gold {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: var(--accent-gold);
+        }
+
+        .badge.gold:hover {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--accent-gold);
+        }
+
+        /* ===== Section Styles ===== */
+        .section {
+            margin-bottom: 35px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.15);
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--green-electric);
+            line-height: 1.3;
+        }
+
+        .section-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        /* Card Styles */
+        .card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-card-alt));
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--green-electric), var(--green-dark));
+            border-radius: 4px 0 0 4px;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 136, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.08);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--green-soft);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-size: 0.95rem;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card ul li {
+            padding: 6px 0 6px 24px;
+            position: relative;
+        }
+
+        .card ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--green-electric);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        /* Terminal Block */
+        .terminal {
+            background: var(--terminal-bg);
+            border: 1px solid var(--terminal-border);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .terminal-header {
+            background: linear-gradient(135deg, #1a2e1a, #0f1f0f);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--terminal-border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-title {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-left: 8px;
+        }
+
+        .terminal-body {
+            padding: 18px 20px;
+            font-size: 0.85rem;
+            line-height: 1.9;
+            color: var(--green-soft);
+        }
+
+        .terminal-body .prompt {
+            color: var(--green-electric);
+            user-select: none;
+        }
+
+        .terminal-body .comment {
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        .terminal-body .output {
+            color: var(--text-secondary);
+            padding-left: 0;
+        }
+
+        .terminal-body .highlight {
+            color: var(--accent-gold);
+        }
+
+        .terminal-body .error {
+            color: var(--accent-red);
+        }
+
+        .terminal-body .info {
+            color: var(--accent-cyan);
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--green-electric);
+            animation: terminalBlink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--green-electric), var(--green-dark), transparent);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-card-alt));
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            border-color: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 5px 25px rgba(0, 255, 136, 0.08);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 30px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--green-electric);
+            border: 3px solid var(--bg-dark);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .timeline-item .phase-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--green-electric);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .timeline-item .phase-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--green-soft);
+            margin-bottom: 12px;
+        }
+
+        .timeline-item p, .timeline-item li {
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-size: 0.93rem;
+        }
+
+        .timeline-item ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .timeline-item ul li {
+            padding: 5px 0 5px 22px;
+            position: relative;
+        }
+
+        .timeline-item ul li::before {
+            content: '$';
+            position: absolute;
+            left: 0;
+            color: var(--green-electric);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* War Story */
+        .war-story {
+            background: linear-gradient(135deg, #0f1a14, #111f16);
+            border: 1px solid rgba(0, 255, 136, 0.12);
+            border-left: 4px solid var(--green-electric);
+            border-radius: 0 14px 14px 0;
+            padding: 25px 28px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .war-story::before {
+            content: '// WAR STORY';
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--bg-dark);
+            padding: 0 10px;
+        }
+
+        .war-story-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .war-story p {
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-size: 0.93rem;
+        }
+
+        .war-story .moral {
+            margin-top: 12px;
+            padding: 10px 15px;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--green-electric);
+            font-style: italic;
+            color: var(--green-soft);
+        }
+
+        /* Golden Rule */
+        .golden-rule {
+            background: linear-gradient(135deg, #1a1508, #1f1a0a);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-radius: 14px;
+            padding: 22px 25px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .golden-rule::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-gold), #b45309);
+        }
+
+        .golden-rule .rule-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .golden-rule .rule-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+        }
+
+        .golden-rule p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.92rem;
+        }
+
+        /* Mistake Block */
+        .mistake-block {
+            background: linear-gradient(135deg, #1a0f0f, #1f1010);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: 14px;
+            padding: 22px 25px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mistake-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-red), #991b1b);
+        }
+
+        .mistake-block .mistake-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-red);
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+        }
+
+        .mistake-block .mistake-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            margin-bottom: 8px;
+        }
+
+        .mistake-block p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.92rem;
+        }
+
+        /* Tech Radar */
+        .tech-radar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tech-item {
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .tech-item .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .tech-item .tech-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--green-soft);
+            font-weight: 600;
+        }
+
+        .tech-item .tech-role {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Progress Bar */
+        .skill-bar {
+            margin: 10px 0;
+        }
+
+        .skill-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+
+        .skill-bar-track {
+            height: 6px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--green-dark), var(--green-electric));
+            animation: progressFill 1.5s ease-out;
+        }
+
+        /* Deadline Banner */
+        .deadline-banner {
+            background: linear-gradient(135deg, #1a0f08, #1f1510, #1a0f08);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 14px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        .deadline-banner .deadline-icon {
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+
+        .deadline-banner .deadline-info h4 {
+            color: var(--accent-gold);
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .deadline-banner .deadline-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .deadline-banner .deadline-info .date {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-red);
+            font-weight: 700;
+        }
+
+        /* Blockquote / Wisdom */
+        .wisdom-quote {
+            background: var(--terminal-bg);
+            border: 1px solid var(--terminal-border);
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin: 16px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            line-height: 1.8;
+            color: var(--green-soft);
+            position: relative;
+        }
+
+        .wisdom-quote::before {
+            content: '$ echo "wisdom"';
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: var(--bg-dark);
+            padding: 0 8px;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0 8px 30px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.8;
+        }
+
+        .checklist li::before {
+            content: '[x]';
+            position: absolute;
+            left: 0;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--green-electric);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .checklist li.pending::before {
+            content: '[ ]';
+            color: var(--text-dim);
+        }
+
+        /* Nav/TOC */
+        .toc {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-card-alt));
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 14px;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+        }
+
+        .toc-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--green-electric);
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 6px;
+        }
+
+        .toc-list li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.88rem;
+            padding: 4px 0 4px 18px;
+            display: block;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list li a::before {
+            content: '#';
+            position: absolute;
+            left: 0;
+            color: var(--green-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .toc-list li a:hover {
+            color: var(--green-electric);
+        }
+
+        .toc-list li a:hover::before {
+            color: var(--green-electric);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 50px 20px 30px;
+            border-top: 1px solid rgba(0, 255, 136, 0.08);
+            margin-top: 40px;
+        }
+
+        .footer p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            margin: 5px 0;
+        }
+
+        .footer .signature {
+            color: var(--green-electric);
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .container { padding: 12px; }
+            .card { padding: 20px; }
+            .timeline { padding-left: 30px; }
+            .timeline-item { padding: 18px; }
+            .badge-grid { gap: 6px; }
+            .badge { font-size: 0.65rem; padding: 4px 10px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .tech-radar { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Highlight text */
+        .hl { color: var(--green-electric); font-weight: 600; }
+        .hl-gold { color: var(--accent-gold); font-weight: 600; }
+        .hl-red { color: var(--accent-red); font-weight: 600; }
+        .hl-blue { color: var(--accent-blue); font-weight: 600; }
+        .hl-cyan { color: var(--accent-cyan); font-weight: 600; }
+        .hl-purple { color: var(--accent-purple); font-weight: 600; }
+
+        .inline-code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 255, 136, 0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--green-soft);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            margin: 30px 0;
+        }
+
+        strong {
+            color: var(--green-soft);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="matrix-bg"></div>
+
+<div class="container">
+
+    <!-- ===== HERO HEADER ===== -->
+    <header class="hero-header">
+        <div class="agent-number">AGENT <span>#00</span> — THE ORIGIN</div>
+
+        <div class="avatar-container">
+            <div class="avatar-ring"></div>
+            <div class="avatar-ring-2"></div>
+            <div class="avatar-main">&#129504;</div>
+        </div>
+
+        <h1 class="hero-title">Kỹ Thuật Chưởng Môn</h1>
+        <p class="hero-subtitle">// Trưởng Dự Án Đại Hiệp — Project Leader / Tech Lead</p>
+        <p class="hero-tagline">"Cầu nối giữa Code và Business. Người dịch ngôn ngữ của Developer sang ngôn ngữ của Giám Đốc — và ngược lại, mà hai bên đều hiểu."</p>
+
+        <div class="badge-grid">
+            <span class="badge gold">&#9734; Architecture</span>
+            <span class="badge gold">&#9734; System Design</span>
+            <span class="badge">Code Review</span>
+            <span class="badge">Tech Debt</span>
+            <span class="badge">Team Mentoring</span>
+            <span class="badge">Performance</span>
+            <span class="badge">Korean Enterprise</span>
+            <span class="badge">Full-Stack</span>
+            <span class="badge">.NET 8</span>
+            <span class="badge">Vue.js 3</span>
+            <span class="badge">Electron</span>
+            <span class="badge">SignalR</span>
+            <span class="badge">SIP/VoIP</span>
+            <span class="badge">Docker</span>
+        </div>
+    </header>
+
+    <!-- Deadlines -->
+    <div class="deadline-banner">
+        <div class="deadline-icon">&#9200;</div>
+        <div class="deadline-info">
+            <h4>&#9888;&#65039; DEADLINE CHIẾN TRANH</h4>
+            <p><span class="date">15/05</span> — Core Release &nbsp;|&nbsp; <span class="date">18/05</span> — Hệ thống cũ ngừng &nbsp;|&nbsp; <span class="date">15/06</span> — Full Release</p>
+        </div>
+    </div>
+
+    <!-- TOC -->
+    <nav class="toc">
+        <div class="toc-title">// MUC_LUC.map()</div>
+        <ul class="toc-list">
+            <li><a href="#backstory">Hành Trình 12+ Năm</a></li>
+            <li><a href="#phases">Các Giai Đoạn Dự Án (PL View)</a></li>
+            <li><a href="#korean">Yêu Cầu Kỹ Thuật Hàn Quốc</a></li>
+            <li><a href="#warstories">Câu Chuyện Chiến Trường</a></li>
+            <li><a href="#leadership">Trí Tuệ Kỹ Thuật</a></li>
+            <li><a href="#goldenrules">15 Quy Tắc Vàng</a></li>
+            <li><a href="#mistakes">Sai Lầm Chí Mạng</a></li>
+            <li><a href="#pbxadvice">PBX Technical Blueprint</a></li>
+        </ul>
+    </nav>
+
+    <!-- =========================================== -->
+    <!-- SECTION 1: BACKSTORY                         -->
+    <!-- =========================================== -->
+    <section class="section" id="backstory">
+        <div class="section-header">
+            <div class="section-icon">&#128214;</div>
+            <div>
+                <h2 class="section-title">Hành Trình 12+ Năm: Từ Junior Dev Đến Chưởng Môn</h2>
+                <div class="section-subtitle">// function lifePath() { return "không thẳng bao giờ"; }</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128118; Chương 1: Cậu Bé Viết Code Đầu Tiên</div>
+            <p>Năm 2012, có một thằng bé mới ra trường, ôm cái laptop cũ, ngồi góc văn phòng gõ code PHP. Thằng bé ấy nghĩ rằng: <em>"Chỉ cần code giỏi là đủ. Code đẹp thì đời đẹp."</em></p>
+            <p>Sai. Sai hoàn toàn. Sai đến mức 12 năm sau vẫn còn cười khi nhớ lại.</p>
+            <p>Ngày đầu tiên đi làm, senior review code, nói đúng một câu: <em>"Code chạy được không có nghĩa là code tốt. Code tốt là code mà người khác đọc được, sửa được, và không chửi mình."</em> Câu nói đó theo ta suốt 12 năm.</p>
+            <p>Từ PHP sang Java, từ Java sang C#, từ jQuery sang Angular rồi Vue.js — mỗi lần chuyển stack là một lần nhận ra: <strong>ngôn ngữ chỉ là công cụ, tư duy mới là vũ khí.</strong></p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128170; Chương 2: Năm Thứ 3 — Cú Sốc Đầu Tiên</div>
+            <p>Sau 3 năm code, ta nghĩ mình giỏi lắm rồi. Biết design pattern, biết SOLID, viết unit test đàng hoàng. Được promote lên Senior Developer.</p>
+            <p>Rồi được giao lead một team 5 người cho dự án đầu tiên. Và đó là lúc ta nhận ra: <strong>code giỏi và lead team giỏi là hai kỹ năng hoàn toàn khác nhau.</strong></p>
+            <p>Team có một bạn junior viết code rất chậm nhưng rất cẩn thận. Có một bạn senior viết nhanh như gió nhưng không bao giờ viết test. Có một bạn mid-level rất giỏi nhưng không bao giờ nói chuyện với ai. Ta phải học cách làm việc với con người — không phải máy tính.</p>
+            <p>Dự án đó trễ 2 tháng. Không phải vì code khó, mà vì ta không biết cách phân chia công việc, không biết cách communicate requirement, và quan trọng nhất: <strong>không biết cách nói "không" với stakeholder khi họ muốn thêm feature vào sprint cuối.</strong></p>
+
+            <div class="wisdom-quote">
+                "Kỹ năng code đưa bạn vào phòng. Kỹ năng lead giữ bạn ở lại. Kỹ năng communicate quyết định bạn ngồi ở đâu trong phòng."
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127758; Chương 3: Cuộc Phiêu Lưu Hàn Quốc</div>
+            <p>Năm thứ 5, ta nhận dự án đầu tiên cho khách Hàn Quốc. Và đó là lúc ta học được rằng: <strong>enterprise Hàn Quốc chơi ở một level hoàn toàn khác.</strong></p>
+            <p>Khách Hàn gửi document dài 200 trang bằng tiếng Hàn. Security requirement dày hơn cả functional requirement. Mỗi lần deploy phải qua 5 cấp approval. Testing không phải chuyện của QA mà là chuyện của cả công ty.</p>
+            <p>Nhưng ta cũng học được: khách Hàn khi đã tin tưởng thì cực kỳ loyal. Họ không dễ tính, nhưng họ fair. Và họ cực kỳ respect kỹ thuật — nếu bạn chứng minh được bạn hiểu hệ thống đến tận xương.</p>
+            <p>Từ dự án đó, ta đã lead thêm 15+ dự án cho thị trường Hàn Quốc. Mỗi dự án là một bài học. Từ <span class="inline-code">PIPA compliance</span> đến <span class="inline-code">한국어 UI/UX</span>, từ NHN Cloud đến KT Cloud. Tất cả đều có chuyện để kể.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128293; Chương 4: Real-Time Communication — Tình Yêu Và Nước Mắt</div>
+            <p>Lần đầu tiên làm hệ thống real-time là năm thứ 7. Một hệ thống chat cho enterprise. Nghe đơn giản? WebSocket, message queue, done? <strong>Không. Một ngàn lần không.</strong></p>
+            <p>Real-time system là nơi mà mọi thứ bạn biết về web development truyền thống đều phải xem xét lại. Connection management, message ordering, reconnection strategy, presence detection, typing indicators, read receipts — mỗi cái nghe nhỏ nhưng phức tạp khủng khiếp.</p>
+            <p>Và rồi đến VoIP. SIP protocol. Asterisk. Codec negotiation. NAT traversal. Echo cancellation. Jitter buffer. Mỗi cái là một vũ trụ riêng.</p>
+            <p>Đó là lý do tại sao khi nhận dự án PBX cho Coway Korea, ta biết chính xác mình đang bước vào cái gì. Và ta cũng biết: <strong>đây sẽ là dự án khó nhất, nhưng cũng sẽ là dự án đáng tự hào nhất.</strong></p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127942; Chương 5: 20+ Dự Án — Những Con Số Không Nói Dối</div>
+            <p>12 năm, 20+ dự án, 100+ developers đã mentor, 3 lần suýt burnout, 2 lần nghĩ đến việc chuyển sang làm PM (rồi quay lại vì nhớ code), 1 lần production down lúc 3 giờ sáng ngày Tết.</p>
+
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>.NET / C#</span><span>95%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 95%; width: 95%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>System Architecture</span><span>92%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 92%; width: 92%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>Vue.js / Frontend</span><span>85%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 85%; width: 85%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>Real-time Systems (SignalR/WebSocket)</span><span>90%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 90%; width: 90%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>VoIP / SIP / Asterisk</span><span>80%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 80%; width: 80%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>Korean Enterprise Compliance</span><span>88%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 88%; width: 88%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>Team Leadership / Mentoring</span><span>93%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 93%; width: 93%;"></div></div>
+            </div>
+            <div class="skill-bar">
+                <div class="skill-bar-label"><span>DevOps / Docker / CI/CD</span><span>82%</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="--fill-width: 82%; width: 82%;"></div></div>
+            </div>
+
+            <div class="wisdom-quote">
+                "Senior developer là người giải quyết vấn đề khó. Tech Lead là người ngăn vấn đề khó xảy ra ngay từ đầu."
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 2: PROJECT PHASES                    -->
+    <!-- =========================================== -->
+    <section class="section" id="phases">
+        <div class="section-header">
+            <div class="section-icon">&#128640;</div>
+            <div>
+                <h2 class="section-title">Các Giai Đoạn Dự Án — Góc Nhìn Của PL</h2>
+                <div class="section-subtitle">// PL != PM. Cùng nhìn một dự án, nhưng thấy khác nhau hoàn toàn.</div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span class="terminal-title">pl-perspective.sh</span>
+            </div>
+            <div class="terminal-body">
+                <span class="comment"># PM hỏi: "Bao giờ xong?"</span><br>
+                <span class="comment"># PL hỏi: "Kiến trúc này scale được không?"</span><br>
+                <span class="comment"># PM lo: "Khách hàng có happy không?"</span><br>
+                <span class="comment"># PL lo: "Production có sập lúc 3 giờ sáng không?"</span><br>
+                <br>
+                <span class="prompt">$</span> <span class="highlight">echo "Hai góc nhìn, một mục tiêu: ship quality software đúng hạn"</span><br>
+                <span class="output">Hai góc nhìn, một mục tiêu: ship quality software đúng hạn</span>
+            </div>
+        </div>
+
+        <div class="timeline">
+
+            <!-- Phase 1 -->
+            <div class="timeline-item">
+                <div class="phase-label">PHASE 01</div>
+                <div class="phase-title">&#9889; Khởi Động Kỹ Thuật (Technical Kickoff)</div>
+
+                <p><strong>Architecture Decision Records (ADR) — Tại sao chúng cứu mạng bạn</strong></p>
+                <p>Mỗi quyết định kiến trúc quan trọng đều phải được ghi lại. Không phải trong đầu, không phải trong Slack, mà trong một file ADR chính thức. Tại sao? Vì 3 tháng sau, khi có bug production và cả team hỏi <em>"Tại sao mình chọn cách này?"</em> — bạn cần một tài liệu để trả lời thay vì dựa vào trí nhớ mơ hồ.</p>
+                <p>ADR gồm: <strong>Context</strong> (tại sao cần quyết định), <strong>Decision</strong> (chọn gì), <strong>Consequences</strong> (hệ quả tốt và xấu), <strong>Alternatives Considered</strong> (đã xem xét những gì khác).</p>
+
+                <div class="wisdom-quote">
+                    "Không có ADR, mọi cuộc họp technical đều bắt đầu bằng câu: 'Ai nhớ tại sao mình làm thế này?' — và không ai nhớ."
+                </div>
+
+                <p><strong>Tech Stack Selection — Tại sao .NET 8 + Vue.js 3 + Electron cho PBX?</strong></p>
+                <ul>
+                    <li><span class="hl">.NET 8</span>: Performance tốt nhất trong các framework enterprise. SignalR native support. Khách Hàn Quốc quen thuộc với .NET ecosystem. Long-term support đến 2028.</li>
+                    <li><span class="hl">Vue.js 3</span>: Composition API + TypeScript = code sạch, dễ test. Ecosystem nhẹ hơn React cho desktop app. DevExtreme có Vue component tốt.</li>
+                    <li><span class="hl">Electron</span>: Coway yêu cầu desktop app chạy trên Windows. Electron cho phép share code với web. Integration với hệ thống điện thoại qua SIP.js.</li>
+                    <li><span class="hl">SignalR</span>: Real-time communication hub. Tự động fallback từ WebSocket sang SSE sang Long Polling. Scale horizontal với Redis backplane.</li>
+                    <li><span class="hl">Asterisk + Docker</span>: PBX engine proven, cộng đồng lớn. Docker cho phép deploy consistent giữa dev/staging/prod.</li>
+                </ul>
+
+                <p><strong>Proof of Concept — Validate cái gì trước?</strong></p>
+                <p>Khi bắt đầu dự án PBX, có 100 thứ cần làm. Nhưng PL phải biết chọn 3-5 POC quan trọng nhất:</p>
+                <ul>
+                    <li><strong>POC 1:</strong> SIP.js kết nối với Asterisk qua WebSocket — đây là core của toàn bộ dự án. Nếu cái này không work, toàn bộ kiến trúc phải thay đổi.</li>
+                    <li><strong>POC 2:</strong> SignalR với 500+ concurrent connections trên .NET 8 — enterprise PBX cần handle nhiều agent cùng lúc.</li>
+                    <li><strong>POC 3:</strong> Electron app size và memory consumption — Korean enterprise cấp laptop chuẩn 8GB RAM, app không được ngốn quá 500MB.</li>
+                    <li><strong>POC 4:</strong> IndexedDB sync với backend khi offline/online — agent có thể mất mạng khi đang gọi.</li>
+                    <li><strong>POC 5:</strong> DevExtreme DataGrid với 10,000+ rows và real-time update — bảng call log phải mượt.</li>
+                </ul>
+
+                <p><strong>Development Environment — Tiết kiệm 100+ giờ</strong></p>
+                <p>Một PL giỏi dành 2-3 ngày đầu setup dev environment cho cả team. Docker Compose file chạy một phát lên hết. Hot reload cho cả backend lẫn frontend. Mock SIP server cho dev không cần Asterisk thật. Seed data script tự tạo data test. Nếu developer mới join mà mất hơn 30 phút để chạy được project, đó là lỗi của PL.</p>
+
+                <p><strong>Coding Standards & Conventions</strong></p>
+                <ul>
+                    <li><span class="inline-code">.editorconfig</span> + <span class="inline-code">eslint</span> + <span class="inline-code">prettier</span> — format tự động, không cãi nhau tab vs space</li>
+                    <li>Naming convention: PascalCase cho C#, camelCase cho TypeScript, kebab-case cho Vue component files</li>
+                    <li>Commit message convention: <span class="inline-code">feat(module): description</span> — conventional commits</li>
+                    <li>PR template bắt buộc: What/Why/How/Testing</li>
+                    <li>Code review checklist tự động qua GitHub Actions</li>
+                </ul>
+
+                <p><strong>Git Branching Strategy — Không gây nội chiến</strong></p>
+                <p>Với team offshore cho Hàn Quốc, ta dùng chiến lược đơn giản nhưng hiệu quả:</p>
+                <ul>
+                    <li><span class="inline-code">main</span> — luôn deployable, chỉ merge qua PR</li>
+                    <li><span class="inline-code">develop</span> — integration branch, auto-deploy staging</li>
+                    <li><span class="inline-code">feature/*</span> — mỗi task một branch, lifetime tối đa 3 ngày</li>
+                    <li><span class="inline-code">hotfix/*</span> — cherry-pick vào cả main và develop</li>
+                    <li>Quy tắc vàng: <strong>không bao giờ push trực tiếp vào main hoặc develop</strong></li>
+                </ul>
+                <p>Tại sao lifetime tối đa 3 ngày? Vì branch sống lâu hơn 3 ngày sẽ merge conflict với 90% xác suất. Và merge conflict lúc deadline là cơn ác mộng.</p>
+
+                <p><strong>Database Design — Quyết định không thể undo</strong></p>
+                <p>Có những quyết định database mà khi đã chọn, gần như không thể thay đổi trong dự án enterprise: schema naming convention, primary key strategy (GUID vs auto-increment — cho PBX ta chọn GUID vì multi-server sync), soft delete vs hard delete (enterprise Hàn bắt buộc soft delete cho audit trail), timezone handling (UTC everywhere, convert ở UI layer).</p>
+
+                <p><strong>API Contract Design — Trước khi viết code</strong></p>
+                <p>Frontend và backend team cần agree API contract trước. Swagger/OpenAPI spec viết trước, code sau. Tại sao? Vì frontend team có thể mock API và build UI song song với backend. Với dự án có deadline gấp như PBX (May 15!), parallel development là bắt buộc.</p>
+
+                <p><strong>Korean Enterprise Requirements — Security từ ngày đầu</strong></p>
+                <ul>
+                    <li>PIPA (개인정보보호법) compliance bắt đầu từ database design — encrypt PII fields</li>
+                    <li>Audit trail cho mọi thao tác CRUD trên data nhạy cảm</li>
+                    <li>Session timeout theo tiêu chuẩn KISA (한국인터넷진흥원)</li>
+                    <li>Password policy theo hướng dẫn NIS (국가정보원)</li>
+                    <li>Data retention policy — logs giữ tối thiểu 5 năm</li>
+                </ul>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="timeline-item">
+                <div class="phase-label">PHASE 02</div>
+                <div class="phase-title">&#128296; Tháng Đầu Tiên — Xây Nền Móng</div>
+
+                <p><strong>Cuộc tranh luận "Scaffold vs Build"</strong></p>
+                <p>Tháng đầu tiên luôn có cuộc tranh luận: <em>"Nên dùng template/scaffold có sẵn hay build from scratch?"</em> Câu trả lời của PL dày dạn: <strong>scaffold cho boilerplate, build cho business logic.</strong> Authentication, logging, error handling — dùng library. Call routing, agent management, real-time state — build custom vì đây là core business.</p>
+
+                <p><strong>Code Review Culture — Feedback không phá hoại</strong></p>
+                <p>Có hai loại code review: loại giúp người ta học, và loại khiến người ta muốn nghỉ việc. PL phải thiết lập culture từ đầu:</p>
+                <ul>
+                    <li>Comment vào code, không phải vào con người: <em>"Có thể dùng early return ở đây"</em> thay vì <em>"Sao viết rối thế?"</em></li>
+                    <li>Mỗi comment nên kèm suggestion hoặc giải thích WHY</li>
+                    <li>Phân biệt <span class="hl">nit</span> (nhỏ, tùy), <span class="hl">suggestion</span> (nên làm), <span class="hl">blocker</span> (phải sửa)</li>
+                    <li>PR không quá 400 dòng — PR 5000 dòng không ai review kỹ được</li>
+                    <li>Auto-approve cho style/format changes</li>
+                </ul>
+
+                <div class="war-story">
+                    <div class="war-story-title">Developer viết 5000 dòng trong một PR</div>
+                    <p>Tuần thứ 2, một developer gửi PR với 5000 dòng thay đổi. Bạn ấy rất tự hào vì "làm xong nguyên module trong 1 tuần". Nhưng khi review, ta nhận ra: module đó có 3 bugs nghiêm trọng, 2 security vulnerabilities, và hoàn toàn không có test.</p>
+                    <p>Phải mất 3 ngày để review, 2 ngày để sửa, và 1 ngày để viết test. Tổng cộng: 6 ngày để "fix" một PR mà đáng lẽ nên được chia thành 8-10 PRs nhỏ, mỗi cái review trong 30 phút.</p>
+                    <div class="moral">Bài học: PR lớn = review tệ = bug lọt = production crash. Luôn chia nhỏ PR.</div>
+                </div>
+
+                <p><strong>Build vs Library — Câu chuyện DevExtreme</strong></p>
+                <p>Khi chọn DevExtreme cho DataGrid, team có người phản đối: <em>"Tự build table component đi, không phụ thuộc third-party."</em> PL phải tính toán: tự build DataGrid với sort, filter, group, virtual scroll, export Excel cần ít nhất 3 developer x 2 tháng = 6 man-months. DevExtreme license: $2,000. ROI rõ ràng. Nhưng cũng phải document limitation của DevExtreme để team không lãng phí thời gian cố customize những thứ library không support.</p>
+
+                <p><strong>Automated Testing — Bài test hôm nay, ơn cứu mạng ngày mai</strong></p>
+                <ul>
+                    <li>Unit test cho business logic (call routing rules, agent status transitions, CDR calculations)</li>
+                    <li>Integration test cho API endpoints — especially authentication flow</li>
+                    <li>E2E test cho critical paths: login → nhận cuộc gọi → chuyển cuộc gọi → kết thúc → xem CDR</li>
+                    <li>CI pipeline chạy test trước khi merge — <strong>không test pass, không merge. Không ngoại lệ.</strong></li>
+                    <li>Code coverage target: 70% cho business logic, 50% cho toàn bộ codebase</li>
+                </ul>
+
+                <p><strong>SignalR Architecture — Tại sao WebSocket quan trọng cho PBX</strong></p>
+                <p>PBX system cần real-time ở mọi nơi: trạng thái agent (available/busy/away), cuộc gọi đến, chuyển cuộc gọi, conference, queue status, live dashboard. HTTP polling sẽ tạo hàng ngàn requests/giây. SignalR với WebSocket transport là lựa chọn duy nhất hợp lý.</p>
+                <p>Kiến trúc ta chọn: Hub-per-feature (CallHub, AgentHub, DashboardHub) thay vì One-Big-Hub. Tại sao? Vì mỗi hub có lifecycle khác nhau, scale khác nhau, và authorization khác nhau.</p>
+
+                <p><strong>Docker Setup cho Asterisk — Bài học xương máu</strong></p>
+                <ul>
+                    <li>Asterisk trong Docker cần <span class="inline-code">--net=host</span> cho SIP UDP — NAT trong Docker là ác mộng</li>
+                    <li>Logs phải mount volume ra ngoài — container restart mất hết logs = mất hết evidence</li>
+                    <li>Config reload không cần restart container — <span class="inline-code">asterisk -rx "module reload"</span></li>
+                    <li>Health check endpoint tự viết — <span class="inline-code">asterisk -rx "core show channels"</span> để biết system còn sống</li>
+                    <li>Resource limit cho container — Asterisk không có giới hạn channel mặc định, nó sẽ ăn hết RAM nếu bạn để</li>
+                </ul>
+
+                <p><strong>Sprint Velocity Reality Check</strong></p>
+                <p>Sprint 1: team estimate 80 story points, complete 35. Sprint 2: estimate 60, complete 45. Sprint 3: estimate 50, complete 48. <strong>Velocity thật sự thường chỉ bằng 50-60% estimate ban đầu.</strong> PL phải chấp nhận thực tế này và plan accordingly, không nên ép team "làm nhanh hơn" — nên tìm cách làm đúng hơn.</p>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="timeline-item">
+                <div class="phase-label">PHASE 03</div>
+                <div class="phase-title">&#128165; Giai Đoạn Giữa — Khi Mọi Thứ Bắt Đầu Phức Tạp</div>
+
+                <p><strong>Cuộc tranh luận vĩ đại: Refactor — Bây giờ hay không bao giờ?</strong></p>
+                <p>Đến giữa dự án, technical debt bắt đầu tích lũy. Team muốn refactor. PM muốn ship feature. PL phải đứng giữa và đưa ra quyết định khó nhất: <strong>refactor cái gì, bỏ qua cái gì, và schedule refactor khi nào.</strong></p>
+                <p>Quy tắc của ta: chia technical debt thành 3 nhóm:</p>
+                <ul>
+                    <li><span class="hl-red">Urgent</span>: ảnh hưởng trực tiếp đến feature sắp build — refactor NGAY</li>
+                    <li><span class="hl-gold">Important</span>: sẽ gây vấn đề trong 1-2 tháng — schedule vào sprint tiếp</li>
+                    <li><span class="hl-blue">Nice-to-have</span>: code xấu nhưng hoạt động — ghi vào backlog, để sau release</li>
+                </ul>
+
+                <p><strong>Integration Hell — Khi 5 hệ thống cần nói chuyện</strong></p>
+                <p>PBX project có 5 hệ thống tích hợp: .NET Backend, Vue.js Frontend, Asterisk PBX, Electron Desktop, và External CRM API. Khi mỗi hệ thống hoạt động riêng lẻ thì đẹp. Khi kết hợp lại: kaboom.</p>
+                <p>Vấn đề thường gặp: timezone mismatch giữa .NET (UTC) và Asterisk (server local time). Message format không consistent giữa SignalR và SIP events. Error handling khác nhau giữa mỗi layer — Electron swallow errors mà backend không biết.</p>
+                <p>Giải pháp: <strong>Integration Test Environment</strong> riêng, chạy toàn bộ stack, test mỗi ngày. Contract testing giữa các service. Centralized logging với correlation ID cho mọi request từ UI đến PBX engine.</p>
+
+                <div class="war-story">
+                    <div class="war-story-title">Bug mất 3 developer 2 tuần để tìm — và đó là một typo</div>
+                    <p>Giữa dự án, khách Hàn report: <em>"Cuộc gọi đôi khi bị ngắt sau đúng 30 giây."</em> Team debug 2 tuần. Check SignalR connection. Check SIP timeout. Check Asterisk dialplan. Check network. Check Electron. Tất cả đều "bình thường".</p>
+                    <p>Cuối cùng, một junior developer tìm thấy: trong Asterisk dialplan, có dòng <span class="inline-code">Set(TIMEOUT(absolute)=30)</span> thay vì <span class="inline-code">Set(TIMEOUT(absolute)=3000)</span>. Ai đó viết 30 thay vì 3000. Đơn vị là giây, không phải millisecond. Một. Cái. Typo.</p>
+                    <p>3 developer x 2 tuần = 6 man-weeks. Chi phí: khoảng $15,000. Nguyên nhân: thiếu configuration validation và thiếu unit test cho dialplan config.</p>
+                    <div class="moral">Bài học: Mọi configuration value đều phải có validation. Mọi magic number đều phải có constant. Mọi constant đều phải có unit test.</div>
+                </div>
+
+                <p><strong>Performance Optimization Under Pressure</strong></p>
+                <p>Khi khách Hàn bắt đầu UAT, họ test với 200 concurrent agents. Dashboard chậm 8 giây. Call log query timeout. Agent status update delay 3 giây. Cả team phải optimize trong khi vẫn phải ship feature mới.</p>
+                <ul>
+                    <li>Thêm Redis cache cho agent status — giảm từ 200ms xuống 5ms</li>
+                    <li>Implement database query pagination — không load 100,000 CDR records cùng lúc</li>
+                    <li>SignalR group-based broadcasting thay vì broadcast tất cả — giảm 80% network traffic</li>
+                    <li>Lazy loading cho Vue.js components — giảm initial bundle size 60%</li>
+                    <li>Index optimization cho MSSQL — 5 missing indexes khiến dashboard query chậm 50x</li>
+                </ul>
+
+                <p><strong>Code Quality vs Delivery Speed — Cuộc chiến vĩnh cửu</strong></p>
+                <p>PM nói: <em>"Khách cần feature này thứ Sáu."</em> PL biết: <em>"Làm đúng cần đến thứ Ba tuần sau."</em> Ai đúng? Cả hai. Nghệ thuật của PL là tìm middle ground: ship MVP thứ Sáu với test coverage 60%, schedule technical improvement cho sprint sau, document known limitations.</p>
+
+                <p><strong>Manage 10 PRs/ngày — Giữ Sạch Sẽ</strong></p>
+                <ul>
+                    <li>Review PR mỗi sáng 9h và chiều 2h — không để PR chờ quá 4 giờ</li>
+                    <li>Auto-assign reviewer dựa trên CODEOWNERS file</li>
+                    <li>PR bot check: lint, test, build, coverage — pass hết mới cho review</li>
+                    <li>Priority: hotfix > feature blocking others > feature > refactor > documentation</li>
+                    <li>Delegate review: senior members review junior's code, PL review architecture changes</li>
+                </ul>
+
+                <p><strong>Khoảnh Khắc Nhận Ra Kiến Trúc Không Scale</strong></p>
+                <p>Giữa dự án, ta nhận ra: monolithic SignalR hub không scale ngang được khi cần 1000+ connections. Phải re-architect sang Redis backplane. Quyết định này ảnh hưởng 20+ files, cần 1 tuần refactor giữa sprint. PL phải negotiate với PM: <em>"Nếu không sửa bây giờ, production sẽ crash khi go-live. Tốn 1 tuần bây giờ hay 3 tuần hotfix sau?"</em> PM luôn chọn 1 tuần.</p>
+
+                <p><strong>Real-Time System Debugging — Ác Mộng</strong></p>
+                <p>Debug SignalR + SIP + WebSocket cùng lúc giống như debug 3 ứng dụng chạy song song, nói 3 ngôn ngữ khác nhau, qua 3 protocol khác nhau. Công cụ cần có:</p>
+                <ul>
+                    <li><span class="inline-code">sngrep</span> — capture SIP traffic real-time</li>
+                    <li>Browser DevTools WebSocket inspector — xem SignalR messages</li>
+                    <li>Asterisk CLI <span class="inline-code">core set verbose 5</span> — xem dialplan execution</li>
+                    <li>Centralized logging (ELK stack hoặc Seq) với correlation ID</li>
+                    <li>Custom dashboard hiển thị call state machine transitions</li>
+                </ul>
+
+                <p><strong>Knowledge Sharing Sessions Thực Sự Hiệu Quả</strong></p>
+                <p>Ta tổ chức "Tech Talk Thursday" mỗi tuần 30 phút. Không phải PowerPoint boring. Mà là live-coding, live-debugging, hoặc war story sharing. Developer rotate presenting. Topics từ team vote. Và quan trọng nhất: <strong>không ai bị phán xét khi nói "tôi không biết".</strong></p>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="timeline-item">
+                <div class="phase-label">PHASE 04</div>
+                <div class="phase-title">&#127937; Giai Đoạn Cuối — Cuộc Đua Về Đích</div>
+
+                <p><strong>Feature Freeze — Chữ "Không" Khó Nói Nhất</strong></p>
+                <p>2 tuần trước go-live, PL phải enforce feature freeze. Không có feature mới. Chỉ fix bug. Chỉ optimize. Chỉ test.</p>
+                <p>Nhưng luôn có người đến nói: <em>"Chỉ thêm cái nút nhỏ thôi mà..."</em> hoặc <em>"Khách vừa yêu cầu thêm report này..."</em> PL phải nói "Không" — lịch sự nhưng firm. Vì mỗi thay đổi nhỏ đều có thể gây regression. Và regression 2 tuần trước go-live là thảm họa.</p>
+
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <span class="terminal-title">feature-freeze.sh</span>
+                    </div>
+                    <div class="terminal-body">
+                        <span class="prompt">$</span> git branch --list 'feature/*' | wc -l<br>
+                        <span class="output">0 &nbsp; <span class="comment"># Phải là 0 trong feature freeze</span></span><br>
+                        <span class="prompt">$</span> git log --oneline --since="2 weeks ago" --grep="feat:" | wc -l<br>
+                        <span class="output">0 &nbsp; <span class="comment"># Không commit feature mới</span></span><br>
+                        <span class="prompt">$</span> git log --oneline --since="2 weeks ago" --grep="fix:" | wc -l<br>
+                        <span class="output">23 &nbsp; <span class="comment"># Chỉ fix bugs</span></span><br>
+                        <span class="prompt">$</span> <span class="highlight">echo "Feature freeze = kỷ luật thép"</span><span class="cursor-blink"></span>
+                    </div>
+                </div>
+
+                <p><strong>Production Readiness Checklist — Enterprise Hàn Quốc</strong></p>
+                <ul class="checklist">
+                    <li>SSL/TLS certificates cài đặt và auto-renewal</li>
+                    <li>Database backup tự động mỗi 6 giờ, test restore procedure</li>
+                    <li>Application logs rotate, archive, searchable</li>
+                    <li>Health check endpoints cho mọi service</li>
+                    <li>Error alerting qua Slack/Teams/KakaoTalk</li>
+                    <li>Rate limiting cho API public-facing</li>
+                    <li>CORS configuration cho production domains</li>
+                    <li>Environment variables — không có secret nào trong source code</li>
+                    <li>Database migration scripts idempotent</li>
+                    <li>Rollback procedure documented và tested</li>
+                    <li>Load balancer health check configured</li>
+                    <li>CDN caching cho static assets</li>
+                    <li>Firewall rules reviewed — chỉ mở port cần thiết</li>
+                    <li>PIPA compliance checklist completed</li>
+                    <li>Penetration testing report addressed</li>
+                    <li>Performance baseline documented</li>
+                    <li>Disaster recovery procedure tested</li>
+                    <li>On-call rotation schedule finalized</li>
+                    <li>Runbook cho common production issues</li>
+                    <li class="pending">Client sign-off on UAT</li>
+                </ul>
+
+                <p><strong>Load Testing — Server Chết Ở 100 Concurrent Calls</strong></p>
+                <p>Story: Tuần trước go-live, chạy load test. 50 concurrent calls: OK. 80: OK nhưng dashboard chậm. 100: Asterisk bắt đầu drop calls. 120: server OOM, restart.</p>
+                <p>Root cause: Asterisk logging level quá chi tiết trong production config (copy từ dev). Mỗi cuộc gọi generate 500+ log lines/giây. Disk I/O bottleneck → CPU spike → OOM.</p>
+                <p>Fix: giảm log level, add log rotation, tăng RAM. Retest: 300 concurrent calls ổn định. <strong>Luôn load test TRƯỚC khi khách test. Bạn không muốn khách là người tìm ra giới hạn hệ thống.</strong></p>
+
+                <p><strong>Security Audit Preparation — Tiêu chuẩn Hàn Quốc</strong></p>
+                <ul>
+                    <li>OWASP Top 10 checklist — đặc biệt SQL injection, XSS, CSRF</li>
+                    <li>API authentication: JWT với refresh token rotation</li>
+                    <li>Password hashing: BCrypt với cost factor >= 12</li>
+                    <li>Data encryption at rest: AES-256 cho PII</li>
+                    <li>Data encryption in transit: TLS 1.2+ only</li>
+                    <li>Session management: 30-minute idle timeout, single session per user (Korean enterprise yêu cầu)</li>
+                    <li>Audit logging: who/what/when/where cho mọi data access</li>
+                    <li>Input validation: server-side validation cho 100% input</li>
+                    <li>Dependency scanning: Snyk/npm audit cho known vulnerabilities</li>
+                </ul>
+
+                <p><strong>Zero-Downtime Deployment Strategy</strong></p>
+                <p>Enterprise Hàn Quốc chạy 24/7. Không có "maintenance window" lúc 2 giờ sáng (vì call center chạy ca đêm). Phải deploy mà không ngắt service:</p>
+                <ul>
+                    <li>Blue-green deployment cho .NET backend</li>
+                    <li>Rolling update cho Docker containers</li>
+                    <li>Database migration backward-compatible — thêm column OK, đổi column KHÔNG</li>
+                    <li>Feature flags cho toggle feature mới — deploy code trước, enable feature sau</li>
+                    <li>Sticky sessions cho SignalR WebSocket connections</li>
+                </ul>
+
+                <p><strong>72 Giờ Trước Go-Live — Marathon</strong></p>
+                <p>Đây là khi adrenaline thay thế sleep. Checklist:</p>
+                <ul>
+                    <li>T-72h: Final regression test trên staging</li>
+                    <li>T-48h: Deploy production, smoke test, khách Hàn review</li>
+                    <li>T-24h: Data migration từ hệ thống cũ, verify integrity</li>
+                    <li>T-12h: Warm-up caches, verify monitoring alerts</li>
+                    <li>T-6h: Team stand-by, on-call channels ready</li>
+                    <li>T-0: Go-live. Cả team online. Mọi màn hình đều mở dashboard.</li>
+                    <li>T+2h: First checkpoint. Nếu error rate < 1%, thở phào.</li>
+                    <li>T+24h: Second checkpoint. Nếu không rollback, celebration.</li>
+                </ul>
+
+                <p><strong>Hotfix Branching Under Pressure</strong></p>
+                <p>Production bug after go-live? Quy trình:</p>
+                <ul>
+                    <li><span class="inline-code">hotfix/PBX-1234-call-drop-fix</span> từ <span class="inline-code">main</span></li>
+                    <li>Fix + test (ít nhất regression test cho affected area)</li>
+                    <li>PR review bởi ít nhất 1 senior (dù 3 giờ sáng)</li>
+                    <li>Merge vào <span class="inline-code">main</span> → auto-deploy production</li>
+                    <li>Cherry-pick vào <span class="inline-code">develop</span></li>
+                    <li>Post-mortem trong 24 giờ — không blame, chỉ learn</li>
+                </ul>
+
+                <p><strong>Post-Mortem — Bài Học Thật Sự</strong></p>
+                <p>Post-mortem không phải để tìm ai sai. Mà để tìm: <strong>hệ thống nào, quy trình nào, thiếu kiểm tra nào đã cho phép lỗi xảy ra?</strong> Format: Timeline → Root Cause → Impact → Action Items → Follow-up Date. Mỗi action item phải có owner và deadline.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 3: KOREAN ENTERPRISE REQUIREMENTS    -->
+    <!-- =========================================== -->
+    <section class="section" id="korean">
+        <div class="section-header">
+            <div class="section-icon">&#127472;&#127479;</div>
+            <div>
+                <h2 class="section-title">Yêu Cầu Kỹ Thuật Enterprise Hàn Quốc</h2>
+                <div class="section-subtitle">// 한국 기업 기술 요구사항 — Chi tiết đến từng dòng code</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128274; PIPA Compliance (개인정보보호법)</div>
+            <p>Luật Bảo vệ Thông tin Cá nhân Hàn Quốc (PIPA) là một trong những luật privacy nghiêm ngặt nhất thế giới — ngang GDPR, có phần còn strict hơn.</p>
+            <ul>
+                <li><strong>Thu thập dữ liệu</strong>: Phải có consent rõ ràng, cụ thể cho từng loại data. Không được dùng "pre-checked checkbox".</li>
+                <li><strong>Lưu trữ</strong>: PII phải encrypt AES-256 at rest. Mã số chủ dân (주민등록번호) — tuyệt đối KHÔNG lưu trừ khi bắt buộc bởi luật khác.</li>
+                <li><strong>Truyền tải</strong>: TLS 1.2+. Không gửi PII qua email không encrypt. API truyền PII phải log access.</li>
+                <li><strong>Xóa</strong>: Khi user request xóa, phải xóa trong 5 ngày làm việc. Audit trail giữ lại nhưng anonymize.</li>
+                <li><strong>Cross-border</strong>: Data transfer ra ngoài Hàn Quốc phải có user consent VÀ đảm bảo nước nhận có protection tương đương.</li>
+                <li><strong>Breach notification</strong>: Report cho PIPC (개인정보보호위원회) trong 72 giờ. Thông báo affected users "ngay lập tức".</li>
+                <li><strong>Vi phạm</strong>: Phạt lên đến 5% doanh thu hàng năm. Không đùa được.</li>
+            </ul>
+            <p>Cho dự án PBX: call recording, caller ID, call history — tất cả đều là PII. Phải encrypt, access-control, audit, và retention policy đầy đủ.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128209; Korean Enterprise Security Audit Checklist</div>
+            <p>Khách enterprise Hàn Quốc thường thuê third-party security firm audit trước go-live. Checklist tiêu biểu:</p>
+            <ul>
+                <li><strong>Authentication</strong>: MFA option, session timeout 30 phút, account lockout sau 5 lần sai password, password complexity (chữ hoa + thường + số + ký tự đặc biệt, >= 8 ký tự, đổi mỗi 90 ngày)</li>
+                <li><strong>Authorization</strong>: Role-based access control (RBAC). Principle of least privilege. Admin functions có separate authentication.</li>
+                <li><strong>Data Protection</strong>: Encrypt at rest + in transit. Key rotation mỗi 365 ngày. Secure key storage (Azure Key Vault / AWS KMS).</li>
+                <li><strong>Logging</strong>: Login/logout, data access, admin actions, failed auth attempts. Logs tamper-proof, retained 5+ years.</li>
+                <li><strong>Network</strong>: WAF (Web Application Firewall). DDoS protection. Internal network segmentation. VPN cho admin access.</li>
+                <li><strong>Code</strong>: No hard-coded credentials. Dependency vulnerability scan. Static code analysis (SonarQube). Regular penetration testing.</li>
+                <li><strong>Infrastructure</strong>: OS patches within 30 days of release. Antivirus on all servers. Intrusion detection system.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127468;&#127475; Hangul/Unicode Handling</div>
+            <p>Hangul (한글) xử lý trong software có nhiều cạm bẫy hơn bạn nghĩ:</p>
+            <ul>
+                <li><strong>Database</strong>: MSSQL dùng <span class="inline-code">NVARCHAR</span> thay vì <span class="inline-code">VARCHAR</span>. Collation: <span class="inline-code">Korean_Wansung_CI_AS</span> hoặc <span class="inline-code">SQL_Latin1_General_CP1_CI_AS</span> (tùy yêu cầu sorting).</li>
+                <li><strong>Sorting</strong>: Hangul sort theo thứ tự ㄱㄴㄷ... (consonant order). Default Unicode sort có thể sai.</li>
+                <li><strong>Search</strong>: Korean có "composed" và "decomposed" Unicode (NFC vs NFD). "가" có thể encoded 2 cách. Phải normalize trước khi search.</li>
+                <li><strong>Input</strong>: Korean IME (Input Method Editor) — các key events fire khác với Latin input. Vue.js <span class="inline-code">v-model</span> với composing events cần xử lý đặc biệt.</li>
+                <li><strong>Display</strong>: Hangul characters rộng hơn Latin. UI layout phải test với Korean text — text overflow xảy ra thường xuyên.</li>
+                <li><strong>File names</strong>: Windows + Korean file names + network drives = encoding hell. Always use Unicode APIs.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128222; Korean Phone Number & Date Format</div>
+            <ul>
+                <li><strong>Phone format</strong>: Mobile: 010-XXXX-XXXX. Seoul landline: 02-XXXX-XXXX. Landline khác: 0XX-XXXX-XXXX. Validate regex: <span class="inline-code">^0\d{1,2}-?\d{3,4}-?\d{4}$</span></li>
+                <li><strong>International</strong>: +82-10-XXXX-XXXX (bỏ 0 đầu). PBX phải handle cả local và international format.</li>
+                <li><strong>Date format</strong>: YYYY-MM-DD (ISO standard, Hàn dùng 년/월/일). Example: 2026-03-19 hoặc 2026년 03월 19일</li>
+                <li><strong>Time</strong>: 24-hour format phổ biến trong enterprise. Timezone: KST (UTC+9), không có daylight saving.</li>
+                <li><strong>Currency</strong>: ₩ (Won). Không có decimal. Format: ₩1,000,000 (dùng comma separator).</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127760; Bilingual UI (Korean/English) Challenges</div>
+            <ul>
+                <li><strong>Text expansion</strong>: Korean text thường ngắn hơn English. Ngược lại với hầu hết ngôn ngữ khác. UI button phải test cả 2 ngôn ngữ.</li>
+                <li><strong>Font</strong>: System font khác nhau giữa Windows Korean và English. Dùng <span class="inline-code">font-family: 'Malgun Gothic', 'Segoe UI', sans-serif</span> cho best rendering.</li>
+                <li><strong>i18n architecture</strong>: Vue I18n với lazy loading per locale. Key structure: <span class="inline-code">module.section.key</span>. Không hard-code text trong component.</li>
+                <li><strong>Honorifics</strong>: Korean có 7 levels of speech. Enterprise UI dùng formal/polite (합쇼체). Error messages phải lịch sự — <em>"입력값을 확인해 주세요"</em> (Xin hãy kiểm tra giá trị nhập) thay vì <em>"잘못된 입력"</em> (Nhập sai).</li>
+                <li><strong>RTL/LTR</strong>: Korean là LTR nên không có vấn đề. Nhưng mixed Korean/English text trong cùng dòng cần test kỹ line-break behavior.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#9729;&#65039; Korean Hosting & Cloud Preferences</div>
+            <p>Enterprise Hàn Quốc có preference rõ ràng về hosting:</p>
+            <ul>
+                <li><strong>Tier 1 — Preferred</strong>: NHN Cloud (NHN은 한국 IT 대기업), KT Cloud (viễn thông lớn nhất Hàn), Naver Cloud</li>
+                <li><strong>Tier 2 — Accepted</strong>: AWS Seoul Region (ap-northeast-2), Azure Korea Central</li>
+                <li><strong>Tier 3 — Cần approval đặc biệt</strong>: Google Cloud (ít popular trong enterprise Hàn), non-Korean regions</li>
+                <li><strong>On-premise</strong>: Nhiều Korean enterprise vẫn prefer on-premise cho sensitive data. Coway có thể yêu cầu hybrid.</li>
+                <li><strong>Data residency</strong>: Data PHẢI nằm trong lãnh thổ Hàn Quốc trừ khi có explicit consent.</li>
+                <li><strong>SLA</strong>: Korean enterprise expect 99.9% uptime minimum. 99.99% cho critical systems.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128101; Korean Enterprise SSO & Deployment</div>
+            <ul>
+                <li><strong>SSO</strong>: Korean enterprise thường dùng SAML 2.0 hoặc OpenID Connect. Popular providers: Samsung SDS Nexsign, LG CNS, INITECH. Phải support cả standard và proprietary SSO solutions.</li>
+                <li><strong>Deployment approval chain</strong>: Developer → Team Lead → Department Head → IT Security → CTO office → Go. Mỗi level cần document và sign-off. Không thể deploy nhanh như startup.</li>
+                <li><strong>Change management</strong>: Korean enterprise có formal change management process (ITSM). Mỗi deployment là một "change request" cần approval.</li>
+                <li><strong>Testing requirements</strong>: Unit test report, integration test report, performance test report, security test report — tất cả phải submit trước deployment.</li>
+                <li><strong>User acceptance</strong>: Korean stakeholders test kỹ. Expect 2-3 rounds UAT. Mỗi round 1-2 tuần. Plan accordingly.</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 4: WAR STORIES                       -->
+    <!-- =========================================== -->
+    <section class="section" id="warstories">
+        <div class="section-header">
+            <div class="section-icon">&#9876;&#65039;</div>
+            <div>
+                <h2 class="section-title">Câu Chuyện Chiến Trường</h2>
+                <div class="section-subtitle">// Những bài học chỉ có thể học từ production</div>
+            </div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128293; Story 1: Kiến Trúc "Hoàn Hảo" Sập Ở 10,000 WebSocket Connections</div>
+            <p>Năm 2022, ta thiết kế kiến trúc cho hệ thống notification real-time. Trên giấy, mọi thứ hoàn hảo: SignalR hub, Redis backplane, load balancer. Design review pass. Code review pass. Unit test pass. Integration test với 100 connections: pass.</p>
+            <p>Deploy staging, test với 500 connections: pass. Deploy production. Tuần đầu: 2,000 users, ổn. Tuần hai: 5,000 users, bắt đầu chậm. Tuần ba: 8,000 users, dashboard lag 10 giây. Tuần tư: 10,000 users, <span class="hl-red">server crash</span>.</p>
+            <p>Root cause: mỗi SignalR connection giữ một in-memory subscription list. Với 10,000 connections x 15 subscriptions/connection = 150,000 objects trong memory. GC (Garbage Collection) chạy liên tục, CPU 100%. Thêm vào đó, Redis backplane serialize/deserialize mỗi message cho mọi connection — CPU và bandwidth nổ tung.</p>
+            <p><strong>Fix:</strong> Re-architect sang group-based messaging. Thay vì mỗi user subscribe 15 topics riêng, group users theo department/role và broadcast theo group. Kết quả: 150,000 subscriptions giảm còn 200 groups. Memory usage giảm 95%. CPU idle ở 20% với 15,000 concurrent connections.</p>
+            <div class="moral">Bài học: Load test phải test ở scale thực tế, không phải 1/100 scale. Và kiến trúc "đúng" ở 100 connections có thể "sai" ở 10,000.</div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128163; Story 2: Chọn Sai Database — Migrate Giữa Dự Án</div>
+            <p>Dự án cho khách Hàn, team ban đầu chọn PostgreSQL vì "free, open-source, powerful". Tuyệt vời về mặt kỹ thuật. Nhưng... khách Hàn yêu cầu DBA team của họ quản lý database. DBA team chỉ biết MSSQL. Không negotiate được.</p>
+            <p>Tháng thứ 3, phải migrate từ PostgreSQL sang MSSQL. EF Core giúp phần nào, nhưng: stored procedures phải rewrite, JSON column handling khác nhau, full-text search syntax khác hoàn toàn, và worst of all — pagination query khác (LIMIT/OFFSET vs OFFSET/FETCH).</p>
+            <p>3 developers, 4 tuần, 200+ SQL queries phải review và test lại. $40,000+ chi phí không tính trước.</p>
+            <div class="moral">Bài học: Chọn tech stack PHẢI involve khách hàng. Đặc biệt database — đây là thứ operations team của khách sẽ manage hàng ngày. Tech "tốt nhất" không phải lúc nào cũng là "phù hợp nhất".</div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128168; Story 3: Missing Index Timeout Dashboard Trong Cuộc Họp Ban Giám Đốc</div>
+            <p>Khách Hàn có cuộc họp board meeting hàng tháng. Giám đốc mở dashboard real-time, show KPI cho board. Tháng đầu: OK. Tháng hai: dữ liệu nhiều hơn, query hơi chậm nhưng chấp nhận được (3 giây). Tháng ba: data tăng 3x, dashboard <span class="hl-red">timeout sau 30 giây</span>. Giữa phòng họp có 20 giám đốc đang nhìn màn hình trắng.</p>
+            <p>CEO Hàn Quốc gọi trực tiếp CTO SotaTek. Lúc 10 giờ sáng giờ Hàn = 8 giờ sáng giờ Việt Nam. Team PL được đánh thức bởi emergency call.</p>
+            <p>Root cause: table <span class="inline-code">CallDetailRecords</span> có 2 triệu rows. Dashboard query filter theo <span class="inline-code">StartTime</span> và <span class="inline-code">AgentId</span>. Cả hai column đều không có index. Full table scan × 5 panels = timeout.</p>
+            <p>Fix: thêm composite index <span class="inline-code">IX_CDR_StartTime_AgentId</span>. Query time từ 30 giây xuống 200ms. Deploy hotfix trong 2 giờ.</p>
+            <div class="moral">Bài học: LUÔN review query execution plan cho mọi dashboard/report query. Thêm index cho mọi column được dùng trong WHERE/ORDER BY/GROUP BY. Và test với production-volume data, không phải dev data 100 rows.</div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128272; Story 4: Security Vulnerability 2 Ngày Trước Audit</div>
+            <p>Dự án enterprise Hàn Quốc, 2 ngày trước security audit. Team chạy security scan (OWASP ZAP) theo routine. Kết quả: <span class="hl-red">Critical: API endpoint /api/users/{id} trả về password hash trong response</span>.</p>
+            <p>Tại sao? Vì developer dùng <span class="inline-code">AutoMapper</span> map Entity → DTO mà không exclude PasswordHash field. AutoMapper mặc định map tất cả properties cùng tên. Và không ai catch trong code review vì PR diff chỉ show AutoMapper config, không show actual response data.</p>
+            <p>Fix ngay lập tức: thêm <span class="inline-code">.ForMember(d => d.PasswordHash, opt => opt.Ignore())</span>. Nhưng phải audit toàn bộ 50+ DTOs khác. Tìm thêm 3 endpoints leak sensitive data (email, phone number không masked).</p>
+            <p>48 giờ marathon fix + test + re-scan. Security audit: <span class="hl">PASSED</span>. Nhưng tim PL suýt ngừng đập.</p>
+            <div class="moral">Bài học: Security scan phải chạy TỪ ĐẦU dự án, mỗi sprint, trong CI/CD pipeline. Không phải 2 ngày trước audit. AutoMapper PHẢI dùng explicit mapping, không dùng default convention-based mapping cho API responses.</div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128232; Story 5: 50,000 Duplicate Notifications Trong 5 Phút</div>
+            <p>Hệ thống notification real-time. SignalR broadcast message khi có cuộc gọi mới. Một ngày đẹp trời, server restart do Windows Update (đúng, trong production). SignalR reconnection logic trigger: mỗi client reconnect → server gửi "missed notifications" → nhưng bug: server gửi ALL notifications, không chỉ missed ones.</p>
+            <p>500 users reconnect cùng lúc × 100 notifications mỗi user = 50,000 notifications trong 5 phút. Mỗi notification trigger browser popup + sound. Máy tính của 500 nhân viên Coway đồng loạt phát âm thanh và hiện popup liên tục. IT helpdesk Coway nhận 200 tickets trong 30 phút.</p>
+            <p>Fix: Implement idempotent notification delivery. Mỗi notification có unique ID. Client track lastReceivedId. Server chỉ gửi notifications có ID > lastReceivedId. Thêm rate limiting: max 10 notifications/giây/user.</p>
+            <div class="moral">Bài học: Real-time systems PHẢI handle reconnection gracefully. Idempotency không phải optional. Rate limiting là bắt buộc. Và tắt Windows Auto-Update trên production servers.</div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128187; Story 6: Electron App Ăn 4GB RAM Trên Laptop Chuẩn Hàn</div>
+            <p>Enterprise Hàn Quốc cấp laptop chuẩn cho nhân viên: Intel i5 thế hệ 10, 8GB RAM, 256GB SSD. Electron app chạy trên dev machine (32GB RAM): mượt mà. Chạy trên laptop chuẩn: <span class="hl-red">4GB RAM sau 2 giờ sử dụng</span>. Máy còn 4GB cho Windows + Outlook + Chrome. Kết quả: máy đơ, nhân viên restart, call drop.</p>
+            <p>Root cause analysis:</p>
+            <ul>
+                <li>Memory leak trong Vue.js: event listener không cleanup khi component unmount → 500 orphan listeners sau 2 giờ</li>
+                <li>Electron renderer process cache DOM nodes cho call history → 10,000 DOM nodes sau 1 ngày</li>
+                <li>IPC messages giữa main/renderer process không garbage collected đúng cách</li>
+                <li>DevExtreme DataGrid cache data rows trong memory thay vì virtual scroll</li>
+            </ul>
+            <p>Fix mất 3 tuần:</p>
+            <ul>
+                <li>Implement proper cleanup trong Vue.js <span class="inline-code">onUnmounted</span> lifecycle hook</li>
+                <li>Virtual scrolling cho tất cả lists/tables</li>
+                <li>Periodic cache cleanup mỗi 30 phút</li>
+                <li>Electron <span class="inline-code">webFrame.clearCache()</span> scheduled</li>
+                <li>Memory usage monitoring + alert khi > 1GB</li>
+            </ul>
+            <p>Kết quả: memory usage ổn định 500-800MB sau 8 giờ sử dụng.</p>
+            <div class="moral">Bài học: LUÔN test trên hardware chuẩn của khách. Electron = Chromium = memory hungry. Memory profiling phải là phần bắt buộc của testing, không phải "nice to have".</div>
+        </div>
+
+        <div class="war-story">
+            <div class="war-story-title">&#128260; Story 7: Pivot Từ Angular Sang Vue.js Giữa Dự Án</div>
+            <p>Dự án cho khách Hàn Quốc bắt đầu với Angular 14. Team 8 người, 4 biết Angular, 4 biết Vue.js. Tháng thứ 2, vấn đề phát sinh:</p>
+            <ul>
+                <li>Angular bundle size quá lớn cho Electron — 5MB initial load</li>
+                <li>DevExtreme Angular components có nhiều bug hơn Vue version</li>
+                <li>TypeScript strict mode + Angular decorators = quá nhiều boilerplate</li>
+                <li>4 developer chưa biết Angular học quá chậm, productivity thấp</li>
+            </ul>
+            <p>PL đề xuất pivot sang Vue.js 3. PM phản đối: <em>"Mất 2 tháng code rồi, reset lại sao?"</em> PL tính toán: rewrite sang Vue.js mất 3 tuần (vì business logic trong service layer, không phụ thuộc framework). Tiếp tục với Angular sẽ chậm 2 tháng vì team không productive. Net savings: 5 tuần.</p>
+            <p>Kết quả: pivot hoàn tất trong 2.5 tuần. Bundle size giảm 60%. Developer productivity tăng gấp đôi. Dự án ship đúng deadline.</p>
+            <div class="moral">Bài học: PL phải dũng cảm đề xuất thay đổi khi data cho thấy hướng hiện tại không tối ưu. Nhưng phải có SỐ LIỆU — không phải ý kiến. "Vue.js tốt hơn Angular" là ý kiến. "Vue.js giảm 5 tuần timeline dựa trên velocity data" là fact.</div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 5: TECHNICAL LEADERSHIP WISDOM       -->
+    <!-- =========================================== -->
+    <section class="section" id="leadership">
+        <div class="section-header">
+            <div class="section-icon">&#129504;</div>
+            <div>
+                <h2 class="section-title">Trí Tuệ Kỹ Thuật Chưởng Môn</h2>
+                <div class="section-subtitle">// 12 năm đọng lại thành những nguyên tắc không thể mua bằng tiền</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127891; Mentor Junior Developer — Không Micromanage</div>
+            <p>Có một ranh giới mỏng manh giữa "hướng dẫn" và "kiểm soát". PL tốt đứng ở ranh giới đó mà không ngã sang bên nào.</p>
+            <ul>
+                <li><strong>Pair programming 30 phút</strong> hiệu quả hơn 2 giờ giải thích bằng lời.</li>
+                <li><strong>Cho junior tự google 30 phút trước</strong> khi hỏi — nhưng đừng để họ stuck 2 ngày vì sĩ diện không dám hỏi.</li>
+                <li><strong>Review code của junior với context</strong>: <em>"Cách này hoạt động, nhưng khi data lên 10,000 rows, nó sẽ chậm vì..."</em> — dạy WHY, không chỉ WHAT.</li>
+                <li><strong>Cho junior own một module nhỏ</strong> — từ design đến deploy. Ownership tạo trách nhiệm, trách nhiệm tạo growth.</li>
+                <li><strong>"Tôi cũng từng sai thế này"</strong> — câu nói mạnh nhất của mentor. Nó phá bỏ barrier giữa senior và junior.</li>
+            </ul>
+
+            <div class="wisdom-quote">
+                "Mục tiêu của mentor không phải tạo ra copy của mình. Mà là giúp junior trở thành version tốt nhất của CHÍNH HỌ."
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128221; Code Review Best Practices — Không Tạo Kẻ Thù</div>
+            <ul>
+                <li><strong>Khen trước, góp ý sau.</strong> <em>"Logic này clean, nhưng có thể optimize bằng..."</em></li>
+                <li><strong>Dùng câu hỏi thay vì mệnh lệnh.</strong> <em>"Bạn đã consider case null input chưa?"</em> thay vì <em>"Thiếu null check."</em></li>
+                <li><strong>Link reference.</strong> <em>"Microsoft recommend pattern này: [link]"</em> — cho thấy đây không phải ý kiến cá nhân.</li>
+                <li><strong>Acknowledge trade-offs.</strong> <em>"Cách này readable hơn nhưng chậm hơn 20ms. Trong context PBX real-time, 20ms có thể chấp nhận/không chấp nhận vì..."</em></li>
+                <li><strong>Đừng block PR vì style preference.</strong> Tab vs space, 2 space vs 4 space — let linter handle.</li>
+                <li><strong>Tối đa 24 giờ response time.</strong> PR chờ review lâu = developer idle = cost tiền.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128200; Architecture Documentation Developers Thực Sự Đọc</div>
+            <p>Bí mật: developers không đọc document dài. Họ đọc:</p>
+            <ul>
+                <li><strong>Diagram</strong> — C4 model: Context → Container → Component → Code. 4 levels, mỗi level 1 trang.</li>
+                <li><strong>README.md</strong> trong mỗi module — "Module này làm gì? Dependencies? Cách chạy local?"</li>
+                <li><strong>ADR</strong> — "Tại sao quyết định này?" ngắn gọn, 1 trang.</li>
+                <li><strong>API docs auto-generated</strong> từ Swagger — luôn up-to-date vì generated từ code.</li>
+                <li><strong>Runbook</strong> — "Khi X xảy ra, làm Y." Step-by-step, copy-pasteable commands.</li>
+            </ul>
+            <p>Không viết: Word documents 50 trang mà không ai mở. Confluence pages nested 5 levels deep. "Architecture overview" mà overview quá tổng quát, chẳng giúp gì.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#9878;&#65039; Technical Decision-Making Framework</div>
+            <p>Khi đứng trước quyết định kỹ thuật quan trọng, ta dùng framework RAPID:</p>
+            <ul>
+                <li><strong>R — Requirements</strong>: Yêu cầu thực sự là gì? (Không phải yêu cầu bề mặt, mà yêu cầu gốc)</li>
+                <li><strong>A — Alternatives</strong>: Liệt kê ít nhất 3 options. Nếu chỉ có 1 option, bạn chưa nghĩ đủ kỹ.</li>
+                <li><strong>P — Pros/Cons</strong>: Trade-off matrix. Performance, cost, complexity, team familiarity, long-term maintenance.</li>
+                <li><strong>I — Impact</strong>: Quyết định này reversible hay irreversible? Reversible → decide fast. Irreversible → decide carefully.</li>
+                <li><strong>D — Document</strong>: Ghi lại trong ADR. Future-you sẽ cảm ơn present-you.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128260; "Rewrite" vs "Refactor" — Khi Nào Nói Gì</div>
+            <p><strong>Refactor khi:</strong> Code works nhưng messy. Thêm feature mới vào module hiện tại tốn 3x effort. Test coverage đủ để refactor an toàn. Team hiểu business logic trong code.</p>
+            <p><strong>Rewrite khi:</strong> Technology đã end-of-life. Architecture fundamentally wrong (ví dụ: monolith cần chuyển sang microservices VÀ có justification rõ ràng). Không ai trong team hiểu code (bus factor = 0). Cost of maintaining > cost of rewriting.</p>
+            <p><strong>KHÔNG BAO GIỜ rewrite khi:</strong> "Code xấu quá" (refactor thôi). "Tôi muốn dùng framework mới" (không phải lý do business). "Nhanh hơn build lại từ đầu" (90% cases, câu này SAI — vì bạn quên count edge cases đã được handle trong code cũ).</p>
+
+            <div class="wisdom-quote">
+                "Mọi cuộc rewrite lớn đều bắt đầu bằng câu 'Lần này mình sẽ làm đúng' — và kết thúc bằng câu 'Thì ra cái cũ nó handle case này...' x 500 lần."
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128092; The Bus Factor & Knowledge Distribution</div>
+            <p><strong>Bus factor</strong>: Nếu 1 người trong team bị xe bus đụng (hoặc nghỉ việc, ốm, đi du lịch), project có chết không?</p>
+            <p>Nếu bus factor = 1 → nguy hiểm cực kỳ. Với dự án PBX:</p>
+            <ul>
+                <li>Asterisk/SIP expert: bus factor thường = 1. Giải pháp: pair programming bắt buộc cho VoIP tasks, documentation chi tiết.</li>
+                <li>Database design: bus factor thường = 1-2. Giải pháp: ER diagram + data dictionary luôn up-to-date.</li>
+                <li>Frontend architecture: bus factor tốt hơn = 2-3 nếu team share code review.</li>
+                <li>DevOps/CI/CD: bus factor nguy hiểm = 1. Giải pháp: runbook + recorded walkthrough.</li>
+            </ul>
+            <p>Target: mọi critical area phải có bus factor >= 2. Đạt được bằng: code review cross-team, pair programming rotation, "shadow" on-call.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128170; Building Culture of Technical Excellence</div>
+            <p>Culture không phải rule. Culture là "điều team làm khi không ai nhìn".</p>
+            <ul>
+                <li><strong>Lead by example</strong>: PL viết test → team viết test. PL skip test → team skip test.</li>
+                <li><strong>Celebrate quality</strong>: Khen "PR này test coverage 95%" hơn là khen "Xong nhanh thế".</li>
+                <li><strong>Safe to fail</strong>: Khi bug production xảy ra, câu đầu tiên là "Cùng fix nào" không phải "Ai làm thế?"</li>
+                <li><strong>Continuous learning</strong>: Tech Talk Thursday. Book club monthly. Conference budget.</li>
+                <li><strong>Challenge accepted</strong>: Senior vẫn có thể bị junior challenge về technical decisions — và đó là điều tốt.</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 6: GOLDEN RULES                      -->
+    <!-- =========================================== -->
+    <section class="section" id="goldenrules">
+        <div class="section-header">
+            <div class="section-icon">&#127775;</div>
+            <div>
+                <h2 class="section-title">15 Quy Tắc Vàng Của Kỹ Thuật Chưởng Môn</h2>
+                <div class="section-subtitle">// Mỗi quy tắc đều trả giá bằng máu (và on-call alerts lúc 3 giờ sáng)</div>
+            </div>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #01</div>
+            <div class="rule-title">"Không có test = Không có code"</div>
+            <p>Năm 2018, deploy feature mới không test. Production crash. 2 giờ downtime. CEO email toàn công ty. Từ đó, CI/CD pipeline có gate: coverage < 70% = build fail. Không ngoại lệ. Kể cả hotfix lúc 3 giờ sáng.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #02</div>
+            <div class="rule-title">"Log nhiều hơn bạn nghĩ bạn cần. Nhưng đừng log quá nhiều."</div>
+            <p>Paradox? Không. Log mọi business event (call started, call ended, agent status changed). Không log mọi technical detail (every SQL query, every HTTP header). Structured logging (JSON format). Correlation ID cho mỗi request chain. Và LUÔN log error với đầy đủ context — stack trace, input parameters, user ID.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #03</div>
+            <div class="rule-title">"Database migration phải forward-only và backward-compatible"</div>
+            <p>Rename column? Không. Thêm column mới, migrate data, deprecate column cũ, xóa sau 2 releases. Tại sao? Vì khi deploy fails và cần rollback, database migration KHÔNG rollback theo. Column bị rename = cũ code chạy với database mới = crash.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #04</div>
+            <div class="rule-title">"Configuration > Magic Number. Always."</div>
+            <p>Mọi số magic trong code (timeout 30 giây, max retry 3, page size 50) phải là configuration. Vì: khách Hàn muốn timeout 60 giây. Team QA cần page size 10 để test pagination. Production cần retry 5 vì network unstable. Nếu hard-code, phải re-deploy. Nếu config, chỉ cần restart.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #05</div>
+            <div class="rule-title">"Mỗi API endpoint phải có rate limiting"</div>
+            <p>Ngày xưa ta nghĩ: "API nội bộ, ai mà abuse?" Rồi một developer viết script test gọi API 10,000 lần/giây. Server crash. Lesson: rate limiting cho mọi endpoint. External: 100 req/min. Internal: 1,000 req/min. Admin: 50 req/min (vì admin endpoints thường expensive).</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #06</div>
+            <div class="rule-title">"Đừng bao giờ deploy thứ Sáu"</div>
+            <p>Thứ Sáu deploy, bug phát hiện thứ Bảy, team off thứ Bảy, hotfix Chủ Nhật, team burn out thứ Hai. Dự án PBX: deploy thứ Ba hoặc thứ Tư. Có đủ weekday buffer để fix. Ngoại lệ duy nhất: security hotfix — thì ngày nào cũng deploy.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #07</div>
+            <div class="rule-title">"Monitoring không phải afterthought. Nó là Day 1 feature."</div>
+            <p>Dự án trước, setup monitoring sau go-live. Production crash, không ai biết cho đến khi khách gọi. Bây giờ: health check endpoint + Prometheus metrics + Grafana dashboard + PagerDuty alerts — tất cả setup TRƯỚC sprint 1 kết thúc.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #08</div>
+            <div class="rule-title">"Mọi external dependency đều PHẢI có circuit breaker"</div>
+            <p>Gọi external API mà API đó down? Nếu không có circuit breaker, request queue lên, thread pool exhausted, server bạn cũng down theo. Domino effect. Circuit breaker pattern: sau 5 failures, stop calling external API trong 30 giây, thử lại 1 request, nếu OK thì resume. Polly library cho .NET.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #09</div>
+            <div class="rule-title">"PR nhỏ, merge thường xuyên, conflict ít, deploy tự tin"</div>
+            <p>PR 50 dòng review 10 phút, confidence 95%. PR 500 dòng review 1 giờ, confidence 70%. PR 5000 dòng review "approve without reading", confidence 20%. Quy tắc: max 400 dòng changed, max 3 files core logic. Nếu hơn, phải split.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #10</div>
+            <div class="rule-title">"API versioning từ ngày đầu"</div>
+            <p>URL: <span class="inline-code">/api/v1/agents</span>. Header: <span class="inline-code">X-API-Version: 1</span>. Tại sao? Vì Electron app = desktop app = không thể force update tất cả users cùng lúc. Sẽ có lúc v1 clients và v2 clients coexist. Nếu không version API, bạn sẽ break old clients khi update backend.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #11</div>
+            <div class="rule-title">"Security là responsibility của MỌI developer, không chỉ security team"</div>
+            <p>Mọi developer phải biết OWASP Top 10. Code review phải check security. SQL injection, XSS, CSRF — không phải "advanced topics". Đây là BASIC. Trong dự án PBX cho Hàn Quốc: mỗi sprint có 1 security-focused task. Mỗi tháng có 1 security scan. Không negotiate.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #12</div>
+            <div class="rule-title">"Document WHY, not WHAT. Code tells WHAT."</div>
+            <p>Comment <span class="inline-code">// increment counter by 1</span> ← vô dụng, ai cũng thấy <span class="inline-code">counter++</span>. Comment <span class="inline-code">// Increment retry counter. Korean telecom gateway sometimes returns timeout on first try but succeeds on retry. Max 3 retries per KISA guideline.</span> ← vàng ròng.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #13</div>
+            <div class="rule-title">"Premature optimization is the root of all evil. Nhưng NO optimization is the root of all downtime."</div>
+            <p>Đừng optimize khi chưa cần. Nhưng PHẢI đo performance từ ngày đầu. Set baseline. Monitor trends. Khi response time tăng 20% so với baseline → investigate. Đừng đợi khách phàn nàn.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #14</div>
+            <div class="rule-title">"Backup chưa test = Không có backup"</div>
+            <p>Dự án năm 2020: backup database hàng ngày, tự tin. Đến lúc cần restore: backup file corrupted 3 tháng liền không ai biết. Từ đó: backup test monthly. Restore vào test environment, verify data integrity, ghi log. Automated.</p>
+        </div>
+
+        <div class="golden-rule">
+            <div class="rule-number">QUY TAC #15</div>
+            <div class="rule-title">"Đừng giải quyết vấn đề bạn chưa có. Nhưng PHẢI biết vấn đề đó tồn tại."</div>
+            <p>YAGNI (You Ain't Gonna Need It) là đúng. Nhưng YAGNI không có nghĩa là đóng mắt trước tương lai. Ví dụ: chưa cần microservices? Đúng, đừng build microservices. Nhưng PHẢI design module boundaries sạch để KHI CẦN chuyển sang microservices, không phải rewrite toàn bộ. Đó là nghệ thuật của architecture.</p>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 7: COMMON PL MISTAKES                -->
+    <!-- =========================================== -->
+    <section class="section" id="mistakes">
+        <div class="section-header">
+            <div class="section-icon">&#128128;</div>
+            <div>
+                <h2 class="section-title">Sai Lầm Chí Mạng Của PL</h2>
+                <div class="section-subtitle">// Mỗi sai lầm đều có PL đã mắc phải. Đừng là người tiếp theo.</div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span class="terminal-title">mistakes.log</span>
+            </div>
+            <div class="terminal-body">
+                <span class="error">[FATAL]</span> <span class="output">Những sai lầm sau đây đã giết nhiều dự án hơn bất kỳ bug nào.</span><br>
+                <span class="error">[FATAL]</span> <span class="output">Đọc kỹ. Ghi nhớ. Và đừng lặp lại.</span><br>
+                <span class="prompt">$</span> <span class="highlight">cat /var/log/painful-lessons.log</span><span class="cursor-blink"></span>
+            </div>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #01</div>
+            <div class="mistake-title">Over-Engineering: Kiến Trúc Du Hành Vũ Trụ Cho App Quản Lý Todo</div>
+            <p>PL mới thường muốn chứng tỏ bằng kiến trúc phức tạp. Microservices cho 5 users. Event sourcing cho CRUD app. Kubernetes cho 1 server. GraphQL cho 3 endpoints. Kết quả: team mất 2 tháng setup infrastructure, 1 tháng build feature. Khách cancel dự án vì "sao lâu thế?"</p>
+            <p><strong>Thuốc giải:</strong> Bắt đầu đơn giản nhất có thể mà vẫn đáp ứng yêu cầu HIỆN TẠI. Scale khi CẦN, không phải khi "có thể cần".</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #02</div>
+            <div class="mistake-title">Under-Testing: "Test Sau Cũng Được"</div>
+            <p>Mỗi lần PL nói "viết test sau, deadline gấp", một production bug được sinh ra. Test debt tích lũy exponentially. Tháng 1 skip test, có 5 untested features. Tháng 2 có 15. Tháng 3: 30+ untested features, regression everywhere, fix bug này sinh bug khác. Team chạy trên hamster wheel.</p>
+            <p><strong>Thuốc giải:</strong> Test là phần KHÔNG THỂ negotiate trong definition of done. Feature chưa có test = feature chưa xong.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #03</div>
+            <div class="mistake-title">Wrong Abstraction: DRY Quá Mức</div>
+            <p>Thấy 2 hàm có code giống nhau 80%, refactor thành 1 hàm với 10 parameters và 5 if-else branches. Code "DRY" nhưng unreadable, unmodifiable, và khi business logic của 2 use cases diverge (luôn luôn diverge), phải thêm 5 if-else nữa. Kết quả: một monster function 500 dòng mà không ai dám sửa.</p>
+            <p><strong>Thuốc giải:</strong> "Duplication is far cheaper than the wrong abstraction" — Sandi Metz. Chấp nhận duplication cho đến khi pattern THẬT SỰ rõ ràng (rule of three: duplicate 3 lần mới abstract).</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #04</div>
+            <div class="mistake-title">Premature Optimization: Optimize Cái Chưa Ai Dùng</div>
+            <p>Developer muốn optimize database query từ 10ms xuống 1ms. Nhưng query đó chỉ chạy 1 lần/giờ. Trong khi đó, query khác chạy 10,000 lần/phút và tốn 500ms. Optimize sai chỗ = phí effort.</p>
+            <p><strong>Thuốc giải:</strong> Measure first, optimize second. Profiler, APM, database query analysis — dùng data, không dùng gut feeling.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #05</div>
+            <div class="mistake-title">Không Nói "Không" Với Feature Creep</div>
+            <p>Khách muốn thêm feature → PL đồng ý vì "chỉ thêm chút thôi" → team overload → quality giảm → bug tăng → khách không happy → khách muốn thêm feature "fix" quality issues → vòng lặp vô tận.</p>
+            <p><strong>Thuốc giải:</strong> Mỗi feature request phải qua impact analysis: effort estimate, risk assessment, scope impact. Trình bày trade-offs cho stakeholder. Để HỌ quyết định priority, nhưng VỚI đầy đủ thông tin.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #06</div>
+            <div class="mistake-title">Ignoring Non-Functional Requirements</div>
+            <p>Team focus 100% vào feature, quên: performance, security, accessibility, scalability, maintainability. Đến UAT khách nói: "Sao chậm thế?" "Sao không có audit log?" "Sao không responsive?" — tất cả đều "obvious" nhưng không có trong spec vì PL không hỏi.</p>
+            <p><strong>Thuốc giải:</strong> NFR checklist ở đầu mỗi dự án: Performance targets? Security requirements? Accessibility standards? Scalability expectations? Luôn hỏi, luôn document, luôn test.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #07</div>
+            <div class="mistake-title">Single Point of Failure — Cả Architecture Lẫn Team</div>
+            <p>Một server, không HA. Một developer biết Asterisk, không có backup. Một deployment process chỉ 1 người biết. Bất kỳ cái nào fail → dự án dừng.</p>
+            <p><strong>Thuốc giải:</strong> Redundancy ở mọi level. Ít nhất 2 servers cho production. Ít nhất 2 người biết mỗi critical component. Deployment process automated và documented.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #08</div>
+            <div class="mistake-title">Copy-Paste Driven Development</div>
+            <p>Stack Overflow answer → copy → paste → nó chạy → commit. Không hiểu code. Không đọc documentation. 3 tháng sau: security vulnerability trong copied code. Hoặc: license violation (GPL code trong proprietary project).</p>
+            <p><strong>Thuốc giải:</strong> Copy-paste OK cho learning. Nhưng mỗi dòng code trong production phải được HIỂU. Code review phải catch "copied-without-understanding" patterns.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #09</div>
+            <div class="mistake-title">Ignoring Tech Debt Interest</div>
+            <p>Tech debt giống nợ tài chính: có lãi suất. Workaround nhỏ hôm nay = 1 giờ fix. Tháng sau, 3 features build on top of workaround, fix = 1 tuần. 6 tháng sau, fix = rewrite module. Lãi suất compound lên đến mức "trả không nổi".</p>
+            <p><strong>Thuốc giải:</strong> Allocate 15-20% sprint capacity cho tech debt. Mỗi sprint, pick top-priority tech debt items. Không để accumulate quá 2 sprints.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #10</div>
+            <div class="mistake-title">PL Tự Code Quá Nhiều — Quên Đi Lead</div>
+            <p>PL giỏi code → muốn tự code critical features → không đủ thời gian review, plan, mentor, communicate → team drift, architecture inconsistent, stakeholder confused. PL cuối cùng burn out vì cố làm 2 jobs.</p>
+            <p><strong>Thuốc giải:</strong> PL dành max 30% thời gian code (chủ yếu POC, architecture setup, critical bug fix). 70% cho review, planning, mentoring, communication. Delegate implementation, own architecture and quality.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #11</div>
+            <div class="mistake-title">Không Build Relationship Với Stakeholder Kỹ Thuật Phía Khách</div>
+            <p>PL chỉ nói chuyện với PM bên khách. Không biết DBA bên khách có constraint gì. Không biết IT Security team yêu cầu gì. Không biết DevOps bên khách deploy thế nào. Đến lúc go-live: surprise từ mọi phía.</p>
+            <p><strong>Thuốc giải:</strong> PL phải có direct channel với counterparts bên khách: DBA, IT Security, DevOps, QA Lead. Ít nhất 1 technical sync meeting mỗi 2 tuần.</p>
+        </div>
+
+        <div class="mistake-block">
+            <div class="mistake-number">SAI LAM #12</div>
+            <div class="mistake-title">"Nó Chạy Trên Máy Tôi" — Không Standardize Environment</div>
+            <p>Developer A dùng Node 18, Developer B dùng Node 20. Database localhost có data khác staging. Docker version mismatch. Kết quả: bug chỉ xuất hiện trên 1 máy, hoặc chỉ trên staging, hoặc chỉ production. Debug nightmare.</p>
+            <p><strong>Thuốc giải:</strong> Docker Compose cho dev environment. <span class="inline-code">.nvmrc</span> cho Node version. <span class="inline-code">global.json</span> cho .NET version. Seed data script idempotent. "Works on my machine" → "Works on THE machine (Docker)".</p>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- =========================================== -->
+    <!-- SECTION 8: PBX SPECIFIC TECHNICAL ADVICE     -->
+    <!-- =========================================== -->
+    <section class="section" id="pbxadvice">
+        <div class="section-header">
+            <div class="section-icon">&#128222;</div>
+            <div>
+                <h2 class="section-title">PBX Project — Technical Blueprint</h2>
+                <div class="section-subtitle">// .NET 8 + Vue.js 3 + Electron + SignalR + SIP.js + Asterisk — Tất cả trong một</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127959;&#65039; Architecture Recommendations</div>
+            <p>Kiến trúc tổng thể cho PBX system của Coway:</p>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <span class="terminal-title">architecture-overview.txt</span>
+                </div>
+                <div class="terminal-body">
+                    <span class="comment"># PBX Architecture - Simplified View</span><br><br>
+                    <span class="info">[Electron App]</span> ←→ <span class="info">[Vue.js 3 UI]</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;↕ SIP.js (WebRTC)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↕ SignalR (WebSocket)<br>
+                    <span class="highlight">[Asterisk PBX]</span> ←→ <span class="highlight">[.NET 8 API Server]</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;↕ SIP/RTP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↕ EF Core<br>
+                    <span class="info">[PSTN/SIP Trunk]</span>&nbsp;&nbsp;&nbsp;<span class="info">[MSSQL Database]</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↕ Redis<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="info">[Cache + SignalR Backplane]</span>
+                </div>
+            </div>
+
+            <p><strong>Layer Architecture (.NET 8 Backend):</strong></p>
+            <ul>
+                <li><span class="inline-code">PBX.API</span> — Controllers, SignalR Hubs, Middleware. Thin layer, no business logic.</li>
+                <li><span class="inline-code">PBX.Application</span> — Use cases, DTOs, Validators. CQRS with MediatR for complex operations.</li>
+                <li><span class="inline-code">PBX.Domain</span> — Entities, Value Objects, Domain Events. No dependency on anything.</li>
+                <li><span class="inline-code">PBX.Infrastructure</span> — EF Core, Redis, External API clients, Asterisk AMI/ARI integration.</li>
+                <li><span class="inline-code">PBX.Shared</span> — Constants, Enums, Utilities shared across layers.</li>
+            </ul>
+
+            <p><strong>Frontend Architecture (Vue.js 3):</strong></p>
+            <ul>
+                <li><span class="inline-code">src/modules/</span> — Feature-based module organization (calls, agents, dashboard, settings)</li>
+                <li><span class="inline-code">src/composables/</span> — Shared Composition API logic (useSignalR, useSip, useAuth)</li>
+                <li><span class="inline-code">src/stores/</span> — Pinia stores per module (callStore, agentStore, dashboardStore)</li>
+                <li><span class="inline-code">src/services/</span> — API clients, SignalR service, SIP.js wrapper</li>
+                <li><span class="inline-code">src/components/</span> — Shared UI components only. Feature components live in modules.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128222; Real-Time Call State Management</div>
+            <p>Call state machine là trái tim của PBX system. Design SAI ở đây = mọi thứ sai.</p>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <span class="terminal-title">call-state-machine.txt</span>
+                </div>
+                <div class="terminal-body">
+                    <span class="comment"># Call State Machine</span><br>
+                    <span class="info">IDLE</span> → <span class="highlight">RINGING</span> → <span class="info">CONNECTED</span> → <span class="error">ENDED</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="error">MISSED</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="highlight">ON_HOLD</span> ↔ <span class="info">CONNECTED</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="highlight">TRANSFERRING</span> → <span class="info">TRANSFERRED</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="highlight">CONFERENCE</span> → <span class="error">ENDED</span>
+                </div>
+            </div>
+
+            <ul>
+                <li><strong>State phải sync</strong> giữa 3 nơi: Asterisk (SIP), .NET server (business logic), Vue.js client (UI). Dùng SignalR push events, KHÔNG polling.</li>
+                <li><strong>State transition validation</strong> trên server: client không được jump state (IDLE → CONNECTED bỏ qua RINGING). Server reject invalid transitions.</li>
+                <li><strong>Optimistic UI</strong>: UI update ngay khi user click (e.g., click Answer → UI show CONNECTED). Nếu server reject → rollback UI state. User experience mượt hơn.</li>
+                <li><strong>Event sourcing cho call history</strong>: mỗi state transition = 1 event. CDR (Call Detail Record) build từ event stream. Debug dễ, audit trail đầy đủ.</li>
+                <li><strong>Timeout handling</strong>: Ring timeout (30 giây → auto-route sang agent khác), Hold timeout (5 phút → alert supervisor), Conference max duration (enterprise Hàn Quốc thường limit 60 phút).</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128051; Asterisk/Docker Integration Best Practices</div>
+            <ul>
+                <li><strong>Docker Compose setup</strong>: Asterisk container + .NET API container + MSSQL container + Redis container. One command: <span class="inline-code">docker compose up</span></li>
+                <li><strong>Asterisk config management</strong>: Config files mount as volumes, NOT baked into image. Change config → restart container, NOT rebuild image.</li>
+                <li><strong>ARI (Asterisk REST Interface)</strong> over AMI: ARI là modern, REST-based, WebSocket events. AMI là legacy, TCP-based, text protocol. Cho dự án mới, dùng ARI.</li>
+                <li><strong>Media handling</strong>: RTP media nên bypass Asterisk khi có thể (direct media) để giảm load. Chỉ route qua Asterisk khi cần recording hoặc conference mixing.</li>
+                <li><strong>Call recording storage</strong>: Record ở Asterisk, upload async lên object storage (S3/Azure Blob), reference trong database. KHÔNG lưu recording trong database.</li>
+                <li><strong>Scalability</strong>: Horizontal scale bằng multiple Asterisk instances behind SIP load balancer (Kamailio). Mỗi instance handle 200-300 concurrent calls.</li>
+                <li><strong>Failover</strong>: Active-passive Asterisk pair. SIP trunk register cả 2. Kamailio health-check và route sang active instance.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128190; IndexedDB Sync Strategy — Offline-First</div>
+            <p>Electron app PHẢI hoạt động khi mất network (ít nhất basic functions):</p>
+            <ul>
+                <li><strong>Dexie.js</strong> wrapper cho IndexedDB — API clean, TypeScript support, migration support.</li>
+                <li><strong>Sync strategy</strong>: Server là source of truth. Client sync delta changes khi online. Conflict resolution: server wins (cho PBX, consistency quan trọng hơn availability).</li>
+                <li><strong>Offline capabilities</strong>: View call history, view contacts, view agent list. Queue outbound calls for when network restored.</li>
+                <li><strong>Sync mechanism</strong>: <span class="inline-code">lastSyncTimestamp</span> per entity type. Server endpoint <span class="inline-code">GET /api/sync/{entity}?since={timestamp}</span> returns delta. Batch sync mỗi 30 giây khi online.</li>
+                <li><strong>Storage management</strong>: IndexedDB quota varies. Implement LRU cache — giữ 30 ngày data gần nhất, archive cũ hơn.</li>
+                <li><strong>Encryption</strong>: IndexedDB lưu local, ai có access vào laptop có thể đọc. Encrypt PII trước khi lưu vào IndexedDB. Dùng Web Crypto API.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#9889; Performance Targets — Enterprise PBX</div>
+
+            <div class="tech-radar">
+                <div class="tech-item">
+                    <div class="tech-icon">&#128222;</div>
+                    <div class="tech-name">Call Setup</div>
+                    <div class="tech-role">< 2 giây from ring to connect</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128337;</div>
+                    <div class="tech-name">UI Response</div>
+                    <div class="tech-role">< 200ms cho mọi user action</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128200;</div>
+                    <div class="tech-name">Dashboard Load</div>
+                    <div class="tech-role">< 3 giây initial, < 500ms refresh</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128101;</div>
+                    <div class="tech-name">Concurrent Users</div>
+                    <div class="tech-role">500+ agents simultaneously</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128190;</div>
+                    <div class="tech-name">Memory (Electron)</div>
+                    <div class="tech-role">< 800MB after 8h usage</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#127381;</div>
+                    <div class="tech-name">Uptime Target</div>
+                    <div class="tech-role">99.9% (< 8.7h downtime/year)</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128266;</div>
+                    <div class="tech-name">Audio Quality</div>
+                    <div class="tech-role">MOS >= 4.0 (Good)</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128640;</div>
+                    <div class="tech-name">API Response</div>
+                    <div class="tech-role">P95 < 500ms, P99 < 1s</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128274; Security Architecture — PIPA Compliance</div>
+            <ul>
+                <li><strong>Authentication</strong>: JWT (short-lived, 15 min) + Refresh Token (long-lived, 7 days, stored HttpOnly cookie). Refresh token rotation — mỗi lần refresh, old token invalidated.</li>
+                <li><strong>Authorization</strong>: RBAC với 4 roles: Agent, Supervisor, Admin, SuperAdmin. Permission-based cho fine-grained control. Check authorization ở cả API layer VÀ SignalR hub.</li>
+                <li><strong>Data Encryption</strong>: AES-256-GCM cho PII trong database. TLS 1.3 cho in-transit. SRTP cho voice media encryption.</li>
+                <li><strong>Call Recording Security</strong>: Encrypted at rest. Access audit logged. Auto-delete sau retention period (configurable per Korean regulation). No download without supervisor approval.</li>
+                <li><strong>API Security</strong>: Rate limiting, input validation, output encoding, CORS whitelist, CSP headers, HSTS. API key cho external integrations with rotation policy.</li>
+                <li><strong>Electron Security</strong>: Disable <span class="inline-code">nodeIntegration</span> trong renderer. Enable <span class="inline-code">contextIsolation</span>. Validate all IPC messages. Auto-update with code signing.</li>
+                <li><strong>Network Security</strong>: SIP traffic over TLS (SIPS). RTP over SRTP. Admin endpoints behind VPN. WebSocket connections authenticated.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128202; Monitoring Strategy — VoIP Quality</div>
+            <p>VoIP monitoring khác web monitoring. Không chỉ response time và error rate:</p>
+            <ul>
+                <li><strong>Call Quality Metrics</strong>: MOS (Mean Opinion Score), jitter, packet loss, latency. Thu thập từ RTP statistics. Alert khi MOS < 3.5.</li>
+                <li><strong>System Metrics</strong>: CPU, RAM, disk I/O, network bandwidth. Asterisk channel count. SignalR connection count. Database connection pool utilization.</li>
+                <li><strong>Business Metrics</strong>: Calls per hour, average handle time, queue wait time, abandon rate, agent utilization. Real-time dashboard cho supervisors.</li>
+                <li><strong>Infrastructure</strong>: Prometheus + Grafana cho metrics visualization. ELK Stack cho log aggregation. Custom Asterisk exporter cho PBX-specific metrics.</li>
+                <li><strong>Alerting Rules</strong>:</li>
+            </ul>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                    <span class="terminal-title">alerting-rules.yml</span>
+                </div>
+                <div class="terminal-body">
+                    <span class="comment"># Critical Alerts — immediate response required</span><br>
+                    <span class="error">CRITICAL</span>: Asterisk process down<br>
+                    <span class="error">CRITICAL</span>: API server 5xx rate > 5%<br>
+                    <span class="error">CRITICAL</span>: Database connection pool exhausted<br>
+                    <span class="error">CRITICAL</span>: SignalR hub unreachable<br><br>
+                    <span class="comment"># Warning Alerts — investigate within 1 hour</span><br>
+                    <span class="highlight">WARNING</span>: MOS average < 3.5 for 5 minutes<br>
+                    <span class="highlight">WARNING</span>: CPU > 80% for 10 minutes<br>
+                    <span class="highlight">WARNING</span>: Queue wait time > 120 seconds<br>
+                    <span class="highlight">WARNING</span>: Failed login attempts > 10/minute<br><br>
+                    <span class="comment"># Info Alerts — review daily</span><br>
+                    <span class="info">INFO</span>: Disk usage > 70%<br>
+                    <span class="info">INFO</span>: SSL certificate expires in < 30 days<br>
+                    <span class="info">INFO</span>: Agent utilization < 30% (overstaffed?)
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128230; Deployment Pipeline — Electron Desktop App</div>
+            <p>Deploy Electron app cho enterprise Hàn Quốc có nhiều challenge hơn web deploy:</p>
+            <ul>
+                <li><strong>Build Pipeline</strong>: GitHub Actions → Build Electron for Windows (Coway dùng Windows) → Code signing (mua certificate từ Korean CA) → Upload to update server</li>
+                <li><strong>Auto-Update</strong>: <span class="inline-code">electron-updater</span> check update khi app start. Download in background. Install on next restart. KHÔNG force restart — agent có thể đang trong cuộc gọi.</li>
+                <li><strong>Staged Rollout</strong>: Deploy cho 10% users → monitor 24h → 50% → monitor 24h → 100%. Rollback mechanism: server returns previous version URL nếu critical bug.</li>
+                <li><strong>Korean Enterprise specifics</strong>: MSI installer cho enterprise deployment via SCCM/Intune. Silent install option. Group policy compatible. Whitelist trong Korean enterprise firewall.</li>
+                <li><strong>Version strategy</strong>: SemVer. Backend API version phải compatible với N-1 Electron version (không phải mọi user update cùng lúc).</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#128193; Code Organization & Module Boundaries</div>
+            <p>Module boundaries là kiến trúc quan trọng nhất. Sai ở đây, sai ở mọi nơi:</p>
+            <ul>
+                <li><strong>Call Module</strong>: Inbound/outbound call management, call state machine, call transfer, conference, call recording. <em>Dependency: Agent Module, SIP Service.</em></li>
+                <li><strong>Agent Module</strong>: Agent status management (Available/Busy/Away/Offline), agent skills/queues, break management, agent performance metrics. <em>Dependency: Auth Module.</em></li>
+                <li><strong>Queue Module</strong>: Call queue management, routing rules, priority handling, queue monitoring, overflow rules. <em>Dependency: Call Module, Agent Module.</em></li>
+                <li><strong>Dashboard Module</strong>: Real-time statistics, historical reports, KPI visualization. <em>Dependency: Call Module, Agent Module, Queue Module (READ ONLY).</em></li>
+                <li><strong>Admin Module</strong>: System configuration, user management, SIP trunk management, IVR configuration. <em>Dependency: Auth Module.</em></li>
+                <li><strong>Auth Module</strong>: Authentication, authorization, session management, audit logging. <em>No domain dependency.</em></li>
+            </ul>
+            <p><strong>Boundary Rules:</strong></p>
+            <ul>
+                <li>Modules communicate through defined interfaces (services), NEVER direct database access across modules.</li>
+                <li>Each module owns its database tables. Dashboard module uses read-only views/materialized views of other modules' data.</li>
+                <li>SignalR events are the primary cross-module communication mechanism for real-time updates.</li>
+                <li>Circular dependencies = architecture smell. If Module A depends on Module B AND Module B depends on Module A, extract shared logic into Module C.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title">&#127919; Tech Stack Summary — PBX Coway</div>
+            <div class="tech-radar">
+                <div class="tech-item">
+                    <div class="tech-icon">&#9881;&#65039;</div>
+                    <div class="tech-name">.NET 8</div>
+                    <div class="tech-role">Backend API + SignalR</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128154;</div>
+                    <div class="tech-name">Vue.js 3</div>
+                    <div class="tech-role">Frontend UI Framework</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#9889;</div>
+                    <div class="tech-name">Electron</div>
+                    <div class="tech-role">Desktop App Shell</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128259;</div>
+                    <div class="tech-name">SignalR</div>
+                    <div class="tech-role">Real-time Communication</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128222;</div>
+                    <div class="tech-name">SIP.js</div>
+                    <div class="tech-role">WebRTC SIP Client</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128051;</div>
+                    <div class="tech-name">Docker + Asterisk</div>
+                    <div class="tech-role">PBX Engine</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128451;&#65039;</div>
+                    <div class="tech-name">MSSQL</div>
+                    <div class="tech-role">Primary Database</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128308;</div>
+                    <div class="tech-name">Redis</div>
+                    <div class="tech-role">Cache + SignalR Backplane</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128196;</div>
+                    <div class="tech-name">TypeScript</div>
+                    <div class="tech-role">Type Safety Everywhere</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#127916;</div>
+                    <div class="tech-name">Pinia</div>
+                    <div class="tech-role">State Management</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128202;</div>
+                    <div class="tech-name">DevExtreme</div>
+                    <div class="tech-role">Enterprise UI Components</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">&#128190;</div>
+                    <div class="tech-name">Dexie.js</div>
+                    <div class="tech-role">IndexedDB Wrapper</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Final Wisdom ===== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">&#128161;</div>
+            <div>
+                <h2 class="section-title">Lời Cuối Của Chưởng Môn</h2>
+                <div class="section-subtitle">// process.exit(0) — nhưng trước khi exit, hãy nhớ...</div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span class="terminal-title">final-wisdom.sh</span>
+            </div>
+            <div class="terminal-body">
+                <span class="prompt">$</span> <span class="highlight">cat /etc/grandmaster/final-words.txt</span><br><br>
+                <span class="output">12 năm viết code, ta học được rằng:</span><br><br>
+                <span class="info">1.</span> <span class="output">Code giỏi nhất là code không cần viết.</span><br>
+                <span class="info">2.</span> <span class="output">Architecture giỏi nhất là architecture đơn giản nhất đáp ứng yêu cầu.</span><br>
+                <span class="info">3.</span> <span class="output">PL giỏi nhất là PL mà team không cần PL để hoạt động.</span><br>
+                <span class="info">4.</span> <span class="output">Dự án thành công không phải vì tech stack, mà vì team.</span><br>
+                <span class="info">5.</span> <span class="output">Deadline gấp không phải lý do để skip quality. Ngược lại.</span><br><br>
+                <span class="output">Dự án PBX cho Coway Korea — May 15, May 18, June 15.</span><br>
+                <span class="output">Deadline gấp. Tech stack phức tạp. Khách hàng demanding.</span><br>
+                <span class="output">Nhưng ta đã qua 20+ dự án, 100+ production deployments.</span><br><br>
+                <span class="highlight">Ta biết team có thể làm được. Vì ta đã training team cho moment này.</span><br><br>
+                <span class="prompt">$</span> <span class="output">echo "Let's ship quality software. Together."</span><br>
+                <span class="output">Let's ship quality software. Together.</span><br>
+                <span class="prompt">$</span> <span class="cursor-blink"></span>
+            </div>
+        </div>
+
+        <div class="wisdom-quote">
+            "Kỹ thuật Chưởng Môn không phải người code giỏi nhất phòng. Mà là người khiến CẢ PHÒNG code giỏi hơn."
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <p>AGENT #00 — KY THUAT CHUONG MON</p>
+        <p>Project Leader / Tech Lead — PBX Coway Korea</p>
+        <p>12+ years | 20+ projects | .NET + Vue.js + Electron + SignalR + SIP.js + Asterisk</p>
+        <p class="signature">// "The Bridge Between Code and Business" — Est. 2012</p>
+        <p style="margin-top: 15px; font-size: 0.7rem;">Built with dedication for the PBX project team. No frameworks were harmed.</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

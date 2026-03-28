@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảo Vệ Cổng Trời - Bậc Thầy Authentication & Authorization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #ef4444, #dc2626, #fca5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fca5a5; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fca5a5; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fca5a5; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #ef4444; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fca5a5; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #dc2626; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fca5a5; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fca5a5; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🛡️</span>
+            <h1>Bảo Vệ Cổng Trời</h1>
+            <p class="subtitle">Trần Bảo Vệ — Bậc Thầy Authentication & Authorization</p>
+            <p class="quote">"Bảo mật không phải feature — nó là foundation. Thiếu nó thì mọi feature đều vô nghĩa."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">OAuth 2.0</span>
+            <span class="skill-tag">OIDC</span>
+            <span class="skill-tag">JWT</span>
+            <span class="skill-tag">SAML</span>
+            <span class="skill-tag">RBAC</span>
+            <span class="skill-tag">ABAC</span>
+            <span class="skill-tag">Session Management</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Bảo Vệ từng là developer bình thường cho đến khi ứng dụng ông xây bị hack. Attacker exploit JWT stored trong localStorage, XSS → token stolen → toàn bộ user accounts compromised. 50,000 users ảnh hưởng. Báo chí đưa tin. Startup gần chết.
+
+Từ ngày đó, ông thề sẽ học bảo mật đến nơi đến chốn. Ông đọc RFC 6749 (OAuth 2.0) 5 lần, RFC 7519 (JWT) 3 lần, nghiên cứu mọi attack vector từ XSS, CSRF đến session hijacking, token confusion. Ông trở thành 'Người Gác Cổng' — security reviewer cho mọi PR liên quan đến auth.
+
+Triết lý: 'Đừng tự implement auth nếu không phải expert. Dùng libraries, dùng services (Auth0, Clerk, Supabase Auth). Sai ở auth = game over.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: OAuth 2.0 + OIDC — Hiểu đúng để dùng đúng</h3>
+                <p>OAuth 2.0 = AUTHORIZATION (cấp quyền truy cập resource). OIDC (OpenID Connect) = AUTHENTICATION (xác minh danh tính) built on top of OAuth 2.0. Authorization Code Flow + PKCE = standard cho SPAs và mobile apps (thay thế Implicit Flow đã deprecated). Access Token: ngắn hạn (15-60 phút), dùng để access API. Refresh Token: dài hạn, dùng để lấy access token mới. ID Token: JWT chứa user info, KHÔNG dùng để access API. Đừng nhầm lẫn 3 loại token này.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: JWT — Biết dùng, biết hạn chế</h3>
+                <p>JWT = Header.Payload.Signature (base64). Stateless: server không cần lưu session. Nhưng: KHÔNG THỂ revoke JWT trước expiry (trừ khi maintain blocklist = stateful lại). Đặt expiry ngắn (15-30 phút) + refresh token rotation. ĐỪNG lưu JWT trong localStorage (XSS vulnerable). Lưu trong httpOnly, Secure, SameSite cookie — browser auto-send, JavaScript KHÔNG access được. Payload: ĐỪNG lưu sensitive data (PII, passwords) — JWT chỉ encoded, KHÔNG encrypted.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Session Management — Cái cũ nhưng vẫn tốt</h3>
+                <p>Server-side sessions: session ID trong cookie, data trong server (Redis/DB). Ưu: dễ revoke (xóa session), dễ manage (track active sessions), data không expose cho client. Nhược: stateful (cần shared session store cho multiple servers). Session fixation prevention: regenerate session ID sau login. Session timeout: absolute (tối đa 24h) + idle (15-30 phút no activity). HttpOnly + Secure + SameSite=Strict cho session cookie.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: RBAC vs ABAC — Ai được làm gì?</h3>
+                <p>RBAC (Role-Based Access Control): User → Role → Permissions. Simple, well-understood. Role: admin, editor, viewer. Permission: create, read, update, delete. Nhược: role explosion khi business phức tạp. ABAC (Attribute-Based Access Control): policy based on attributes (user department, resource owner, time of day, IP address). Flexible nhưng complex. Recommendation: start with RBAC, evolve to ABAC khi RBAC không đủ. Tools: Casbin, Open Policy Agent (OPA), Cerbos.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Multi-Factor Authentication (MFA)</h3>
+                <p>Something you know (password) + something you have (phone/hardware key) + something you are (biometric). TOTP (Time-based One-Time Password): Google Authenticator, Authy — simple, no network needed. WebAuthn/Passkeys: hardware security keys, biometric — phishing-resistant, best security. SMS OTP: better than nothing but vulnerable to SIM swapping — avoid for high-security. Implement MFA cho admin accounts MANDATORY, offer for all users.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: JWT trong localStorage — Mở Cửa Cho Hacker</h3>
+                <p>SPA lưu JWT access token trong localStorage. XSS vulnerability trong third-party chat widget → attacker inject script → <code>localStorage.getItem('token')</code> → token stolen → attacker access API as victim.
+
+5,000 accounts compromised trong 6 giờ trước khi team phát hiện. Attacker dùng stolen tokens để đổi email → reset password → full account takeover. Thiệt hại: user data leaked, GDPR violation notification required, trust destroyed.
+
+Fix: chuyển JWT sang httpOnly cookie (JavaScript không access được → XSS không steal được). Thêm CSRF protection (SameSite cookie + CSRF token cho non-GET requests). Implement token rotation + revocation. Audit tất cả third-party scripts.</p>
+                <div class="lesson">💡 Bài học: NEVER store tokens trong localStorage/sessionStorage — XSS = game over. httpOnly cookies là nơi an toàn nhất cho tokens trong browser. Nếu dùng localStorage (mobile WebView edge case), phải eliminate MỌII XSS vectors: CSP strict, sanitize user input, audit third-party scripts.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Infinite Token Expiry — Vé Vĩnh Viễn Cho Hacker</h3>
+                <p>API dùng JWT, developer set expiry 'cho tiện': <code>expiresIn: '365d'</code>. User login 1 lần/năm, không bị logout, UX tuyệt vời! Cho đến khi employee quit company — JWT vẫn valid 11 tháng nữa. Employee truy cập internal API, download customer data.
+
+Worst case: JWT không thể revoke (stateless). Team phải implement token blocklist trong Redis — basically biến JWT thành stateful session. Tại sao không dùng sessions từ đầu?
+
+Fix: access token expiry 15 phút, refresh token 7 ngày + rotation (mỗi lần dùng refresh token → issue new refresh token, invalidate old one). Employee offboarding: revoke tất cả refresh tokens.</p>
+                <div class="lesson">💡 Bài học: Token expiry phải ngắn cho access tokens (15-60 phút). Refresh tokens dài hơn nhưng phải ROTATABLE + REVOCABLE. Employee offboarding checklist: revoke tokens, deactivate accounts, rotate shared secrets. Nếu bạn cần revoke JWT instantly → bạn cần token blocklist hoặc nên dùng sessions.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: OAuth Misconfiguration — Redirect URI Open Redirect</h3>
+                <p>OAuth flow: user login → redirect back to app. Developer set redirect_uri validation loose: chỉ check domain, không check full path. Attacker craft URL: <code>redirect_uri=https://legit-app.com/callback/../../../evil-site.com</code>. Authorization server redirect token đến evil site. Account takeover.
+
+Fix: EXACT match redirect_uri (không wildcard, không path traversal). Register tất cả valid redirect URIs trong OAuth provider. Validate state parameter để prevent CSRF trong OAuth flow.</p>
+                <div class="lesson">💡 Bài học: OAuth redirect_uri validation phải EXACT MATCH. Không dùng wildcard domains, không allow path traversal, không allow subdomain matching rộng. State parameter MANDATORY cho CSRF protection. PKCE MANDATORY cho public clients (SPAs, mobile apps).</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Tự implement crypto/auth</h3>
+                <p>Rolling your own authentication/encryption = rolling your own parachute. Dùng proven libraries: bcrypt/argon2 cho password hashing, established JWT libraries, Auth0/Clerk/Supabase cho hosted auth.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Password requirements phức tạp</h3>
+                <p>'Minimum 12 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character, no dictionary words' → users viết trên sticky note. NIST recommendation: minimum 8 chars, check against breached password list, no complexity requirements. Dùng passkeys khi possible.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Không rate limit login endpoint</h3>
+                <p>Brute force attack: try 10,000 passwords/second. Rate limit: 5 attempts → lockout 15 phút. Account lockout → captcha → progressive delay. Implement fail2ban hoặc application-level rate limiting.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Expose error details trong auth responses</h3>
+                <p>'Email not found' vs 'Wrong password' → attacker biết email nào tồn tại (account enumeration). Response chung: 'Invalid email or password' cho mọi failure case.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Không invalidate sessions khi password change</h3>
+                <p>User đổi password (vì nghi bị hack) nhưng old sessions vẫn active → hacker vẫn access được. Password change PHẢI invalidate tất cả existing sessions/tokens.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Bảo Vệ</span> — Bảo Vệ Cổng Trời</p>
+            <p>🛡️ "Bảo mật không phải feature — nó là foundation. Thiếu nó thì mọi feature đều vô nghĩa."</p>
+        </div>
+    </div>
+</body>
+</html>

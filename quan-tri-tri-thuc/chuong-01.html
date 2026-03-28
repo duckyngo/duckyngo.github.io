@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 1: Đặc Điểm Của Tri Thức — Quản Trị Dựa Vào Tri Thức</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #312E81; --indigo-light: #4338CA; --indigo-pale: #EEF2FF;
+    --emerald: #059669; --emerald-light: #10B981; --emerald-pale: #ECFDF5;
+    --cyan: #0891B2; --cyan-light: #06B6D4; --cyan-pale: #ECFEFF;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FFFBEB;
+    --violet: #7C3AED; --violet-pale: #F5F3FF;
+    --gray: #6B7280; --gray-light: #F9FAFB; --gray-border: #E5E7EB;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10); --shadow-hover: 0 8px 32px rgba(0,0,0,0.16);
+    --radius: 12px; --radius-lg: 20px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #F8FAFF; color: #1F2937; line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+
+  nav { background: var(--indigo); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .nav-home { font-size: 0.85rem; opacity: 0.8; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
+  .nav-home:hover { opacity: 1; }
+  .nav-arrows { display: flex; gap: 10px; }
+  .nav-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 7px 16px; font-size: 0.85rem; color: white; transition: background 0.2s; white-space: nowrap; }
+  .nav-btn:hover { background: rgba(255,255,255,0.28); }
+  .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+  .hero { background: linear-gradient(135deg, #1E1B4B 0%, #4C1D95 50%, #7C3AED 100%); color: white; padding: 70px 24px 50px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 60% 30%, rgba(167,139,250,0.3) 0%, transparent 60%); }
+  .hero-inner { position: relative; max-width: 800px; margin: 0 auto; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; padding: 6px 20px; font-size: 0.82rem; margin-bottom: 20px; }
+  .hero-num { font-size: 5rem; font-weight: 900; opacity: 0.15; position: absolute; top: -10px; right: 40px; line-height: 1; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
+  .hero-desc { font-size: 1rem; opacity: 0.8; max-width: 600px; margin: 0 auto; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+  .section-title { font-size: 1.4rem; font-weight: 800; color: var(--indigo); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--violet), var(--indigo)); border-radius: 99px; margin-bottom: 20px; width: 50px; }
+  .prose { color: #374151; font-size: 0.97rem; line-height: 1.8; margin-bottom: 16px; }
+
+  /* 4 PROPERTIES CARDS */
+  .prop-card { background: white; border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow); margin: 16px 0; border-left: 5px solid; transition: transform 0.2s, box-shadow 0.2s; }
+  .prop-card:hover { transform: translateX(4px); box-shadow: var(--shadow-hover); }
+  .prop-card:nth-child(1) { border-color: var(--violet); }
+  .prop-card:nth-child(2) { border-color: var(--cyan); }
+  .prop-card:nth-child(3) { border-color: var(--emerald); }
+  .prop-card:nth-child(4) { border-color: var(--amber); }
+  .prop-header { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .prop-num { width: 40px; height: 40px; border-radius: 50%; font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+  .prop-card:nth-child(1) .prop-num { background: var(--violet); }
+  .prop-card:nth-child(2) .prop-num { background: var(--cyan); }
+  .prop-card:nth-child(3) .prop-num { background: var(--emerald); }
+  .prop-card:nth-child(4) .prop-num { background: var(--amber); }
+  .prop-title { font-size: 1.1rem; font-weight: 800; }
+  .prop-card:nth-child(1) .prop-title { color: var(--violet); }
+  .prop-card:nth-child(2) .prop-title { color: var(--cyan); }
+  .prop-card:nth-child(3) .prop-title { color: var(--emerald); }
+  .prop-card:nth-child(4) .prop-title { color: #92400E; }
+  .prop-subtitle { font-size: 0.8rem; color: var(--gray); }
+  .prop-body { font-size: 0.92rem; color: #374151; line-height: 1.7; }
+  .prop-quote { background: rgba(0,0,0,0.04); border-radius: 8px; padding: 10px 16px; margin-top: 10px; font-style: italic; font-size: 0.88rem; color: #4B5563; border-left: 3px solid rgba(0,0,0,0.1); }
+
+  /* PHRONESIS TABLE */
+  .phronesis-table { background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); margin: 24px 0; }
+  .phronesis-header { background: linear-gradient(135deg, var(--indigo), var(--indigo-light)); color: white; padding: 18px 24px; font-weight: 700; font-size: 1rem; text-align: center; }
+  .phronesis-row { display: grid; grid-template-columns: 1fr 2fr 2fr; border-bottom: 1px solid var(--gray-border); }
+  .phronesis-row:last-child { border-bottom: none; }
+  .phronesis-row.header-row { background: var(--gray-light); font-weight: 700; font-size: 0.82rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+  .phronesis-cell { padding: 14px 18px; font-size: 0.88rem; line-height: 1.5; }
+  .phronesis-cell:not(:last-child) { border-right: 1px solid var(--gray-border); }
+  .type-badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; }
+  .badge-e { background: var(--indigo-pale); color: var(--indigo); }
+  .badge-t { background: var(--cyan-pale); color: var(--cyan); }
+  .badge-p { background: var(--emerald-pale); color: var(--emerald); }
+
+  .quote-box { background: linear-gradient(135deg, #FFF8F0, #FFFBEB); border: 1px solid #FDE68A; border-radius: var(--radius-lg); padding: 28px 32px; margin: 28px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 5rem; color: var(--amber-light); position: absolute; top: -12px; left: 18px; line-height: 1; opacity: 0.3; font-family: Georgia, serif; }
+  .quote-box p { font-size: 1.05rem; font-style: italic; color: #78350F; font-weight: 500; line-height: 1.7; padding-left: 10px; }
+  .quote-box cite { display: block; margin-top: 8px; font-size: 0.85rem; color: var(--amber); font-style: normal; font-weight: 600; padding-left: 10px; }
+
+  .callout { border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; border-left: 4px solid; }
+  .callout-indigo { background: var(--indigo-pale); border-color: var(--indigo); }
+  .callout-emerald { background: var(--emerald-pale); border-color: var(--emerald); }
+  .callout-violet { background: var(--violet-pale); border-color: var(--violet); }
+  .callout-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .callout-indigo .callout-title { color: var(--indigo); }
+  .callout-emerald .callout-title { color: var(--emerald); }
+  .callout-violet .callout-title { color: var(--violet); }
+  .callout p { font-size: 0.93rem; }
+
+  .lesson-box { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border: 1px solid #6EE7B7; border-radius: var(--radius-lg); padding: 28px 32px; margin-top: 40px; }
+  .lesson-title { font-size: 1.1rem; font-weight: 800; color: var(--emerald); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 6px 0 6px 28px; position: relative; font-size: 0.93rem; color: #064E3B; }
+  .lesson-list li::before { content: '✓'; position: absolute; left: 0; color: var(--emerald); font-weight: 800; }
+
+  .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--gray-border); flex-wrap: wrap; gap: 12px; }
+  .btn-nav { display: inline-flex; align-items: center; gap: 8px; background: var(--indigo); color: white; border-radius: var(--radius); padding: 12px 22px; font-weight: 600; font-size: 0.9rem; transition: background 0.2s, transform 0.2s; }
+  .btn-nav:hover { background: var(--indigo-light); transform: translateY(-2px); }
+  .btn-nav.secondary { background: white; color: var(--indigo); border: 2px solid var(--indigo); }
+  .btn-nav.secondary:hover { background: var(--indigo-pale); }
+
+  @media (max-width: 640px) {
+    .container { padding: 28px 16px; }
+    .phronesis-row { grid-template-columns: 1fr; }
+    .phronesis-row.header-row { display: none; }
+    .phronesis-cell { border-right: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-home">🏠 Trang Chủ</a>
+  <div class="nav-arrows">
+    <a href="gioi-thieu.html" class="nav-btn">← Giới Thiệu</a>
+    <a href="chuong-02.html" class="nav-btn">Chương 2 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-num">1</div>
+    <div class="hero-badge">🧠 Chương 1</div>
+    <h1>Đặc Điểm Của Tri Thức</h1>
+    <p class="hero-desc">4 tính chất cốt lõi khiến tri thức hoàn toàn khác với thông tin — và nền tảng triết học Phronesis từ Aristotle</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <p class="prose">Để hiểu vì sao quản trị tri thức khác hoàn toàn với quản trị thông tin hay tài nguyên vật chất, chúng ta phải bắt đầu từ câu hỏi căn bản: <strong>tri thức là gì?</strong> Nonaka và nhóm tác giả xác định 4 tính chất đặc trưng của tri thức — những tính chất này làm cho tri thức vừa quý giá vừa khó quản lý hơn bất kỳ nguồn lực nào khác.</p>
+
+  <!-- 4 PROPERTIES -->
+  <div class="divider"></div>
+  <h2 class="section-title">🔑 4 Tính Chất Cốt Lõi Của Tri Thức</h2>
+
+  <div class="prop-card">
+    <div class="prop-header">
+      <div class="prop-num">1</div>
+      <div>
+        <div class="prop-title">Tính Chủ Quan</div>
+        <div class="prop-subtitle">Subjective Nature</div>
+      </div>
+    </div>
+    <div class="prop-body">
+      Tri thức không thể tách rời khỏi người nhận thức. Không giống thông tin hay dữ liệu có thể lưu trữ trung lập trong máy tính, tri thức luôn gắn liền với người nắm giữ nó — với quan điểm, kinh nghiệm, cảm xúc và niềm tin của họ. Đây là lý do tại sao "chuyển giao tri thức" không đơn giản như chuyển file.
+      <div class="prop-quote">💬 "Nếu không tin thì người sẽ không hiểu." — Michael Polanyi. Tri thức đòi hỏi sự tham gia chủ động và tin tưởng của người học.</div>
+    </div>
+  </div>
+
+  <div class="prop-card">
+    <div class="prop-header">
+      <div class="prop-num">2</div>
+      <div>
+        <div class="prop-title">Tính Quá Trình</div>
+        <div class="prop-subtitle">Process Nature</div>
+      </div>
+    </div>
+    <div class="prop-body">
+      Tri thức không phải là một vật thể tĩnh tại mà là một quá trình liên tục vận động và biến đổi. Dựa trên triết học quá trình của Alfred North Whitehead, Nonaka nhấn mạnh: thực tại là sự kiện, không phải thực thể; là quá trình, không phải vật thể. Con người không "có" tri thức — họ đang trong trạng thái "trở thành" (becoming) liên tục.
+      <div class="prop-quote">💬 "Dòng sông không phải một vật thể, mà là một dòng chảy liên tục." — Alfred North Whitehead. Con người cũng vậy — luôn trong trạng thái 'becoming', không bao giờ hoàn tất.</div>
+    </div>
+  </div>
+
+  <div class="prop-card">
+    <div class="prop-header">
+      <div class="prop-num">3</div>
+      <div>
+        <div class="prop-title">Tính Thẩm Mỹ</div>
+        <div class="prop-subtitle">Aesthetic Nature</div>
+      </div>
+    </div>
+    <div class="prop-body">
+      Tri thức không thể tách rời khỏi cái đẹp và cảm xúc. Đây là điểm mà nhiều lý thuyết quản trị bỏ qua — nhưng Nonaka và Whitehead nhấn mạnh: cảm xúc, thẩm mỹ và đạo đức không phải là "nhiễu" trong quá trình tư duy mà là <em>thành phần thiết yếu</em> của tri thức chất lượng cao. Nhà quản trị xuất sắc phải có cả lý trí lẫn trực giác thẩm mỹ.
+      <div class="prop-quote">💬 "Nếu thiếu cái đẹp thì chân lý chỉ là vô nghĩa." — Alfred North Whitehead. Tri thức khô khan không có cảm xúc là tri thức cụt lủn.</div>
+    </div>
+  </div>
+
+  <div class="prop-card">
+    <div class="prop-header">
+      <div class="prop-num">4</div>
+      <div>
+        <div class="prop-title">Tính Thực Hành</div>
+        <div class="prop-subtitle">Practical Nature</div>
+      </div>
+    </div>
+    <div class="prop-body">
+      Tri thức chỉ thực sự tồn tại và phát triển trong hành động thực tế, theo từng tình huống cụ thể. Không có tri thức "thuần lý thuyết" theo nghĩa tuyệt đối — mọi tri thức đều nảy sinh từ thực tiễn và chỉ có giá trị khi áp dụng vào thực tiễn. Đây là lý do tại sao "biết" trong sách giáo khoa rất khác với "biết" trong thực chiến.
+      <div class="prop-quote">💬 Aristotle gọi đây là "Phronesis" — trí tuệ thực tiễn: khả năng nhận biết điều gì là đúng và tốt trong từng tình huống cụ thể, và hành động phù hợp.</div>
+    </div>
+  </div>
+
+  <!-- PHRONESIS -->
+  <div class="divider"></div>
+  <h2 class="section-title">🦉 Phronesis — Tổng Hợp Cả 4 Tính Chất</h2>
+  <p class="prose">Aristotle phân biệt 3 loại tri thức. Trong đó, <strong>Phronesis</strong> là cao nhất vì nó tổng hợp cả 4 tính chất trên: nó chủ quan (gắn với người thực hành), là quá trình (không ngừng học hỏi), có tính thẩm mỹ (biết điều gì là đẹp và tốt), và thực hành (chỉ có trong hành động thực tế). Phronesis trả lời câu hỏi: <em>"Tại sao và vì ai?"</em></p>
+
+  <div class="phronesis-table">
+    <div class="phronesis-header">📚 Ba Loại Tri Thức Theo Aristotle</div>
+    <div class="phronesis-row header-row">
+      <div class="phronesis-cell">Loại</div>
+      <div class="phronesis-cell">Định Nghĩa</div>
+      <div class="phronesis-cell">Ví Dụ & Đặc Điểm</div>
+    </div>
+    <div class="phronesis-row">
+      <div class="phronesis-cell"><span class="type-badge badge-e">Episteme</span></div>
+      <div class="phronesis-cell"><strong>Chân lý phổ quát</strong> — tri thức khoa học, lý thuyết có thể chứng minh bằng logic và thực nghiệm. Có giá trị ở mọi nơi, mọi lúc.</div>
+      <div class="phronesis-cell">Định luật Newton, công thức hóa học, toán học thuần túy. Có thể học từ sách, có thể lưu trữ và truyền đạt dễ dàng.</div>
+    </div>
+    <div class="phronesis-row">
+      <div class="phronesis-cell"><span class="type-badge badge-t">Techne</span></div>
+      <div class="phronesis-cell"><strong>Kỹ thuật và nghệ thuật</strong> — tri thức thực hành, kỹ năng làm việc. Gắn với bối cảnh và lĩnh vực cụ thể.</div>
+      <div class="phronesis-cell">Kỹ năng lập trình, tay nghề thợ mộc, kỹ thuật phẫu thuật. Cần thực hành để thành thạo, có thể dạy nhưng không thể chỉ từ sách.</div>
+    </div>
+    <div class="phronesis-row">
+      <div class="phronesis-cell"><span class="type-badge badge-p">Phronesis</span></div>
+      <div class="phronesis-cell"><strong>Khôn ngoan thực tế</strong> — khả năng phán đoán điều gì là đúng, tốt và đẹp trong từng tình huống cụ thể để đưa ra hành động phù hợp. Trả lời "Tại sao và vì ai?"</div>
+      <div class="phronesis-cell">Quyết định lãnh đạo trong khủng hoảng, lựa chọn chiến lược, xử lý mâu thuẫn giá trị. Chỉ có thể học qua trải nghiệm sâu và phản tư.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Phronesis không phải là tri thức về những chân lý bất biến, cũng không phải là kỹ năng kỹ thuật thuần túy. Nó là sự khôn ngoan thực tiễn cho phép một người nhận thấy điều gì là đúng và tốt trong từng hoàn cảnh cụ thể — và sau đó hành động phù hợp."</p>
+    <cite>— Tóm tắt từ Aristotle, trong bối cảnh Nonaka</cite>
+  </div>
+
+  <!-- CONNECTION TO MANAGEMENT -->
+  <div class="divider"></div>
+  <h2 class="section-title">🔗 Tại Sao Điều Này Quan Trọng Với Quản Trị?</h2>
+
+  <div class="callout callout-indigo">
+    <div class="callout-title">🏢 Từ Lý Thuyết Đến Thực Tiễn Quản Trị</div>
+    <p>Nếu tri thức có 4 tính chất trên, thì <strong>không thể quản trị tri thức chỉ bằng hệ thống thông tin</strong>. Bạn cần tạo ra môi trường (Ba) để người ta tương tác, trải nghiệm, chia sẻ và cùng nhau "trở thành" — đó chính là nền tảng của mô hình SECI mà chương 2 sẽ giới thiệu.</p>
+  </div>
+
+  <div class="callout callout-emerald">
+    <div class="callout-title">💡 Ý Nghĩa Thực Tế Cho Nhà Quản Trị</div>
+    <p>Nhà quản trị giỏi không chỉ cần Episteme (lý thuyết quản trị) và Techne (kỹ năng điều hành). Họ cần <strong>Phronesis</strong> — khả năng nhận biết "điều tốt" cho công ty, khách hàng, nhân viên và xã hội trong từng tình huống cụ thể, và can đảm hành động theo đó.</p>
+  </div>
+
+  <div class="callout callout-violet">
+    <div class="callout-title">🌀 Tri Thức Ẩn vs. Tri Thức Hiện</div>
+    <p>Michael Polanyi phân biệt: <strong>Tri thức ẩn (tacit)</strong> là những gì chúng ta biết nhưng không nói ra được — kinh nghiệm, trực giác, kỹ năng thể chất. <strong>Tri thức hiện (explicit)</strong> là những gì có thể diễn đạt bằng ngôn ngữ, tài liệu, quy trình. Mô hình SECI xoay quanh việc chuyển hóa giữa hai loại này.</p>
+  </div>
+
+  <!-- LESSON BOX -->
+  <div class="lesson-box">
+    <div class="lesson-title">🌱 Bài Học Rút Ra Từ Chương 1</div>
+    <ul class="lesson-list">
+      <li>Tri thức không phải thông tin — đừng đánh đồng "có hệ thống IT" với "quản trị tri thức"</li>
+      <li>Tri thức luôn gắn với người nắm giữ — muốn chuyển giao tri thức phải xây dựng mối quan hệ</li>
+      <li>Cảm xúc và thẩm mỹ không phải "nhiễu" — chúng là thành phần thiết yếu của tri thức tốt</li>
+      <li>Nhà lãnh đạo xuất sắc cần Phronesis — không chỉ biết "làm gì" mà còn biết "tại sao và vì ai"</li>
+      <li>Không có tri thức nào "hoàn chỉnh" — con người luôn trong trạng thái "becoming", tri thức luôn vận động</li>
+    </ul>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="gioi-thieu.html" class="btn-nav secondary">← Giới Thiệu</a>
+    <a href="index.html" class="btn-nav secondary">🏠 Mục Lục</a>
+    <a href="chuong-02.html" class="btn-nav">Chương 2: Mô Hình SECI →</a>
+  </div>
+
+</div>
+</body>
+</html>

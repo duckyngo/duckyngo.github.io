@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảo Mật Container Đại Sư - Chuyên Gia Trivy, Falco & OPA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a1a 30%, #1a0a1a 60%, #2a0a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #e879f9; text-shadow: 0 0 20px #e879f940; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #e879f9; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #e879f9; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #e879f9; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e879f930; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #e879f9; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #e879f9; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🛡️</span><h1>Bảo Mật Container Đại Sư</h1><div class="title">Chuyên Gia Trivy, Falco & OPA</div><div class="quote">"Container security giống như nhà kính: trông đẹp từ ngoài, nhưng nếu không lock doors, ai cũng vào được. Và đừng chạy container as root — seriously."</div></div>
+        <div class="badges">            <span class="badge">🛡️ Image Scanning</span>
+            <span class="badge">🔍 Trivy Expert</span>
+            <span class="badge">🦅 Falco Runtime</span>
+            <span class="badge">📋 OPA/Gatekeeper</span>
+            <span class="badge">🔐 Admission Control</span>
+            <span class="badge">📦 Supply Chain</span>
+            <span class="badge">🔒 Pod Security</span>
+            <span class="badge">🏗️ SBOM</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư từng nghĩ containers an toàn vì "chúng bị isolated." Rồi chàng ta đọc CVE-2019-5736 (runc container escape) và thức tỉnh. Container isolation mỏng manh hơn VM isolation — shared kernel, shared resources. Container escape = host access.</p><p>Chàng ta bắt đầu hành trình bảo mật: scan images (Trivy), runtime monitoring (Falco), admission control (OPA/Gatekeeper), supply chain security (Cosign, SBOM). "Shift left" nhưng cũng "shield right" — security ở mọi layer.</p><p>Giờ đây chàng ta dành 90% thời gian nói "don't run as root" và 10% chứng minh tại sao bằng live demo exploit container chạy as root.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Image Scanning — Shift Left:</strong> Trivy: scan images, filesystems, git repos cho CVEs. Grype: another option từ Anchore. Scan trong CI/CD pipeline — block deploy nếu critical/high CVEs. Base image update regularly. Pin specific versions, not latest. Multi-stage builds minimize attack surface. Distroless images: no shell, no package manager = minimal attack surface.</div>
+            <div class="tip"><strong>2. Runtime Security — Falco:</strong> eBPF-based syscall monitoring. Detect: unexpected processes, file access, network connections. Rules: MITRE ATT&CK mapping. Alert on: shell in container, write to /etc, outbound connection to suspicious IP. Integration: Slack, PagerDuty, SIEM. Deploy as DaemonSet trên every node.</div>
+            <div class="tip"><strong>3. Admission Control — OPA/Gatekeeper:</strong> Policy-as-code cho Kubernetes. Enforce: no privileged containers, required labels, image registry whitelist, resource limits mandatory. Rego language cho policy logic. Constraint templates reusable. Audit mode trước enforce mode. Block non-compliant resources at admission.</div>
+            <div class="tip"><strong>4. Pod Security Standards:</strong> Privileged: no restrictions (legacy). Baseline: prevents known privilege escalations. Restricted: heavily restricted, best practice. Apply per namespace: kubectl label ns my-ns pod-security.kubernetes.io/enforce=restricted. Replace deprecated PodSecurityPolicy (PSP).</div>
+            <div class="tip"><strong>5. Supply Chain Security:</strong> Sign images: Cosign (Sigstore). Verify signatures before deploy. SBOM (Software Bill of Materials): know what's in your images. SLSA framework cho build provenance. Admission webhook verify signatures. Trusted registries only — block pulling from Docker Hub directly.</div>
+            <div class="tip"><strong>6. Secrets Management:</strong> Kubernetes Secrets base64 encoded, NOT encrypted at rest by default. Enable etcd encryption. External Secrets Operator cho HashiCorp Vault, AWS Secrets Manager integration. Sealed Secrets cho git-safe encrypted secrets. ĐỪNG mount secrets as environment variables — use volume mounts (env vars logged by many frameworks).</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔍 Chuyện CVE Trong Base Image</h3><p>Production containers running ubuntu:20.04 base image from 6 months ago. Trivy scan reveals: 47 HIGH CVEs, 12 CRITICAL CVEs, including remote code execution vulnerability. Team: 'But our application code is secure!' Đại Sư: 'Your application runs ON the base image. Base image CVE = your CVE.'</p><p>Fix: update base image monthly (minimum). Automate base image rebuild khi new CVE published. Use minimal base images (alpine, distroless). CI/CD gate: block deployment if CRITICAL CVE detected.</p><div class="lesson">💡 Bài học: Application security ≠ container security. Base images accumulate CVEs over time. Automated scanning trong CI/CD pipeline. Rebuild images regularly. Minimal base images = fewer CVEs. Monitor CVE databases cho your base images.</div></div>
+            <div class="story"><h3>🔓 Chuyện Container Chạy Root</h3><p>Developer deploy container as root (default). Container compromise qua application vulnerability. Attacker inside container: root access. Mount host filesystem, access other containers' data, install tools. Container escape possible via kernel exploit.</p><p>Same scenario with non-root container: attacker gets limited user access. Cannot mount host filesystem. Cannot install packages (read-only filesystem). Cannot exploit many kernel vulnerabilities (no capabilities). Blast radius significantly reduced.</p><div class="lesson">💡 Bài học: NEVER run containers as root in production. Dockerfile: USER 1000. Pod security context: runAsNonRoot: true, readOnlyRootFilesystem: true. Drop all capabilities, add only needed ones. SecurityContext is your friend — use it everywhere.</div></div>
+            <div class="story"><h3>📋 Chuyện OPA Gatekeeper Cứu Production</h3><p>Developer accidentally deploy pod with hostNetwork: true và privileged: true trong production. Pod có thể access tất cả host network interfaces, all host processes. Essentially root on host. If compromised: game over cho entire node.</p><p>After incident: deploy OPA Gatekeeper. Policies: block privileged containers, block hostNetwork/hostPID/hostIPC, require resource limits, require non-root, require approved registries. Violations blocked at admission — before pods created. Policy violations reported to security team.</p><div class="lesson">💡 Bài học: Admission control prevent misconfigurations TRƯỚC khi chúng reach cluster. OPA/Gatekeeper, Kyverno cho policy enforcement. Start with audit mode, review violations, then enforce. Policy-as-code trong git = reviewable, testable, versionable.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. No image scanning:</strong> Deploy images with known CVEs. Scan in CI/CD, block critical vulnerabilities. Trivy/Grype are free and fast.</div>
+            <div class="mistake"><strong>2. Run as root:</strong> Default Docker behavior. Always set USER in Dockerfile, runAsNonRoot in pod spec. No exceptions for production.</div>
+            <div class="mistake"><strong>3. No network policies:</strong> All pods can communicate with all other pods. NetworkPolicies for micro-segmentation. Default deny, whitelist needed connections.</div>
+            <div class="mistake"><strong>4. Secrets in environment variables:</strong> Many frameworks log env vars. Mount secrets as files instead. External secrets operators cho rotation.</div>
+            <div class="mistake"><strong>5. No runtime monitoring:</strong> Image scan catches known CVEs. Runtime monitoring (Falco) catches zero-days and unexpected behavior. Both needed.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #104</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

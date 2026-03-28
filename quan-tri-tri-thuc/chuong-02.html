@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 2: Mô Hình SECI — Quản Trị Dựa Vào Tri Thức</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #312E81; --indigo-light: #4338CA; --indigo-pale: #EEF2FF;
+    --emerald: #059669; --emerald-light: #10B981; --emerald-pale: #ECFDF5;
+    --cyan: #0891B2; --cyan-light: #06B6D4; --cyan-pale: #ECFEFF;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FFFBEB;
+    --violet: #7C3AED; --violet-pale: #F5F3FF;
+    --gray: #6B7280; --gray-light: #F9FAFB; --gray-border: #E5E7EB;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10); --shadow-hover: 0 8px 32px rgba(0,0,0,0.16);
+    --radius: 12px; --radius-lg: 20px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #F8FAFF; color: #1F2937; line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+
+  nav { background: var(--indigo); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .nav-home { font-size: 0.85rem; opacity: 0.8; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
+  .nav-home:hover { opacity: 1; }
+  .nav-arrows { display: flex; gap: 10px; }
+  .nav-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 7px 16px; font-size: 0.85rem; color: white; transition: background 0.2s; white-space: nowrap; }
+  .nav-btn:hover { background: rgba(255,255,255,0.28); }
+
+  .hero { background: linear-gradient(135deg, #064E3B 0%, #059669 50%, #0891B2 100%); color: white; padding: 70px 24px 50px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 30%, rgba(52,211,153,0.3) 0%, transparent 60%); }
+  .hero-inner { position: relative; max-width: 800px; margin: 0 auto; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; padding: 6px 20px; font-size: 0.82rem; margin-bottom: 20px; }
+  .hero-num { font-size: 5rem; font-weight: 900; opacity: 0.12; position: absolute; top: -10px; right: 40px; line-height: 1; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
+  .hero-desc { font-size: 1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+  .section-title { font-size: 1.4rem; font-weight: 800; color: var(--indigo); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--emerald), var(--cyan)); border-radius: 99px; margin-bottom: 20px; width: 50px; }
+  .prose { color: #374151; font-size: 0.97rem; line-height: 1.8; margin-bottom: 16px; }
+
+  /* SECI VISUAL */
+  .seci-diagram { background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow); margin: 32px 0; }
+  .seci-diagram-title { text-align: center; font-size: 1.2rem; font-weight: 800; color: var(--indigo); margin-bottom: 28px; }
+  .seci-labels { display: flex; justify-content: space-between; max-width: 600px; margin: 0 auto 8px; font-size: 0.78rem; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+  .seci-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3px; max-width: 600px; margin: 0 auto;
+    background: var(--gray-border); border-radius: 14px; overflow: hidden; border: 3px solid var(--gray-border);
+  }
+  .seci-cell { padding: 24px 20px; position: relative; transition: transform 0.2s; cursor: default; }
+  .seci-cell:hover { transform: scale(1.02); z-index: 1; }
+  .seci-s { background: linear-gradient(135deg, #EEF2FF 0%, #DDD6FE 100%); }
+  .seci-e { background: linear-gradient(135deg, #ECFDF5 0%, #A7F3D0 100%); }
+  .seci-i { background: linear-gradient(135deg, #FFFBEB 0%, #FDE68A 100%); }
+  .seci-c { background: linear-gradient(135deg, #ECFEFF 0%, #A5F3FC 100%); }
+  .seci-big { font-size: 2.8rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+  .seci-s .seci-big { color: var(--indigo); }
+  .seci-e .seci-big { color: var(--emerald); }
+  .seci-i .seci-big { color: var(--amber); }
+  .seci-c .seci-big { color: var(--cyan); }
+  .seci-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; }
+  .seci-flow-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-bottom: 8px; }
+  .seci-s .seci-flow-tag { background: rgba(99,102,241,0.15); color: var(--indigo-light); }
+  .seci-e .seci-flow-tag { background: rgba(5,150,105,0.15); color: var(--emerald); }
+  .seci-i .seci-flow-tag { background: rgba(217,119,6,0.15); color: var(--amber); }
+  .seci-c .seci-flow-tag { background: rgba(8,145,178,0.15); color: var(--cyan); }
+  .seci-example { font-size: 0.8rem; color: #4B5563; line-height: 1.5; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .seci-row-label { writing-mode: vertical-rl; text-orientation: mixed; font-size: 0.72rem; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.06em; position: absolute; right: -30px; top: 50%; transform: translateY(-50%) rotate(180deg); display: none; }
+  .seci-cycle-arrow { text-align: center; margin-top: 12px; font-size: 0.85rem; color: var(--gray); }
+  .seci-cycle-arrow span { display: inline-flex; align-items: center; gap: 8px; background: var(--indigo-pale); border-radius: 999px; padding: 6px 18px; color: var(--indigo); font-weight: 600; font-size: 0.82rem; }
+
+  /* 7 COMPONENTS */
+  .components-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin: 24px 0; }
+  .comp-card { background: white; border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); border-left: 4px solid; }
+  .comp-card:nth-child(1) { border-color: var(--indigo); }
+  .comp-card:nth-child(2) { border-color: var(--emerald); }
+  .comp-card:nth-child(3) { border-color: var(--cyan); }
+  .comp-card:nth-child(4) { border-color: var(--amber); }
+  .comp-card:nth-child(5) { border-color: var(--violet); }
+  .comp-card:nth-child(6) { border-color: #DB2777; }
+  .comp-card:nth-child(7) { border-color: #D97706; }
+  .comp-num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); margin-bottom: 4px; }
+  .comp-title { font-weight: 700; font-size: 0.95rem; color: var(--indigo); margin-bottom: 6px; }
+  .comp-desc { font-size: 0.83rem; color: #4B5563; line-height: 1.5; }
+
+  .quote-box { background: linear-gradient(135deg, #F0FFF4, #ECFDF5); border: 1px solid #6EE7B7; border-radius: var(--radius-lg); padding: 28px 32px; margin: 28px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 5rem; color: var(--emerald-light); position: absolute; top: -12px; left: 18px; line-height: 1; opacity: 0.3; font-family: Georgia, serif; }
+  .quote-box p { font-size: 1.05rem; font-style: italic; color: #064E3B; font-weight: 500; line-height: 1.7; padding-left: 10px; }
+  .quote-box cite { display: block; margin-top: 8px; font-size: 0.85rem; color: var(--emerald); font-style: normal; font-weight: 600; padding-left: 10px; }
+
+  .callout { border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; border-left: 4px solid; }
+  .callout-indigo { background: var(--indigo-pale); border-color: var(--indigo); }
+  .callout-amber { background: var(--amber-pale); border-color: var(--amber); }
+  .callout-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .callout-indigo .callout-title { color: var(--indigo); }
+  .callout-amber .callout-title { color: #92400E; }
+  .callout p { font-size: 0.93rem; }
+
+  .kata-box { background: linear-gradient(135deg, #312E81, #4338CA); color: white; border-radius: var(--radius-lg); padding: 28px 32px; margin: 28px 0; }
+  .kata-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .kata-desc { font-size: 0.95rem; opacity: 0.9; line-height: 1.7; }
+
+  .lesson-box { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border: 1px solid #6EE7B7; border-radius: var(--radius-lg); padding: 28px 32px; margin-top: 40px; }
+  .lesson-title { font-size: 1.1rem; font-weight: 800; color: var(--emerald); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 6px 0 6px 28px; position: relative; font-size: 0.93rem; color: #064E3B; }
+  .lesson-list li::before { content: '✓'; position: absolute; left: 0; color: var(--emerald); font-weight: 800; }
+
+  .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--gray-border); flex-wrap: wrap; gap: 12px; }
+  .btn-nav { display: inline-flex; align-items: center; gap: 8px; background: var(--indigo); color: white; border-radius: var(--radius); padding: 12px 22px; font-weight: 600; font-size: 0.9rem; transition: background 0.2s, transform 0.2s; }
+  .btn-nav:hover { background: var(--indigo-light); transform: translateY(-2px); }
+  .btn-nav.secondary { background: white; color: var(--indigo); border: 2px solid var(--indigo); }
+  .btn-nav.secondary:hover { background: var(--indigo-pale); }
+
+  @media (max-width: 640px) { .container { padding: 28px 16px; } .seci-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-home">🏠 Trang Chủ</a>
+  <div class="nav-arrows">
+    <a href="chuong-01.html" class="nav-btn">← Chương 1</a>
+    <a href="chuong-03.html" class="nav-btn">Chương 3 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-num">2</div>
+    <div class="hero-badge">🔄 Chương 2</div>
+    <h1>Khuôn Khổ Lý Thuyết — Mô Hình SECI</h1>
+    <p class="hero-desc">Vòng xoáy sáng tạo tri thức liên tục: từ Xã hội hóa → Ngoại hóa → Kết hợp → Tiếp thu — và 7 thành phần của công ty tri thức</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <p class="prose">Mô hình SECI là đóng góp học thuật nổi tiếng nhất của Nonaka — một khuôn khổ mô tả cách tri thức được tạo ra, chia sẻ và mở rộng trong tổ chức. Điểm đặc biệt là SECI không phải một chu trình tuyến tính mà là một <strong>vòng xoáy</strong> (spiral) — mỗi vòng lặp tạo ra tri thức ở cấp độ cao hơn.</p>
+
+  <!-- SECI VISUAL DIAGRAM -->
+  <div class="seci-diagram">
+    <div class="seci-diagram-title">🔄 Vòng Xoáy SECI — Sơ Đồ Tương Tác</div>
+    <div class="seci-labels">
+      <span>← TRI THỨC ẨN (Tacit)</span>
+      <span>TRI THỨC HIỆN (Explicit) →</span>
+    </div>
+    <div style="display:flex; justify-content:center; margin-bottom:6px; font-size:0.78rem; color:var(--gray); font-weight:700;">▲ TRI THỨC ẨN</div>
+    <div class="seci-grid">
+      <div class="seci-cell seci-s">
+        <div class="seci-big">S</div>
+        <div class="seci-name">🤝 Xã Hội Hóa</div>
+        <div class="seci-flow-tag">Ẩn → Ẩn</div>
+        <div class="seci-example"><strong>Honda:</strong> Cử nhóm thiết kế sang Châu Âu 3 tháng để "sống cùng" người dùng — không mang laptop, chỉ quan sát và cảm nhận. Tri thức ẩn về lifestyle châu Âu truyền trực tiếp qua trải nghiệm.</div>
+      </div>
+      <div class="seci-cell seci-e">
+        <div class="seci-big">E</div>
+        <div class="seci-name">🗣️ Ngoại Hóa</div>
+        <div class="seci-flow-tag">Ẩn → Hiện</div>
+        <div class="seci-example"><strong>Honda Accord:</strong> Dùng ẩn dụ "chim ưng lao xuống" để diễn đạt cảm giác thiết kế muốn đạt được. Từ cảm giác ẩn → thành ngôn ngữ, hình ảnh, khái niệm có thể chia sẻ.</div>
+      </div>
+      <div class="seci-cell seci-i">
+        <div class="seci-big">I</div>
+        <div class="seci-name">🧘 Tiếp Thu / Nội Hóa</div>
+        <div class="seci-flow-tag">Hiện → Ẩn</div>
+        <div class="seci-example"><strong>Toyota:</strong> Tài liệu, quy trình rõ ràng (tri thức hiện) được thực hành hàng ngày đến mức trở thành phản xạ tự nhiên (tri thức ẩn mới). "Nếu tri thức ẩn không phát triển thì tri thức hiện cũng không phát triển."</div>
+      </div>
+      <div class="seci-cell seci-c">
+        <div class="seci-big">C</div>
+        <div class="seci-name">⚙️ Kết Hợp</div>
+        <div class="seci-flow-tag">Hiện → Hiện</div>
+        <div class="seci-example"><strong>Linux:</strong> Hàng nghìn lập trình viên chia sẻ code (tri thức hiện) và kết hợp thành hệ điều hành hoàn chỉnh. Tổng hợp tri thức hiện từ nhiều nguồn thành tri thức hiện mới ở cấp cao hơn.</div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:8px; font-size:0.78rem; color:var(--gray); font-weight:700;">▼ TRI THỨC HIỆN</div>
+    <div class="seci-cycle-arrow">
+      <span>🔄 S → E → C → I → S → E → C → I → ... (Vòng xoáy mở rộng không ngừng)</span>
+    </div>
+  </div>
+
+  <!-- 7 COMPONENTS -->
+  <div class="divider"></div>
+  <h2 class="section-title">🧩 7 Thành Phần Của Công Ty Tri Thức</h2>
+  <p class="prose">Nonaka không chỉ mô tả SECI — ông còn xác định 7 thành phần cốt lõi tạo nên một công ty dựa vào tri thức thực sự. Tất cả 7 thành phần phải hoạt động cùng nhau như một hệ sinh thái.</p>
+
+  <div class="components-grid">
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 1</div>
+      <div class="comp-title">🔄 Quá Trình SECI</div>
+      <div class="comp-desc">Vòng xoáy chuyển hóa tri thức ẩn ↔ tri thức hiện, liên tục mở rộng ở cấp độ cá nhân → nhóm → tổ chức → liên tổ chức.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 2</div>
+      <div class="comp-title">🔭 Tầm Nhìn Tri Thức</div>
+      <div class="comp-desc">Tầm nhìn định hướng loại tri thức nào cần tạo ra và theo đuổi. Phải vượt lên trên mục tiêu tài chính thuần túy.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 3</div>
+      <div class="comp-title">🎯 Mục Tiêu Định Hướng</div>
+      <div class="comp-desc">Các mục tiêu cụ thể hướng dẫn quá trình tạo tri thức — cầu nối giữa tầm nhìn xa và hành động hàng ngày.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 4</div>
+      <div class="comp-title">💬 Đối Thoại Biện Chứng</div>
+      <div class="comp-desc">Đối thoại không phải để thỏa hiệp mà để tổng hợp — từ luận điểm (thesis) và phản luận (antithesis) tạo ra tổng hợp (synthesis) cao hơn.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 5</div>
+      <div class="comp-title">🏠 Ba (場)</div>
+      <div class="comp-desc">Bối cảnh chia sẻ nơi tri thức nảy sinh — vật lý, ảo và tinh thần. Không chỉ là không gian vật lý mà là trạng thái tương tác.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 6</div>
+      <div class="comp-title">💎 Tài Sản Tri Thức</div>
+      <div class="comp-desc">Kinh nghiệm, thói quen, quy trình, giá trị tích lũy — đây là "vốn" thực sự của công ty tri thức, khó sao chép nhất.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-num">Thành phần 7</div>
+      <div class="comp-title">🌿 Hệ Sinh Thái Tri Thức</div>
+      <div class="comp-desc">Môi trường bên ngoài — đối tác, khách hàng, cộng đồng — mà công ty tương tác để co-create tri thức vượt ra ngoài ranh giới tổ chức.</div>
+    </div>
+  </div>
+
+  <!-- KATA -->
+  <div class="divider"></div>
+  <h2 class="section-title">🥋 Kata — Quy Trình Tự Làm Mới</h2>
+
+  <div class="kata-box">
+    <div class="kata-title">⚡ Kata Là Gì?</div>
+    <div class="kata-desc">Kata (型) là khái niệm từ võ thuật Nhật Bản — những mẫu chuyển động được luyện tập đến mức trở thành phản xạ. Trong quản trị tri thức, kata là quy trình sáng tạo tự làm mới liên tục. Quá trình SECI chính là một kata — không phải quy trình máy móc mà là mẫu phá vỡ khuôn khổ cũ để tạo ra cái mới. Những nhà lãnh đạo giỏi giúp tổ chức tổng hợp mâu thuẫn thông qua kata này.</div>
+  </div>
+
+  <!-- BA QUOTE -->
+  <div class="quote-box">
+    <p>"Ba không chỉ là địa điểm vật chất. Nó là một trạng thái tương tác — một bối cảnh chia sẻ đang vận động — nơi tri thức được tạo ra, chia sẻ và khai thác. Ba có thể là một cuộc họp, một dự án, hay thậm chí là một quán cà phê nơi những ý tưởng bất ngờ nảy sinh."</p>
+    <cite>— Nonaka & Konno, về khái niệm Ba</cite>
+  </div>
+
+  <!-- CALLOUTS -->
+  <div class="callout callout-indigo">
+    <div class="callout-title">🔗 SECI Trong Thực Tiễn: Honda Accord</div>
+    <p>Xã hội hóa (S): nhóm kỹ sư sống 3 tháng ở châu Âu → Ngoại hóa (E): ẩn dụ "chim ưng lao xuống" để định hình thiết kế → Kết hợp (C): các bản vẽ và thông số được hợp nhất → Tiếp thu (I): nhà máy sản xuất hấp thụ quy trình mới vào cách làm việc hàng ngày. Đây là vòng SECI hoàn chỉnh dẫn đến sản phẩm đột phá.</p>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-title">⚠️ Cái Bẫy Thường Gặp</div>
+    <p>Nhiều công ty tập trung vào "Kết hợp" (C: hiện → hiện) và bỏ qua "Xã hội hóa" (S: ẩn → ẩn). Kết quả là hệ thống tài liệu, quy trình rất đẹp nhưng không ai thực sự làm theo vì thiếu nền tảng tri thức ẩn chia sẻ. Đây là lý do vì sao "copy" mô hình Toyota thường thất bại.</p>
+  </div>
+
+  <!-- LESSON BOX -->
+  <div class="lesson-box">
+    <div class="lesson-title">🌱 Bài Học Rút Ra Từ Chương 2</div>
+    <ul class="lesson-list">
+      <li>SECI là vòng xoáy, không phải quy trình tuyến tính — mỗi vòng tạo ra tri thức ở cấp cao hơn</li>
+      <li>Không thể bỏ qua giai đoạn Xã hội hóa (S) — đây là nền tảng của mọi sáng tạo tri thức</li>
+      <li>Ẩn dụ và hình ảnh (như "chim ưng") là công cụ ngoại hóa mạnh mẽ nhất — quan trọng hơn PowerPoint</li>
+      <li>Ba không phải phòng họp đẹp — Ba là trạng thái tương tác tin tưởng và cởi mở</li>
+      <li>7 thành phần phải hoạt động đồng bộ — thiếu bất kỳ thành phần nào, hệ thống sẽ khập khiễng</li>
+    </ul>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="chuong-01.html" class="btn-nav secondary">← Chương 1</a>
+    <a href="index.html" class="btn-nav secondary">🏠 Mục Lục</a>
+    <a href="chuong-03.html" class="btn-nav">Chương 3: Lãnh Đạo Phronesis →</a>
+  </div>
+
+</div>
+</body>
+</html>

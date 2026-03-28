@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khung Xương Đại Hiệp - Frontend Frameworks</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero {
+            text-align: center; padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.15));
+            border-radius: 24px; border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px); margin-bottom: 40px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 {
+            font-size: 2.5em; font-weight: 800;
+            background: linear-gradient(135deg, #4ade80, #2dd4bf, #22d3ee);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            position: relative; z-index: 1;
+        }
+        .hero .subtitle { font-size: 1.2em; color: #86efac; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag {
+            background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,185,129,0.2));
+            border: 1px solid rgba(34,197,94,0.3); padding: 8px 18px; border-radius: 50px;
+            font-size: 0.9em; color: #86efac; backdrop-filter: blur(10px);
+            transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards;
+        }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; }
+        .skill-tag:nth-child(2) { animation-delay: 0.15s; }
+        .skill-tag:nth-child(3) { animation-delay: 0.2s; }
+        .skill-tag:nth-child(4) { animation-delay: 0.25s; }
+        .skill-tag:nth-child(5) { animation-delay: 0.3s; }
+        .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(34,197,94,0.4), rgba(16,185,129,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
+        .card {
+            background: rgba(255,255,255,0.03); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.06);
+            padding: 36px; margin-bottom: 30px; transition: all 0.3s ease;
+        }
+        .card:hover { border-color: rgba(34,197,94,0.2); box-shadow: 0 8px 40px rgba(34,197,94,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #86efac; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(34,197,94,0.06); border-left: 3px solid #4ade80; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #86efac; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(34,197,94,0.06), rgba(16,185,129,0.06)); border: 1px solid rgba(34,197,94,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #4ade80; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #86efac; font-weight: 600; }
+        code { background: rgba(34,197,94,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #86efac; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">⚔️</span>
+            <h1>Khung Xương Đại Hiệp</h1>
+            <p class="subtitle">Nguyễn Khung Cứng — Bậc Thầy Frontend Frameworks</p>
+            <p class="quote">"Chọn framework như chọn vợ — quan trọng nhất là hợp, không phải đẹp nhất."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">Angular</span>
+            <span class="skill-tag">Vue.js</span>
+            <span class="skill-tag">Svelte</span>
+            <span class="skill-tag">Solid.js</span>
+            <span class="skill-tag">Virtual DOM</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Nguyễn Khung Cứng bắt đầu sự nghiệp vào thời jQuery thống trị thiên hạ. Khi Angular.js (phiên bản 1) ra đời, ông là một trong những người đầu tiên nhảy vào, hào hứng với two-way data binding như trẻ con có đồ chơi mới. Rồi Angular 2 ra đời — và breaking changes đã khiến ông mất 3 tháng migrate, tóc rụng thêm 30%.</p>
+            <p>Trải qua "Cuộc Chiến Framework Vĩ Đại" khi React, Vue, và Angular tranh giành thiên hạ, ông ngộ ra rằng framework nào cũng có thời — quan trọng là hiểu nguyên lý cốt lõi: component model, reactivity, và state management. Ông tự phong mình là "Đại Hiệp Không Phe" — sẵn sàng dùng bất cứ framework nào phù hợp với dự án.</p>
+            <p>Câu nói nổi tiếng của ông trên Stack Overflow: "Framework tốt nhất là framework mà team bạn biết dùng. Framework tệ nhất là framework bạn chọn vì Medium article nói nó 'revolutionary'."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: React — Triết lý "UI = f(state)"</h3>
+                <p>React không phải framework, nó là library. Triết lý cốt lõi: UI là hàm của state. Khi state thay đổi, React tính toán virtual DOM diff và chỉ update phần DOM thực sự thay đổi. React Hooks (useState, useEffect, useMemo, useCallback) là paradigm shift — từ class-based sang functional. Nhưng cẩn thận: <code>useEffect</code> không phải lifecycle method — nó là "synchronization mechanism". Nắm vững dependency array, cleanup function, và strict mode double-render behavior. React Server Components (RSC) là tương lai — component chạy trên server, zero JS gửi về client.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Vue — Sự cân bằng hoàn hảo</h3>
+                <p>Vue 3 với Composition API + <code>&lt;script setup&gt;</code> là developer experience tốt nhất hiện tại. Reactivity system dựa trên <code>Proxy</code> — tự động track dependencies, không cần dependency array như React. <code>ref()</code> cho primitives, <code>reactive()</code> cho objects, <code>computed()</code> cho derived state. Single File Components (.vue) gói gọn template + logic + style — có người ghét, có người yêu, nhưng ai dùng rồi đều quen. Vue DevTools là công cụ debug tốt nhất trong các framework.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Angular — Opinionated Enterprise Beast</h3>
+                <p>Angular là framework "batteries included" — routing, forms, HTTP client, i18n, testing, tất cả built-in. TypeScript là bắt buộc (không phải optional). Dependency Injection, RxJS cho reactive programming, NgModules cho code organization. Angular Signals (v16+) đang dần thay thế Zone.js — hiệu năng tốt hơn, fine-grained reactivity. Dùng Angular khi team lớn, project phức tạp, cần consistency. Đừng dùng khi team 2 người làm landing page.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Svelte — Compiler, không phải Runtime</h3>
+                <p>Svelte là compiler, không ship runtime framework lên browser. Code <code>let count = 0</code> tự động reactive — không cần <code>useState</code> hay <code>ref()</code>. Bundle size nhỏ hơn đáng kể. <code>$:</code> cho reactive declarations — compiler tự tính dependency graph. Nhưng ecosystem nhỏ hơn React/Vue, ít thư viện third-party hơn. Svelte 5 với Runes (<code>$state</code>, <code>$derived</code>, <code>$effect</code>) đang thay đổi cách tiếp cận — từ compiler magic sang explicit primitives.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Solid.js — React Concepts, No Virtual DOM</h3>
+                <p>Solid.js dùng JSX giống React nhưng KHÔNG có virtual DOM. Components chỉ chạy MỘT LẦN — không re-render. Reactivity system fine-grained dựa trên signals (<code>createSignal</code>, <code>createEffect</code>, <code>createMemo</code>). Performance benchmark gần native DOM manipulation. Nếu bạn thích React API nhưng muốn performance tốt hơn, Solid là lựa chọn. Cẩn thận: destructuring props sẽ mất reactivity — đây là "gotcha" số 1 cho người từ React sang.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Virtual DOM vs No Virtual DOM — Cuộc tranh luận vĩnh cửu</h3>
+                <p>Virtual DOM (React, Vue) tạo bản sao của DOM trong memory, diff khi state thay đổi, rồi batch update DOM thật. Overhead? Có. Nhưng nó đơn giản hóa mental model — developer chỉ cần nghĩ "render lại toàn bộ". No virtual DOM (Svelte, Solid) update trực tiếp DOM — nhanh hơn nhưng compiler/reactivity system phải thông minh hơn. Thực tế: với app thông thường, sự khác biệt performance là không đáng kể. Chọn based on DX, ecosystem, và team experience.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Cuộc Chiến Framework — Battle Royale tại Meeting Room</h3>
+                <p>Năm 2020, công ty quyết định build sản phẩm mới. Meeting room biến thành chiến trường. Phe React: "React có ecosystem lớn nhất, tuyển dụng dễ nhất!" Phe Vue: "Vue dễ học, developer happy, productivity cao!" Phe Angular: "Enterprise-grade, TypeScript built-in, Google đứng sau!"</p>
+                <p>CTO — người không biết JavaScript — nhìn benchmark performance trên một blog và tuyên bố: "Chúng ta dùng Svelte." Cả team im lặng. Không ai biết Svelte. CTO đã đọc một bài "Svelte is the future" trên Medium và bị convince hoàn toàn.</p>
+                <p>6 tháng sau, team gồm 8 React developers đang viết Svelte, Google mỗi dòng code, Stack Overflow hầu như không có câu trả lời cho edge cases. Cuối cùng, product launch trễ 4 tháng. Không phải vì Svelte tệ — mà vì team không có experience. Sản phẩm cuối cùng chạy tốt, nhưng cái giá là tóc và deadline.</p>
+                <div class="lesson">💡 Bài học: Framework tốt nhất là framework team bạn BIẾT DÙNG. Thử nghiệm công nghệ mới ở side project, không phải ở sản phẩm có deadline. Nếu muốn adopt framework mới, cho team 2-3 tháng học trước, build internal tool nhỏ trước khi all-in.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: Angular to React Migration — Cuộc Di Cư Đau Thương</h3>
+                <p>Team quyết định migrate từ Angular sang React vì "Angular quá verbose" và "React ecosystem phong phú hơn". Kế hoạch ban đầu: 3 tháng. Thực tế: 14 tháng.</p>
+                <p>Tuần 1: "Dễ lắm, chỉ cần convert component thôi." Tuần 4: "Ủa, Angular DI system không có equivalent trong React?" Tháng 2: "RxJS observable patterns... làm sao convert sang hooks?" Tháng 4: "Angular Forms module làm được nhiều thứ mà React form library nào cũng thiếu." Tháng 8: "Chúng ta đang maintain HAI codebase song song."</p>
+                <p>Kết quả cuối cùng: app chạy được, nhưng 40% code là "wrapper" để mimic Angular patterns trong React. Team mới join nhìn vào code: "Cái này là React hay Angular viết trong React?"</p>
+                <div class="lesson">💡 Bài học: Migration framework là quyết định BUSINESS, không phải quyết định KỸ THUẬT. Tính toán chi phí thực tế: thời gian migrate, feature freeze, regression bugs, team learning curve. Thường thì "strangler fig pattern" (dần dần thay thế) tốt hơn "big bang rewrite". Và đôi khi, đáp án đúng là KHÔNG migrate.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: useEffect Infinite Loop — Vòng Lặp Vô Tận</h3>
+                <p>Junior dev viết <code>useEffect</code> fetch data, set state, nhưng quên dependency array. Component mount → fetch → setState → re-render → useEffect chạy lại → fetch → setState → re-render... API server nhận 10,000 requests trong 30 giây. CloudWatch alarm kêu inh ỏi. AWS bill tháng đó tăng gấp 3.</p>
+                <p>Nghĩ mà xem: một dòng code thiếu <code>[]</code> mà gây ra cả một sự cố production. Senior ngồi review code, thở dài: "Cái dependency array mà cả team React core còn thừa nhận là khó hiểu, thì junior miss là bình thường."</p>
+                <div class="lesson">💡 Bài học: <code>useEffect</code> là API bị hiểu sai nhiều nhất của React. Nó KHÔNG phải lifecycle method. Nó là tool để SYNC component với external system. Rule: nếu effect không interact với browser API, server, hoặc subscription — bạn có thể không cần <code>useEffect</code>. Dùng ESLint plugin <code>react-hooks/exhaustive-deps</code> — nó sẽ cứu bạn.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Chọn framework theo hype, không theo nhu cầu</h3>
+                <p>"Twitter nói framework X tốt nhất" — nhưng Twitter không biết team bạn gồm 2 junior, deadline 3 tháng, và product chỉ là CRUD app. Landing page? Astro/vanilla. CRUD app? Bất kỳ framework nào team biết. Real-time dashboard? Framework có strong reactivity. Đừng dùng búa tạ cho đinh ghim.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Không tách biệt business logic khỏi framework</h3>
+                <p>Khi toàn bộ business logic nằm trong <code>useEffect</code>, <code>useState</code>, hay Angular service — bạn bị lock-in. Viết business logic thuần (plain functions/classes), rồi "wrap" trong framework layer. Khi migrate framework, chỉ cần viết lại wrapper.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Over-component — chia nhỏ quá mức</h3>
+                <p>Một button không cần là component riêng nếu nó chỉ dùng 1 lần. "Component cho mọi thứ" dẫn đến prop drilling, file explosion, và developer mở 20 file để hiểu 1 feature. Rule of thumb: extract component khi nó được REUSE hoặc khi logic quá phức tạp.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Không hiểu rendering behavior</h3>
+                <p>React re-render khi state/props thay đổi — KỂ CẢ children. <code>React.memo()</code>, <code>useMemo()</code>, <code>useCallback()</code> là optimization tools, nhưng dùng sai còn tệ hơn không dùng (vì compare cost). Profile trước khi optimize — đừng premature optimization.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Dùng global state cho mọi thứ</h3>
+                <p>Form input value KHÔNG cần trong Redux store. Modal open/close state KHÔNG cần trong Vuex. Phân biệt: server state (React Query/SWR), global UI state (theme, auth), và local component state. 80% state nên là local.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Bỏ qua accessibility khi dùng custom components</h3>
+                <p>Framework UI libraries đẹp nhưng nhiều cái quên ARIA attributes. Custom dropdown không navigate được bằng keyboard. Modal không trap focus. Dùng headless UI libraries (Radix, Headless UI) — chúng handle accessibility, bạn handle styling.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Nguyễn Khung Cứng</span> — Khung Xương Đại Hiệp</p>
+            <p>⚔️ "Framework là công cụ, không phải tôn giáo. Đừng toxic về tool mà mình dùng."</p>
+        </div>
+    </div>
+</body>
+</html>

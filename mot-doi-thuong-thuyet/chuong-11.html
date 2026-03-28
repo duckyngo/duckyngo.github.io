@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 11: Giao Thiệp Với Người Nước Ngoài – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #0F766E 0%, #6B21A8 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: var(--purple-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .culture-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 20px 0; }
+  .culture-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); text-align: center; border-top: 3px solid transparent; }
+  .culture-card:nth-child(1) { border-top-color: var(--purple); }
+  .culture-card:nth-child(2) { border-top-color: var(--teal); }
+  .culture-card:nth-child(3) { border-top-color: var(--rose); }
+  .culture-card:nth-child(4) { border-top-color: var(--amber); }
+  .culture-card:nth-child(5) { border-top-color: #8B5CF6; }
+  .culture-card:nth-child(6) { border-top-color: #0891B2; }
+  .culture-flag { font-size: 2rem; margin-bottom: 8px; }
+  .culture-name { font-weight: 700; font-size: 0.9rem; color: var(--gray-800); margin-bottom: 4px; }
+  .culture-tip { font-size: 0.8rem; color: #6B7280; }
+  .story-box { background: linear-gradient(135deg, #FFF1F2, #FFE4E6); border: 1px solid #FECDD3; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .story-box h3 { color: var(--rose); font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .story-box p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid var(--teal); transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--purple); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--rose); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--amber); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .quote-box { background: linear-gradient(135deg, #F5F3FF, #F0FDFA); border-left: 5px solid var(--purple); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--purple-light); opacity: 0.15; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: var(--purple-dark); font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-rose { background: #FFF1F2; border: 1px solid #FECDD3; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-rose .callout-body strong { color: var(--rose); }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #022c22, #4C1D95); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #A78BFA; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">🌍 Chương 11</div>
+  <div class="hero-emoji">🌐</div>
+  <h1>Giao Thiệp và Đàm Phán Với Người Nước Ngoài</h1>
+  <div class="subtitle">Mỗi nền văn hóa là một ngôn ngữ riêng – hiểu sai là thất bại</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🌍 Văn Hóa Thương Thuyết – Mỗi Nơi Một Khác</div>
+
+  <div class="culture-grid">
+    <div class="culture-card">
+      <div class="culture-flag">🇯🇵</div>
+      <div class="culture-name">Nhật Bản</div>
+      <div class="culture-tip">Im lặng là đồng ý hoặc cần thời gian – không phải từ chối</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-flag">🇨🇳</div>
+      <div class="culture-name">Trung Quốc</div>
+      <div class="culture-tip">Quan hệ (Guanxi) quan trọng hơn hợp đồng. Mặt lạnh lùng nhưng đùi rung...</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-flag">🇩🇪</div>
+      <div class="culture-name">Đức</div>
+      <div class="culture-tip">Đúng giờ tuyệt đối. Chi tiết kỹ thuật phải hoàn hảo. Ít "small talk"</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-flag">🇸🇦</div>
+      <div class="culture-name">Ả Rập</div>
+      <div class="culture-tip">Quan hệ cá nhân trước. Đàm phán sau bữa tối dài. Không vội</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-flag">🇧🇷</div>
+      <div class="culture-name">Brazil</div>
+      <div class="culture-tip">Cởi mở, thân thiện ngay từ đầu. Cảm xúc và quan hệ quan trọng</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-flag">🇺🇸</div>
+      <div class="culture-name">Mỹ</div>
+      <div class="culture-tip">Thực dụng, nhanh chóng. "Time is money". Hợp đồng là tất cả</div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>😅 Câu Chuyện Thông Dịch Viên Dịch Sai "Nhờn"</h3>
+    <p>Trong một cuộc đàm phán quan trọng, thông dịch viên dịch sai một khái niệm kỹ thuật theo hướng "nhờn" (nhẹ nhàng, không rõ ràng), khiến đối tác hiểu sai hoàn toàn điều kiện mà tác giả đưa ra.</p>
+    <p>Hậu quả: nhiều tháng sau mới phát hiện ra sự hiểu lầm, phải đàm phán lại từ đầu, gây thiệt hại lớn về thời gian và uy tín. Bài học đắt giá về tầm quan trọng của thông dịch chính xác và việc xác nhận lại mọi điểm quan trọng bằng văn bản.</p>
+  </div>
+
+  <div class="section-title">🚨 Phê Bình Tư Tưởng Vọng Ngoại</div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Cạm bẫy: Sùng bái người nước ngoài</strong>
+      <p>Tư tưởng "người nước ngoài nói gì cũng đúng" là một điểm yếu nghiêm trọng trong đàm phán. Đây là tâm lý tự ti gây ra việc chấp nhận điều kiện bất lợi mà không dám phản đối.</p>
+    </div>
+  </div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🎯</div>
+      <div class="takeaway-title">Khách theo chủ nhà</div>
+      <div class="takeaway-text">Người khách đến với chúng ta phải theo phong tục của chúng ta – và ngược lại khi ta đến nơi họ. Hiểu phong tục địa phương là nghĩa vụ của người đến thăm.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🗣️</div>
+      <div class="takeaway-title">Ngôn ngữ = Văn hóa</div>
+      <div class="takeaway-text">Mỗi ngôn ngữ mang một thế giới quan riêng. Biết tiếng Nhật không chỉ giúp giao tiếp – còn giúp hiểu cách người Nhật suy nghĩ và ra quyết định.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">📝</div>
+      <div class="takeaway-title">Xác nhận bằng văn bản</div>
+      <div class="takeaway-text">Mọi điểm quan trọng phải được xác nhận bằng văn bản, không chỉ bằng lời nói. Thông dịch viên dù giỏi cũng có thể hiểu nhầm – văn bản là căn cứ cuối cùng.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">💪</div>
+      <div class="takeaway-title">Tự tin và bình đẳng</div>
+      <div class="takeaway-text">Người Việt không kém ai trên bàn đàm phán quốc tế. Sự tự ti vọng ngoại là rào cản tự tạo ra, không phải thực tế khách quan.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Người khách tới với chúng ta phải theo phong tục của chúng ta. Đây không phải kiêu ngạo – đây là quy tắc tôn trọng lẫn nhau trong giao tiếp quốc tế."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Chiến lược làm việc với thông dịch viên</strong>
+      <p>① Họp riêng với thông dịch viên trước để giải thích thuật ngữ kỹ thuật ② Sau mỗi đoạn quan trọng, yêu cầu tóm tắt lại bằng tiếng của bạn ③ Cho phép họ nói "Tôi không chắc, để tôi xác nhận lại" ④ Luôn ghi chú biên bản có cả hai ngôn ngữ.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-body">
+      <strong>Thế mạnh riêng của người Việt</strong>
+      <p>Người Việt có khả năng thích nghi văn hóa cao, cởi mở, linh hoạt – đây là lợi thế tự nhiên trong đàm phán quốc tế. Hãy tận dụng thế mạnh này thay vì tự ti về những gì mình không có.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 11</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Mỗi nền văn hóa thương thuyết theo cách riêng – việc nghiên cứu văn hóa đối tác là bắt buộc, không phải tùy chọn.</li>
+      <li><span class="lesson-num">2</span>Thông dịch viên là điểm yếu tiềm ẩn – phải quản lý chặt chẽ và xác nhận bằng văn bản mọi điểm quan trọng.</li>
+      <li><span class="lesson-num">3</span>Tư tưởng vọng ngoại là điểm yếu chết người trong đàm phán – phải tự tin và đứng thẳng.</li>
+      <li><span class="lesson-num">4</span>Khách theo chủ nhà – hiểu và tôn trọng phong tục địa phương khi đàm phán ở nước ngoài.</li>
+      <li><span class="lesson-num">5</span>Người Việt có thế mạnh thích nghi văn hóa tự nhiên – đây là lợi thế cần được khai thác.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-10.html" class="nav-btn nav-btn-prev">← Chương 10</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-12.html" class="nav-btn nav-btn-next">Chương 12 →</a>
+  </div>
+
+</div>
+</body>
+</html>

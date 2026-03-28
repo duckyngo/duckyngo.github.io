@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Đặc Vụ Pháp Sư - AI Agent Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,193,7,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #ffd54f; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(255,213,79,0.3); }
+        .header .title { font-size: 1.2em; color: #fff176; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(255,193,7,0.1); }
+        .card h2 { color: #ffd54f; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(255,193,7,0.3), rgba(200,150,0,0.2)); border: 1px solid rgba(255,213,79,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #fff176; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(255,193,7,0.5), rgba(200,150,0,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(255,193,7,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #ffc107, #ffd54f); border-radius: 50%; color: #1a1a2e; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #ffc107; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">🕵️</span>
+            <h1>AI Đặc Vụ Pháp Sư</h1>
+            <div class="title">CrewAI, AutoGen, Claude Agent SDK Expert</div>
+            <div class="quote">"AI Agent giống nhân viên mới — nhiệt tình, tự tin, nhưng đôi khi chạy vào tường. Nhiều lần."</div>
+            <div class="badge-container">
+                <span class="badge">🤝 CrewAI</span>
+                <span class="badge">🔄 AutoGen</span>
+                <span class="badge">🧠 Claude Agent SDK</span>
+                <span class="badge">🔧 Tool Use</span>
+                <span class="badge">👥 Multi-Agent</span>
+                <span class="badge">🛡️ Guardrails</span>
+                <span class="badge">🎯 ReAct Pattern</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>AI Đặc Vụ Pháp Sư tên thật là <strong>Đặc Vụ Tuấn</strong>, project manager chuyển sang AI agent development. "Tôi quản lý team người 10 năm. Giờ tôi quản lý team AI agents. Khác biệt: agents không than thở nhưng cũng không hiểu ý sếp."</p>
+            <p>Anh build agent system đầu tiên cho công ty: "Agent A research, Agent B write, Agent C review." Ngày đầu: agents hoạt động hoàn hảo trên demo. Ngày hai: Agent A hallucinate research data, Agent B viết dựa trên data sai, Agent C approve vì "trông hợp lý." Cả pipeline produce BS confidence level 10/10.</p>
+            <p>Từ đó anh có câu: "Multi-agent system là team meeting — nếu không ai fact-check, mọi người đồng ý với nhau và output vẫn sai."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Đặc Vụ</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Agent Architectures — ReAct, Plan-and-Execute, ReWOO</h3>
+                    <p><strong>ReAct</strong>: Reason → Act → Observe → loop. Simple, effective. <strong>Plan-and-Execute</strong>: plan all steps first → execute sequentially. Better for complex multi-step tasks. <strong>ReWOO</strong>: plan with tool placeholders → execute tools in batch → reason on results. Fewer LLM calls. Chọn: simple tasks → ReAct. Complex tasks → Plan-and-Execute. Cost-sensitive → ReWOO. Năm 2026: Claude Agent SDK và LangGraph agents là state-of-art.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Tool Use — Cho agent sức mạnh</h3>
+                    <p>Tools: functions agent có thể gọi (search, calculator, database query, API calls). Design: (1) <strong>Clear descriptions</strong>: LLM chọn tool dựa trên description, mơ hồ → chọn sai. (2) <strong>Typed parameters</strong>: schema rõ ràng. (3) <strong>Error handling</strong>: tool fail gracefully, return error message, agent retry. (4) <strong>Sandbox</strong>: tool thực thi trong sandbox, không có access tùy ý. Giới hạn tool permissions theo principle of least privilege.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Multi-Agent Coordination</h3>
+                    <p><strong>CrewAI</strong>: role-based agents, sequential/parallel tasks. Easy to setup. <strong>AutoGen</strong> (Microsoft): conversational agents, flexible topologies. <strong>Claude Agent SDK</strong>: tool-use focused, reliable function calling. Multi-agent patterns: (1) <strong>Supervisor</strong>: one agent delegates to specialists. (2) <strong>Debate</strong>: agents argue, converge on answer. (3) <strong>Pipeline</strong>: agent output → next agent input. Key: clear role definitions, explicit communication protocol, shared context.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Guardrails — Kiểm soát AI agent</h3>
+                    <p>Agents can go wrong: infinite loops, harmful actions, cost explosion. Guardrails: (1) <strong>Max iterations</strong>: limit loop count (10-20). (2) <strong>Max tokens/cost</strong>: budget per task. (3) <strong>Action approval</strong>: human-in-the-loop cho destructive actions (delete, send email). (4) <strong>Output validation</strong>: check output format, content safety. (5) <strong>Timeout</strong>: kill agent sau N minutes. (6) <strong>Sandboxing</strong>: agent không có direct access to production systems.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Khi nào dùng Agent vs Chain vs Simple prompt</h3>
+                    <p><strong>Simple prompt</strong>: deterministic task, no external data needed. <strong>Chain/RAG</strong>: need external data, fixed steps. <strong>Agent</strong>: dynamic decision-making, tool selection, multi-step reasoning. Agent overhead: more tokens, more latency, more failure modes. Don't use agent for tasks a chain can handle. "Agent is powerful. Agent is expensive. Agent is unpredictable. Use responsibly."</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">🔄 Chuyện 1: Agent enters infinite loop — $200 bill</div>
+                <p>Agent task: "Research competitor pricing and create report." Agent: search web → get results → "not enough info" → search again → get similar results → "need more detail" → search again... 847 iterations. $200 in API calls. Report: 3 bullet points, same info as iteration 1.</p>
+                <p>Root cause: no stopping criteria, no max iterations. Agent kept searching vì "there might be more information." Fix: max_iterations=15, early stopping when new info < threshold, explicit "conclude with available info" instruction.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> LUÔN set max_iterations và cost limits cho agents. Agents không biết khi nào "đủ" — chúng optimize cho completeness, không phải efficiency. Add explicit stopping criteria: "After 3 searches, summarize what you have." Budget limits là safety net.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🤼 Chuyện 2: Agents cãi nhau vô tận</div>
+                <p>Multi-agent debate system: Agent Reviewer critique Agent Writer's output. Writer revise. Reviewer critique revision. Writer revise again. After 45 iterations: output worse than original because agents kept making unnecessary changes to satisfy each other.</p>
+                <p>Agent Writer: "I changed paragraph 3 per your feedback." Reviewer: "Good, but now paragraph 1 is inconsistent." Writer changes paragraph 1. Reviewer: "Now paragraph 3 is inconsistent again." Deadlock.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Multi-agent debate cần: (1) Max rounds (2-3 revisions enough), (2) Convergence criteria (stop when changes minimal), (3) Final arbiter (supervisor agent makes final decision). Agents arguing ≠ agents improving. Sometimes first draft + one revision is optimal.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🛡️ Chuyện 3: Agent gửi email production — không ai approve</div>
+                <p>Agent task: "Draft and send follow-up emails to customers." Agent interpreted "send" literally — sent 500 emails trước khi anyone noticed. 200 emails had hallucinated product features. 50 emails had wrong customer names. 3 emails promised discounts that don't exist.</p>
+                <p>Aftermath: 2 weeks damage control. New rule: ALL external actions require human approval. Agent drafts, human sends.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Agents with real-world actions (send email, update database, make API calls) MUST have human-in-the-loop cho destructive/external actions. Sandbox first: let agent draft/plan → human review → human approve execution. "Trust but verify" → "Don't trust, always verify."</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Không set max iterations:</strong> Agent loop vô hạn = cost vô hạn. Luôn giới hạn.
+            </div>
+            <div class="mistake">
+                <strong>❌ Agent cho mọi bài toán:</strong> Agent = complexity + cost + unpredictability. Dùng chain/prompt khi đủ.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không sandbox tools:</strong> Agent có quyền execute code, write files → security risk. Sandbox everything.
+            </div>
+            <div class="mistake">
+                <strong>❌ Multi-agent khi single agent đủ:</strong> 3 agents argue khi 1 agent + good prompt đủ. More agents ≠ better output.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không log agent decisions:</strong> Agent made wrong decision? Tại sao? Cần trace mọi reasoning step.
+            </div>
+            <div class="mistake">
+                <strong>❌ External actions mà không có approval:</strong> Agent gửi email, delete data, make purchases mà không có human review = disaster.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🕵️ AI Đặc Vụ Pháp Sư — "Agents là nhân viên mới: cho đi làm nhưng phải giám sát chặt."</p>
+            <p>Section 3: AI & Machine Learning · Expert #71</p>
+        </div>
+    </div>
+</body>
+</html>

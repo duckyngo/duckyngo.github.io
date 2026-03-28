@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Monitoring - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-icon 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-icon {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .pillar-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .pillar-card .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .pillar-card h3 { color: var(--accent); margin-bottom: 0.5rem; }
+  .pillar-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor / Tool Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.prometheus::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.influxdb::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.victoria::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.graphite::before { background: linear-gradient(90deg, #6b7280, #9ca3af); }
+  .vendor-card.grafana::before { background: linear-gradient(90deg, #f97316, #ef4444); }
+  .vendor-card.loki::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+  .vendor-card.elastic::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.graylog::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.alertmanager::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.pagerduty::before { background: linear-gradient(90deg, #10b981, #3b82f6); }
+  .vendor-card.otel::before { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
+  .vendor-card.snmp::before { background: linear-gradient(90deg, #6b7280, #374151); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol / Concept Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Mindset / Best Practice Cards */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .pillar-grid { grid-template-columns: 1fr; }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .cheat-grid { grid-template-columns: 1fr; }
+    .protocol-map { grid-template-columns: 1fr; }
+    .mindset-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Monitoring World</a>
+  <a href="#observability">Observability</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#metrics">Metrics</a>
+  <a href="#visualization">Visualization</a>
+  <a href="#logs">Logs</a>
+  <a href="#alerting">Alerting</a>
+  <a href="#snmp">SNMP</a>
+  <a href="#otel">OpenTelemetry</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">📊</div>
+  <h1>Thế Giới Monitoring</h1>
+  <p class="subtitle">Từ MRTG ping đơn giản đến distributed tracing xuyên microservices - Hành trình 30 năm của ngành giám sát hệ thống. Ba trụ cột Metrics, Logs, Traces và tất cả những gì bạn cần biết để giữ hệ thống luôn sáng đèn xanh.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- MONITORING VS OBSERVABILITY -->
+<section id="observability">
+  <div class="intro-box">
+    <h2 class="section-title">Monitoring vs Observability</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Monitoring</strong> trả lời câu hỏi "Hệ thống có đang hoạt động không?" - bạn biết trước cần theo dõi cái gì. <strong>Observability</strong> trả lời câu hỏi "Tại sao hệ thống lại hành xử kỳ lạ thế?" - bạn có thể khám phá những vấn đề mà bạn chưa từng nghĩ tới. Monitoring là tập con của Observability. Cả hai đều cần thiết, nhưng observability mới là đích đến.
+    </p>
+
+    <div class="pillar-grid">
+      <div class="pillar-card">
+        <div class="icon">📈</div>
+        <h3>Metrics</h3>
+        <p>Con số biết kể chuyện. CPU 95%, latency p99 = 2s, request rate 10k/s. Metrics cho bạn bức tranh tổng quan, phát hiện xu hướng bất thường, và trigger alert khi vượt ngưỡng. Nhẹ nhàng, dễ lưu trữ lâu dài.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="icon">📜</div>
+        <h3>Logs</h3>
+        <p>Nhật ký chi tiết của mọi sự kiện. "Error: connection refused to db-primary at 14:32:07". Logs cho bạn ngữ cảnh đầy đủ - cái gì, khi nào, ở đâu. Nhưng cũng tốn dung lượng nhất trong ba trụ cột.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="icon">🔗</div>
+        <h3>Traces</h3>
+        <p>Theo dấu hành trình của một request xuyên qua 20 microservices. "Request này mất 3 giây vì service-payment gọi API bên thứ ba bị timeout." Traces là mảnh ghép cuối cùng để hiểu hệ thống phân tán.</p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>Ba trụ cột này không hoạt động riêng lẻ. Sức mạnh thực sự nằm ở khả năng <strong>correlate</strong> giữa chúng: từ một alert (metric), bạn nhảy sang log tương ứng, rồi từ log trace-ID dẫn bạn đến distributed trace để thấy toàn bộ bức tranh. Đây là lý do Grafana đang xây dựng cả ba stack: Mimir (metrics), Loki (logs), Tempo (traces).</p>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian Monitoring</h2>
+  <p class="section-subtitle">30 năm tiến hóa - từ ping ICMP đến AI-powered observability</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1995-2000</span>
+        <h3>MRTG & RRDtool - Khởi nguyên</h3>
+        <p>Multi Router Traffic Grapher ra đời năm 1995, vẽ biểu đồ băng thông mạng đầu tiên trên web. Tobias Oetiker sau đó tạo RRDtool - cơ sở dữ liệu round-robin trở thành nền tảng cho gần như mọi tool monitoring suốt một thập kỷ. Đơn giản nhưng cách mạng: lần đầu tiên sysadmin "nhìn thấy" traffic thay vì chỉ đọc số.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1999-2005</span>
+        <h3>Nagios - Ông vua cảnh báo</h3>
+        <p>Ethan Galstad tạo ra NetSaint (sau đổi tên thành Nagios). Kiến trúc check-based: chạy plugin kiểm tra rồi trả về OK/WARNING/CRITICAL. Hàng nghìn plugin có sẵn. Dashboard xanh/đỏ trở thành biểu tượng NOC (Network Operations Center) khắp thế giới. Nhưng cấu hình bằng file text thuần là cơn ác mộng.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2001-2010</span>
+        <h3>Zabbix & Cacti - Enterprise monitoring</h3>
+        <p>Zabbix (2001) mang đến auto-discovery, template system, và web UI quản lý hoàn chỉnh. Cacti kế thừa RRDtool với giao diện đồ họa đẹp hơn. Đây là thời đại của SNMP polling, agent-based monitoring, và những dashboard đầy biểu đồ traffic trên tường NOC. Zabbix vẫn mạnh mẽ đến tận ngày nay với hàng triệu deployment.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2012-2016</span>
+        <h3>Prometheus & TSDB Revolution</h3>
+        <p>SoundCloud tạo ra Prometheus (2012), lấy cảm hứng từ Borgmon của Google. Pull-based model, PromQL query language mạnh mẽ, multi-dimensional labels. Grafana (2014) xuất hiện như data visualization layer. Cả hai cùng nhau thay đổi hoàn toàn cách ngành nghĩ về monitoring. CNCF project thứ hai sau Kubernetes.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2019-nay</span>
+        <h3>OpenTelemetry & Unified Observability</h3>
+        <p>OpenTracing và OpenCensus hợp nhất thành OpenTelemetry (OTel). Một chuẩn duy nhất cho metrics, logs, và traces. Vendor-neutral instrumentation. eBPF cho phép observe mà không cần sửa code. AI/ML bắt đầu phát hiện anomaly tự động. Thời đại của observability-as-code.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS STACK -->
+<section id="metrics">
+  <h2 class="section-title" style="color: var(--accent2);">Metrics Stack</h2>
+  <p class="section-subtitle">Bốn "ông lớn" trong thế giới time-series database và metrics collection</p>
+
+  <div class="vendor-grid">
+    <!-- Prometheus -->
+    <div class="vendor-card prometheus">
+      <div class="vendor-logo">🔥</div>
+      <h3>Prometheus</h3>
+      <div class="vendor-type">Pull-based / CNCF Graduated</div>
+      <p>Vua không ngai của cloud-native monitoring. Pull model - Prometheus chủ động đi "hỏi" target thay vì chờ target gửi data. PromQL là ngôn ngữ query mạnh nhất cho time-series. Service discovery tích hợp sẵn cho Kubernetes. Nhưng single-node, không có native clustering - đó là lý do cần Thanos hoặc Cortex.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2012</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">55k+</div><div class="label">GitHub Stars</div></div>
+        <div class="stat"><div class="num">Pull</div><div class="label">Model</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">CNCF Graduated</span>
+        <span class="tag">PromQL</span>
+        <span class="tag warn">Single-node</span>
+        <span class="tag">Kubernetes Native</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>Prometheus lưu trữ local disk với retention mặc định 15 ngày. Muốn long-term storage? Dùng <strong>remote_write</strong> đẩy sang Thanos, Cortex, hoặc VictoriaMetrics. Đừng cố tăng retention trên Prometheus - nó không được thiết kế cho việc đó.</p>
+      </div>
+    </div>
+
+    <!-- InfluxDB -->
+    <div class="vendor-card influxdb">
+      <div class="vendor-logo">📊</div>
+      <h3>InfluxDB</h3>
+      <div class="vendor-type">Push-based / Time-series Database</div>
+      <p>Time-series database thuần túy, được thiết kế từ đầu cho metrics. Push model - agent (Telegraf) gửi data đến InfluxDB. InfluxQL và Flux query language. Rất phổ biến trong IoT và infrastructure monitoring truyền thống. InfluxDB 3.0 viết lại bằng Rust với Apache Arrow, hiệu năng cải thiện vượt bậc.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2013</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Push</div><div class="label">Model</div></div>
+        <div class="stat"><div class="num">OSS</div><div class="label">+ Cloud</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Telegraf Agent</span>
+        <span class="tag good">IoT Friendly</span>
+        <span class="tag">Flux Language</span>
+        <span class="tag warn">License Change v3</span>
+      </div>
+    </div>
+
+    <!-- VictoriaMetrics -->
+    <div class="vendor-card victoria">
+      <div class="vendor-logo">📉</div>
+      <h3>VictoriaMetrics</h3>
+      <div class="vendor-type">Long-term Storage / Prometheus Compatible</div>
+      <p>Sinh ra để giải quyết vấn đề lớn nhất của Prometheus: long-term storage và horizontal scaling. Tương thích 100% PromQL, nhận data qua remote_write từ Prometheus. Compression cực tốt - tiết kiệm đến 10x dung lượng so với Prometheus. Single binary, dễ deploy, ít tài nguyên. Lựa chọn yêu thích của homelab.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2018</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">10x</div><div class="label">Compression</div></div>
+        <div class="stat"><div class="num">1</div><div class="label">Binary</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">PromQL Compatible</span>
+        <span class="tag good">Low Resource</span>
+        <span class="tag">Clustering Available</span>
+        <span class="tag">MetricsQL</span>
+      </div>
+    </div>
+
+    <!-- Graphite -->
+    <div class="vendor-card graphite">
+      <div class="vendor-logo">📏</div>
+      <h3>Graphite</h3>
+      <div class="vendor-type">Legacy / Push-based Metrics</div>
+      <p>Tiền bối của mọi metrics stack hiện đại. Chris Davis tạo ra tại Orbitz năm 2008. Kiến trúc ba thành phần: Carbon (receiver), Whisper (storage), Graphite-Web (query/render). Đơn giản, dễ hiểu. Nhưng flat namespace (không có labels/dimensions) là hạn chế lớn nhất. Vẫn chạy ở nhiều công ty lớn nhưng đang dần được thay thế.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2008</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Flat</div><div class="label">Namespace</div></div>
+        <div class="stat"><div class="num">Push</div><div class="label">Model</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag warn">Legacy</span>
+        <span class="tag">Whisper DB</span>
+        <span class="tag hot">No Dimensions</span>
+        <span class="tag">Simple API</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Prometheus</th>
+          <th>InfluxDB</th>
+          <th>VictoriaMetrics</th>
+          <th>Graphite</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Data Model</td>
+          <td>Multi-dimensional (labels)</td>
+          <td>Tags + Fields</td>
+          <td>Labels (Prom-compat)</td>
+          <td>Flat dot-separated</td>
+        </tr>
+        <tr>
+          <td>Query Language</td>
+          <td>PromQL</td>
+          <td>InfluxQL / Flux</td>
+          <td>PromQL + MetricsQL</td>
+          <td>Graphite Functions</td>
+        </tr>
+        <tr>
+          <td>Ingestion</td>
+          <td>Pull (scrape)</td>
+          <td>Push (line protocol)</td>
+          <td>Pull + Push</td>
+          <td>Push (plaintext/pickle)</td>
+        </tr>
+        <tr>
+          <td>High Availability</td>
+          <td>Cần Thanos/Cortex</td>
+          <td>Enterprise only</td>
+          <td>Cluster mode</td>
+          <td>Carbon relay</td>
+        </tr>
+        <tr>
+          <td>Homelab phù hợp?</td>
+          <td>Rất phù hợp</td>
+          <td>Phù hợp cho IoT</td>
+          <td>Tuyệt vời, nhẹ nhàng</td>
+          <td>Không khuyến khích</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- VISUALIZATION -->
+<section id="visualization">
+  <h2 class="section-title" style="color: var(--accent3);">Visualization - Nghệ Thuật Hiển Thị Dữ Liệu</h2>
+  <p class="section-subtitle">Dashboard không chỉ đẹp - nó phải kể được câu chuyện và giúp bạn ra quyết định trong vài giây</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card grafana" style="grid-column: 1 / -1;">
+      <div class="vendor-logo">📊</div>
+      <h3>Grafana - Vua Dashboard</h3>
+      <div class="vendor-type">Open Source / Visualization Platform</div>
+      <p>Torkel Odegaard tạo ra Grafana năm 2014 và nó đã trở thành tiêu chuẩn de facto cho monitoring dashboard. Multi-datasource (Prometheus, InfluxDB, Elasticsearch, MySQL, PostgreSQL...), plugin ecosystem khổng lồ, và khả năng tùy biến gần như vô hạn. Grafana Labs hiện tại đã mở rộng thành một observability platform hoàn chỉnh với Loki, Tempo, Mimir, và Grafana Cloud.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2014</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">65k+</div><div class="label">GitHub Stars</div></div>
+        <div class="stat"><div class="num">100+</div><div class="label">Data Sources</div></div>
+        <div class="stat"><div class="num">20M+</div><div class="label">Users</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">AGPL v3</span>
+        <span class="tag">Multi-datasource</span>
+        <span class="tag good">Plugin Ecosystem</span>
+        <span class="tag">Alerting Built-in</span>
+        <span class="tag">Provisioning as Code</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Best Practices -->
+  <h3 style="color: var(--accent); margin: 2rem 0 1rem; font-size: 1.3rem;">Dashboard Best Practices</h3>
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>USE Method cho Infrastructure</h4>
+      <p>Brendan Gregg đề xuất: cho mỗi resource, theo dõi <strong>Utilization</strong> (% đang dùng), <strong>Saturation</strong> (hàng đợi, quá tải), và <strong>Errors</strong> (lỗi). CPU, Memory, Disk, Network - mỗi thứ đều cần ba chỉ số này. Đây là cách tổ chức dashboard infrastructure tốt nhất.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>RED Method cho Services</h4>
+      <p>Tom Wilkie (Grafana Labs) đề xuất cho microservices: <strong>Rate</strong> (requests/second), <strong>Errors</strong> (% lỗi), <strong>Duration</strong> (latency). Ba chỉ số này cho mỗi service endpoint. Kết hợp USE + RED = bức tranh toàn cảnh từ infra đến application.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>Four Golden Signals (Google SRE)</h4>
+      <p>Google SRE Book định nghĩa: <strong>Latency</strong>, <strong>Traffic</strong>, <strong>Errors</strong>, <strong>Saturation</strong>. Nếu bạn chỉ có thể theo dõi bốn thứ, hãy theo dõi bốn thứ này. Dashboard chính nên bắt đầu từ đây rồi mới drill-down vào chi tiết.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">4</div>
+      <h4>Layered Dashboards</h4>
+      <p>Đừng nhồi tất cả vào một dashboard. Tạo <strong>hierarchy</strong>: Overview (toàn hệ thống, 5-8 panels) -> Service Level (chi tiết từng service) -> Debug Level (deep-dive khi troubleshoot). Dùng link variables để navigate giữa các tầng.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">5</div>
+      <h4>Dashboard as Code</h4>
+      <p>Đừng tạo dashboard bằng tay trên UI rồi quên. Dùng <strong>Grafana provisioning</strong> (YAML + JSON), hoặc <strong>Grafonnet</strong> (Jsonnet library) để định nghĩa dashboard dưới dạng code. Version control bằng Git. Review bằng PR. Rollback khi cần. Đây là DevOps đúng nghĩa.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">6</div>
+      <h4>Đừng Quên Annotations</h4>
+      <p>Annotations đánh dấu thời điểm deploy, restart, config change lên dashboard. Khi latency tăng đột ngột, bạn ngay lập tức thấy "Deploy v2.3.1 lúc 14:30" - và biết ngay nguyên nhân. Tích hợp CI/CD pipeline gửi annotation tự động vào Grafana.</p>
+    </div>
+  </div>
+
+  <!-- Architecture Diagram -->
+  <h3 style="color: var(--accent); margin: 2.5rem 0 1rem; font-size: 1.3rem;">Kiến trúc Monitoring Stack điển hình</h3>
+  <div class="arch-container">
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">🖥️</div>
+        <h4>Targets</h4>
+        <p>Node Exporter<br>cAdvisor<br>App /metrics</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🔥</div>
+        <h4>Prometheus</h4>
+        <p>Scrape & Store<br>PromQL Engine<br>Alert Rules</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🗄️</div>
+        <h4>Long-term Storage</h4>
+        <p>Thanos / Cortex<br>VictoriaMetrics<br>Mimir</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">📊</div>
+        <h4>Grafana</h4>
+        <p>Dashboards<br>Explore<br>Alerting UI</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🔔</div>
+        <h4>Alertmanager</h4>
+        <p>Routing<br>Silencing<br>Notification</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGS -->
+<section id="logs">
+  <h2 class="section-title" style="color: var(--accent4);">Logs - Nhật Ký Hệ Thống</h2>
+  <p class="section-subtitle">Mỗi dòng log là một mảnh ghép của câu chuyện - vấn đề là tìm đúng mảnh ghép trong hàng tỷ dòng</p>
+
+  <div class="vendor-grid">
+    <!-- Loki -->
+    <div class="vendor-card loki">
+      <div class="vendor-logo">📝</div>
+      <h3>Grafana Loki</h3>
+      <div class="vendor-type">Log Aggregation / "Prometheus for Logs"</div>
+      <p>Triết lý khác biệt hoàn toàn: Loki <strong>không</strong> index nội dung log. Nó chỉ index labels (giống Prometheus). Khi query, Loki duyệt qua chunks log theo labels rồi mới grep nội dung. Kết quả? Chi phí storage và operation thấp hơn 10x so với ELK. Đánh đổi: query full-text chậm hơn. Nhưng với LogQL, bạn rất ít khi cần grep toàn bộ.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2018</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">10x</div><div class="label">Rẻ hơn ELK</div></div>
+        <div class="stat"><div class="num">LogQL</div><div class="label">Query</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Label-based</span>
+        <span class="tag good">Low Cost</span>
+        <span class="tag">Grafana Native</span>
+        <span class="tag warn">No Full-text Index</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>Quy tắc vàng của Loki: giữ <strong>cardinality labels thấp</strong>. Đừng dùng user_id, request_id làm label - dùng chúng trong nội dung log rồi filter bằng LogQL. Chỉ dùng labels cho những thứ ổn định: namespace, service, pod_name, level.</p>
+      </div>
+    </div>
+
+    <!-- ELK Stack -->
+    <div class="vendor-card elastic">
+      <div class="vendor-logo">🔍</div>
+      <h3>ELK Stack</h3>
+      <div class="vendor-type">Elasticsearch + Logstash + Kibana</div>
+      <p>Bộ ba huyền thoại. Elasticsearch là search engine dựa trên Apache Lucene - index mọi thứ, full-text search cực nhanh. Logstash thu thập và transform logs. Kibana hiển thị và phân tích. Rất mạnh cho use case cần tìm kiếm phức tạp: security analytics, business intelligence từ logs. Nhưng tốn RAM kinh khủng - tối thiểu 4GB JVM heap cho Elasticsearch.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2010</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">4GB+</div><div class="label">RAM tối thiểu</div></div>
+        <div class="stat"><div class="num">KQL</div><div class="label">Query</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Full-text Search</span>
+        <span class="tag hot">RAM Hungry</span>
+        <span class="tag warn">SSPL License</span>
+        <span class="tag good">Mature Ecosystem</span>
+      </div>
+    </div>
+
+    <!-- Graylog -->
+    <div class="vendor-card graylog">
+      <div class="vendor-logo">⚫</div>
+      <h3>Graylog</h3>
+      <div class="vendor-type">Log Management / GELF Protocol</div>
+      <p>Nằm giữa Loki và ELK về độ phức tạp. Dùng MongoDB cho metadata và Elasticsearch cho search. GELF (Graylog Extended Log Format) cho phép gửi structured logs trực tiếp. Giao diện web tập trung vào log management hơn là visualization. Pipeline rules mạnh mẽ để parse và enrich logs. Đặc biệt phù hợp cho security monitoring và compliance.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2010</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">GELF</div><div class="label">Protocol</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Open Core</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">GELF</span>
+        <span class="tag good">Pipeline Rules</span>
+        <span class="tag">Elasticsearch Backend</span>
+        <span class="tag warn">Cần MongoDB</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Structured Logging -->
+  <div class="intro-box" style="margin-top: 2rem;">
+    <h3 style="color: var(--accent3); margin-bottom: 1rem;">Structured Logging - Viết log đúng cách</h3>
+    <p style="color: var(--text-dim); font-size: 1rem; margin-bottom: 1.5rem;">
+      Log không cấu trúc: <code style="color: var(--accent5); background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 4px;">2024-01-15 14:32:07 ERROR Failed to connect to database server 10.0.1.50:5432 after 3 retries</code>
+      <br><br>
+      Structured log (JSON): <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 4px;">{"ts":"2024-01-15T14:32:07Z","level":"error","msg":"db connection failed","host":"10.0.1.50","port":5432,"retries":3}</code>
+    </p>
+    <p style="color: var(--text-dim);">
+      Structured logging là bước tiến hóa quan trọng nhất trong logging. Thay vì viết một chuỗi text tự do mà máy tính phải regex để hiểu, bạn viết key-value pairs rõ ràng. Kết quả: query nhanh hơn hàng trăm lần (<code style="color: var(--accent);">{level="error", host="10.0.1.50"}</code> thay vì regex match), aggregation chính xác, và không bao giờ bị parse sai vì log format thay đổi.
+    </p>
+    <div class="insight-box">
+      <h4>Syslog vẫn còn đó</h4>
+      <p>Đừng quên <strong>syslog</strong> (RFC 5424) - giao thức log cổ điển nhất, vẫn là chuẩn cho network devices, firewalls, switches. Hầu hết mọi thiết bị mạng đều nói syslog. Rsyslog và syslog-ng là hai implementation phổ biến nhất trên Linux. Trong homelab, rsyslog → Promtail → Loki là pipeline rất phổ biến.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ALERTING -->
+<section id="alerting">
+  <h2 class="section-title" style="color: var(--accent5);">Alerting - Khi Hệ Thống Kêu Cứu</h2>
+  <p class="section-subtitle">Alert tốt đánh thức bạn lúc 3 giờ sáng vì lý do xứng đáng. Alert tệ đánh thức bạn mỗi đêm cho đến khi bạn tắt hết notification.</p>
+
+  <div class="vendor-grid">
+    <!-- Alertmanager -->
+    <div class="vendor-card alertmanager">
+      <div class="vendor-logo">🚨</div>
+      <h3>Alertmanager</h3>
+      <div class="vendor-type">Alert Routing / Prometheus Ecosystem</div>
+      <p>Component chính thức của Prometheus để xử lý alerts. Prometheus đánh giá alert rules và gửi firing alerts đến Alertmanager. Từ đây, Alertmanager lo routing (gửi alert nào cho ai), grouping (gom nhiều alerts liên quan thành một notification), inhibition (alert A firing thì suppress alert B), và silencing (tạm tắt alert khi maintenance).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Route</div><div class="label">Tree-based</div></div>
+        <div class="stat"><div class="num">Group</div><div class="label">By labels</div></div>
+        <div class="stat"><div class="num">HA</div><div class="label">Gossip cluster</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Grouping</span>
+        <span class="tag">Inhibition</span>
+        <span class="tag">Silencing</span>
+        <span class="tag">Webhook</span>
+        <span class="tag">Slack/Email/PD</span>
+      </div>
+    </div>
+
+    <!-- PagerDuty & On-call -->
+    <div class="vendor-card pagerduty">
+      <div class="vendor-logo">📟</div>
+      <h3>PagerDuty & On-call</h3>
+      <div class="vendor-type">Incident Management / On-call Rotation</div>
+      <p>PagerDuty, OpsGenie (Atlassian), Grafana OnCall - đây là lớp cuối cùng trong alert pipeline. Chúng quản lý on-call schedule (ai trực tuần này), escalation policies (nếu người trực không acknowledge trong 5 phút, gọi người tiếp), và incident tracking. Alertmanager gửi webhook đến PagerDuty, PagerDuty gọi điện/SMS/push notification cho engineer đang trực.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">24/7</div><div class="label">On-call</div></div>
+        <div class="stat"><div class="num">5 phút</div><div class="label">Escalate</div></div>
+        <div class="stat"><div class="num">SLA</div><div class="label">Tracking</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">On-call Schedule</span>
+        <span class="tag">Escalation</span>
+        <span class="tag warn">Chi phí cao</span>
+        <span class="tag good">Grafana OnCall (Free)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- On-call Best Practices -->
+  <h3 style="color: var(--accent); margin: 2rem 0 1rem; font-size: 1.3rem;">On-call Best Practices</h3>
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>Alert trên Symptom, không phải Cause</h4>
+      <p>Đừng alert "CPU > 90%". Hãy alert "Latency p99 > 2s" hoặc "Error rate > 5%". CPU cao có thể là bình thường (batch job). Latency cao thì chắc chắn ảnh hưởng user. Alert dựa trên <strong>SLO</strong> (Service Level Objective) là chuẩn mực hiện đại.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>Mỗi Alert phải Actionable</h4>
+      <p>Nếu nhận alert mà bạn chỉ "nhìn rồi dismiss" - xóa alert đó đi. Mỗi alert phải kèm runbook: "Khi nhận alert này, làm bước 1, 2, 3." Nếu không có action rõ ràng, nó chỉ là noise và dần dà team sẽ bỏ qua tất cả mọi alert.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>Đo lường Alert Quality</h4>
+      <p>Theo dõi: số alert mỗi tuần, % alert dẫn đến action thực sự (signal vs noise), thời gian acknowledge trung bình, và số lần bị đánh thức ngoài giờ. Mục tiêu: dưới 2 alert thực sự mỗi ca on-call 12 tiếng. Nhiều hơn = hệ thống hoặc alert rules có vấn đề.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Alert Fatigue là sát thủ thầm lặng</h4>
+    <p>Một nghiên cứu cho thấy khi engineer nhận hơn 5 alerts/ngày không actionable, tỷ lệ bỏ qua alert <strong>thực sự quan trọng</strong> tăng gấp 3 lần. Đây gọi là <strong>alert fatigue</strong> - cùng cơ chế tâm lý với "cry wolf". Tốt hơn có 5 alerts chất lượng cao hơn 500 alerts mà 495 cái là noise. Hãy ruthless trong việc xóa alert không cần thiết.</p>
+  </div>
+</section>
+
+<!-- SNMP & NETWORK MONITORING -->
+<section id="snmp">
+  <h2 class="section-title" style="color: var(--accent);">SNMP & Network Monitoring</h2>
+  <p class="section-subtitle">Thế giới network devices nói ngôn ngữ riêng - và ngôn ngữ đó là SNMP</p>
+
+  <div class="intro-box">
+    <h3 style="color: var(--accent); margin-bottom: 1rem;">SNMP - Simple Network Management Protocol</h3>
+    <p style="color: var(--text-dim); font-size: 1rem;">
+      Ra đời từ năm 1988, SNMP là cách giao tiếp giữa Network Management System (NMS) và network devices. Mỗi thiết bị expose một cây <strong>MIB</strong> (Management Information Base) với hàng nghìn OID (Object Identifier). Ví dụ: <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 4px;">.1.3.6.1.2.1.2.2.1.10</code> là ifInOctets - số byte nhận trên interface. NMS poll các OID này định kỳ hoặc thiết bị gửi SNMP trap khi có sự kiện.
+    </p>
+  </div>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> SNMPv1</h4>
+      <p>Phiên bản đầu tiên. Community string truyền plaintext - bảo mật gần như bằng không. Vẫn thấy ở thiết bị cũ. Đừng dùng nếu có lựa chọn khác.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> SNMPv2c</h4>
+      <p>Cải tiến performance và data types, nhưng vẫn community string plaintext. Phổ biến nhất hiện tại vì đơn giản. "Đủ dùng" trong mạng nội bộ đáng tin cậy.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SNMPv3</h4>
+      <p>Authentication (SHA/MD5) + Encryption (AES/DES). Đây là phiên bản nên dùng. Nhưng cấu hình phức tạp hơn nhiều: usm users, auth protocols, priv protocols. Nhiều sysadmin vẫn chọn v2c vì "lười".</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SNMP Exporter</h4>
+      <p>Bridge giữa SNMP và Prometheus. Đọc MIB, poll SNMP targets, expose metrics ở format Prometheus. File generator chuyển MIB → config YAML. Cần thiết cho ai muốn monitor network devices bằng Prometheus.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> gNMI / YANG</h4>
+      <p>Tương lai của network monitoring. gRPC-based, streaming telemetry thay vì polling. Structured data model (YANG). Các vendor lớn (Cisco, Arista, Juniper) đang push mạnh. Nhưng chưa phổ biến ở thiết bị tầm trung và homelab.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> NetFlow / sFlow</h4>
+      <p>Không phải monitoring truyền thống mà là flow analysis. Thiết bị mạng sample traffic và gửi flow records: source IP, dest IP, port, bytes, packets. Cực kỳ hữu ích cho traffic analysis, security monitoring, và bandwidth billing.</p>
+    </div>
+  </div>
+
+  <div class="vendor-card snmp" style="margin-top: 2rem;">
+    <div class="vendor-logo">🌐</div>
+    <h3>Network Monitoring Tools phổ biến</h3>
+    <div class="vendor-type">Từ Zabbix đến LibreNMS</div>
+    <p>Trong thế giới network monitoring, bạn có nhiều lựa chọn tùy quy mô:</p>
+    <div class="stats-row">
+      <div class="stat"><div class="num">Zabbix</div><div class="label">Enterprise</div></div>
+      <div class="stat"><div class="num">LibreNMS</div><div class="label">Community</div></div>
+      <div class="stat"><div class="num">PRTG</div><div class="label">Commercial</div></div>
+      <div class="stat"><div class="num">Observium</div><div class="label">Auto-discover</div></div>
+    </div>
+    <p style="margin-top: 1rem;">Cho homelab, <strong>LibreNMS</strong> là lựa chọn phổ biến nhất: auto-discovery qua SNMP/LLDP/CDP, đẹp, nhiều alert rules có sẵn, community lớn. <strong>Zabbix</strong> mạnh hơn nhưng learning curve cao hơn. Cả hai đều có thể tích hợp với Grafana để dashboard đẹp hơn.</p>
+    <div class="tag-row">
+      <span class="tag good">LibreNMS - Homelab</span>
+      <span class="tag">Zabbix - Enterprise</span>
+      <span class="tag">PRTG - Windows</span>
+      <span class="tag warn">Nagios - Legacy</span>
+    </div>
+  </div>
+</section>
+
+<!-- OPENTELEMETRY -->
+<section id="otel">
+  <h2 class="section-title" style="color: var(--accent2);">OpenTelemetry & Distributed Tracing</h2>
+  <p class="section-subtitle">Chuẩn mở thống nhất cho observability - tương lai đã đến</p>
+
+  <div class="intro-box">
+    <h3 style="color: var(--accent2); margin-bottom: 1rem;">OpenTelemetry là gì?</h3>
+    <p style="color: var(--text-dim); font-size: 1rem;">
+      Hãy tưởng tượng bạn có 50 microservices, mỗi service dùng một thư viện monitoring khác nhau, gửi data đến backend khác nhau. Chaos. OpenTelemetry (OTel) giải quyết bằng một <strong>chuẩn duy nhất</strong>: một SDK để instrument code, một Collector để thu thập và forward data, và một protocol (OTLP) để truyền tải. Bạn instrument một lần, gửi đến bất kỳ backend nào: Jaeger, Zipkin, Grafana Tempo, Datadog, New Relic...
+    </p>
+    <div class="insight-box">
+      <h4>Distributed Tracing giải thích đơn giản</h4>
+      <p>User click "Đặt hàng". Request đi qua API Gateway → Auth Service → Order Service → Payment Service → Inventory Service → Notification Service. Mỗi service tạo một <strong>span</strong>. Tất cả spans cùng một <strong>trace ID</strong>. Khi lỗi xảy ra, bạn nhìn trace và thấy ngay: "Payment Service mất 8 giây vì gọi API ngân hàng timeout". Không có tracing, bạn phải đọc log từng service rồi tự ghép lại - mệt muốn chết.</p>
+    </div>
+  </div>
+
+  <div class="vendor-card otel" style="margin-top: 2rem;">
+    <div class="vendor-logo">🔭</div>
+    <h3>OTel Collector</h3>
+    <div class="vendor-type">Vendor-neutral Data Pipeline</div>
+    <p>OTel Collector là trái tim của kiến trúc OpenTelemetry. Ba thành phần chính: <strong>Receivers</strong> (nhận data - OTLP, Prometheus, Jaeger, Zipkin, syslog...), <strong>Processors</strong> (biến đổi, filter, batch, sampling), và <strong>Exporters</strong> (gửi đi - bất kỳ backend nào). Bạn có thể nhận metrics từ Prometheus format, logs từ syslog, traces từ Jaeger, rồi export tất cả sang Grafana stack. Một tool để trị tất cả.</p>
+    <div class="stats-row">
+      <div class="stat"><div class="num">CNCF</div><div class="label">Incubating</div></div>
+      <div class="stat"><div class="num">11+</div><div class="label">Languages SDK</div></div>
+      <div class="stat"><div class="num">100+</div><div class="label">Components</div></div>
+    </div>
+    <div class="tag-row">
+      <span class="tag good">Vendor Neutral</span>
+      <span class="tag">OTLP Protocol</span>
+      <span class="tag good">Auto-instrumentation</span>
+      <span class="tag">eBPF Support</span>
+      <span class="tag">Tail Sampling</span>
+    </div>
+  </div>
+
+  <!-- Architecture -->
+  <div class="arch-container" style="margin-top: 2rem;">
+    <h4 style="color: var(--accent); margin-bottom: 1.5rem; font-size: 1.1rem;">OTel Architecture Flow</h4>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">📱</div>
+        <h4>Application</h4>
+        <p>OTel SDK<br>Auto-instrument<br>Manual spans</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🔄</div>
+        <h4>OTel Collector</h4>
+        <p>Receive<br>Process<br>Export</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">📊</div>
+        <h4>Metrics Backend</h4>
+        <p>Prometheus<br>Mimir<br>Datadog</p>
+      </div>
+    </div>
+    <div class="arch-diagram" style="margin-top: 0;">
+      <div class="arch-layer" style="visibility: hidden; min-width: 140px;">
+        <h4>hidden</h4>
+      </div>
+      <div class="arch-arrow" style="visibility: hidden;">→</div>
+      <div class="arch-layer" style="visibility: hidden; min-width: 140px;">
+        <h4>hidden</h4>
+      </div>
+      <div class="arch-arrow">↘</div>
+      <div class="arch-layer">
+        <div class="layer-icon">📜</div>
+        <h4>Logs Backend</h4>
+        <p>Loki<br>Elasticsearch<br>S3</p>
+      </div>
+    </div>
+    <div class="arch-diagram" style="margin-top: 0;">
+      <div class="arch-layer" style="visibility: hidden; min-width: 140px;">
+        <h4>hidden</h4>
+      </div>
+      <div class="arch-arrow" style="visibility: hidden;">→</div>
+      <div class="arch-layer" style="visibility: hidden; min-width: 140px;">
+        <h4>hidden</h4>
+      </div>
+      <div class="arch-arrow">↘</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🔗</div>
+        <h4>Traces Backend</h4>
+        <p>Tempo<br>Jaeger<br>Zipkin</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tracing Concepts -->
+  <h3 style="color: var(--accent); margin: 2rem 0 1rem; font-size: 1.3rem;">Khái niệm cốt lõi trong Distributed Tracing</h3>
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Trace</h4>
+      <p>Một trace đại diện cho toàn bộ hành trình của một request. Nó bao gồm nhiều spans từ nhiều services, được liên kết bởi một trace ID duy nhất.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Span</h4>
+      <p>Một đơn vị công việc trong trace. Mỗi span có tên, thời gian bắt đầu/kết thúc, attributes, và parent span ID. Span lồng nhau tạo thành cây (tree).</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Context Propagation</h4>
+      <p>Cách trace-ID và span-ID được truyền từ service này sang service khác qua HTTP headers (W3C Trace Context, B3) hoặc gRPC metadata. Không có propagation = không có trace.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Sampling</h4>
+      <p>Ở quy mô lớn, trace 100% requests là không khả thi (quá nhiều data). Head sampling (quyết định ngay đầu), tail sampling (quyết định sau khi thấy kết quả), và adaptive sampling là các chiến lược phổ biến.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Những Hiểu Nhầm Phổ Biến</h2>
+  <p class="section-subtitle">Những quan niệm sai lầm có thể khiến bạn đi sai hướng ngay từ đầu</p>
+
+  <div class="myth-grid">
+    <!-- Myth 1 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Có Grafana dashboard đẹp là đã monitoring tốt"</h4>
+      <p>Dashboard đẹp mà không ai nhìn thì vô nghĩa. Dashboard mà không có alert rules cũng vô nghĩa. Rất nhiều team dành cả tuần làm dashboard tuyệt đẹp rồi... không bao giờ mở lại.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Dashboard chỉ là <strong>một phần</strong> của monitoring. Quan trọng hơn là: alert rules chất lượng, runbooks cho mỗi alert, on-call process rõ ràng, và incident review sau mỗi sự cố. Dashboard là công cụ debug, không phải mục tiêu.</p>
+    </div>
+
+    <!-- Myth 2 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Prometheus thay thế được mọi monitoring tool"</h4>
+      <p>Prometheus rất mạnh cho metrics nhưng nó KHÔNG phải là giải pháp toàn diện. Nó không có log management, tracing hạn chế, SNMP polling cần exporter riêng, và long-term storage phải dùng tool khác.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Monitoring stack hiện đại cần <strong>nhiều tools phối hợp</strong>: Prometheus cho metrics, Loki/ELK cho logs, Jaeger/Tempo cho traces, Alertmanager cho alerting, Grafana cho visualization. Đó là lý do gọi là "stack" chứ không phải "tool".</p>
+    </div>
+
+    <!-- Myth 3 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Thu thập càng nhiều metrics càng tốt"</h4>
+      <p>Khi bạn có 500.000 time-series mà chỉ thực sự nhìn 200 cái, bạn đang lãng phí storage, CPU, và tiền. High cardinality metrics (ví dụ: metric theo user_id) có thể giết chết Prometheus.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Thu thập có <strong>chủ đích</strong>. Bắt đầu với Four Golden Signals cho mỗi service, USE method cho infrastructure. Chỉ thêm metrics khi có câu hỏi cụ thể cần trả lời. Review và xóa metrics không dùng thường xuyên. Fewer, better metrics > many useless metrics.</p>
+    </div>
+
+    <!-- Myth 4 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Monitoring và Observability là hai thứ hoàn toàn khác"</h4>
+      <p>Nhiều người (và vendor marketing) cố tình tách biệt chúng thành hai concept không liên quan, ám chỉ monitoring là "cũ" và observability là "mới".</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Monitoring là <strong>tập con</strong> của observability. Bạn không thể có observability mà không monitoring. Monitoring trả lời "có vấn đề không?", observability giúp trả lời thêm "vấn đề là gì, ở đâu, tại sao?". Cả hai bổ sung cho nhau, không thay thế nhau.</p>
+    </div>
+
+    <!-- Myth 5 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"ELK stack miễn phí hoàn toàn"</h4>
+      <p>Elasticsearch, Logstash, Kibana đều open-source (SSPL license từ 2021). Nhưng chi phí thực sự nằm ở infrastructure: Elasticsearch cần RAM rất nhiều, Logstash cần CPU, và data volume tăng nhanh chóng mặt.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Với 100GB logs/ngày, bạn cần ít nhất 3 Elasticsearch nodes x 16GB RAM + hot/warm/cold tiering + curator để xóa data cũ. Chi phí infra thực tế có thể lên <strong>hàng nghìn đô/tháng</strong>. Đó là lý do Loki ra đời - giải quyết vấn đề chi phí của log aggregation.</p>
+    </div>
+
+    <!-- Myth 6 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Uptime 99.99% là đủ"</h4>
+      <p>Nhiều team đặt target "four nines" mà không hiểu nó thực sự có nghĩa gì. 99.99% = chỉ 52.6 phút downtime mỗi năm. Để đạt được con số này, bạn cần toàn bộ stack (infra, app, network) đều đạt mức đó.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Hãy dùng <strong>SLO</strong> (Service Level Objectives) thay vì uptime đơn thuần. "99.9% requests phải có latency < 500ms" hữu ích hơn "99.99% uptime". SLO cho phép <strong>error budget</strong>: bạn biết chính xác còn bao nhiêu "ngân sách lỗi" để deploy tính năng mới hay thí nghiệm.</p>
+    </div>
+
+    <!-- Myth 7 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Average (mean) latency là metric đủ tốt"</h4>
+      <p>Average latency 200ms nghe có vẻ ổn. Nhưng nếu 95% requests mất 50ms và 5% requests mất 3 giây, average vẫn là ~200ms. Bạn đã che giấu trải nghiệm tệ của 5% users.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Dùng <strong>percentiles</strong>: p50, p90, p95, p99. p99 = 2s nghĩa là 1% requests chậm nhất mất hơn 2 giây. Prometheus histogram + <code style="color: var(--accent3);">histogram_quantile()</code> là cách chuẩn để tính percentiles. Luôn hiển thị p50 và p99 cạnh nhau trên dashboard.</p>
+    </div>
+
+    <!-- Myth 8 -->
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Monitoring setup xong rồi là xong"</h4>
+      <p>Team dành 2 tuần setup monitoring stack, vui mừng, rồi không ai đụng lại trong 6 tháng. Alert rules cũ, dashboard không phản ánh kiến trúc mới, metrics mới không được thêm.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Monitoring là <strong>sản phẩm sống</strong>, cần liên tục bảo trì. Mỗi feature mới cần metrics mới. Mỗi incident cần review: "Tại sao monitoring không phát hiện sớm hơn?". Tốt nhất là coi monitoring như code: version control, code review, CI/CD cho dashboards và alert rules.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Cheat Sheet</h2>
+  <p class="section-subtitle">PromQL và LogQL - những query bạn sẽ dùng hàng ngày</p>
+
+  <h3 style="color: var(--accent); margin-bottom: 1rem; font-size: 1.2rem;">PromQL - Prometheus Query Language</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>CPU Usage per Instance</h4>
+      <p>Tính % CPU đang sử dụng cho mỗi instance. Dùng rate() cho counter metrics.</p>
+      <code>100 - (avg by(instance) (
+  rate(node_cpu_seconds_total
+    {mode="idle"}[5m]
+  ) * 100
+))</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Memory Usage %</h4>
+      <p>Phần trăm RAM đã sử dụng. MemAvailable chính xác hơn MemFree.</p>
+      <code>(1 - (
+  node_memory_MemAvailable_bytes
+  / node_memory_MemTotal_bytes
+)) * 100</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>HTTP Request Rate by Status</h4>
+      <p>Requests per second grouped theo HTTP status code.</p>
+      <code>sum by(status_code) (
+  rate(http_requests_total[5m])
+)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Error Rate %</h4>
+      <p>Tỷ lệ requests trả về 5xx. Nền tảng cho SLO monitoring.</p>
+      <code>sum(rate(
+  http_requests_total
+    {status_code=~"5.."}[5m]
+)) / sum(rate(
+  http_requests_total[5m]
+)) * 100</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Latency Percentile (p99)</h4>
+      <p>99th percentile latency từ histogram. Quan trọng hơn average.</p>
+      <code>histogram_quantile(0.99,
+  sum by(le) (
+    rate(http_request_duration_seconds_bucket[5m])
+  )
+)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Disk Space Prediction</h4>
+      <p>Dự đoán bao giờ disk đầy dựa trên trend 7 ngày.</p>
+      <code>predict_linear(
+  node_filesystem_avail_bytes
+    {mountpoint="/"}[7d],
+  3600 * 24 * 30
+) < 0</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Top 5 Pods by Memory</h4>
+      <p>5 pod dùng nhiều memory nhất trong Kubernetes.</p>
+      <code>topk(5,
+  container_memory_usage_bytes
+    {namespace="production"}
+)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Alert Rule: High Error Rate</h4>
+      <p>Cấu trúc alert rule trong Prometheus.</p>
+      <code>- alert: HighErrorRate
+  expr: |
+    sum(rate(http_requests_total
+      {code=~"5.."}[5m]))
+    / sum(rate(
+      http_requests_total[5m]))
+    > 0.05
+  for: 5m
+  labels:
+    severity: critical</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent4); margin: 2.5rem 0 1rem; font-size: 1.2rem;">LogQL - Loki Query Language</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Lọc log theo label</h4>
+      <p>Query cơ bản: chọn log stream theo labels.</p>
+      <code>{namespace="production",
+ container="api-server"}
+  |= "error"</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Regex Filter</h4>
+      <p>Lọc log content bằng regex pattern.</p>
+      <code>{job="nginx"}
+  |~ "status=(4|5)\\d{2}"
+  !~ "healthcheck"</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>JSON Parse + Filter</h4>
+      <p>Parse JSON log rồi filter theo field.</p>
+      <code>{app="payment-service"}
+  | json
+  | level="error"
+  | duration > 5s</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Log Metrics: Rate</h4>
+      <p>Đếm số error logs per second - biến logs thành metrics.</p>
+      <code>sum(rate(
+  {namespace="production"}
+    |= "error"
+  [5m]
+)) by (container)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Pattern Match + Unwrap</h4>
+      <p>Extract giá trị số từ log để tính aggregation.</p>
+      <code>{job="app"} | json
+  | unwrap duration
+  | avg_over_time(
+    {job="app"}
+      | json
+      | unwrap duration [5m]
+  )</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Top Error Messages</h4>
+      <p>Tìm các error message xuất hiện nhiều nhất.</p>
+      <code>topk(10,
+  sum by(msg) (
+    count_over_time(
+      {app="api"} | json
+        | level="error" [1h]
+    )
+  )
+)</code>
+    </div>
+  </div>
+
+  <!-- Quick Reference Table -->
+  <h3 style="color: var(--accent); margin: 2.5rem 0 1rem; font-size: 1.2rem;">Quick Reference: Khi nào dùng gì?</h3>
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tình huống</th>
+          <th>Dùng gì</th>
+          <th>Tại sao</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Latency tăng đột ngột</td>
+          <td>Metrics (Prometheus) → Traces (Tempo)</td>
+          <td>Metrics phát hiện, traces chỉ rõ service nào chậm</td>
+        </tr>
+        <tr>
+          <td>Lỗi 500 tăng vọt</td>
+          <td>Metrics → Logs (Loki)</td>
+          <td>Metrics trigger alert, logs cho thấy error message cụ thể</td>
+        </tr>
+        <tr>
+          <td>Switch mạng bị flapping</td>
+          <td>SNMP + Syslog</td>
+          <td>SNMP trap thông báo link down/up, syslog cho chi tiết</td>
+        </tr>
+        <tr>
+          <td>Disk sắp đầy</td>
+          <td>Metrics + predict_linear()</td>
+          <td>PromQL dự đoán khi nào disk hết dựa trên trend</td>
+        </tr>
+        <tr>
+          <td>Xác định bottleneck trong microservices</td>
+          <td>Distributed Traces (OTel)</td>
+          <td>Traces hiển thị waterfall view - thấy ngay service nào chậm</td>
+        </tr>
+        <tr>
+          <td>Post-incident analysis</td>
+          <td>Logs + Metrics + Traces (correlated)</td>
+          <td>Cả ba trụ cột kết hợp cho bức tranh toàn cảnh</td>
+        </tr>
+        <tr>
+          <td>Capacity planning</td>
+          <td>Long-term metrics (VictoriaMetrics)</td>
+          <td>Cần data nhiều tháng để thấy growth trend</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Monitoring World - Tài liệu tham khảo về Monitoring & Observability</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+    Prometheus &bull; Grafana &bull; Loki &bull; OpenTelemetry &bull; VictoriaMetrics &bull; Alertmanager
+  </p>
+  <p style="margin-top: 0.5rem;">Cập nhật: Tháng 3, 2026</p>
+</footer>
+
+</body>
+</html>

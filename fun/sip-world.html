@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới SIP - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-signal 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-signal {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.85; }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is SIP */
+  .sip-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .sip-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .sip-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor/Protocol Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.via::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.from::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.callid::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.cseq::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.contact::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.route::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.codec-g711::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.codec-g729::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.codec-opus::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.codec-g722::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* SIP Flow */
+  .sip-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .sip-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .sip-line {
+    display: flex;
+    align-items: center;
+    margin: 0.3rem 0;
+    min-width: 600px;
+  }
+
+  .sip-entity { width: 100px; text-align: center; font-weight: 700; flex-shrink: 0; }
+  .sip-entity.caller { color: var(--accent3); }
+  .sip-entity.pbx { color: var(--accent); }
+  .sip-entity.callee { color: var(--accent4); }
+
+  .sip-msg {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    padding: 0.3rem 0;
+  }
+
+  .sip-msg .arrow-line {
+    height: 2px;
+    background: var(--text-dim);
+    position: relative;
+  }
+
+  .sip-msg .arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -5px;
+    top: -8px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  .sip-msg .arrow-line.left::after {
+    content: '◀';
+    left: -5px;
+    right: auto;
+  }
+
+  .sip-msg .msg-label {
+    font-size: 0.75rem;
+    color: var(--accent2);
+    margin-bottom: 2px;
+  }
+
+  /* Mindset */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sip-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .mindset-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">SIP World</a>
+  <a href="#what">SIP l&agrave; g&igrave;?</a>
+  <a href="#headers">Headers</a>
+  <a href="#sdp">SDP</a>
+  <a href="#rtp">RTP/RTCP</a>
+  <a href="#codecs">Codecs</a>
+  <a href="#nat">NAT Traversal</a>
+  <a href="#flows">SIP Flows</a>
+  <a href="#trunking">SIP Trunking</a>
+  <a href="#troubleshoot">Troubleshoot</a>
+  <a href="#myths">Hi&#7875;u nh&#7847;m</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">📡</div>
+  <h1>Thế Giới SIP</h1>
+  <p class="subtitle">Từ tín hiệu signaling đến dòng media RTP - Hành trình sâu vào lõi của VoIP. Mọi thứ bạn cần biết về SIP Protocol, cách nó thực sự hoạt động, những cái bẫy NAT kinh điển, và nghệ thuật troubleshoot cuộc gọi.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS SIP -->
+<section id="what">
+  <div class="sip-what">
+    <h2 class="section-title">SIP là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Session Initiation Protocol</strong> (RFC 3261) - Đừng để cái tên đánh lừa. SIP <strong>không truyền giọng nói</strong>. Nó chỉ là "người mai mối" - thiết lập, điều khiển, và kết thúc phiên truyền thông. Giọng nói thực sự đi qua một con đường hoàn toàn khác: RTP. Đây là điều quan trọng nhất cần hiểu trước khi đi sâu hơn.
+    </p>
+
+    <div class="sip-analogy">
+      <div class="analogy-box">
+        <div class="icon">📞</div>
+        <h3>SIP (Signaling)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">"Alô, tôi muốn gọi cho số 100"<br>"Được, đang kết nối..."<br>"OK, cuộc gọi kết thúc"<br><strong style="color: var(--accent);">Port 5060/5061</strong></p>
+      </div>
+      <div class="analogy-arrow">≠</div>
+      <div class="analogy-box">
+        <div class="icon">🎵</div>
+        <h3>RTP (Media)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Tiếng nói thực tế<br>Dòng audio liên tục<br>Gói tin nhỏ, tốc độ cao<br><strong style="color: var(--accent3);">Port 10000-20000</strong></p>
+      </div>
+    </div>
+
+    <p style="color: var(--text-dim); font-size: 1rem; margin-top: 1.5rem;">
+      Hãy tưởng tượng bạn đặt bàn ở nhà hàng qua điện thoại. Cuộc gọi đặt bàn là <strong>SIP</strong> - nó thiết lập mọi thứ: bạn muốn bàn cho mấy người, giờ nào, góc nào. Nhưng bữa ăn thực sự (thức ăn, đồ uống) là <strong>RTP</strong> - hoàn toàn tách biệt, đi theo con đường riêng (nhà bếp → bàn). SIP text-based giống HTTP, dễ đọc bằng mắt thường. RTP là binary, chạy trên UDP, đòi hỏi real-time.
+    </p>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>SIP được thiết kế bởi những người làm web (IETF), không phải dân telecom truyền thống. Vì vậy nó mang DNA của HTTP: text-based, request/response, stateless by design, dùng URI. Đây vừa là sức mạnh (dễ debug, dễ extend) vừa là điểm yếu (không phù hợp lắm với bản chất stateful của cuộc gọi điện thoại). So sánh với H.323 - được thiết kế bởi dân telecom (ITU-T), binary, phức tạp, nhưng "đúng chất" hơn. SIP thắng vì đơn giản hơn.</p>
+    </div>
+  </div>
+
+  <!-- Architecture Diagram: SIP vs RTP paths -->
+  <div class="arch-container">
+    <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-size: 1.2rem;">Kiến trúc SIP/RTP - Hai con đường tách biệt</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">📱</div>
+        <h4>UA (Phone A)</h4>
+        <p>SIP User Agent</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: rgba(139,92,246,0.4);">
+        <div class="layer-icon">🔀</div>
+        <h4>SIP Proxy</h4>
+        <p>Signaling Only</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">📱</div>
+        <h4>UA (Phone B)</h4>
+        <p>SIP User Agent</p>
+      </div>
+    </div>
+    <div style="text-align: center; color: var(--accent2); margin: 1rem 0; font-size: 0.9rem;">--- Đường SIP Signaling (port 5060) ---</div>
+    <div class="arch-diagram">
+      <div class="arch-layer" style="border-color: rgba(16,185,129,0.4);">
+        <div class="layer-icon">🎤</div>
+        <h4>Phone A</h4>
+        <p>RTP sender</p>
+      </div>
+      <div class="arch-arrow" style="color: var(--accent3);">⇄</div>
+      <div class="arch-layer" style="border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05);">
+        <div class="layer-icon">🎵</div>
+        <h4>Direct RTP</h4>
+        <p>Peer-to-peer media</p>
+      </div>
+      <div class="arch-arrow" style="color: var(--accent3);">⇄</div>
+      <div class="arch-layer" style="border-color: rgba(16,185,129,0.4);">
+        <div class="layer-icon">🔊</div>
+        <h4>Phone B</h4>
+        <p>RTP receiver</p>
+      </div>
+    </div>
+    <div style="text-align: center; color: var(--accent3); margin: 1rem 0; font-size: 0.9rem;">--- Đường RTP Media (port 10000-20000, UDP) ---</div>
+    <p style="color: var(--text-dim); text-align: center; font-size: 0.85rem; margin-top: 0.5rem;">Lưu ý: RTP có thể đi TRỰC TIẾP giữa hai phone mà KHÔNG qua PBX (direct media). Đây là nguyên nhân hàng đầu gây nhầm lẫn khi troubleshoot.</p>
+  </div>
+</section>
+
+<!-- SIP HEADERS -->
+<section id="headers">
+  <h2 class="section-title" style="color: var(--accent2);">SIP Headers Deep-Dive</h2>
+  <p class="section-subtitle">Mỗi SIP message là một bức thư - và headers chính là phần phong bì chứa mọi thông tin định tuyến</p>
+
+  <div class="vendor-grid">
+    <!-- Via -->
+    <div class="vendor-card via">
+      <div class="vendor-logo">🛤️</div>
+      <h3>Via</h3>
+      <div class="vendor-type">Đường đi của Response</div>
+      <p>Mỗi hop mà request đi qua sẽ thêm một dòng Via. Response đi ngược lại theo đúng thứ tự Via. Nếu Via sai = response lạc đường. Mỗi proxy thêm Via của mình vào đầu, và gỡ ra khi response đi qua.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Multi</div><div class="label">Hop tracking</div></div>
+        <div class="stat"><div class="num">branch</div><div class="label">Transaction ID</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Bắt buộc</span>
+        <span class="tag good">Route Response</span>
+        <span class="tag warn">NAT Issues</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Ví dụ</h4>
+        <p><code style="color: var(--accent3); font-size: 0.85rem;">Via: SIP/2.0/UDP 10.0.1.5:5060;branch=z9hG4bK776</code><br>Tham số <strong>branch</strong> bắt đầu bằng "z9hG4bK" là magic cookie theo RFC 3261 - cho biết đây là transaction ID tuân thủ chuẩn.</p>
+      </div>
+    </div>
+
+    <!-- From / To -->
+    <div class="vendor-card from">
+      <div class="vendor-logo">👤</div>
+      <h3>From &amp; To</h3>
+      <div class="vendor-type">Nhận dạng hai bên cuộc gọi</div>
+      <p><strong>From</strong>: Ai đang gọi (caller). <strong>To</strong>: Gọi cho ai (callee). Nhưng đây là điều nhiều người hiểu sai: From/To KHÔNG dùng để route! Chúng chỉ là "nhãn" nhận dạng. Routing dựa vào Request-URI. From có thể bị giả mạo (caller ID spoofing).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">tag=</div><div class="label">Dialog ID</div></div>
+        <div class="stat"><div class="num">SIP URI</div><div class="label">Format</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Bắt buộc</span>
+        <span class="tag hot">Spoofable</span>
+        <span class="tag warn">Không route</span>
+      </div>
+    </div>
+
+    <!-- Call-ID -->
+    <div class="vendor-card callid">
+      <div class="vendor-logo">🔑</div>
+      <h3>Call-ID</h3>
+      <div class="vendor-type">Định danh duy nhất cuộc gọi</div>
+      <p>Một chuỗi unique cho mỗi cuộc gọi. Kết hợp với From-tag và To-tag tạo thành bộ ba "Dialog ID" - cách SIP nhận biết message nào thuộc cuộc gọi nào. Call-ID không đổi suốt cuộc gọi, kể cả khi transfer.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">UUID</div><div class="label">Unique</div></div>
+        <div class="stat"><div class="num">Dialog</div><div class="label">Identifier</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Bắt buộc</span>
+        <span class="tag good">Troubleshoot Key</span>
+        <span class="tag">Không đổi</span>
+      </div>
+    </div>
+
+    <!-- CSeq -->
+    <div class="vendor-card cseq">
+      <div class="vendor-logo">🔢</div>
+      <h3>CSeq</h3>
+      <div class="vendor-type">Sequence Number + Method</div>
+      <p>Command Sequence - một số nguyên tăng dần + tên method. Giúp phân biệt request mới vs retransmission, và match response với request. Mỗi method mới trong cùng dialog sẽ tăng CSeq lên 1. ACK và CANCEL giữ nguyên CSeq của INVITE ban đầu.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">++</div><div class="label">Mỗi request mới</div></div>
+        <div class="stat"><div class="num">Match</div><div class="label">Req ↔ Res</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Bắt buộc</span>
+        <span class="tag">Tăng dần</span>
+        <span class="tag good">Anti-replay</span>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="vendor-card contact">
+      <div class="vendor-logo">📍</div>
+      <h3>Contact</h3>
+      <div class="vendor-type">Địa chỉ trực tiếp của UA</div>
+      <p>Đây mới là địa chỉ thực sự để liên lạc trực tiếp với UA. Trong REGISTER, Contact cho biết "tôi đang ở đây, hãy gửi cuộc gọi đến IP này". Trong INVITE, Contact cho phép re-INVITE đi thẳng đến UA mà không qua proxy. Đây là header bị NAT phá hoại nhiều nhất.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">IP:Port</div><div class="label">Direct Address</div></div>
+        <div class="stat"><div class="num">NAT</div><div class="label">Nightmare</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Bắt buộc</span>
+        <span class="tag hot">NAT Victim #1</span>
+        <span class="tag warn">Private IP Leak</span>
+      </div>
+    </div>
+
+    <!-- Record-Route -->
+    <div class="vendor-card route">
+      <div class="vendor-logo">🔄</div>
+      <h3>Record-Route &amp; Route</h3>
+      <div class="vendor-type">Ép SIP đi qua Proxy</div>
+      <p>Mặc định, sau khi dialog thiết lập, SIP message đi thẳng giữa hai UA (nhờ Contact header). Record-Route cho phép proxy "đăng ký" mình vào đường đi, buộc mọi message trong dialog phải đi qua nó. Quan trọng cho billing, NAT fix, và policy enforcement.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Proxy</div><div class="label">Stay in path</div></div>
+        <div class="stat"><div class="num">lr</div><div class="label">Loose Route</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Tuỳ chọn</span>
+        <span class="tag good">NAT Helper</span>
+        <span class="tag">Billing</span>
+        <span class="tag">Policy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Bộ ba Dialog ID</h4>
+    <p>Một SIP dialog được xác định bởi: <strong>Call-ID + From-tag + To-tag</strong>. Đây là "chìa khoá" để SIP biết message nào thuộc cuộc gọi nào. From-tag được tạo bởi caller khi gửi INVITE. To-tag được callee thêm vào trong response. Khi cả ba có đủ, dialog đã thiết lập hoàn chỉnh.</p>
+  </div>
+</section>
+
+<!-- SDP -->
+<section id="sdp">
+  <h2 class="section-title" style="color: var(--accent3);">SDP - Session Description Protocol</h2>
+  <p class="section-subtitle">Nếu SIP là người mai mối, thì SDP là bản hợp đồng - ghi rõ hai bên sẽ "nói chuyện" bằng gì</p>
+
+  <div class="sip-what">
+    <h2 style="color: var(--accent3); font-size: 1.4rem;">Offer/Answer Model</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem;">
+      SDP nằm trong body của SIP message (INVITE hoặc 200 OK). Nó mô tả: dùng codec gì, IP nào nhận media, port nào, hỗ trợ DTMF kiểu gì. Quá trình thương lượng diễn ra theo mô hình <strong>Offer/Answer</strong> (RFC 3264):
+    </p>
+
+    <div class="sip-analogy" style="margin-top: 2rem;">
+      <div class="analogy-box">
+        <div class="icon">📤</div>
+        <h3>Offer (trong INVITE)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">"Tôi hỗ trợ G.711, G.729, Opus.<br>Gửi media về IP 10.0.1.5, port 20000.<br>Tôi muốn gọi audio."</p>
+      </div>
+      <div class="analogy-arrow">⇄</div>
+      <div class="analogy-box">
+        <div class="icon">📥</div>
+        <h3>Answer (trong 200 OK)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">"OK, tôi chọn G.711 alaw.<br>Gửi media về IP 10.0.2.8, port 30000.<br>Đồng ý audio."</p>
+      </div>
+    </div>
+
+    <div class="sip-flow" style="margin-top: 2rem;">
+      <div class="flow-title">Ví dụ SDP thực tế (trong INVITE body)</div>
+<code style="color: var(--accent3); font-size: 0.82rem; line-height: 1.6;">v=0
+o=alice 2890844526 2890844526 IN IP4 10.0.1.5
+s=SIP Call
+c=IN IP4 10.0.1.5          ← IP nhận media (RTP)
+t=0 0
+m=audio 20000 RTP/AVP 8 0 18 101   ← port 20000, codecs: 8,0,18,101
+a=rtpmap:8 PCMA/8000       ← codec 8 = G.711 A-law
+a=rtpmap:0 PCMU/8000       ← codec 0 = G.711 μ-law
+a=rtpmap:18 G729/8000      ← codec 18 = G.729
+a=rtpmap:101 telephone-event/8000  ← DTMF RFC 2833
+a=fmtp:101 0-16            ← DTMF events 0-9, *, #, A-D
+a=ptime:20                 ← 20ms per RTP packet
+a=sendrecv                 ← hai chiều (send + receive)</code>
+    </div>
+
+    <div class="insight-box">
+      <h4>Cẩn thận với c= line</h4>
+      <p>Dòng <strong>c=</strong> (connection) trong SDP là nơi chứa IP nhận RTP. Đây KHÔNG nhất thiết phải giống IP gửi SIP. Khi phone nằm sau NAT, c= line thường chứa private IP (10.x.x.x) → media đi vào hố đen. Đây là nguyên nhân #1 của "one-way audio" - triệu chứng kinh điển nhất trong VoIP troubleshooting.</p>
+    </div>
+  </div>
+
+  <div class="protocol-map" style="margin-top: 2rem;">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> m= (media)</h4>
+      <p>Định nghĩa loại media (audio/video), port nhận RTP, và danh sách codec theo thứ tự ưu tiên. Số trong danh sách là payload type.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> a=rtpmap</h4>
+      <p>Ánh xạ payload type number → tên codec cụ thể. Ví dụ: 8 = PCMA (G.711 A-law), 0 = PCMU (G.711 μ-law).</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> a=sendrecv</h4>
+      <p>Hướng media: sendrecv (hai chiều), sendonly (chỉ gửi), recvonly (chỉ nhận), inactive (tắt). Dùng khi hold cuộc gọi.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> a=fmtp</h4>
+      <p>Format parameters - tuỳ chỉnh chi tiết cho codec. Ví dụ: cho telephone-event thì chỉ định DTMF events 0-16.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> a=ptime</h4>
+      <p>Packetization time - bao nhiêu ms audio trong mỗi gói RTP. Thường 20ms. Giá trị lớn = ít gói hơn nhưng delay cao hơn.</p>
+    </div>
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> a=crypto (SRTP)</h4>
+      <p>Chứa thông tin mã hoá SRTP khi dùng SDES. Bao gồm crypto suite và master key. Thay thế bằng DTLS-SRTP trong WebRTC.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RTP/RTCP -->
+<section id="rtp">
+  <h2 class="section-title" style="color: var(--accent4);">RTP &amp; RTCP - Dòng Chảy Media</h2>
+  <p class="section-subtitle">RTP là máu trong huyết quản VoIP - mang tiếng nói thực sự từ người này đến người kia</p>
+
+  <div class="sip-what" style="background: linear-gradient(135deg, rgba(245,158,11,0.05), rgba(239,68,68,0.05));">
+    <h2 style="color: var(--accent4); font-size: 1.4rem;">Real-time Transport Protocol</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem;">
+      RTP (RFC 3550) chạy trên <strong>UDP</strong> - không phải TCP. Tại sao? Vì voice cần real-time. Nếu một gói tin mất, TCP sẽ retransmit → delay → giọng nói bị "giật". Với UDP, gói mất thì mất - não người bù lại được khoảng trống nhỏ. Chất lượng tốt hơn nhiều so với đợi retransmit. Mỗi gói RTP chứa 20ms audio (mặc định), nghĩa là 50 gói/giây cho mỗi chiều.
+    </p>
+
+    <div class="stats-row" style="margin-top: 1.5rem;">
+      <div class="stat"><div class="num">UDP</div><div class="label">Transport</div></div>
+      <div class="stat"><div class="num">20ms</div><div class="label">Mỗi gói</div></div>
+      <div class="stat"><div class="num">50</div><div class="label">Gói/giây</div></div>
+      <div class="stat"><div class="num">&lt;150ms</div><div class="label">Delay tối đa</div></div>
+      <div class="stat"><div class="num">&lt;1%</div><div class="label">Packet loss OK</div></div>
+    </div>
+  </div>
+
+  <div class="vendor-grid" style="margin-top: 2rem;">
+    <!-- Jitter Buffer -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent4);">
+      <div class="vendor-logo">📊</div>
+      <h3>Jitter Buffer</h3>
+      <div class="vendor-type">Bộ đệm chống giật</div>
+      <p>Gói RTP không đến đều đặn - gói nọ 18ms, gói kia 25ms, gói khác 15ms. Jitter buffer giữ gói lại một chút, sắp xếp lại đúng thứ tự, rồi phát ra đều đặn. Quá nhỏ = vẫn giật. Quá lớn = delay cao. Thường 20-60ms là hợp lý.</p>
+      <div class="tag-row">
+        <span class="tag good">Chống jitter</span>
+        <span class="tag warn">Tăng delay</span>
+        <span class="tag">Adaptive tốt hơn Fixed</span>
+      </div>
+    </div>
+
+    <!-- Packet Loss -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent5);">
+      <div class="vendor-logo">📉</div>
+      <h3>Packet Loss</h3>
+      <div class="vendor-type">Kẻ thù số 1 của chất lượng</div>
+      <p>Mất 1% gói = nhận thấy được. Mất 3% = phiền phức. Mất 5% = không nghe được. Packet Loss Concealment (PLC) là thuật toán đoán nội dung gói mất dựa trên gói trước đó. Opus codec có PLC rất tốt, G.711 thì kém.</p>
+      <div class="tag-row">
+        <span class="tag good">&lt;1% Tốt</span>
+        <span class="tag warn">1-3% Chấp nhận</span>
+        <span class="tag hot">&gt;5% Không dùng được</span>
+      </div>
+    </div>
+
+    <!-- RTCP -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent2);">
+      <div class="vendor-logo">📋</div>
+      <h3>RTCP</h3>
+      <div class="vendor-type">Báo cáo chất lượng real-time</div>
+      <p>RTCP chạy song song RTP (thường port RTP + 1). Gửi báo cáo: bao nhiêu gói mất, jitter bao nhiêu, round-trip time. Không mang media, chỉ mang statistics. Quan trọng cho monitoring và QoS. RTCP-XR (RFC 3611) mở rộng thêm MOS score.</p>
+      <div class="tag-row">
+        <span class="tag">Port RTP+1</span>
+        <span class="tag good">QoS Monitoring</span>
+        <span class="tag">Sender/Receiver Report</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Con số vàng trong VoIP</h4>
+    <p><strong>Delay &lt; 150ms</strong> (one-way) - trên 150ms người nói bắt đầu cảm thấy "không tự nhiên". <strong>Jitter &lt; 30ms</strong> - cao hơn thì jitter buffer phải lớn → thêm delay. <strong>Packet Loss &lt; 1%</strong> - mỗi % thêm là một bước xuống chất lượng rõ rệt. <strong>MOS &gt; 3.5</strong> (thang 1-5) - dưới 3.5 thì user sẽ phàn nàn.</p>
+  </div>
+</section>
+
+<!-- CODECS -->
+<section id="codecs">
+  <h2 class="section-title" style="color: var(--accent5);">Cuộc Chiến Codec</h2>
+  <p class="section-subtitle">Codec quyết định chất lượng âm thanh, băng thông tiêu thụ, và chi phí - chọn sai codec là tự bắn vào chân</p>
+
+  <div class="vendor-grid">
+    <!-- G.711 -->
+    <div class="vendor-card codec-g711">
+      <div class="vendor-logo">🎙️</div>
+      <h3>G.711 (A-law / μ-law)</h3>
+      <div class="vendor-type">Ông tổ - Không nén</div>
+      <p>Codec gốc của điện thoại số. A-law (châu Âu, payload 8) và μ-law (Bắc Mỹ/Nhật, payload 0). Không nén = chất lượng tốt nhất có thể ở narrowband, nhưng tốn băng thông nhất. Mọi thiết bị SIP đều phải hỗ trợ G.711 - đây là "common ground" khi thương lượng codec thất bại.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">64</div><div class="label">kbps</div></div>
+        <div class="stat"><div class="num">87</div><div class="label">kbps w/ overhead</div></div>
+        <div class="stat"><div class="num">4.1</div><div class="label">MOS</div></div>
+        <div class="stat"><div class="num">8kHz</div><div class="label">Sample Rate</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Universal</span>
+        <span class="tag hot">Tốn bandwidth</span>
+        <span class="tag">Không license</span>
+        <span class="tag good">Low CPU</span>
+      </div>
+    </div>
+
+    <!-- G.729 -->
+    <div class="vendor-card codec-g729">
+      <div class="vendor-logo">🔋</div>
+      <h3>G.729</h3>
+      <div class="vendor-type">Tiết kiệm băng thông</div>
+      <p>Nén xuống 8kbps - tiết kiệm 8x so với G.711. Chất lượng vẫn tốt cho voice. Từng là codec vàng cho WAN link chậm. Nhược điểm: có license fee (đã hết hạn patent 2017), không tốt cho music-on-hold, và PLC kém hơn. G.729a là variant nhẹ hơn, G.729b thêm VAD (Voice Activity Detection).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">8</div><div class="label">kbps</div></div>
+        <div class="stat"><div class="num">31</div><div class="label">kbps w/ overhead</div></div>
+        <div class="stat"><div class="num">3.9</div><div class="label">MOS</div></div>
+        <div class="stat"><div class="num">8kHz</div><div class="label">Sample Rate</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tiết kiệm</span>
+        <span class="tag warn">Cũ</span>
+        <span class="tag">Narrowband</span>
+        <span class="tag hot">Kém với nhạc</span>
+      </div>
+    </div>
+
+    <!-- Opus -->
+    <div class="vendor-card codec-opus">
+      <div class="vendor-logo">👑</div>
+      <h3>Opus</h3>
+      <div class="vendor-type">Codec hiện đại nhất</div>
+      <p>Vua codec - tốt nhất ở mọi bitrate. Adaptive: từ 6kbps đến 510kbps. Narrowband lẫn wideband. Forward Error Correction (FEC) tích hợp. Bắt buộc trong WebRTC. Open source, royalty-free. Nếu hạ tầng hỗ trợ, luôn chọn Opus. Duy nhất nhược điểm: nhiều SIP trunk provider chưa hỗ trợ.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">6-510</div><div class="label">kbps</div></div>
+        <div class="stat"><div class="num">Adaptive</div><div class="label">Bitrate</div></div>
+        <div class="stat"><div class="num">4.5+</div><div class="label">MOS</div></div>
+        <div class="stat"><div class="num">48kHz</div><div class="label">Sample Rate</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tốt nhất</span>
+        <span class="tag good">WebRTC</span>
+        <span class="tag good">FEC tích hợp</span>
+        <span class="tag warn">SIP trunk ít hỗ trợ</span>
+      </div>
+    </div>
+
+    <!-- G.722 -->
+    <div class="vendor-card codec-g722">
+      <div class="vendor-logo">🎧</div>
+      <h3>G.722</h3>
+      <div class="vendor-type">HD Voice - Wideband</div>
+      <p>Codec "HD Voice" đầu tiên phổ biến trong VoIP. Wideband (16kHz sample rate) = nghe rõ hơn hẳn G.711. Băng thông tương đương G.711 (64kbps) nhưng chất lượng cao hơn nhờ dải tần rộng. Hầu hết IP phone hiện đại đều hỗ trợ. Rất phù hợp cho nội bộ LAN.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">64</div><div class="label">kbps</div></div>
+        <div class="stat"><div class="num">87</div><div class="label">kbps w/ overhead</div></div>
+        <div class="stat"><div class="num">4.5</div><div class="label">MOS</div></div>
+        <div class="stat"><div class="num">16kHz</div><div class="label">Wideband</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">HD Voice</span>
+        <span class="tag">Wideband</span>
+        <span class="tag good">Không license</span>
+        <span class="tag warn">Như G.711 bandwidth</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Codec comparison table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Codec</th>
+          <th>Bitrate</th>
+          <th>Với overhead</th>
+          <th>MOS</th>
+          <th>Dải tần</th>
+          <th>License</th>
+          <th>Dùng khi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>G.711 alaw</td>
+          <td>64 kbps</td>
+          <td>87 kbps</td>
+          <td>4.1</td>
+          <td>Narrowband</td>
+          <td>Free</td>
+          <td>LAN, trunk, fallback</td>
+        </tr>
+        <tr>
+          <td>G.711 ulaw</td>
+          <td>64 kbps</td>
+          <td>87 kbps</td>
+          <td>4.1</td>
+          <td>Narrowband</td>
+          <td>Free</td>
+          <td>Bắc Mỹ, Nhật Bản</td>
+        </tr>
+        <tr>
+          <td>G.729</td>
+          <td>8 kbps</td>
+          <td>31 kbps</td>
+          <td>3.9</td>
+          <td>Narrowband</td>
+          <td>Free (2017+)</td>
+          <td>WAN chậm, tiết kiệm</td>
+        </tr>
+        <tr>
+          <td>G.722</td>
+          <td>64 kbps</td>
+          <td>87 kbps</td>
+          <td>4.5</td>
+          <td>Wideband</td>
+          <td>Free</td>
+          <td>HD voice nội bộ</td>
+        </tr>
+        <tr>
+          <td>Opus</td>
+          <td>6-510 kbps</td>
+          <td>Tuỳ chỉnh</td>
+          <td>4.5+</td>
+          <td>Fullband</td>
+          <td>Free</td>
+          <td>WebRTC, modern VoIP</td>
+        </tr>
+        <tr>
+          <td>iLBC</td>
+          <td>13.3 kbps</td>
+          <td>~40 kbps</td>
+          <td>3.7</td>
+          <td>Narrowband</td>
+          <td>Free</td>
+          <td>Mất gói cao, legacy</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Tính bandwidth thực tế</h4>
+    <p>Codec bitrate KHÔNG phải bandwidth thực tế. Mỗi gói RTP có thêm: <strong>IP header (20 bytes) + UDP header (8 bytes) + RTP header (12 bytes) = 40 bytes overhead</strong>. Với G.711 ptime=20ms: payload 160 bytes + overhead 40 bytes = 200 bytes × 50 gói/s = <strong>80 kbps</strong> (thực tế ~87kbps với L2). Overhead chiếm 20-50% tuỳ codec. G.729 bị ảnh hưởng nặng nhất: 8kbps codec → 31kbps thực tế.</p>
+  </div>
+</section>
+
+<!-- NAT TRAVERSAL -->
+<section id="nat">
+  <h2 class="section-title" style="color: var(--accent5);">NAT Traversal - Khi VoIP Ghét NAT</h2>
+  <p class="section-subtitle">NAT là kẻ thù số một của VoIP. Hiểu tại sao và cách vượt qua là kỹ năng sống còn.</p>
+
+  <div class="sip-what" style="background: linear-gradient(135deg, rgba(239,68,68,0.05), rgba(245,158,11,0.05));">
+    <h2 style="color: var(--accent5); font-size: 1.4rem;">Tại sao VoIP ghét NAT?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem;">
+      NAT (Network Address Translation) sinh ra để giải quyết thiếu IPv4. Nó hoạt động tốt cho web browsing vì HTTP là client-initiated: client gửi request, NAT ghi nhớ mapping, response đi về cùng đường. Nhưng VoIP thì khác hoàn toàn:
+    </p>
+    <ul style="color: var(--text-dim); margin-top: 1rem; padding-left: 1.5rem; line-height: 2;">
+      <li><strong>SIP message chứa IP trong body (SDP)</strong> - NAT chỉ sửa IP header, không sửa SDP body → IP private bị lộ</li>
+      <li><strong>RTP dùng port khác SIP</strong> - NAT mapping cho SIP (5060) không áp dụng cho RTP (10000-20000)</li>
+      <li><strong>Phone cần nhận INVITE từ bên ngoài</strong> - nhưng NAT chặn incoming connection mặc định</li>
+      <li><strong>Registration expire</strong> - nếu NAT mapping timeout trước khi SIP re-register → phone "biến mất"</li>
+    </ul>
+
+    <div class="insight-box" style="margin-top: 1.5rem;">
+      <h4>Triệu chứng kinh điển</h4>
+      <p><strong>One-way audio</strong>: Bên A nghe bên B nhưng bên B không nghe bên A (hoặc ngược lại). Nguyên nhân: SDP chứa private IP → RTP gửi đến 10.x.x.x → không route được. <strong>Registration drops</strong>: Phone tự mất đăng ký sau vài phút. Nguyên nhân: NAT mapping timeout. <strong>Incoming call fails</strong>: Gọi ra OK nhưng nhận cuộc gọi vào fail. Nguyên nhân: INVITE không đi qua được NAT.</p>
+    </div>
+  </div>
+
+  <div class="vendor-grid" style="margin-top: 2rem;">
+    <!-- STUN -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent);">
+      <div class="vendor-logo">🔍</div>
+      <h3>STUN</h3>
+      <div class="vendor-type">Session Traversal Utilities for NAT</div>
+      <p>Phone hỏi STUN server: "IP public của tôi là gì?". STUN server phản hồi IP:port public mà nó thấy. Phone dùng thông tin này trong SDP thay vì private IP. Đơn giản, nhẹ, nhưng chỉ hoạt động với Cone NAT, không hoạt động với Symmetric NAT (phổ biến trong enterprise).</p>
+      <div class="tag-row">
+        <span class="tag good">Đơn giản</span>
+        <span class="tag good">Nhẹ</span>
+        <span class="tag hot">Không qua Symmetric NAT</span>
+        <span class="tag">UDP only</span>
+      </div>
+    </div>
+
+    <!-- TURN -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent2);">
+      <div class="vendor-logo">🔄</div>
+      <h3>TURN</h3>
+      <div class="vendor-type">Traversal Using Relays around NAT</div>
+      <p>Khi STUN thất bại, TURN là phương án cuối. Media được relay qua TURN server - cả hai bên gửi RTP đến TURN server, nó forward cho bên kia. Hoạt động với MỌI loại NAT, nhưng tốn bandwidth server (mỗi cuộc gọi = 2x bandwidth) và thêm delay. Chi phí vận hành cao.</p>
+      <div class="tag-row">
+        <span class="tag good">Mọi loại NAT</span>
+        <span class="tag hot">Tốn bandwidth</span>
+        <span class="tag warn">Thêm delay</span>
+        <span class="tag hot">Chi phí cao</span>
+      </div>
+    </div>
+
+    <!-- ICE -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent3);">
+      <div class="vendor-logo">🧊</div>
+      <h3>ICE</h3>
+      <div class="vendor-type">Interactive Connectivity Establishment</div>
+      <p>Framework kết hợp STUN + TURN. ICE thử mọi đường có thể (host candidate, server reflexive, relay) và chọn đường tốt nhất. Bắt buộc trong WebRTC. Quá trình: gather candidates → exchange via SDP → connectivity checks → chọn best path. Trickle ICE tăng tốc quá trình.</p>
+      <div class="tag-row">
+        <span class="tag good">Best of both</span>
+        <span class="tag good">WebRTC standard</span>
+        <span class="tag warn">Phức tạp</span>
+        <span class="tag">Trickle ICE</span>
+      </div>
+    </div>
+
+    <!-- SIP ALG -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent5);">
+      <div class="vendor-logo">💀</div>
+      <h3>SIP ALG</h3>
+      <div class="vendor-type">Application Layer Gateway - Kẻ phá hoại</div>
+      <p>Router/firewall cố gắng "sửa" SIP message bằng cách rewrite IP trong SDP body. Nghe hay nhưng thực tế: implementation tệ hại, sửa sai, sửa thiếu, phá CRC, thêm header sai. 90% vấn đề VoIP qua NAT mà tôi gặp đều vì SIP ALG. <strong>Bước đầu tiên khi troubleshoot: TẮT SIP ALG.</strong></p>
+      <div class="tag-row">
+        <span class="tag hot">TẮT NGAY</span>
+        <span class="tag hot">Phá SIP</span>
+        <span class="tag hot">Nguyên nhân #1</span>
+        <span class="tag warn">Mặc định BẬT</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Hướng dẫn tắt SIP ALG</h4>
+        <p>Trên hầu hết router: vào Advanced Settings → tìm "SIP ALG" hoặc "SIP Passthrough" → Disable. Một số router (MikroTik): <code style="color: var(--accent3);">/ip firewall service-port disable sip</code>. pfSense: tắt trong System → Advanced → Firewall. <strong>Luôn tắt SIP ALG trước khi bắt đầu bất kỳ VoIP deployment nào.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Giải pháp thực tế trong homelab/doanh nghiệp nhỏ</h4>
+    <p>Thay vì đánh vật với NAT, hãy: (1) Đặt PBX trong DMZ hoặc cho IP public, (2) Dùng SIP outbound proxy, (3) Bật <strong>NAT keep-alive</strong> trên phone (gửi OPTIONS mỗi 20-30s để giữ NAT mapping), (4) Trên Asterisk/FreePBX, cấu hình đúng <code style="color: var(--accent3);">externip</code> và <code style="color: var(--accent3);">localnet</code>, (5) Cân nhắc VPN site-to-site cho multi-site VoIP.</p>
+  </div>
+</section>
+
+<!-- SIP FLOWS -->
+<section id="flows">
+  <h2 class="section-title" style="color: var(--accent);">SIP Call Flows</h2>
+  <p class="section-subtitle">Hiểu flow = hiểu 80% VoIP troubleshooting. Mỗi cuộc gọi là một câu chuyện với các bước rõ ràng.</p>
+
+  <!-- REGISTER -->
+  <div class="sip-flow">
+    <div class="flow-title">1. REGISTER - Đăng ký vị trí</div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Phone</div>
+      <div class="sip-msg"><div class="msg-label">REGISTER</div><div class="arrow-line"></div></div>
+      <div class="sip-entity pbx">Registrar</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Phone</div>
+      <div class="sip-msg"><div class="msg-label">401 Unauthorized (challenge)</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">Registrar</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Phone</div>
+      <div class="sip-msg"><div class="msg-label">REGISTER + Auth credentials</div><div class="arrow-line"></div></div>
+      <div class="sip-entity pbx">Registrar</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Phone</div>
+      <div class="sip-msg"><div class="msg-label">200 OK (expires=3600)</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">Registrar</div>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">Phone nói: "Tôi là extension 100, đang ở IP 10.0.1.5". Registrar ghi nhớ mapping này. Phone phải re-register trước khi hết expires. Authentication dùng Digest (MD5/SHA-256) - giống HTTP auth.</p>
+  </div>
+
+  <!-- INVITE (Basic Call) -->
+  <div class="sip-flow">
+    <div class="flow-title">2. INVITE - Thiết lập cuộc gọi (qua PBX)</div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">INVITE + SDP offer</div><div class="arrow-line"></div></div>
+      <div class="sip-entity pbx">PBX</div>
+      <div class="sip-msg"><div class="msg-label">INVITE + SDP offer</div><div class="arrow-line"></div></div>
+      <div class="sip-entity callee">Callee</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">100 Trying</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">PBX</div>
+      <div class="sip-msg"><div class="msg-label">180 Ringing</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity callee">Callee</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">180 Ringing</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">PBX</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: transparent;"></div></div>
+      <div class="sip-entity callee" style="color: transparent;">.</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: transparent;"></div></div>
+      <div class="sip-entity pbx">PBX</div>
+      <div class="sip-msg"><div class="msg-label">200 OK + SDP answer</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity callee">Callee</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">200 OK + SDP answer</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">PBX</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: transparent;"></div></div>
+      <div class="sip-entity callee" style="color: transparent;">.</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">ACK</div><div class="arrow-line"></div></div>
+      <div class="sip-entity pbx">PBX</div>
+      <div class="sip-msg"><div class="msg-label">ACK</div><div class="arrow-line"></div></div>
+      <div class="sip-entity callee">Callee</div>
+    </div>
+    <div class="sip-line" style="margin-top: 0.5rem; border-top: 1px dashed rgba(16,185,129,0.3); padding-top: 0.5rem;">
+      <div class="sip-entity caller" style="color: var(--accent3);">Caller</div>
+      <div class="sip-msg"><div class="msg-label" style="color: var(--accent3);">====== RTP Media (audio) ======</div><div class="arrow-line" style="background: var(--accent3);"></div></div>
+      <div class="sip-entity callee" style="color: var(--accent3);">Callee</div>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">Three-way handshake: INVITE → 200 OK → ACK. Chú ý: 100 Trying là hop-by-hop (PBX không forward), 180 Ringing là end-to-end. RTP có thể đi thẳng caller↔callee (direct media) hoặc qua PBX (nếu cần recording/transcoding).</p>
+  </div>
+
+  <!-- BYE -->
+  <div class="sip-flow">
+    <div class="flow-title">3. BYE - Kết thúc cuộc gọi</div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">BYE</div><div class="arrow-line"></div></div>
+      <div class="sip-entity callee">Callee</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Caller</div>
+      <div class="sip-msg"><div class="msg-label">200 OK</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity callee">Callee</div>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">Đơn giản. Bên nào cúp máy trước thì gửi BYE. Bên kia trả 200 OK. RTP dừng. Dialog kết thúc. Nếu BYE không đến (network issue) → cuộc gọi "treo" → cần Session Timer (RFC 4028) để tự cleanup.</p>
+  </div>
+
+  <!-- REFER (Transfer) -->
+  <div class="sip-flow">
+    <div class="flow-title">4. REFER - Chuyển cuộc gọi (Attended Transfer)</div>
+    <div class="sip-line">
+      <div class="sip-entity caller">A</div>
+      <div class="sip-msg"><div class="msg-label">Đang nói chuyện (RTP)</div><div class="arrow-line" style="background: var(--accent3);"></div></div>
+      <div class="sip-entity pbx">B</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: transparent;"></div></div>
+      <div class="sip-entity callee">C</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller" style="color: transparent;">.</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: transparent;"></div></div>
+      <div class="sip-entity pbx">B</div>
+      <div class="sip-msg"><div class="msg-label">INVITE (hỏi C trước)</div><div class="arrow-line"></div></div>
+      <div class="sip-entity callee">C</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller" style="color: transparent;">.</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: transparent;"></div></div>
+      <div class="sip-entity pbx">B</div>
+      <div class="sip-msg"><div class="msg-label">REFER (chuyển A sang C)</div><div class="arrow-line"></div></div>
+      <div class="sip-entity callee">A→C</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">A</div>
+      <div class="sip-msg"><div class="msg-label">====== RTP Media ======</div><div class="arrow-line" style="background: var(--accent3);"></div></div>
+      <div class="sip-entity pbx" style="color: transparent;">.</div>
+      <div class="sip-msg"><div class="msg-label"></div><div class="arrow-line" style="background: var(--accent3);"></div></div>
+      <div class="sip-entity callee">C</div>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">B nói với A trước khi hold, gọi cho C để giới thiệu, sau đó dùng REFER để "chuyển" A sang nói chuyện với C. B rời khỏi cuộc gọi. SUBSCRIBE/NOTIFY theo dõi kết quả transfer.</p>
+  </div>
+
+  <!-- SUBSCRIBE/NOTIFY -->
+  <div class="sip-flow">
+    <div class="flow-title">5. SUBSCRIBE/NOTIFY - Theo dõi sự kiện</div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Watcher</div>
+      <div class="sip-msg"><div class="msg-label">SUBSCRIBE (event: presence)</div><div class="arrow-line"></div></div>
+      <div class="sip-entity pbx">Server</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Watcher</div>
+      <div class="sip-msg"><div class="msg-label">200 OK</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">Server</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Watcher</div>
+      <div class="sip-msg"><div class="msg-label">NOTIFY (status: on the phone)</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">Server</div>
+    </div>
+    <div class="sip-line">
+      <div class="sip-entity caller">Watcher</div>
+      <div class="sip-msg"><div class="msg-label">NOTIFY (status: available)</div><div class="arrow-line left"></div></div>
+      <div class="sip-entity pbx">Server</div>
+    </div>
+    <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">Cơ chế pub/sub của SIP. Phone SUBSCRIBE để theo dõi trạng thái (presence, dialog, MWI voicemail). Server gửi NOTIFY khi có thay đổi. Dùng cho BLF (Busy Lamp Field), presence, voicemail indicator, transfer status.</p>
+  </div>
+</section>
+
+<!-- SIP TRUNKING -->
+<section id="trunking">
+  <h2 class="section-title" style="color: var(--accent3);">SIP Trunking</h2>
+  <p class="section-subtitle">Cầu nối giữa hệ thống VoIP nội bộ và mạng điện thoại thế giới (PSTN)</p>
+
+  <div class="sip-what" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05));">
+    <h2 style="color: var(--accent3); font-size: 1.4rem;">SIP Trunk là gì?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem;">
+      Ngày xưa, để gọi ra PSTN, PBX cần <strong>PRI trunk</strong> (đường vật lý E1/T1, 30/23 kênh). Đắt, cứng, phải mua đúng số kênh. SIP Trunk thay thế tất cả bằng một kết nối Internet. Không giới hạn kênh cứng (chỉ giới hạn bởi bandwidth), mua bao nhiêu DID (số điện thoại) tuỳ ý, và giá rẻ hơn nhiều - đặc biệt gọi quốc tế.
+    </p>
+
+    <div class="sip-analogy" style="margin-top: 2rem;">
+      <div class="analogy-box">
+        <div class="icon">📠</div>
+        <h3>PRI Trunk (cũ)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Đường vật lý E1/T1<br>Cố định 30/23 kênh<br>Chi phí: <strong style="color: var(--accent5);">$$$/tháng</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🌐</div>
+        <h3>SIP Trunk (mới)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Qua Internet/MPLS<br>Kênh linh hoạt<br>Chi phí: <strong style="color: var(--accent3);">$/tháng</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vendor-grid" style="margin-top: 2rem;">
+    <div class="vendor-card" style="border-top: 4px solid var(--accent3);">
+      <div class="vendor-logo">📋</div>
+      <h3>Cách hoạt động</h3>
+      <div class="vendor-type">Từ PBX đến PSTN</div>
+      <p>PBX gửi SIP INVITE đến SIP trunk provider qua Internet. Provider chuyển cuộc gọi sang PSTN (qua media gateway). Cuộc gọi từ PSTN vào: provider nhận, chuyển thành SIP INVITE gửi về PBX. Authentication: IP-based (whitelist IP PBX) hoặc credential-based (username/password).</p>
+      <div class="tag-row">
+        <span class="tag good">Đơn giản</span>
+        <span class="tag">IP Auth hoặc Credential</span>
+        <span class="tag">DID mapping</span>
+      </div>
+    </div>
+
+    <div class="vendor-card" style="border-top: 4px solid var(--accent4);">
+      <div class="vendor-logo">⚠️</div>
+      <h3>Lưu ý quan trọng</h3>
+      <div class="vendor-type">Cạm bẫy thường gặp</div>
+      <p>Codec phải match - trunk provider thường chỉ hỗ trợ G.711. Nếu PBX dùng G.729 nội bộ, cần transcoding → tốn CPU. Failover: luôn có ít nhất 2 SIP trunk provider. Emergency calls (113/115): đảm bảo trunk hỗ trợ và truyền đúng location. Đừng quên cấu hình CID (Caller ID) đúng.</p>
+      <div class="tag-row">
+        <span class="tag warn">Codec match</span>
+        <span class="tag hot">Emergency calls</span>
+        <span class="tag warn">Failover</span>
+        <span class="tag">CID</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Tính chi phí SIP Trunk</h4>
+    <p>Mỗi cuộc gọi G.711 đồng thời cần ~87kbps. 10 cuộc gọi đồng thời = ~870kbps = chưa đến 1Mbps. So với PRI: 1 E1 = 30 kênh = đường dây riêng hàng triệu/tháng. SIP trunk cùng capacity qua Internet 10Mbps (đã thừa) = rẻ hơn 5-10 lần. Tại Việt Nam, các SIP trunk provider: VNPT, Viettel, FPT, và các provider quốc tế như Telnyx, Twilio.</p>
+  </div>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section id="troubleshoot">
+  <h2 class="section-title" style="color: var(--accent4);">Troubleshooting VoIP</h2>
+  <p class="section-subtitle">Công cụ và phương pháp luận để debug cuộc gọi SIP - từ signaling đến media</p>
+
+  <div class="vendor-grid">
+    <!-- sngrep -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent);">
+      <div class="vendor-logo">🔬</div>
+      <h3>sngrep</h3>
+      <div class="vendor-type">SIP Message Flow Visualizer</div>
+      <p>Công cụ số 1 cho SIP troubleshooting. TUI (Terminal UI) hiển thị SIP flow diagram trực tiếp trên terminal. Thấy được INVITE → 100 → 180 → 200 → ACK theo timeline. Filter theo Call-ID, method, IP. Đọc được SDP, headers. Có thể capture live hoặc đọc pcap file.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">TUI</div><div class="label">Terminal UI</div></div>
+        <div class="stat"><div class="num">Live</div><div class="label">Capture</div></div>
+        <div class="stat"><div class="num">PCAP</div><div class="label">Support</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tốt nhất cho SIP</span>
+        <span class="tag good">Flow diagram</span>
+        <span class="tag">Linux/macOS</span>
+      </div>
+    </div>
+
+    <!-- tcpdump -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent3);">
+      <div class="vendor-logo">📦</div>
+      <h3>tcpdump</h3>
+      <div class="vendor-type">Packet Capture CLI</div>
+      <p>Khi cần capture raw packets để phân tích sau. Capture SIP: <code style="color: var(--accent3); font-size: 0.8rem;">tcpdump -i eth0 port 5060 -w sip.pcap</code>. Capture RTP: filter theo port range. File pcap mở bằng Wireshark hoặc sngrep. Nhẹ, có sẵn trên mọi Linux, không cần GUI.</p>
+      <div class="tag-row">
+        <span class="tag good">Có sẵn</span>
+        <span class="tag">Raw capture</span>
+        <span class="tag">PCAP output</span>
+        <span class="tag good">Nhẹ</span>
+      </div>
+    </div>
+
+    <!-- Wireshark -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent2);">
+      <div class="vendor-logo">🦈</div>
+      <h3>Wireshark</h3>
+      <div class="vendor-type">GUI Packet Analyzer</div>
+      <p>Ông vua phân tích packet. Cho SIP: Telephony → SIP Flows hiển thị ladder diagram. Telephony → RTP → RTP Streams phân tích jitter, packet loss, MOS. Có thể play lại audio từ RTP stream (Telephony → RTP → RTP Player). Filter: <code style="color: var(--accent3); font-size: 0.8rem;">sip || rtp</code></p>
+      <div class="tag-row">
+        <span class="tag good">GUI chi tiết nhất</span>
+        <span class="tag good">RTP analysis</span>
+        <span class="tag">Play audio</span>
+        <span class="tag warn">Nặng</span>
+      </div>
+    </div>
+
+    <!-- SIP Debug on PBX -->
+    <div class="vendor-card" style="border-top: 4px solid var(--accent4);">
+      <div class="vendor-logo">🐛</div>
+      <h3>PBX SIP Debug</h3>
+      <div class="vendor-type">Debug trực tiếp trên tổng đài</div>
+      <p>Asterisk: <code style="color: var(--accent3); font-size: 0.8rem;">pjsip set logger on</code> hoặc <code style="color: var(--accent3); font-size: 0.8rem;">sip set debug on</code> (chan_sip). Hiển thị mọi SIP message ra console. FreeSWITCH: <code style="color: var(--accent3); font-size: 0.8rem;">sofia global siptrace on</code>. Kamailio: <code style="color: var(--accent3); font-size: 0.8rem;">sipmsg</code> module. Xem real-time message trên PBX.</p>
+      <div class="tag-row">
+        <span class="tag good">Real-time</span>
+        <span class="tag">Asterisk</span>
+        <span class="tag">FreeSWITCH</span>
+        <span class="tag warn">Verbose output</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Troubleshooting methodology -->
+  <div class="mindset-grid" style="margin-top: 3rem;">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>Xác định: Signaling hay Media?</h4>
+      <p>Cuộc gọi không kết nối = signaling issue. Kết nối nhưng không nghe = media issue. One-way audio = NAT/routing issue. Echo = codec hoặc hardware. Bước đầu tiên luôn là phân loại vấn đề.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>Capture SIP trace</h4>
+      <p>Dùng sngrep hoặc tcpdump capture SIP messages. Tìm response code: 4xx = client error, 5xx = server error, 6xx = global failure. Đọc SDP để kiểm tra IP và codec.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>Kiểm tra SDP c= line</h4>
+      <p>IP trong c= line có phải private IP không? Nếu phone sau NAT mà c= chứa 10.x.x.x → one-way audio. Kiểm tra Contact header cũng vậy. So sánh IP source trong IP header vs IP trong SIP/SDP.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">4</div>
+      <h4>Kiểm tra RTP flow</h4>
+      <p>Wireshark → Telephony → RTP Streams. Có gói RTP cả hai chiều không? Jitter bao nhiêu? Packet loss? Nếu RTP chỉ có một chiều → routing issue. Nếu không có RTP nào → codec mismatch hoặc firewall chặn.</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">5</div>
+      <h4>Tắt SIP ALG, kiểm tra firewall</h4>
+      <p>Mở port SIP (5060/5061) VÀ port RTP (10000-20000 UDP). Tắt SIP ALG. Kiểm tra conntrack trên firewall. Đảm bảo timeout UDP đủ lớn (>= 60s cho SIP).</p>
+    </div>
+    <div class="mindset-card">
+      <div class="mindset-num">6</div>
+      <h4>Test từng đoạn</h4>
+      <p>Phone A → PBX: OK? PBX → SIP Trunk: OK? Trunk → PSTN: OK? Chia nhỏ vấn đề. Dùng softphone (MicroSIP, Opal, Opal) trên PC để loại trừ hardware phone issue.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>SIP Response Codes cần nhớ</h4>
+    <p><strong>100 Trying</strong> - đang xử lý. <strong>180 Ringing</strong> - đang đổ chuông. <strong>200 OK</strong> - thành công. <strong>401/407</strong> - cần auth. <strong>403 Forbidden</strong> - bị chặn. <strong>404 Not Found</strong> - extension không tồn tại. <strong>408 Timeout</strong> - không phản hồi. <strong>480 Temporarily Unavailable</strong> - phone offline. <strong>486 Busy</strong> - đang bận. <strong>488 Not Acceptable</strong> - codec mismatch. <strong>503 Service Unavailable</strong> - server quá tải. <strong>603 Decline</strong> - từ chối cuộc gọi.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Những Hiểu Nhầm Phổ Biến</h2>
+  <p class="section-subtitle">6+ hiểu nhầm kinh điển mà ngay cả người có kinh nghiệm cũng mắc phải</p>
+
+  <div class="myth-grid">
+    <!-- Myth 1 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"SIP truyền giọng nói"</h4>
+      <p>Rất nhiều người nghĩ SIP = VoIP = voice. Nhưng SIP chỉ là signaling - thiết lập và quản lý phiên. Voice đi qua RTP, hoàn toàn tách biệt, trên port khác, thậm chí đường mạng khác.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>SIP = signaling (thiết lập cuộc gọi). RTP = media (giọng nói). Hai protocol khác nhau hoàn toàn. Hiểu sai điều này là nguồn gốc của mọi nhầm lẫn tiếp theo.</p>
+    </div>
+
+    <!-- Myth 2 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Mở port 5060 là đủ cho VoIP"</h4>
+      <p>Admin firewall thường chỉ mở port 5060 (SIP). Cuộc gọi kết nối nhưng không nghe gì. Tại sao? Vì RTP chạy trên port range hoàn toàn khác (10000-20000).</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>Cần mở: <strong>Port 5060/5061</strong> (SIP TCP/UDP/TLS) VÀ <strong>Port 10000-20000 UDP</strong> (RTP media). Thiếu RTP ports = có signaling, không có audio. Trên Asterisk, range RTP cấu hình trong rtp.conf.</p>
+    </div>
+
+    <!-- Myth 3 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"From header quyết định routing cuộc gọi"</h4>
+      <p>Nhìn vào SIP message thấy From: và To: - tự nhiên nghĩ đây là "địa chỉ gửi/nhận". Nhưng SIP không route dựa trên chúng.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>Routing dựa trên <strong>Request-URI</strong> (dòng đầu tiên: INVITE sip:100@pbx.local). From/To chỉ là nhãn nhận dạng cho dialog. From hoàn toàn có thể bị giả mạo (caller ID spoofing) mà không ảnh hưởng routing.</p>
+    </div>
+
+    <!-- Myth 4 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"VoIP chất lượng kém hơn điện thoại thường"</h4>
+      <p>Quan niệm từ thời VoIP mới ra đời (2000s) khi Internet còn chậm. Nhiều người vẫn giữ thiên kiến này dù đã 2020s.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>PSTN dùng G.711 = narrowband 3.4kHz. VoIP với G.722/Opus = wideband 7kHz+ = <strong>rõ ràng hơn hẳn</strong>. VoIP trên mạng tốt (QoS, đủ bandwidth) chất lượng HD voice vượt xa điện thoại thường. Vấn đề không phải VoIP, mà là chất lượng mạng.</p>
+    </div>
+
+    <!-- Myth 5 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"SIP ALG trên router giúp VoIP hoạt động tốt hơn"</h4>
+      <p>Router quảng cáo "SIP ALG support" như một tính năng. Admin nghĩ: "À, router hỗ trợ SIP, tốt quá, để bật lên."</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>SIP ALG là <strong>kẻ phá hoại số 1</strong>. Implementation trên 90% router consumer/SMB đều buggy. Nó rewrite SIP message sai, phá Via/Contact header, gây one-way audio, registration failure. <strong>Luôn tắt SIP ALG</strong>. Đây là quy tắc vàng.</p>
+    </div>
+
+    <!-- Myth 6 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Mã hoá SIP (TLS) = cuộc gọi được mã hoá"</h4>
+      <p>Admin cấu hình SIP over TLS (port 5061), nghĩ rằng cuộc gọi đã an toàn. Nhưng TLS chỉ mã hoá signaling, không mã hoá media.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>Cần <strong>CÙNG LÚC</strong>: SIP TLS (mã hoá signaling) + SRTP (mã hoá media). Chỉ có TLS = kẻ tấn công không đọc được ai gọi ai, nhưng vẫn nghe được nội dung cuộc gọi qua RTP. Chỉ có SRTP = nội dung mã hoá nhưng metadata lộ.</p>
+    </div>
+
+    <!-- Myth 7 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Bandwidth cho VoIP cần rất lớn"</h4>
+      <p>Manager hỏi: "Chạy 50 cuộc gọi VoIP đồng thời, cần Internet mấy trăm Mbps?". Thực tế họ đang overestimate khủng khiếp.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>G.711: 87kbps/cuộc gọi. 50 cuộc gọi = <strong>~4.35 Mbps</strong> - một đường Internet 10Mbps đã dư sức. G.729: chỉ 31kbps/cuộc → 50 cuộc gọi = ~1.55Mbps. VoIP tốn rất ít bandwidth. Vấn đề là <strong>QoS</strong> (ưu tiên) chứ không phải bandwidth tổng.</p>
+    </div>
+
+    <!-- Myth 8 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"SIP và H.323 làm cùng một việc nên chọn cái nào cũng được"</h4>
+      <p>Cả hai đều là VoIP signaling protocol. Nhưng chọn "cái nào cũng được" thì sai hoàn toàn trong thời điểm hiện tại.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Đúng</span>
+      <p>H.323 đã gần như chết. SIP thắng cuộc chiến protocol từ 2005. Mọi thiết bị mới, SIP trunk, WebRTC đều dùng SIP. H.323 chỉ còn trong legacy Cisco/Avaya và video conferencing cũ. Đầu tư mới = luôn chọn SIP.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent);">Cheat Sheet SIP/VoIP</h2>
+  <p class="section-subtitle">Những lệnh và thông tin bạn sẽ dùng đi dùng lại khi làm việc với VoIP</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Capture SIP với sngrep</h4>
+      <p>Xem SIP flow diagram real-time trên server</p>
+      <code>sngrep -d eth0
+sngrep port 5060
+sngrep -I captured.pcap</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Capture SIP với tcpdump</h4>
+      <p>Capture packets ra file pcap để phân tích sau</p>
+      <code>tcpdump -i eth0 port 5060 -w sip.pcap
+tcpdump -i eth0 udp portrange 10000-20000 -w rtp.pcap
+tcpdump -i any -s0 port 5060 -vvv</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Asterisk SIP Debug</h4>
+      <p>Bật/tắt SIP debug trên Asterisk CLI</p>
+      <code>asterisk -rvvvv
+pjsip set logger on
+pjsip set logger off
+pjsip show endpoints
+pjsip show registrations</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Asterisk Channel Info</h4>
+      <p>Kiểm tra cuộc gọi đang active và codec</p>
+      <code>core show channels
+core show channel SIP/xxx
+sip show peers
+sip show registry</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Wireshark SIP Filter</h4>
+      <p>Filter biểu thức cho phân tích SIP trong Wireshark</p>
+      <code>sip
+sip.Method == "INVITE"
+sip.Call-ID == "abc123@host"
+sip.Status-Code >= 400
+rtp
+rtcp</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Test SIP connectivity</h4>
+      <p>Kiểm tra nhanh SIP server có phản hồi không</p>
+      <code>nc -zvu sip-server.com 5060
+sipsak -s sip:test@server.com
+nmap -sU -p 5060 server.com</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>RTP Port Range (Asterisk)</h4>
+      <p>Cấu hình port range cho RTP trong rtp.conf</p>
+      <code>; /etc/asterisk/rtp.conf
+[general]
+rtpstart=10000
+rtpend=20000
+strictrtp=yes
+icesupport=yes</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>NAT Config (Asterisk pjsip)</h4>
+      <p>Cấu hình NAT traversal cho PJSIP</p>
+      <code>; pjsip.conf [transport]
+external_media_address=203.0.113.1
+external_signaling_address=203.0.113.1
+local_net=10.0.0.0/8
+local_net=172.16.0.0/12
+local_net=192.168.0.0/16</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Tắt SIP ALG (MikroTik)</h4>
+      <p>Disable SIP ALG trên RouterOS</p>
+      <code>/ip firewall service-port
+disable sip
+print</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SIP Response Codes</h4>
+      <p>Mã phản hồi SIP hay gặp nhất</p>
+      <code>1xx = Tạm thời (100,180,183)
+2xx = Thành công (200 OK)
+3xx = Redirect (301,302)
+4xx = Client Error (401,403,404,486)
+5xx = Server Error (500,503)
+6xx = Global Failure (603)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Codec Payload Types</h4>
+      <p>Số payload type chuẩn cho các codec phổ biến</p>
+      <code>0  = PCMU (G.711 μ-law)
+8  = PCMA (G.711 A-law)
+9  = G.722
+18 = G.729
+96+= Dynamic (Opus, etc.)
+101= telephone-event (DTMF)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Bandwidth Calculator</h4>
+      <p>Tính bandwidth nhanh cho VoIP</p>
+      <code>G.711: 87kbps x N cuộc gọi
+G.729: 31kbps x N cuộc gọi
+G.722: 87kbps x N cuộc gọi
+Opus:  ~40kbps x N cuộc gọi (tuỳ)
+Nhân 2 cho cả 2 chiều!</code>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>SIP World - Tài liệu deep-dive SIP Protocol &amp; VoIP Internals</p>
+  <p style="margin-top: 0.5rem;">Dành cho VoIP engineers, sysadmins, và homelab enthusiasts tại Việt Nam</p>
+  <p style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-dim);">Tham khảo: RFC 3261 (SIP), RFC 3550 (RTP), RFC 4566 (SDP), RFC 3264 (Offer/Answer), RFC 8445 (ICE)</p>
+</footer>
+
+</body>
+</html>

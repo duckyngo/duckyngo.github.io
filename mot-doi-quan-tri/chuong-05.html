@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 5: Văn hóa doanh nghiệp — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#1A3A5C 0%,#2D6A4F 50%,#F7C948 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--green);}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .story-box{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:16px;padding:32px;margin:32px 0;border:2px solid var(--gold);}
+  .story-box h3{color:var(--navy);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .story-box p{font-size:0.95rem;line-height:1.8;color:#444;}
+  .two-values{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0;}
+  .value-card{border-radius:16px;padding:32px;text-align:center;box-shadow:var(--shadow);}
+  .value-card.nice{background:linear-gradient(135deg,#FFF0E8,#FFEDE3);border:3px solid var(--orange);}
+  .value-card.professional{background:linear-gradient(135deg,#E8F0F8,#E0EAF5);border:3px solid var(--navy);}
+  .value-card .val-emoji{font-size:3rem;margin-bottom:12px;}
+  .value-card h3{font-size:1.2rem;font-weight:800;margin-bottom:12px;}
+  .value-card.nice h3{color:var(--orange);}
+  .value-card.professional h3{color:var(--navy);}
+  .value-card p{font-size:0.88rem;color:#555;line-height:1.6;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.two-values{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-04.html" class="nav-btn">← Chương 4</a>
+    <a href="chuong-06.html" class="nav-btn">Chương 6 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">☕ Chương 5</div>
+  <span class="hero-emoji">🌸</span>
+  <h1>Văn Hóa <span>Doanh Nghiệp</span></h1>
+  <p class="hero-sub">Hai bà nội, một nghi lễ trà chiều, và bom đang rơi ngoài kia — đây là câu chuyện về văn hóa thật sự.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Văn hóa doanh nghiệp là gì? Nhiều người trả lời bằng các khái niệm trừu tượng. GS. Phan Văn Trường trả lời bằng một câu chuyện: hai người phụ nữ già tiếp tục nghi lễ trà chiều dù bom đang rơi. <em>Đó</em> mới là văn hóa — thứ tồn tại bất chấp hoàn cảnh.
+  </div>
+
+  <div class="story-box">
+    <h3>☕ Câu Chuyện: Trà Chiều Giữa Bom Đạn</h3>
+    <p>
+      Ở một nơi nào đó trong chiến tranh, hai người phụ nữ lớn tuổi vẫn ngồi lại với nhau mỗi buổi chiều
+      để uống trà. Tiếng bom có thể nghe rõ từ xa. Cửa sổ rung lên. Nhưng họ vẫn pha trà, vẫn rót ra
+      từng chén, vẫn ngồi đối diện nhau trong im lặng yên bình. Không phải vì họ điên hay liều lĩnh.
+      Mà vì đây là <em>nghi lễ của họ</em> — thứ giúp họ khẳng định rằng có những giá trị không một quả bom
+      nào có thể phá hủy được.
+    </p>
+    <p style="margin-top:14px;">
+      Văn hóa doanh nghiệp cũng vậy. Nó không phải thứ bạn treo lên tường khi mọi thứ đang tốt.
+      Nó là thứ bạn giữ nguyên khi khủng hoảng ập đến.
+    </p>
+  </div>
+
+  <div class="cards-title">💎 Công Thức: Nice + Professional</div>
+  <div class="two-values">
+    <div class="value-card nice">
+      <div class="val-emoji">💛</div>
+      <h3>Nice — Tử Tế</h3>
+      <p>Quan tâm đến con người. Lắng nghe thật sự. Đối xử với nhau bằng sự tôn trọng và ấm áp — từ CEO đến nhân viên vệ sinh.</p>
+    </div>
+    <div class="value-card professional">
+      <div class="val-emoji">🎯</div>
+      <h3>Professional — Chuyên Nghiệp</h3>
+      <p>Làm đúng việc, đúng thời hạn, đúng tiêu chuẩn. Không bao giờ hi sinh chất lượng vì sự dễ chịu hay quan hệ cá nhân.</p>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 5 Điểm Cốt Lõi Về Văn Hóa</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <div class="card-num">01</div>
+      <h3>Văn hóa = Hành vi nhất quán</h3>
+      <p>Không phải poster treo tường. Không phải workshop 2 ngày. Văn hóa là những gì mọi người thực sự làm mỗi ngày.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">⏰</div>
+      <div class="card-num">02</div>
+      <h3>Cần nhiều năm để xây, một ngày để phá</h3>
+      <p>Văn hóa tốt xây dựng trong nhiều năm, nhiều thế hệ. Nhưng một quyết định tồi, một hành vi phản văn hóa của lãnh đạo có thể phá hủy tất cả.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌿</div>
+      <div class="card-num">03</div>
+      <h3>Lãnh đạo là người đầu tiên</h3>
+      <p>Văn hóa bắt đầu từ hành vi của lãnh đạo. Bạn không thể xây văn hóa tôn trọng nếu bạn tự mình không tôn trọng người khác.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🔥</div>
+      <div class="card-num">04</div>
+      <h3>Văn hóa ăn chiến lược làm sáng</h3>
+      <p>Peter Drucker nói câu này. Nghĩa là: chiến lược xuất sắc đến đâu cũng thất bại nếu văn hóa không ủng hộ nó.</p>
+    </div>
+    <div class="card" style="border-top:3px solid #E74C3C;">
+      <div class="card-icon">🌏</div>
+      <div class="card-num" style="background:#E74C3C;">05</div>
+      <h3>Văn hóa đa quốc gia</h3>
+      <p>Khi dẫn dắt đội ngũ 60 quốc gia, cần tìm điểm chung văn hóa — không xóa bỏ sự khác biệt mà tìm giá trị cốt lõi chung.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Văn hóa ăn chiến lược làm bữa sáng."</p>
+    <cite>— Peter Drucker (và được GS. Phan Văn Trường tán đồng trọn vẹn)</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>"Nice & Professional" trong thực tế:</strong> Nhiều công ty chọn một trong hai — hoặc quá thân thiện và thiếu chuyên nghiệp, hoặc quá nghiêm khắc và lạnh lùng. Tài năng của lãnh đạo nằm ở chỗ giữ được cả hai đồng thời, không để cái này phá hủy cái kia.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-text">
+      <strong>Kiểm tra văn hóa thật sự:</strong> Hãy quan sát công ty của bạn khi xảy ra khủng hoảng. Lúc áp lực cao nhất, mọi người có giữ được giá trị cốt lõi không? Hay mọi "nguyên tắc văn hóa" bị vứt đi khi cần? Đó mới là văn hóa thật sự của bạn.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Văn hóa thật sự là thứ tồn tại kể cả khi bom rơi — không phải chỉ khi mọi thứ đang thuận lợi.</li>
+      <li>Công thức "nice & professional" là hai giá trị cần song song — không nên hi sinh cái này cho cái kia.</li>
+      <li>Lãnh đạo là người mang văn hóa trong cơ thể mình — không phải người giảng về văn hóa.</li>
+      <li>Chiến lược sẽ thất bại nếu văn hóa không phù hợp — đây là bài học đắt giá nhất trong quản trị.</li>
+      <li>Văn hóa đa quốc gia cần tìm điểm chung, không phải xóa bỏ sự khác biệt.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-04.html" class="bnav-btn">← Chương 4</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-06.html" class="bnav-btn next">Chương 6: Khám và chữa bệnh DN →</a>
+  </div>
+</div>
+
+</body>
+</html>

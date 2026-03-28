@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 18: Khai phóng óc sáng tạo — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#9B59B6 0%,#E74C3C 40%,var(--orange) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #9B59B6;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .brainstorm-demo{background:linear-gradient(135deg,#F3E5F5,#E8EAF6);border-radius:16px;padding:32px;margin:28px 0;border:2px solid #9B59B6;}
+  .brainstorm-demo h3{color:var(--navy);font-size:1.1rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .people-circle{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .person-chip{background:white;border-radius:30px;padding:10px 18px;font-size:0.85rem;font-weight:600;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;}
+  .person-chip.normal{border-left:4px solid #9E9E9E;}
+  .person-chip.unusual{border-left:4px solid #9B59B6;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card.purple .card-num{background:#9B59B6;}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,#9B59B6,#8E44AD);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(255,255,255,0.05);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:white;font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--gold);font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-17.html" class="nav-btn">← Chương 17</a>
+    <a href="chuong-19.html" class="nav-btn">Chương 19 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🎨 Chương 18</div>
+  <span class="hero-emoji">🌈</span>
+  <h1>Khai Phóng <span>Óc Sáng Tạo</span></h1>
+  <p class="hero-sub">Bạn đang mời ai vào buổi brainstorm? Nếu chỉ có những người giống nhau, bạn sẽ chỉ có những ý tưởng giống nhau.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Sáng tạo không phải là thứ tự nhiên xuất hiện. Sáng tạo cần được thiết kế — qua môi trường, qua con người trong phòng, qua cách chúng ta đặt câu hỏi. GS. Phan Văn Trường chia sẻ bí quyết khai phóng sáng tạo từ những nơi ít ai ngờ đến nhất.
+  </div>
+
+  <div class="brainstorm-demo">
+    <h3>💡 Ý Tưởng: Ai Nên Có Mặt Trong Brainstorm?</h3>
+    <p style="font-size:0.9rem;color:#555;margin-bottom:16px;">Buổi brainstorm thông thường vs buổi brainstorm khai phóng của GS. Phan Văn Trường:</p>
+    <div class="people-circle">
+      <span class="person-chip normal">👔 Giám đốc Marketing</span>
+      <span class="person-chip normal">💻 Kỹ sư R&D</span>
+      <span class="person-chip normal">📊 Trưởng phòng Tài chính</span>
+      <span class="person-chip normal">🎯 Quản lý Sản phẩm</span>
+      <span class="person-chip unusual">🚕 Tài xế taxi</span>
+      <span class="person-chip unusual">🎨 Họa sĩ</span>
+      <span class="person-chip unusual">👩‍🍳 Đầu bếp</span>
+      <span class="person-chip unusual">🧑‍🌾 Nông dân</span>
+    </div>
+    <p style="font-size:0.82rem;color:#888;margin-top:14px;font-style:italic;">Màu tím = những người "ngoài ngành" mang góc nhìn đột phá</p>
+  </div>
+
+  <div class="cards-title">🔑 Nguyên Tắc Sáng Tạo Của GS. Phan Văn Trường</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <div class="card-num">01</div>
+      <h3>Đa dạng góc nhìn</h3>
+      <p>Người ít biết về lĩnh vực của bạn có thể đặt ra câu hỏi ngây thơ nhất — và đó thường là câu hỏi quan trọng nhất mà chuyên gia không dám hỏi.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🚫</div>
+      <div class="card-num">02</div>
+      <h3>Loại bỏ "không thể"</h3>
+      <p>Trong giai đoạn brainstorm, không có ý tưởng tệ. Môi trường an toàn để nói bất kỳ điều gì là điều kiện cần của sáng tạo.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🔗</div>
+      <div class="card-num">03</div>
+      <h3>Kết nối những thứ không liên quan</h3>
+      <p>Steve Jobs nói: "Creativity is just connecting things." Sáng tạo là nhìn thấy mối liên hệ giữa những thứ mà người khác không nhìn thấy.</p>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">🏖️</div>
+      <div class="card-num">04</div>
+      <h3>Thay đổi môi trường vật lý</h3>
+      <p>Não bộ sáng tạo hơn khi không ở phòng họp thường ngày. Brainstorm ngoài trời, ở quán cà phê lạ, hay một văn phòng khác — đều có thể tạo ra sự khác biệt.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Creativity is just connecting things."</p>
+    <cite>— Steve Jobs (được GS. Phan Văn Trường trích dẫn và thực hành trong suốt sự nghiệp)</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Tại sao tài xế taxi lại có thể giúp ích?</strong> Tài xế taxi quan sát hành vi con người hàng ngày, nghe hàng trăm cuộc trò chuyện, và hiểu pain points của khách hàng theo cách mà không một cuộc khảo sát nào có thể nắm bắt được. Đây là "market research" không chính thức nhưng vô cùng giá trị.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-text">
+      <strong>Thực hành ngay hôm nay:</strong> Lần tới khi bạn cần ý tưởng mới, hãy thử hỏi ai đó hoàn toàn ngoài lĩnh vực của bạn — người bán hàng, người hàng xóm, người thân không làm kinh doanh. Câu hỏi ngây thơ của họ thường là câu hỏi đúng nhất.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Sáng tạo cần được thiết kế — đa dạng hóa thành phần trong phòng brainstorm là bước đầu tiên.</li>
+      <li>Người ngoài ngành không bị ràng buộc bởi "điều mọi người đều biết" — đây chính là lợi thế của họ.</li>
+      <li>Môi trường an toàn để nói mà không bị phán xét là điều kiện cần của sáng tạo thật sự.</li>
+      <li>Kết nối những thứ không liên quan — đây là bản chất của sáng tạo theo lời Steve Jobs.</li>
+      <li>Thay đổi môi trường vật lý kích hoạt những suy nghĩ mới và phá vỡ tư duy cũ.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-17.html" class="bnav-btn">← Chương 17</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-19.html" class="bnav-btn next">Chương 19: Thời gian →</a>
+  </div>
+</div>
+
+</body>
+</html>

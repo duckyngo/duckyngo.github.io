@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Dữ Liệu Tiên Nhân — Data Lake Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #081018;
+            --card-bg: rgba(10, 20, 35, 0.85);
+            --card-border: rgba(38, 166, 154, 0.2);
+            --accent: #26a69a;
+            --accent2: #80cbc4;
+            --accent3: #4fc3f7;
+            --text: #e0f2f1;
+            --text-muted: #88aaaa;
+            --glow: rgba(38, 166, 154, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 30% 40%, rgba(38,166,154,0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(79,195,247,0.06) 0%, transparent 50%); z-index: -1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 5s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote { margin-top: 1.5rem; padding: 1rem 2rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; backdrop-filter: blur(10px); font-style: italic; color: var(--accent2); display: inline-block; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--card-border); background: var(--card-bg); backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default; }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip { padding: 1rem 1.5rem; margin: 1rem 0; border-left: 3px solid var(--accent); background: rgba(38,166,154,0.05); border-radius: 0 8px 8px 0; }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story { padding: 1.5rem; margin: 1rem 0; background: rgba(79,195,247,0.05); border-radius: 12px; border: 1px solid rgba(79,195,247,0.1); }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(38,166,154,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake { padding: 1rem 1.5rem; margin: 0.75rem 0; background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757; border-radius: 0 8px 8px 0; }
+        .mistake strong { color: #ff6b81; }
+        .footer { text-align: center; padding: 3rem 2rem; margin-top: 2rem; color: var(--text-muted); border-top: 1px solid var(--card-border); }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">🏞️</span>
+        <h1>Hồ Dữ Liệu Tiên Nhân</h1>
+        <p class="subtitle">Người Giữ Hồ — Nơi Mọi Dữ Liệu Đều Có Chỗ</p>
+        <div class="quote">"Data lake mà không quản lý = data swamp. Và bơi trong đầm lầy thì không ai muốn."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge" style="color:#00ADD8;border-color:#00ADD8;">🔺 Delta Lake</span>
+        <span class="badge" style="color:#4FC3F7;border-color:#4FC3F7;">🧊 Apache Iceberg</span>
+        <span class="badge" style="color:#FF7043;border-color:#FF7043;">🔥 Apache Hudi</span>
+        <span class="badge">🏠 Lakehouse</span>
+        <span class="badge">⏪ Time Travel</span>
+        <span class="badge">🔄 Schema Evolution</span>
+        <span class="badge">📦 Compaction</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Hồ Dữ Liệu Tiên Nhân, tên thật là <strong>Hồ Chứa Minh</strong> (đúng vậy, họ Hồ, tên Chứa, destiny đã quyết định), lớn lên bên Hồ Tây. Lão thích ngắm hồ và suy nghĩ: <em>"Hồ này chứa bao nhiêu nước? Nước từ đâu đến? Đi đâu?"</em></p>
+        <p>Vào nghề, lão bắt đầu với data warehouse truyền thống. Nhưng khi phải lưu logs, images, sensor data, social media feeds — structured, semi-structured, unstructured — lão nhận ra warehouse không đủ. Data lake trên S3/HDFS sinh ra để giải quyết. Nhưng cũng sinh ra vấn đề mới: data swamp.</p>
+        <p>Rồi Delta Lake, Iceberg, Hudi xuất hiện — mang ACID transactions, schema enforcement, time travel vào data lake. Lão gọi đó là <em>"lakehouse revolution"</em>: tốt nhất của cả hai thế giới. Lão hiện là tín đồ cuồng nhiệt của lakehouse architecture.</p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Lakehouse = Data Lake + Data Warehouse</strong>
+            <p>Data trên object storage (S3, GCS, ADLS) — rẻ, scalable. Table format (Delta/Iceberg/Hudi) thêm: ACID transactions, schema enforcement, time travel, audit log. Query engine (Spark, Trino, Presto) đọc trực tiếp. Không cần copy data vào warehouse riêng. One copy of data, multiple use cases.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Delta Lake — Databricks Ecosystem</strong>
+            <p>ACID transactions trên Parquet files. Transaction log (_delta_log) track mọi thay đổi. Time travel: <code>SELECT * FROM table VERSION AS OF 5</code>. Schema enforcement mặc định (reject data không match schema). Schema evolution: <code>mergeSchema = true</code>. MERGE INTO cho upserts. Tích hợp sâu với Spark và Databricks.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Apache Iceberg — Vendor Neutral</strong>
+            <p>Catalog-based metadata (không phụ thuộc vào directory structure). Hidden partitioning: partition by month(timestamp) mà query không cần biết partition structure. Snapshot isolation. Schema evolution không cần rewrite data. Hoạt động với Spark, Flink, Trino, Dremio, Snowflake. Community lớn, đang trở thành standard.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Compaction — Gom Files Nhỏ Thành Files Lớn</strong>
+            <p>Streaming writes tạo nhiều small files (mỗi micro-batch = 1 file). 1 triệu files 1MB → query chậm kinh hoàng (file open overhead). Compaction gom lại: 1000 files → 1 file. Delta Lake: <code>OPTIMIZE table</code>. Iceberg: rewrite_data_files. Schedule compaction daily hoặc khi small files > threshold.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Medallion Architecture — Bronze, Silver, Gold</strong>
+            <p><strong>Bronze</strong>: raw data, as-is from source, append-only. <strong>Silver</strong>: cleaned, deduplicated, conformed, business entities. <strong>Gold</strong>: aggregated, business-level, ready for consumption. Mỗi layer có quality guarantees tăng dần. Downstream chỉ đọc Silver/Gold, không bao giờ Bronze.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Time Travel — Undo Mistakes</strong>
+            <p>Ai đó chạy <code>DELETE FROM customers WHERE active = false</code> nhưng quên WHERE clause? Time travel: <code>SELECT * FROM customers VERSION AS OF '2024-01-15'</code> → restore. Delta Lake giữ history theo retention (default 30 ngày). Iceberg snapshot expiration configurable. Time travel = insurance policy miễn phí.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">🏚️ Chuyện 1: Data Lake Thành Data Swamp</div>
+            <p>Company xây data lake trên S3. Ban đầu: structured folders, documented schemas. 2 năm sau: 50 teams dump data vào. Folders: <code>s3://lake/team-a/data-2024/export_final_v2_REAL_USE_THIS.csv</code>. Không schema registry. Không data catalog. Không access control.</p>
+            <p>Khi analyst cần tìm customer data: 15 folders có "customer" trong tên, 8 có data format khác nhau, 3 đã outdated nhưng không ai biết cái nào. "Data lake" trở thành "data swamp" — mọi thứ được dump vào nhưng không ai lấy ra được gì hữu ích.</p>
+            <p>Lão phải: implement Iceberg tables (schema enforcement), set up data catalog (AWS Glue), naming conventions + folder structure standards, access control per team. Mất 6 tháng "drain the swamp".</p>
+            <div class="lesson">💡 Bài học: Data lake CẦN governance từ ngày đầu: schema enforcement, naming conventions, data catalog, access control, data ownership. Không governance = data swamp guaranteed.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">📁 Chuyện 2: Small Files Problem — Khi 1 Triệu Files Giết Chết Performance</div>
+            <p>Kafka → Spark Structured Streaming → Delta Lake. Trigger: every 1 minute. Mỗi trigger tạo 1 Parquet file per partition. 100 partitions × 1440 minutes/day = 144,000 files/ngày. Sau 1 tuần: 1 triệu files. Query scan 1 ngày data = open 144,000 files = 10 phút cho simple SELECT.</p>
+            <p>Lão setup: <code>OPTIMIZE</code> Delta Lake chạy mỗi 6 giờ (gom small files), Z-ORDER BY common filter columns, tăng trigger interval lên 5 phút (giảm files 5x). Query time giảm từ 10 phút xuống 15 giây. Storage costs cũng giảm vì compression hiệu quả hơn trên large files.</p>
+            <div class="lesson">💡 Bài học: Streaming writes + object storage = small files problem. PHẢI có compaction strategy. Delta OPTIMIZE, Iceberg rewrite_data_files, Hudi compaction. Schedule regular compaction. Target file size: 128MB-1GB.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔄 Chuyện 3: Schema Evolution — Khi Source Thay Đổi Không Báo</div>
+            <p>Source API thêm 3 fields mới, bỏ 2 fields cũ, đổi type 1 field (string → integer). Không ai thông báo. Bronze layer ingest vẫn OK (append raw JSON). Nhưng Silver layer Spark job crash: schema mismatch, field không tồn tại, type incompatible.</p>
+            <p>Lão implement: schema evolution trong Iceberg (thêm columns tự động, rename/drop cần explicit), schema validation layer giữa Bronze→Silver (detect changes, alert, không tự động apply). Và "data contract" với source teams: mọi schema change phải notify 1 tuần trước.</p>
+            <div class="lesson">💡 Bài học: Schema WILL change. Design for it: schema evolution support (Iceberg/Delta), validation between layers, data contracts với source teams, schema registry cho tracking. Defensive programming trong data pipelines.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Dump everything, organize nothing</strong>
+            <p>"Lưu hết vào S3, mai mốt tính" → mai mốt không bao giờ đến. Governance từ ngày 1: folder structure, naming, catalog.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không compaction</strong>
+            <p>1 triệu small files = query chết. Compaction là maintenance bắt buộc, không phải optional. Schedule nó như schedule backup.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Ignore time travel retention</strong>
+            <p>Delta Lake default 30 ngày history. Vacuum xóa old files. Nếu vacuum mà retention quá ngắn → mất ability to time travel. Set retention phù hợp.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ No access control</strong>
+            <p>Mọi team đọc/ghi mọi data. Team marketing vô tình overwrite customer PII data. Fine-grained access control per table/column.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Skip Bronze layer</strong>
+            <p>"Transform luôn khi ingest cho nhanh" → source data thay đổi, cần reprocess từ raw → không có raw data. LUÔN giữ Bronze (raw) layer.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">🏞️ Hồ Dữ Liệu Tiên Nhân — Hồ Chứa Minh</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Hồ đẹp là hồ trong vắt, có hệ sinh thái cân bằng. Data lake cũng vậy — trong suốt và có quản trị."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 12: Lãnh đạo xấu-đẹp, sai-đúng — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#C0392B 0%,var(--navy) 50%,var(--green) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #C0392B;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .contrast-leaders{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0;}
+  .leader-portrait{border-radius:16px;padding:28px;box-shadow:var(--shadow);}
+  .leader-portrait.good{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-top:5px solid var(--green);}
+  .leader-portrait.bad{background:linear-gradient(135deg,#FFEBEE,#FFCDD2);border-top:5px solid #C0392B;}
+  .leader-portrait h3{font-size:1.1rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .leader-portrait.good h3{color:var(--green);}
+  .leader-portrait.bad h3{color:#C0392B;}
+  .leader-portrait .role-tag{font-size:0.78rem;font-weight:600;margin-bottom:14px;padding:3px 10px;border-radius:8px;display:inline-block;}
+  .leader-portrait.good .role-tag{background:var(--green);color:white;}
+  .leader-portrait.bad .role-tag{background:#C0392B;color:white;}
+  .leader-portrait p{font-size:0.88rem;color:#555;line-height:1.7;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.contrast-leaders{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-11.html" class="nav-btn">← Chương 11</a>
+    <a href="chuong-13.html" class="nav-btn">Chương 13 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🪞 Chương 12</div>
+  <span class="hero-emoji">⚖️</span>
+  <h1>Lãnh Đạo <span>Xấu - Đẹp, Sai - Đúng</span></h1>
+  <p class="hero-sub">Những bài học đắt giá từ cả lãnh đạo truyền cảm hứng lẫn những người ông từng ghét phải làm việc cùng.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Học từ người giỏi là điều hiển nhiên. Nhưng GS. Phan Văn Trường chỉ ra rằng học từ những lãnh đạo tệ còn có thể sâu sắc hơn — bởi vì nỗi đau của kinh nghiệm xấu khắc sâu vào trí nhớ hơn bất kỳ bài học lý thuyết nào.
+  </div>
+
+  <div class="cards-title">👥 Hai Chân Dung Đối Lập</div>
+  <div class="contrast-leaders">
+    <div class="leader-portrait good">
+      <h3>✨ Jérôme Monod</h3>
+      <div class="role-tag">Lãnh đạo mẫu mực</div>
+      <p>
+        Uy quyền tự nhiên — không cần nói to, không cần đe nẹt. Khi ông bước vào phòng, không khí thay đổi.
+        Mọi người lắng nghe không phải vì sợ, mà vì ông <em>luôn có điều gì đó đáng nghe</em>.
+        Ông không bao giờ nói để nghe mình nói — ông nói để người khác hiểu và hành động.
+      </p>
+    </div>
+    <div class="leader-portrait bad">
+      <h3>💔 Maurice C.</h3>
+      <div class="role-tag">Bài học ngược chiều</div>
+      <p>
+        Từng là cấp trên — phân biệt đối xử, dùng quyền lực để hạ thấp người khác.
+        Ironically, sau đó trở thành cấp dưới của GS. Phan Văn Trường — và ông đối xử với anh ta
+        đúng mực, không trả thù. Bài học: nghiệp quay vòng, đừng lạm dụng quyền lực.
+      </p>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Dấu Hiệu Nhận Biết Lãnh Đạo Tốt và Tệ</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">👂</div>
+      <div class="card-num">01</div>
+      <h3>Lắng nghe nhiều, nói ít</h3>
+      <p>Lãnh đạo tệ nhất thường nói nhiều nhất và nghe ít nhất. Lãnh đạo tốt có tỷ lệ ngược lại — họ biết im lặng có giá trị.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">02</div>
+      <h3>Quyền lực không cần khẳng định</h3>
+      <p>Lãnh đạo thật sự không cần nhắc nhở ai về quyền lực của mình. Kẻ liên tục khẳng định địa vị thường là người bất an nhất.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">03</div>
+      <h3>Xây dựng, không phá hoại</h3>
+      <p>Lãnh đạo tốt xây dựng con người xung quanh mình. Lãnh đạo tệ dùng người khác như công cụ và vứt bỏ khi không cần.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">⚡</div>
+      <div class="card-num">04</div>
+      <h3>Uy quyền tự nhiên vs quyền lực áp đặt</h3>
+      <p>Uy quyền tự nhiên được trao tặng bởi người khác — không thể giả tạo. Quyền lực áp đặt chỉ tồn tại khi có chức vị hỗ trợ.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Lãnh đạo xấu nhất tôi từng gặp<br>luôn là người nói nhiều nhất và nghe ít nhất."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Nghịch lý của Maurice C.:</strong> Người từng dùng quyền lực để phân biệt và hạ thấp người khác cuối cùng trở thành cấp dưới của người mình từng xem thường. Đây là bài học về sự khiêm tốn — quyền lực là thứ tạm thời, phẩm cách mới là thứ tồn tại lâu dài.
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Cách GS. Trường xử lý:</strong> Khi Maurice C. trở thành cấp dưới, ông đối xử đúng mực và chuyên nghiệp — không trả thù, không hạ thấp. Đây chính là phẩm cách lãnh đạo. Hành xử theo nguyên tắc, không theo cảm xúc.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Học từ lãnh đạo tệ có thể còn sâu sắc hơn học từ lãnh đạo tốt — nỗi đau khắc sâu bài học.</li>
+      <li>Uy quyền tự nhiên không thể giả tạo — nó được trao tặng bởi lòng tin và sự tôn trọng của người khác.</li>
+      <li>Dấu hiệu lãnh đạo tệ: nói nhiều, nghe ít, liên tục khẳng định quyền lực, dùng người như công cụ.</li>
+      <li>Phẩm cách lãnh đạo được kiểm tra khi có quyền lực hơn người từng đối xử tệ với bạn.</li>
+      <li>Quyền lực là thứ tạm thời — phẩm cách và uy tín mới là thứ theo bạn suốt cả sự nghiệp.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-11.html" class="bnav-btn">← Chương 11</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-13.html" class="bnav-btn next">Chương 13: Nghề làm lãnh đạo →</a>
+  </div>
+</div>
+
+</body>
+</html>

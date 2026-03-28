@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tự Động Hóa Mạng Sư - Chuyên Gia Ansible, Netmiko & NAPALM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a1a 30%, #2a2a1a 60%, #3a3a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #a3e635; text-shadow: 0 0 20px #a3e63540; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #a3e635; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #a3e635; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #a3e635; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #a3e63530; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #a3e635; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #a3e635; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🤖</span>
+            <h1>Tự Động Hóa Mạng Sư</h1>
+            <div class="title">Chuyên Gia Ansible, Netmiko & NAPALM</div>
+            <div class="quote">"Nếu bạn SSH vào 50 switches để thay đổi VLAN bằng tay, bạn không phải network engineer — bạn là typist với anxiety disorder."</div>
+        </div>
+        <div class="badges">            <span class="badge">🤖 Ansible Network</span>
+            <span class="badge">🐍 Netmiko/NAPALM</span>
+            <span class="badge">📋 Config Management</span>
+            <span class="badge">🔄 Change Validation</span>
+            <span class="badge">⏮️ Rollback Expert</span>
+            <span class="badge">📊 Network Testing</span>
+            <span class="badge">🌐 NETCONF/RESTCONF</span>
+            <span class="badge">🔧 TextFSM/TTP</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Tự Động Hóa Mạng Sư bắt đầu với 200 switches cần update VLAN. SSH vào từng switch, gõ commands, copy-paste config. Mất 3 ngày. Typo ở switch thứ 47 gây loop. Mất thêm 1 ngày debug. "Phải có cách tốt hơn," chàng ta nghĩ.</p><p>Chàng ta học Python, phát hiện Paramiko, rồi Netmiko (Paramiko cho network devices), rồi NAPALM (vendor-agnostic), rồi Ansible (automation framework). Workflow mới: viết playbook 30 phút, test trên lab 1 giờ, deploy 200 switches trong 15 phút. Đời đẹp hơn.</p><p>Nhưng automation cũng mang đến rủi ro mới: một playbook sai có thể phá hủy 200 switches trong 15 phút thay vì 1 switch trong 3 ngày. "With great automation comes great responsibility," chàng ta thích nói vậy.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Ansible for Network Automation:</strong> ansible.netcommon collection. ios_config, nxos_config, eos_config modules. Connection: network_cli cho SSH, netconf cho NETCONF. Idempotent operations: apply config only if different. Check mode (dry run) TRƯỚC khi apply. Roles cho reusable configurations.</div>
+            <div class="tip"><strong>2. Netmiko — Python SSH for Network:</strong> ConnectHandler cho SSH connection. send_command cho show commands. send_config_set cho config changes. TextFSM templates parse output thành structured data. Concurrent execution với threading. Error handling: expect patterns, timeout management. Tốt cho quick scripts và custom automation.</div>
+            <div class="tip"><strong>3. NAPALM — Vendor-Agnostic:</strong> get_facts(), get_interfaces(), get_bgp_neighbors() — same API cho Cisco, Juniper, Arista. Configuration replace và merge. Rollback support. Compliance validation: compare running config vs desired state. Tích hợp tốt với Ansible (napalm_install_config module).</div>
+            <div class="tip"><strong>4. Configuration Validation:</strong> Pre-check: verify current state trước khi change. Post-check: verify desired state sau khi change. Automated test suites: ping tests, routing table verification, interface status. Batfish/Catfish cho offline config analysis. pyATS/Genie (Cisco) cho network testing framework.</div>
+            <div class="tip"><strong>5. Change Management:</strong> Peer review cho network changes (gitops cho network). Maintenance windows cho production changes. Rollback plan cho EVERY change. Change tickets với expected impact. Post-change monitoring period. Gradual rollout: test trên 1 device → group → all.</div>
+            <div class="tip"><strong>6. NETCONF/RESTCONF — Modern Approach:</strong> NETCONF: XML over SSH, YANG models. RESTCONF: HTTP/REST + JSON/XML, YANG models. Structured data thay vì screen scraping. Transaction support (commit, rollback). Better than CLI parsing cho reliable automation. Adoption tăng nhưng không phải mọi vendor support đầy đủ.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔄 Chuyện Automated Config Push Sai VLAN</h3><p>Ansible playbook update VLAN assignment cho 50 access switches. Playbook tested trên lab — works. Push to production. 5 phút sau: phones ring nonstop. 200 users mất network access. Reason: playbook variable file có VLAN ID sai — VLAN 100 (production) thay vì VLAN 200 (test). Tất cả access ports chuyển sang VLAN 100 — overloaded VLAN, DHCP exhausted.</p><p>Rollback: Ansible playbook restore từ git backup. 10 phút total downtime. Post-mortem: thêm validation step (check VLAN exists, check DHCP pool), peer review cho variable files, gradual rollout (5 switches → verify → next 5).</p><div class="lesson">💡 Bài học: Automation multiplies mistakes. VALIDATE inputs trước khi push. Gradual rollout thay vì all-at-once. Peer review playbooks VÀ variable files. Pre-check/post-check automated tests. Rollback plan tested và ready.</div></div>
+            <div class="story"><h3>⏰ Chuyện Ansible Playbook Timeout</h3><p>Playbook upgrade firmware cho 100 switches, 10 concurrent. Switch reboot sau upgrade, Ansible wait cho SSH connection. 20 switches reboot simultaneously → power spike → UPS alarm → 5 switches không boot lại (firmware corrupt). Ansible timeout, report failures.</p><p>Root cause: concurrent firmware upgrades cause power spike. Fix: serial: 5 (chỉ 5 switches cùng lúc), wait_for reboot hoàn tất trước khi tiếp, pre-download firmware trước maintenance window, backup running config trước upgrade.</p><div class="lesson">💡 Bài học: Firmware upgrades ≠ config changes. Concurrent upgrades cause resource contention. Serial execution cho risky operations. Backup config TRƯỚC mọi firmware change. Verify firmware integrity (checksum) trước install. Have console access ready.</div></div>
+            <div class="story"><h3>📋 Chuyện Network as Code Cứu Mạng</h3><p>Senior network engineer nghỉ việc. Toàn bộ network knowledge trong đầu anh ấy. 300 devices, undocumented configs, manual changes over 5 năm. New engineer join: 'Network diagram ở đâu?' — 'Không có.' 'Config backup?' — 'Trong USB drive ở drawer, dated 2 năm trước.'</p><p>Đại Sư implement Network as Code: NAPALM backup tất cả configs to git daily. Ansible playbooks cho standard changes. Netbox cho IPAM và documentation. CI/CD pipeline cho config deployment. 6 tháng sau: toàn bộ network documented, reproducible, và version-controlled.</p><div class="lesson">💡 Bài học: Network knowledge không được ở trong đầu một người. Config as code trong git. Automated backup daily. Documentation as code (Netbox). Network automation không chỉ là efficiency — nó là knowledge preservation và disaster recovery.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Automation without testing:</strong> Push untested changes to production. ALWAYS test trên lab/staging environment trước.</div>
+            <div class="mistake"><strong>2. No rollback plan:</strong> Automated change breaks something. How to roll back? Automated rollback cũng cần tested.</div>
+            <div class="mistake"><strong>3. Hardcode credentials trong playbooks:</strong> ansible-vault cho secrets. Environment variables. Vault integration (HashiCorp Vault). NEVER plaintext credentials trong git.</div>
+            <div class="mistake"><strong>4. No change tracking:</strong> Who changed what, when? Git commits cho network changes. Audit trail bắt buộc cho compliance.</div>
+            <div class="mistake"><strong>5. Automate before understanding:</strong> Automate manual process mà không hiểu nó → automate mistakes. Understand, document, THEN automate.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #96</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

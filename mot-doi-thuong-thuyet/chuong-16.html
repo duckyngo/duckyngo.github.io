@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 16: Nghề Nghiệp, Chức Vụ, Lương Bổng – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #D97706 0%, #F59E0B 40%, #E11D48 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #B45309; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .strategy-grid { display: grid; gap: 12px; margin: 20px 0; }
+  .strategy-card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    display: flex; gap: 16px; align-items: flex-start;
+    border-left: 4px solid var(--amber); transition: transform 0.2s;
+  }
+  .strategy-card:hover { transform: translateX(4px); }
+  .strategy-card:nth-child(3n+1) { border-left-color: var(--purple); }
+  .strategy-card:nth-child(3n+2) { border-left-color: var(--teal); }
+  .strategy-card:nth-child(3n) { border-left-color: var(--rose); }
+  .strategy-num {
+    min-width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--amber), #D97706);
+    color: white; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; flex-shrink: 0;
+  }
+  .strategy-card:nth-child(3n+1) .strategy-num { background: linear-gradient(135deg, var(--purple), var(--purple-light)); }
+  .strategy-card:nth-child(3n+2) .strategy-num { background: linear-gradient(135deg, var(--teal), var(--teal-light)); }
+  .strategy-card:nth-child(3n) .strategy-num { background: linear-gradient(135deg, var(--rose), var(--rose-light)); }
+  .strategy-content strong { font-weight: 700; color: var(--gray-800); display: block; margin-bottom: 4px; }
+  .strategy-content p { font-size: 0.9rem; color: #6B7280; }
+  .story-box { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border: 1px solid #FDE68A; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .story-box h3 { color: #B45309; font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .story-box p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .salary-tip { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 20px 0; }
+  .salary-tip h3 { color: #B45309; font-size: 1.05rem; margin-bottom: 16px; }
+  .tip-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #F3F4F6; }
+  .tip-item:last-child { border-bottom: none; }
+  .tip-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .tip-text { font-size: 0.95rem; color: var(--gray-700); }
+  .quote-box { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-left: 5px solid var(--amber); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--amber); opacity: 0.2; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: #92400E; font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-rose { background: #FFF1F2; border: 1px solid #FECDD3; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-rose .callout-body strong { color: var(--rose); }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #451A03, #1E1B4B); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #FDE68A; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">💼 Chương 16</div>
+  <div class="hero-emoji">🚀</div>
+  <h1>Nghề Nghiệp, Chức Vụ và Lương Bổng</h1>
+  <div class="subtitle">Thương thuyết cho sự nghiệp bản thân – nghệ thuật ít được dạy nhưng ai cũng cần</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🚀 9 Chiến Lược Tiến Chức</div>
+
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <div class="strategy-num">1</div>
+      <div class="strategy-content">
+        <strong>Tạo Giá Trị Rõ Ràng, Có Thể Đo Lường</strong>
+        <p>Không ai thăng chức cho người không thể chứng minh được giá trị của mình. Hãy theo dõi và trình bày kết quả công việc bằng con số cụ thể.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">2</div>
+      <div class="strategy-content">
+        <strong>Xây Dựng Quan Hệ Ở Mọi Cấp</strong>
+        <p>Không chỉ với sếp trực tiếp. Người thành công xây dựng quan hệ rộng trong tổ chức – đồng nghiệp ngang cấp, cấp trên của sếp, và cả cấp dưới.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">3</div>
+      <div class="strategy-content">
+        <strong>Hiểu Luật Ngầm: Sếp Ngay Trên Không Cho Lên Chức</strong>
+        <p>Quy luật kỳ lạ nhưng thực tế: sếp trực tiếp của bạn thường không muốn bạn thăng chức vì mất nhân lực giỏi. Người đẩy bạn lên thường là sếp của sếp.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">4</div>
+      <div class="strategy-content">
+        <strong>Tạo Thương Hiệu Cá Nhân</strong>
+        <p>Bạn muốn được biết đến vì điều gì? Chuyên gia về kỹ thuật, người giải quyết vấn đề, người xây dựng đội ngũ? Thương hiệu cá nhân rõ ràng giúp cơ hội tìm đến bạn.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">5</div>
+      <div class="strategy-content">
+        <strong>Thương Thuyết Lương Đúng Thời Điểm</strong>
+        <p>Đừng hỏi tăng lương khi công ty đang khó khăn hoặc ngay sau khi bạn mắc lỗi. Chọn thời điểm bạn vừa có thành tích nổi bật để đàm phán lương.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">6</div>
+      <div class="strategy-content">
+        <strong>Biết Giá Trị Thị Trường Của Mình</strong>
+        <p>Trước khi đàm phán lương, hãy nghiên cứu mức lương thị trường cho vị trí của mình. Con số cụ thể có sức thuyết phục hơn nhiều so với "cảm giác tôi xứng đáng được nhiều hơn".</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">7</div>
+      <div class="strategy-content">
+        <strong>Sẵn Sàng Rời Đi Khi Cần</strong>
+        <p>Không có BATNA (phương án tốt nhất nếu không thỏa thuận được) là điểm yếu chết người trong đàm phán lương. Hãy luôn có cơ hội thay thế trong tay.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">8</div>
+      <div class="strategy-content">
+        <strong>Đàm Phán Cả Gói, Không Chỉ Lương</strong>
+        <p>Lương cơ bản, thưởng, cổ phần, đào tạo, linh hoạt giờ giấc – tổng thể gói đãi ngộ quan trọng hơn con số lương cơ bản đơn thuần.</p>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-num">9</div>
+      <div class="strategy-content">
+        <strong>Xây Dựng Danh Tiếng Trước, Thu Hoạch Sau</strong>
+        <p>Người nổi tiếng vì thực lực và đạo đức không cần "xin" lên chức – cơ hội sẽ tự tìm đến. Đây là chiến lược bền vững nhất dù chậm nhất.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>🇲🇾 Câu Chuyện Bổ Nhiệm Tổng Giám Đốc Malaysia</h3>
+    <p>Tác giả kể về việc chứng kiến quá trình bổ nhiệm một Tổng Giám đốc tại Malaysia. Ứng viên được chọn không phải người xuất sắc nhất về kỹ thuật, không phải người tham vọng nhất – mà là người đã xây dựng được niềm tin và quan hệ rộng trong suốt nhiều năm, biết im lặng khi cần và lên tiếng đúng lúc.</p>
+    <p>Quy luật ngầm: "Không bao giờ sếp ngay trên mình cho mình lên chức." Người đẩy ứng viên này lên là cấp trên của cấp trên, người đã quan sát từ xa trong nhiều năm.</p>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Không bao giờ sếp ngay trên mình cho mình lên chức. Khi bạn thăng tiến, sếp mất đi người giỏi nhất của họ – họ có lý do để không muốn điều đó xảy ra."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="salary-tip">
+    <h3>💰 Kỹ Thuật Đàm Phán Lương Thực Tế</h3>
+    <div class="tip-item">
+      <div class="tip-icon">🎯</div>
+      <div class="tip-text"><strong>Không đưa ra con số đầu tiên</strong> – Để nhà tuyển dụng nêu ra phạm vi trước. Người nêu con số đầu tiên thường chịu bất lợi.</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">📊</div>
+      <div class="tip-text"><strong>Dẫn chứng bằng thị trường</strong> – "Theo khảo sát của [nguồn], vị trí này ở thị trường hiện tại là X-Y triệu" thuyết phục hơn "tôi cảm thấy tôi xứng đáng..."</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🤝</div>
+      <div class="tip-text"><strong>Đặt câu hỏi thay vì đòi hỏi</strong> – "Mức nào là hợp lý theo anh/chị?" mở ra cuộc đối thoại tốt hơn là tuyên bố "tôi muốn X".</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">⏰</div>
+      <div class="tip-text"><strong>Không vội chấp nhận ngay</strong> – "Tôi cần xem xét kỹ hơn" là câu hoàn toàn chấp nhận được. Vội vàng chấp nhận gửi tín hiệu bạn không có lựa chọn khác.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Sai lầm phổ biến khi đàm phán lương</strong>
+      <p>Tiết lộ mức lương hiện tại quá sớm, đặt ra con số không căn cứ vào thị trường, đàm phán lương qua email thay vì trực tiếp, và tập trung vào lương cơ bản mà bỏ qua tổng thể đãi ngộ.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 16</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Thương thuyết sự nghiệp là kỹ năng sống – không khác gì thương thuyết kinh doanh, cần chuẩn bị và chiến lược.</li>
+      <li><span class="lesson-num">2</span>Quy luật ngầm: sếp ngay trên thường không muốn bạn thăng chức – cần xây dựng quan hệ rộng hơn.</li>
+      <li><span class="lesson-num">3</span>Có BATNA trong đàm phán lương là sức mạnh thực sự – không có lựa chọn thay thế = yếu thế hoàn toàn.</li>
+      <li><span class="lesson-num">4</span>Thương hiệu cá nhân + quan hệ rộng = cơ hội tự tìm đến bạn – đây là chiến lược bền vững nhất.</li>
+      <li><span class="lesson-num">5</span>Đàm phán cả gói đãi ngộ, không chỉ lương cơ bản – nhiều yếu tố khác còn quan trọng hơn con số tháng.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-15.html" class="nav-btn nav-btn-prev">← Chương 15</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-17.html" class="nav-btn nav-btn-next">Chương 17 →</a>
+  </div>
+
+</div>
+</body>
+</html>

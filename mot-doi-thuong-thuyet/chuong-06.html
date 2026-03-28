@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 6: Người Trung Gian – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #134E4A 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: var(--teal); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .bridge-visual {
+    background: white; border-radius: 16px; padding: 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 24px 0;
+    text-align: center;
+  }
+  .bridge-row { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .bridge-side { background: #F5F3FF; border: 2px solid var(--purple-light); border-radius: 12px; padding: 20px 24px; text-align: center; }
+  .bridge-arrow { font-size: 2rem; color: var(--teal); }
+  .bridge-middle { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; border-radius: 12px; padding: 20px 24px; text-align: center; }
+  .bridge-emoji { font-size: 2rem; margin-bottom: 8px; }
+  .bridge-label { font-weight: 700; font-size: 0.95rem; }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid var(--teal); transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--purple); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--rose); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--amber); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .story-box { background: linear-gradient(135deg, #F0FDFA, #ECFDF5); border: 1px solid #99F6E4; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .story-box h3 { color: var(--teal); font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .story-box p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .quote-box { background: linear-gradient(135deg, #F0FDFA, #ECFDF5); border-left: 5px solid var(--teal); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--teal-light); opacity: 0.15; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: var(--teal); font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--purple); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #022c22, #065F46); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #6EE7B7; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .bridge-row { flex-direction: column; } .bridge-arrow { transform: rotate(90deg); } .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">🤝 Chương 6</div>
+  <div class="hero-emoji">🔗</div>
+  <h1>Người Trung Gian</h1>
+  <div class="subtitle">Chất keo vô hình gắn kết hai bên – người trung gian có uy tín là chìa khóa mở cánh cửa đóng kín</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🌉 Người Trung Gian – "Chất Keo" Của Thương Thuyết</div>
+
+  <div class="bridge-visual">
+    <div class="bridge-row">
+      <div class="bridge-side">
+        <div class="bridge-emoji">🏢</div>
+        <div class="bridge-label">Bên Bán</div>
+      </div>
+      <div class="bridge-arrow">→</div>
+      <div class="bridge-middle">
+        <div class="bridge-emoji">🤝</div>
+        <div class="bridge-label">Người Trung Gian</div>
+        <div style="font-size: 0.8rem; margin-top: 4px; opacity: 0.9;">Uy tín · Quan hệ · Hiểu biết</div>
+      </div>
+      <div class="bridge-arrow">→</div>
+      <div class="bridge-side">
+        <div class="bridge-emoji">🏛️</div>
+        <div class="bridge-label">Bên Mua</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">💡 Tại Sao Cần Người Trung Gian?</div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🔑</div>
+      <div class="takeaway-title">Mở cửa không thể mở</div>
+      <div class="takeaway-text">Trong nhiều nền văn hóa, người lạ không có cơ hội gặp người ra quyết định. Trung gian uy tín là chiếc chìa khóa duy nhất mở cánh cửa đó.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🌍</div>
+      <div class="takeaway-title">Hiểu văn hóa địa phương</div>
+      <div class="takeaway-text">Người trung gian hiểu ngôn ngữ, phong tục, tập quán kinh doanh địa phương – tránh những sai lầm văn hóa có thể phá vỡ đàm phán.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🎖️</div>
+      <div class="takeaway-title">Uy tín được kế thừa</div>
+      <div class="takeaway-text">Khi trung gian giới thiệu bạn, uy tín của họ được chuyển sang bạn. Đây là cách xây dựng lòng tin nhanh nhất trong môi trường xa lạ.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">⚡</div>
+      <div class="takeaway-title">Rút ngắn thời gian</div>
+      <div class="takeaway-text">Điều mà không có trung gian phải mất nhiều năm xây dựng quan hệ, với trung gian phù hợp có thể hoàn thành trong vài tháng.</div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>🇮🇩 Câu Chuyện Indonesia – Con Cháu Suharto</h3>
+    <p>Trong một dự án lớn tại Indonesia, tác giả nhận ra rằng không có bất kỳ hợp đồng nào có thể ký kết nếu không có sự đồng thuận từ mạng lưới gia đình của tổng thống Suharto. Đây không phải tham nhũng đơn thuần – đây là cách hệ thống vận hành tại thời điểm đó.</p>
+    <p>Người trung gian có kết nối đúng đắn với hệ thống này đã giúp tác giả điều hướng phức tạp này một cách khéo léo, đưa dự án đến thành công.</p>
+  </div>
+
+  <div class="story-box">
+    <h3>⚡ Câu Chuyện 2 Phút Thắng Thầu</h3>
+    <p>Một trong những câu chuyện ấn tượng nhất: nhờ người trung gian đúng đắn, tác giả đã có được 2 phút gặp gỡ riêng với người ra quyết định. Chỉ 2 phút đó, được dùng đúng cách, đủ để nghiêng cán cân về phía mình trong một dự án trị giá hàng trăm triệu đô.</p>
+    <p>Không phải hồ sơ dày nhất, không phải giá rẻ nhất – mà là quan hệ và niềm tin được xây dựng qua trung gian uy tín mới quyết định.</p>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Thiếu trung gian có uy tín thì việc khó lòng đạt hiệu quả. Trong nhiều nền văn hóa, quan hệ quan trọng hơn năng lực và giá cả."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Cạm bẫy: Chọn sai người trung gian</strong>
+      <p>Không phải ai cũng xứng đáng làm trung gian. Người trung gian kém uy tín hoặc có xung đột lợi ích có thể phá hỏng đàm phán và làm ô nhiễm danh tiếng của bạn. Hãy kiểm tra kỹ trước khi tin tưởng.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Tiêu chí chọn người trung gian tốt</strong>
+      <p>① Uy tín thực sự với cả hai bên ② Hiểu biết sâu về văn hóa và ngành ③ Không có xung đột lợi ích ④ Cam kết lâu dài chứ không chỉ tìm hoa hồng nhanh ⑤ Có mạng lưới quan hệ thực chất, không phải hình thức.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-body">
+      <strong>Bạn cũng nên trở thành trung gian</strong>
+      <p>Khi bạn có mạng lưới quan hệ đủ mạnh, hãy cân nhắc trở thành người trung gian cho người khác. Đây là cách xây dựng ảnh hưởng, uy tín và quan hệ lâu dài trong ngành.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 6</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Người trung gian là "chất keo" không thể thiếu trong nhiều loại đàm phán quốc tế.</li>
+      <li><span class="lesson-num">2</span>Uy tín của trung gian được chuyển sang bạn – đây là cách xây dựng niềm tin nhanh nhất.</li>
+      <li><span class="lesson-num">3</span>Quan hệ quan trọng hơn năng lực và giá cả trong nhiều nền văn hóa – đặc biệt châu Á, Trung Đông, châu Phi.</li>
+      <li><span class="lesson-num">4</span>Chọn người trung gian sai có thể phá hỏng đàm phán và danh tiếng – hãy kiểm tra kỹ lưỡng.</li>
+      <li><span class="lesson-num">5</span>Đôi khi 2 phút với đúng người còn hiệu quả hơn 2 tháng hội họp với sai người.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-05.html" class="nav-btn nav-btn-prev">← Chương 5</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-07.html" class="nav-btn nav-btn-next">Chương 7 →</a>
+  </div>
+
+</div>
+</body>
+</html>

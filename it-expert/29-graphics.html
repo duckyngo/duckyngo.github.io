@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đồ Họa Chân Nhân - Bậc Thầy Graphics Programming</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(219,39,119,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #ec4899, #db2777, #f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #f9a8d4; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(219,39,119,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #f9a8d4; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #f9a8d4; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #ec4899; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #f9a8d4; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #db2777; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #f9a8d4; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #f9a8d4; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🌈</span>
+            <h1>Đồ Họa Chân Nhân</h1>
+            <p class="subtitle">Trần Đồ Họa — Bậc Thầy Graphics Programming</p>
+            <p class="quote">"Mỗi pixel trên màn hình là kết quả của triệu phép tính — và shader chỉ có 16ms để hoàn thành."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">OpenGL</span>
+            <span class="skill-tag">Vulkan</span>
+            <span class="skill-tag">DirectX</span>
+            <span class="skill-tag">Metal</span>
+            <span class="skill-tag">Shaders</span>
+            <span class="skill-tag">GPU Pipeline</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Đồ Họa bắt đầu với OpenGL 1.0 fixed-function pipeline — khi mà 'programming GPU' có nghĩa là gọi <code>glBegin(GL_TRIANGLES)</code>. Rồi programmable shaders ra đời, và thế giới thay đổi hoàn toàn. Ông viết vertex shader đầu tiên bằng assembly-like ARB instructions — 50 dòng để rotate một triangle.
+
+Khi Vulkan ra đời (2016), ông mất 2000 dòng code chỉ để render một tam giác — nhưng hiểu sâu hơn bao giờ hết rendering pipeline hoạt động thế nào. DirectX 12, Metal — mỗi API cho ông hiểu thêm về GPU architecture.
+
+Motto: 'GPU là máy tính song song mạnh nhất mà hầu hết developer không biết cách dùng. Hiểu GPU pipeline = unlock khả năng render hàng triệu polygons ở 60fps.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Rendering Pipeline — Từ Vertices đến Pixels</h3>
+                <p>Vertex stage: transform vertices (model → world → view → clip space), vertex shaders chạy PER VERTEX. Rasterization: convert triangles → fragments (potential pixels). Fragment stage: fragment shaders chạy PER FRAGMENT — color, lighting, texturing. Output: framebuffer → screen. Modern additions: Tessellation (subdivide geometry dynamically), Geometry shader (generate/destroy primitives), Compute shader (general-purpose GPU compute). Bottlenecks: vertex-bound (too many vertices), fill-rate bound (too many pixels/overdraw), bandwidth-bound (too many texture reads).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Vulkan vs OpenGL — Control vs Convenience</h3>
+                <p>OpenGL: state machine model, driver handles memory/synchronization, easier API, cross-platform. Nhược: driver overhead, unpredictable performance, deprecated by Apple (Metal only). Vulkan: explicit control — you manage command buffers, synchronization, memory allocation. Ưu: predictable performance, lower CPU overhead, multi-threaded rendering. Nhược: 2000+ lines cho triangle, complex API. Recommendation: OpenGL/OpenGL ES cho learning, prototyping, simple apps. Vulkan cho AAA games, professional renderers, performance-critical. WebGPU: next-gen web graphics API (Vulkan-inspired, cross-platform).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Shader Programming</h3>
+                <p>GLSL (OpenGL), HLSL (DirectX), MSL (Metal), WGSL (WebGPU). Vertex shader: transform position, pass data to fragment. Fragment shader: calculate final pixel color (lighting, texturing, effects). Uniform variables: CPU → GPU data (matrices, time, parameters). Varying/in/out: vertex → fragment interpolated data. Performance: minimize texture samples, avoid branching (GPU SIMD prefers uniform execution), use swizzling, precompute on CPU when possible.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: GPU Optimization</h3>
+                <p>Draw calls: mỗi draw call có CPU overhead. Batch: combine meshes, instancing cho repeated objects, indirect rendering. Overdraw: pixel drawn multiple times (transparent objects, overlapping geometry). Front-to-back rendering, early-Z rejection, stencil masking. Texture bandwidth: mipmaps (automatic LOD), compressed formats (BC/ASTC), texture atlasing. Shader complexity: LOD-based shader (simpler shader for distant objects), compute work offloading.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Modern Rendering Techniques</h3>
+                <p>PBR (Physically Based Rendering): energy-conserving materials, metallic/roughness workflow, IBL (Image Based Lighting). Deferred rendering: render geometry info to G-buffer, apply lighting in screen space — efficient cho many lights. Ray tracing: realistic reflections, shadows, GI — hardware RT cores (RTX). Nanite (Unreal): virtualized geometry, unlimited polygon count. Global Illumination: baked (lightmaps), real-time (SSGI, RTGI, Lumen). TAA/DLSS/FSR: temporal anti-aliasing, AI upscaling.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Shader Compilation Stutter — First Frame Freeze</h3>
+                <p>Game release: first time player enters new area → 500ms freeze. Then smooth. Next new area → 200ms freeze. Cause: shader compilation at runtime. GPU needs compiled shader cho each unique material/lighting combination. First encounter = compile = stutter.
+
+Players review: 'Stuttering mess, unplayable.' Fix attempts: 1) Pre-warm shaders (force compile during loading screen), 2) Shader cache (compile once, cache, reuse), 3) Pipeline State Objects (PSO) pre-creation. Vulkan/DirectX 12: PSO caching. Unity: shader variant collection + warm-up. Unreal: PSO recording + replay.
+
+After fix: smooth 60fps throughout. Lesson: shader compilation stuttering = death for fast-paced games.</p>
+                <div class="lesson">💡 Bài học: Shader compilation stutter là P0 issue cho gameplay experience. Solutions: 1) Pre-warm shaders during loading, 2) PSO caching (save compiled shaders to disk), 3) Reduce shader variants (feature flags), 4) Background compilation (async). Test: fresh install, first playthrough — that's what users experience. Profile cold start specifically.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Z-Fighting Artifacts — Flickering Walls</h3>
+                <p>Architecture visualization app: walls flickering with zebra stripe patterns. Cause: Z-fighting — two surfaces at nearly identical depth, depth buffer cannot resolve which is in front. Floating-point precision limitation: far from camera → depth buffer precision decreases.
+
+Worse with large scenes: camera can see objects from 0.1m to 10,000m → depth buffer spread thin over huge range → precision terrible at far distances. Near plane 0.001 → even worse (most precision wasted on near range).
+
+Fix: 1) Increase near clip plane (0.001 → 0.1), 2) Logarithmic depth buffer (more precision at far distances), 3) Offset coplanar surfaces slightly (<code>glPolygonOffset</code>), 4) Reversed depth buffer (better precision distribution). Near plane = single most important depth buffer parameter.</p>
+                <div class="lesson">💡 Bài học: Z-fighting = depth buffer precision problem. Prevention: 1) Near clip as FAR as possible (0.1, not 0.001), 2) Far clip as NEAR as possible, 3) Avoid coplanar geometry (offset by small amount), 4) Reversed-Z depth buffer (float precision distribution matches 1/z better). Logarithmic depth cho massive scenes (space games, earth-scale).</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: GPU Memory Leak — VRAM Eating Monster</h3>
+                <p>Game allocates GPU textures but forgets to release them when level unloads. After 3 level transitions: VRAM full → driver starts paging to system RAM → frame drops from 60fps to 15fps → eventually crash (out-of-memory).
+
+Debug with RenderDoc/Nsight: texture count increasing with each level load. Root cause: texture references held by material instances not properly cleaned. Fix: explicit resource lifecycle management, weak references for cached textures, VRAM budget monitoring.
+
+Graphics API observation: OpenGL = driver manages memory (somewhat forgiving). Vulkan = YOU manage memory (explicit alloc/free — leak = your fault). Moving to Vulkan exposed memory management bugs that OpenGL's driver was hiding.</p>
+                <div class="lesson">💡 Bài học: GPU memory management is CRITICAL. Unlike CPU memory, GPU memory leaks cause immediate visual degradation (frame drops, crashes). Profile VRAM usage: RenderDoc, GPU vendor tools (Nsight, Radeon GPU Profiler). Track allocations: texture count, buffer sizes, framebuffer attachments. Vulkan VMA (Vulkan Memory Allocator) helps manage GPU memory correctly.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Overdraw — drawing hidden pixels</h3>
+                <p>Transparent objects rendered back-to-front = every pixel drawn multiple times. Opaque objects: render front-to-back (early-Z rejects hidden fragments). Transparent: minimize, use alpha test (discard) when possible instead of alpha blend.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Too many draw calls</h3>
+                <p>CPU prepares each draw call: state changes, buffer binds, shader switches. 10,000 draw calls = bottleneck on CPU side. Solutions: batching, instancing, indirect rendering, merge small meshes.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Uncompressed textures</h3>
+                <p>4K uncompressed RGBA texture = 64MB VRAM. Compressed (BC7/ASTC) = 16MB. Mipmapped = even better for cache. ALWAYS use texture compression cho runtime textures. Tools: texconv, compressonator, basisu.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Branching trong shader</h3>
+                <p>GPU executes SIMD — branching causes warp/wavefront divergence. Both branches EXECUTE for ALL threads in warp. Avoid per-pixel branching. Use math tricks: step(), mix(), smoothstep() instead of if/else.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Không profile GPU separately</h3>
+                <p>CPU profiler shows CPU time. GPU runs async. Use GPU profiler (RenderDoc, Nsight, Xcode GPU Frame Capture) to see actual GPU bottlenecks: vertex processing, fragment processing, bandwidth.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Đồ Họa</span> — Đồ Họa Chân Nhân</p>
+            <p>🌈 "Mỗi pixel trên màn hình là kết quả của triệu phép tính — và shader chỉ có 16ms để hoàn thành."</p>
+        </div>
+    </div>
+</body>
+</html>

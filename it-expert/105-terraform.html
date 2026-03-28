@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hạ Tầng Mã Hóa Đại Sư - Chuyên Gia Terraform & OpenTofu | Người Thờ HCL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a2a 30%, #1a0a3a 60%, #1a1a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #7c3aed; text-shadow: 0 0 20px #7c3aed40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #7c3aed; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #7c3aed; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #7c3aed; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #7c3aed30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #7c3aed; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #7c3aed; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🏗️</span><h1>Hạ Tầng Mã Hóa Đại Sư</h1><div class="title">Chuyên Gia Terraform & OpenTofu | Người Thờ HCL</div><div class="quote">"terraform destroy — hai từ đáng sợ nhất trong IT, ngay sau 'rm -rf /' và 'chúng ta cần nói chuyện.'"</div></div>
+        <div class="badges">            <span class="badge">🏗️ Terraform Expert</span>
+            <span class="badge">🔓 OpenTofu</span>
+            <span class="badge">📋 HCL Master</span>
+            <span class="badge">🗃️ State Management</span>
+            <span class="badge">📦 Modules</span>
+            <span class="badge">🔄 Workspaces</span>
+            <span class="badge">🔍 Drift Detection</span>
+            <span class="badge">🚀 CI/CD Integration</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư từng tạo infrastructure bằng console clicks. Click, click, click — 200 resources. Documentation? "Console history." Reproducibility? "Click lại." Disaster recovery? "Click... nhanh hơn."</p><p>Khi Terraform xuất hiện, chàng ta viết infrastructure bằng code. terraform plan → review → terraform apply → infrastructure created. Version controlled, reviewable, reproducible. "This is the way," chàng ta tuyên bố.</p><p>Nhưng rồi chàng ta gặp State File — cái file JSON chứa toàn bộ trạng thái infrastructure. Mất state file = Terraform không biết gì về existing resources. State file corruption = nightmare. "State file is the most critical file in your infrastructure," chàng ta khắc chữ lên bàn làm việc.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. State Management — Quan Trọng Nhất:</strong> Remote state backend (S3 + DynamoDB, Azure Blob, GCS). State locking (DynamoDB cho AWS) prevent concurrent modifications. State encryption at rest. KHÔNG commit state file vào git (chứa secrets). terraform state mv, terraform import cho state manipulation. Backup state trước mọi operation.</div>
+            <div class="tip"><strong>2. Modules — Reusable Infrastructure:</strong> Modules cho reusable components (VPC module, EKS module). Public Terraform Registry cho community modules. Pin module versions: source = "terraform-aws-modules/vpc/aws" version = "5.0.0". Outputs cho inter-module communication. Module composition cho complex architectures.</div>
+            <div class="tip"><strong>3. Workspaces vs Directory Structure:</strong> Workspaces: same code, different state (dev, staging, prod). Directory structure: different directories per environment. Common pattern: directories + shared modules. Terragrunt cho DRY multi-environment management. Choose ONE approach, be consistent.</div>
+            <div class="tip"><strong>4. CI/CD Integration:</strong> terraform plan trong PR review — reviewable change preview. terraform apply sau PR merge. Automated testing: terratest, tftest. Policy enforcement: Sentinel (HashiCorp), OPA. Drift detection: scheduled terraform plan. NEVER terraform apply từ local machine cho production.</div>
+            <div class="tip"><strong>5. Best Practices:</strong> terraform fmt cho consistent formatting. terraform validate cho syntax checking. tflint cho linting. checkov/tfsec cho security scanning. Resource naming conventions. Tagging strategy enforced. Lifecycle prevent_destroy cho critical resources.</div>
+            <div class="tip"><strong>6. OpenTofu — Open-Source Fork:</strong> Fork của Terraform sau HashiCorp license change (BSL). Compatible syntax. Community-driven. Drop-in replacement cho hầu hết cases. Consider cho new projects nếu license concerns.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>💀 Chuyện terraform destroy Production</h3><p>Junior engineer chạy terraform destroy. Terraform prompt: 'Do you really want to destroy all resources?' Engineer type 'yes' mà không đọc resource list. 47 resources destroyed: VPC, subnets, security groups, RDS database, ECS cluster. Production DOWN.</p><p>Recovery: database from backup (RPO 4 giờ = mất 4 giờ data). Rebuild infrastructure từ Terraform code (mất 2 giờ). Total impact: 6 giờ downtime, 4 giờ data loss. Total cost: estimated $200K.</p><p>Prevention implemented: lifecycle prevent_destroy cho critical resources. Separate state files cho production. RBAC restrict terraform destroy access. CI/CD pipeline only — no local terraform cho production.</p><div class="lesson">💡 Bài học: lifecycle prevent_destroy cho databases, storage, networking. Separate state per environment. RBAC cho production access. CI/CD only — no local terraform apply/destroy. terraform plan REVIEW mandatory trước apply. Destruction protection ở cloud level (RDS deletion protection, S3 bucket policy).</div></div>
+            <div class="story"><h3>🗃️ Chuyện State File Corruption</h3><p>Terraform apply interrupted giữa chừng (network timeout). State file partially written. Next terraform plan: panic, crash, inconsistent state. Team cannot modify infrastructure — every operation fails.</p><p>Recovery: download state backup từ S3 versioning (bật versioning là MUST). Restore previous version. terraform refresh để sync state với actual infrastructure. Verify mọi resource. 4 giờ recovery.</p><div class="lesson">💡 Bài học: State file backup là CRITICAL. S3 versioning enabled cho state bucket. DynamoDB state locking prevent concurrent writes. Remote backend thay vì local state. State file chứa secrets — encrypt at rest. Never manually edit state file — use terraform state commands.</div></div>
+            <div class="story"><h3>🔄 Chuyện Drift Detection Phát Hiện Manual Change</h3><p>Engineer manually modify security group qua console (thêm rule cho debugging). 3 tháng sau, Terraform plan show: 'security group rule will be removed.' Engineer đã quên manual change. Terraform apply xóa rule — service mất network access.</p><p>Fix: scheduled drift detection (terraform plan weekly). Alert on drift. Policy: NO manual changes — all changes through Terraform. Nếu phải manual change → terraform import ngay.</p><div class="lesson">💡 Bài học: Infrastructure drift là silent killer. Scheduled drift detection. Policy: all changes through IaC. terraform import cho resources created manually. CloudTrail/Activity Log detect manual changes. Drift = technical debt = ticking time bomb.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Local state file:</strong> Mất laptop = mất state = mất infrastructure tracking. Remote backend ALWAYS. S3 + DynamoDB cho AWS.</div>
+            <div class="mistake"><strong>2. Không lock state:</strong> 2 engineers terraform apply cùng lúc → state corruption. DynamoDB locking cho AWS, built-in cho other backends.</div>
+            <div class="mistake"><strong>3. Mega state file:</strong> 1 state file cho toàn bộ infrastructure. Split state: networking, compute, database separately. Smaller blast radius.</div>
+            <div class="mistake"><strong>4. Hardcode values:</strong> variables.tf, terraform.tfvars cho environment-specific values. No hardcoded AMI IDs, IP addresses, account IDs.</div>
+            <div class="mistake"><strong>5. Không review terraform plan:</strong> terraform apply --auto-approve = YOLO. ALWAYS review plan output. Especially: resources being destroyed.</div>
+            <div class="mistake"><strong>6. terraform apply trên main branch:</strong> Merge to main → auto-apply. Feature branch → terraform plan cho review. Main merge → terraform apply. Sequential, not concurrent.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #105</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

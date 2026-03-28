@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRE Đại Sư - Site Reliability Engineering Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0d0a 25%, #2a150a 50%, #1a0d0a 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(234,88,12,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #fb923c, #f97316, #ea580c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fed7aa; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(234,88,12,0.2)); border: 1px solid rgba(249,115,22,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fed7aa; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; } .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(249,115,22,0.4), rgba(234,88,12,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(249,115,22,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(249,115,22,0.2); box-shadow: 0 8px 40px rgba(249,115,22,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fed7aa; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(249,115,22,0.06); border-left: 3px solid #fb923c; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fed7aa; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(249,115,22,0.06), rgba(234,88,12,0.06)); border: 1px solid rgba(249,115,22,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #fb923c; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fed7aa; font-weight: 600; }
+        code { background: rgba(249,115,22,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fed7aa; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🔥</span>
+            <h1>SRE Đại Sư</h1>
+            <p class="subtitle">Trương Phi Bất Sập — Người Giữ Lửa Hệ Thống</p>
+            <p class="quote">"Hope is not a strategy. 99.99% uptime không tự nhiên mà có — nó được kỹ thuật, đo lường, và bảo vệ bằng error budget."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">SLI / SLO / SLA</span>
+            <span class="skill-tag">Error Budget</span>
+            <span class="skill-tag">Chaos Engineering</span>
+            <span class="skill-tag">Toil Reduction</span>
+            <span class="skill-tag">Capacity Planning</span>
+            <span class="skill-tag">Incident Management</span>
+            <span class="skill-tag">Game Days</span>
+            <span class="skill-tag">On-Call Excellence</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Trương Phi Bất Sập — biệt danh do đồng nghiệp đặt sau khi ông giữ hệ thống 99.99% uptime suốt 2 năm liên tục. Xuất thân từ ops engineer, ông từng là "người gác đêm" — on-call 24/7, PagerDuty reo lúc 3 giờ sáng, fix production fires bằng SSH và prayer. Cho đến khi ông đọc cuốn "Site Reliability Engineering" của Google và nhận ra: firefighting không phải heroism — đó là dấu hiệu của engineering debt.</p>
+            <p>Kiếp nạn đầu: "Toil Hell" — khi 80% thời gian ông làm manual tasks lặp đi lặp lại: restart services, clear disk, rotate logs, respond to same alerts. Kiếp hai: "100% Uptime Obsession" — khi management muốn 100% uptime nhưng không hiểu rằng 100% là impossible và cố gắng đạt nó sẽ kill innovation. Kiếp ba: "Chaos Engineering Enlightenment" — khi ông cố tình kill production services trong Game Day và team phát hiện 15 failure modes chưa ai biết.</p>
+            <p>Triết lý: "SRE is what happens when you ask a software engineer to design an operations team." — Ben Treynor, Google.</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: SLI/SLO/SLA — Ngôn Ngữ Chung Về Reliability</h3>
+                <p><strong>SLI</strong> (Service Level Indicator): metric đo actual performance — latency p99, error rate, throughput. Chọn SLIs phản ánh user experience: "99% requests complete under 200ms." <strong>SLO</strong> (Service Level Objective): target cho SLI — "99.9% availability over 30 days." SLO phải realistic: 99.9% = 43 phút downtime/tháng, 99.99% = 4.3 phút/tháng. <strong>SLA</strong> (Service Level Agreement): contract với customers, consequences khi miss. SLA phải THẤP hơn SLO (buffer). Start với SLOs cho top 5 critical user journeys. Và nhớ: SLO là conversation tool giữa product, engineering, và business.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Error Budget — Cân Bằng Reliability và Innovation</h3>
+                <p>Error budget = 1 - SLO. Nếu SLO 99.9%, error budget = 0.1% = 43 phút/tháng. Khi còn error budget: team được deploy features, experiment, take risks. Khi hết error budget: FREEZE feature deployments, focus on reliability improvements. Error budget policy phải agree giữa SRE và product team TRƯỚC. Ví dụ: "Khi error budget consumed 50%+, slow down deployments. 75%+, critical reliability fixes only. 100%: freeze until budget replenished." Đây là cách khoa học để balance speed vs stability — không cần argue, data decides.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Chaos Engineering — Phá Trước Khi Bị Phá</h3>
+                <p>Chaos Engineering: inject controlled failures vào production để tìm weakness TRƯỚC khi real failures xảy ra. Process: define steady state, hypothesize (system handles X failure gracefully), experiment (inject failure), verify. Start small: kill one container -> kill one node -> network partition -> AZ failure -> full region failover. Tools: Chaos Monkey (Netflix), Litmus (Kubernetes), Gremlin (platform). Game Days: scheduled chaos exercises với whole team participating. Key: ALWAYS have a rollback plan. Và start in staging — graduate to production khi team confident.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Toil Reduction — Giải Phóng Engineer</h3>
+                <p>Toil: manual, repetitive, automatable, tactical, no enduring value. SRE principle: toil should be < 50% of SRE work. Track toil: mỗi on-call shift, log manual tasks performed. Automate top toil sources: auto-scaling (manual scaling), self-healing (restart crashed services), automated remediation (runbook automation). Measure toil reduction: hours saved/month. Caution: automation phải reliable — unreliable automation creates MORE toil (debugging automation). Target: mỗi quarter, automate away top 3 toil sources. Và toil reduction frees SREs to do engineering work — which reduces future toil. Virtuous cycle.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Incident Management — Khi Mọi Thứ Cháy</h3>
+                <p>Structured incident management: Incident Commander (IC) coordinates response, Communication Lead updates stakeholders, Operations Lead executes fixes. Severity levels: SEV1 (critical, all hands), SEV2 (major, designated team), SEV3 (minor, normal process). During incident: communicate early and often (status page, Slack updates mỗi 15-30 phút). After incident: blameless postmortem within 48 giờ, action items tracked to completion. On-call: rotation fair, compensated, with escalation paths. On-call handbook: runbooks cho common scenarios. Và NEVER blame the on-call engineer — blame the system that allowed the failure.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Capacity Planning — Đừng Để Hết Chỗ</h3>
+                <p>Capacity planning: forecast resource needs trước khi chúng thành problem. Data-driven: historical usage trends, growth projections, seasonal patterns. Lead time: hardware/cloud provisioning cần thời gian — plan MONTHS ahead. Organic growth (gradual) vs inorganic growth (launch, campaign, viral event). Load testing: verify system handles projected load BEFORE it arrives. Headroom: 30-40% spare capacity cho unexpected spikes. Auto-scaling cho elastic workloads, pre-provisioned capacity cho predictable growth. Và capacity planning cho COSTS — not just performance. Cloud bills grow with traffic.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #7: Game Days — Diễn Tập Thực Chiến</h3>
+                <p>Game Days: scheduled exercises simulating real incidents. Plan: scenario (DB failover, region outage, key rotation), objectives (practice incident response, verify failover), scope (which systems, which team). Execute: inject failure, team responds as in real incident, IC coordinates, communication flows. Debrief: what worked, what didn't, improvements. Frequency: monthly for small scenarios, quarterly for major ones. Benefits: identify gaps in runbooks, practice communication, build muscle memory, and most importantly — build CONFIDENCE that systems and people can handle failures.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: Chaos Monkey Kill Production — Và Đó Là Kế Hoạch</h3>
+                <p>Game Day đầu tiên: team quyết định kill random production containers để test auto-recovery. Hypothesis: Kubernetes sẽ reschedule pods, traffic route sang healthy instances, users không notice. Reality: 3/10 services không có proper health checks — Kubernetes nghĩ chúng healthy nhưng thực tế đang hung. 2 services có persistent connections bị orphaned. 1 service không handle graceful shutdown — data corruption.</p>
+                <p>User impact: 2 phút partial degradation (acceptable). Nhưng team phát hiện 15 failure modes chưa ai biết tồn tại. Mỗi failure mode = một ticket = một improvement. 3 tháng sau, Game Day lần 2: kill 50% pods, zero user impact. Systems self-healed trong 30 giây.</p>
+                <div class="lesson">💡 Bài học: Chaos Engineering VALUE nằm ở failures it discovers, không phải successes it proves. Every failure found in Game Day = one fewer surprise at 3AM. Start small, learn fast, improve continuously. Confidence in system resilience should be EARNED through testing, not assumed.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: Error Budget Exhausted — Feature Freeze Drama</h3>
+                <p>Q3: product team excited về big feature launch. SRE checks error budget: đã consumed 95% — chỉ còn 2 phút downtime cho cả tháng. SRE: "Chúng ta cần feature freeze, focus on reliability." Product: "Nhưng launch date đã commit với board!"</p>
+                <p>Escalation lên VP Engineering. VP refer đến error budget policy — đã agree từ đầu năm. Result: feature delay 3 tuần, team focus on fixing top 3 reliability issues: flaky health checks, noisy neighbor database, unbounded queue growth. After fixes: error budget replenished. Feature launch: smooth, zero incidents.</p>
+                <p>Product team từ "frustrated" chuyển sang "grateful" — vì feature launch without reliability improvements would have been a disaster.</p>
+                <div class="lesson">💡 Bài học: Error budget policy PHẢI agreed upfront, supported by leadership, and ENFORCED consistently. Nó removes emotion from reliability vs features debate. Data-driven decisions > opinion-based arguments. Và delayed feature launch > feature launch that takes down production.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: Toil Budget Overrun — 80% Thời Gian Vào Manual Work</h3>
+                <p>SRE team survey: mỗi on-call shift, engineer dành 6/8 giờ cho manual tasks — restart services, clear alerts (mostly false positives), manual scaling, certificate renewal, log rotation. Chỉ 2 giờ cho engineering work. Burnout increasing, retention dropping.</p>
+                <p>Toil reduction sprint: (1) Fix health checks, 60% false positive alerts gone. (2) Auto-scaling policies, no more manual scaling at 6AM and 6PM. (3) cert-manager for auto certificate renewal. (4) Log rotation cron job. Result: toil dropped từ 75% xuống 25%. Engineers có thời gian build self-healing automation, which further reduced toil. Positive feedback loop.</p>
+                <div class="lesson">💡 Bài học: Track toil like debt — it accumulates with interest. SREs drowning in toil can't do reliability engineering. Target: < 50% toil, invest freed time into automation and reliability improvements. Happy SREs = reliable systems = happy users.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Target 100% uptime</h3>
+                <p>100% uptime = 0% error budget = no deployments = no innovation. Even Google targets 99.999%, not 100%. 99.9% cho most services là perfectly acceptable. Diminishing returns beyond that.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: SRE = ops team với fancy title</h3>
+                <p>SRE without software engineering = rebranded ops. SRE PHẢI spend 50%+ time on engineering (automation, tools, reliability improvements). If it's all toil and firefighting, it's not SRE.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: SLOs without consequences</h3>
+                <p>SLOs mà không có error budget policy = just numbers on a dashboard. SLOs phải drive decisions: when to slow down, when to prioritize reliability, when it's OK to move fast.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Chaos engineering in production day 1</h3>
+                <p>Chạy chaos experiments trong production khi chưa sẵn sàng = self-inflicted outage. Start in staging, build confidence, graduate to production với small blast radius.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: On-call without runbooks</h3>
+                <p>Page engineer lúc 3AM, no context, no runbook, figure it out. Recipe cho burnout và long MTTR. Runbooks cho every alertable condition. "If paged for X, do Y." Update after every incident.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Hero culture — "chỉ có A mới fix được"</h3>
+                <p>Single point of failure trong team. Knowledge silos. A goes on vacation = system burns. Cross-training, documentation, pair operations, rotation. No heroes, only well-documented systems.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trương Phi Bất Sập</span> — SRE Đại Sư</p>
+            <p>🔥 "Hope is not a strategy. Error budgets are." 🔥</p>
+        </div>
+    </div>
+</body>
+</html>

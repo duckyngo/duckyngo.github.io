@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mạng Mây Đại Sư - Chuyên Gia VPC, Load Balancer, DNS & API Gateway</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a1a 30%, #0a2a2a 60%, #1a3a3a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #14b8a6; text-shadow: 0 0 20px #14b8a640; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #14b8a6; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #14b8a6; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+        .section h2 { color: #14b8a6; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #14b8a630; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #14b8a6; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #14b8a6; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } .section { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🌐</span>
+            <h1>Mạng Mây Đại Sư</h1>
+            <div class="title">Chuyên Gia VPC, Load Balancer, DNS & API Gateway</div>
+            <div class="quote">"VPC giống như xây nhà: bạn phải plan phòng ngủ, phòng khách, nhà bếp TRƯỚC KHI đổ móng. Không ai muốn đập tường để thêm phòng sau khi đã ở."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">🔲 VPC Design</span>
+            <span class="badge">⚖️ Load Balancers</span>
+            <span class="badge">🌍 DNS/Route 53</span>
+            <span class="badge">🔌 VPN/Direct Connect</span>
+            <span class="badge">🚪 API Gateway</span>
+            <span class="badge">🛡️ Security Groups</span>
+            <span class="badge">🔗 Transit Gateway</span>
+            <span class="badge">📡 PrivateLink</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế &amp; Lai Lịch</h2>
+            <p>Đại Sư bắt đầu với networking vật lý — kéo cáp, cấu hình switch, debug VLAN tagging. Khi chuyển sang cloud networking, chàng ta tưởng sẽ dễ hơn vì "không cần kéo cáp." Chàng ta đã sai — cloud networking phức tạp hơn, chỉ là phức tạp theo cách khác.</p><p>Thay vì debug cable connections, chàng ta debug Security Groups, NACLs, Route Tables, NAT Gateways, VPC Peering, Transit Gateway, PrivateLink, và hàng tá networking constructs mà cloud providers phát minh ra. "Tôi nhớ cái thời chỉ cần ping để biết mạng có chạy không," chàng ta thở dài.</p><p>Nhưng cloud networking cũng có magic: tạo VPC trong 10 giây thay vì 2 tuần order switch, global load balancing với DNS, và private connectivity giữa VPCs mà không cần physical cabling. Đại Sư đã master cả hai thế giới.</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. VPC Design — Plan Trước Khi Tạo:</strong> CIDR block phải đủ lớn (ít nhất /16). ĐỪNG dùng 10.0.0.0/16 — conflict với mọi default VPC. Plan subnet layout: public subnets (ALB, NAT Gateway), private subnets (application), isolated subnets (database). Multi-AZ bắt buộc. Reserve CIDR space cho tương lai — VPC CIDR không thể shrink.
+            </div>
+            <div class="tip">
+                <strong>2. Security Groups vs NACLs:</strong> Security Groups: stateful, allow rules only, applied to ENI. NACLs: stateless, allow + deny rules, applied to subnet. Best practice: Security Groups cho fine-grained control per resource, NACLs cho subnet-level blanket rules. KHÔNG dùng 0.0.0.0/0 cho inbound rules trừ ALB/NLB public-facing.
+            </div>
+            <div class="tip">
+                <strong>3. Load Balancer Selection:</strong> ALB (Application LB): HTTP/HTTPS, path-based routing, host-based routing. NLB (Network LB): TCP/UDP, ultra-low latency, static IP. GLB (Gateway LB): 3rd-party appliances. ALB cho web apps, NLB cho game servers/real-time, GLB cho firewalls. Sticky sessions cẩn thận — breaks auto-scaling benefit.
+            </div>
+            <div class="tip">
+                <strong>4. DNS — Route 53 Best Practices:</strong> Alias records cho AWS resources (free, no CNAME limitations). Health checks + failover routing cho DR. Latency-based routing cho multi-region. Weighted routing cho canary deployments. Private hosted zones cho internal DNS. DNS TTL: short (60s) cho dynamic, long (3600s) cho stable records.
+            </div>
+            <div class="tip">
+                <strong>5. Transit Gateway — Hub for VPCs:</strong> Kết nối multiple VPCs + on-premise qua single gateway. Centralized routing. Shared services VPC architecture. Inter-region peering. Tốn tiền per-attachment + per-GB — plan carefully. Alternative: VPC Peering cho simple 1-to-1 connections.
+            </div>
+            <div class="tip">
+                <strong>6. API Gateway — Front Door cho APIs:</strong> Throttling, authentication, caching, request/response transformation. REST API vs HTTP API (cheaper, simpler). WebSocket API cho real-time. Custom domains + certificates. Usage plans + API keys cho rate limiting per customer. WAF integration cho security.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>🛡️ Chuyện Security Group Allow 0.0.0.0/0</h3>
+                <p>Developer tạo EC2 instance cho testing. Security group: SSH (22) from 0.0.0.0/0, all traffic outbound. 'Chỉ để test thôi mà.' Instance có public IP. 15 phút sau: SSH brute force attacks từ khắp thế giới. 2 giờ sau: instance bị compromise, bắt đầu gửi spam emails. AWS gửi abuse notification. Team scramble để contain — terminate instance, audit security groups, enable GuardDuty.</p><p>Phát hiện thêm: 12 security groups khác cũng allow 0.0.0.0/0 cho SSH. Đại Sư implement: AWS Config rule auto-detect open security groups, SSM Session Manager thay thế SSH (không cần open port), và mandatory security group review trong PR process.</p>
+                <div class="lesson">💡 Bài học: KHÔNG BAO GIỜ open SSH/RDP to 0.0.0.0/0. Dùng SSM Session Manager cho shell access (không cần public IP, không cần open port). Bastion hosts nếu phải SSH — restricted to office IP. AWS Config + auto-remediation cho security group compliance.</div>
+            </div>
+            <div class="story">
+                <h3>🌍 Chuyện DNS TTL Cache 24 Giờ</h3>
+                <p>Team migrate service sang new IP. Update DNS record, TTL 86400 (24 giờ). 'DNS sẽ propagate nhanh thôi.' Old server shutdown. 50% users vẫn truy cập old IP → connection timeout. Support tickets flood in. Team panic: 'DNS chưa update!' Thực tế: DNS đã update, nhưng resolvers cache record 24 giờ. Phải đợi 24 giờ cho toàn bộ users chuyển sang new IP.</p><p>Bài học đắt giá: trước migration, giảm TTL xuống 60 giây VÀI NGÀY TRƯỚC. Migrate. Sau khi confirm stable, tăng TTL lại. Simple nhưng 90% teams quên.</p>
+                <div class="lesson">💡 Bài học: TTL thấp (60-300s) cho records sẽ thay đổi. Giảm TTL TRƯỚC migration, không phải lúc migration. Maintain old endpoint song song trong 24-48h. DNS propagation không instant — plan for it.</div>
+            </div>
+            <div class="story">
+                <h3>💸 Chuyện NAT Gateway Tốn $500/Tháng</h3>
+                <p>Team deploy ứng dụng trong private subnets (đúng best practice). NAT Gateway cho internet access. Ứng dụng pull Docker images, npm packages, call external APIs. NAT Gateway data processing: $0.045/GB. Monthly data through NAT: 10TB. Chi phí NAT Gateway: $450/tháng data + $32/tháng hourly = $482/tháng cho... NAT.</p><p>Đại Sư optimize: VPC endpoints cho S3 và ECR (free data transfer). VPC endpoint cho DynamoDB. Caching Docker images nội bộ. Kết quả: NAT traffic giảm 80%, chi phí NAT giảm xuống $100/tháng.</p>
+                <div class="lesson">💡 Bài học: NAT Gateway là hidden cost killer. VPC endpoints (Gateway endpoints cho S3/DynamoDB free, Interface endpoints cho other services ~$7/tháng) giảm NAT traffic đáng kể. Monitor NAT Gateway data processing. Consider NAT instances cho dev environments (cheaper but less managed).</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. VPC CIDR quá nhỏ:</strong> Tạo VPC /24 rồi hết IP khi scale. Plan for growth: /16 cho production VPC. Không thể expand CIDR sau khi tạo (chỉ thêm secondary CIDR).
+            </div>
+            <div class="mistake">
+                <strong>2. Dùng default VPC cho production:</strong> Default VPC có public subnet by default. Mọi instance có public IP. Tạo custom VPC với private subnets cho production.
+            </div>
+            <div class="mistake">
+                <strong>3. Overlapping CIDRs:</strong> VPC A: 10.0.0.0/16. VPC B: 10.0.0.0/16. Peering? Không thể. Plan CIDR ranges centrally. Document IP allocation.
+            </div>
+            <div class="mistake">
+                <strong>4. Health check không đúng:</strong> Load balancer health check ping / nhưng app đã crash. Health check endpoint nên verify actual application health — database connection, dependencies.
+            </div>
+            <div class="mistake">
+                <strong>5. Không dùng PrivateLink cho services:</strong> Access AWS services qua internet thay vì VPC endpoints. Tốn NAT Gateway costs + latency. PrivateLink keeps traffic trong AWS network.
+            </div>
+            <div class="mistake">
+                <strong>6. DNS records không managed as code:</strong> Manual DNS changes → inconsistency, mistakes. Manage DNS records qua Terraform/CloudFormation. Version controlled, auditable.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #87</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

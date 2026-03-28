@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mẫu Thiết Kế Pháp Sư - Bậc Thầy Design Patterns</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(217,70,239,0.15), rgba(192,38,211,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(217,70,239,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #d946ef, #c026d3, #f0abfc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #f0abfc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(217,70,239,0.15), rgba(192,38,211,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #f0abfc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #f0abfc; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #d946ef; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #f0abfc; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #c026d3; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #f0abfc; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #f0abfc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🧬</span>
+            <h1>Mẫu Thiết Kế Pháp Sư</h1>
+            <p class="subtitle">Lê Mẫu Thiết — Bậc Thầy Design Patterns</p>
+            <p class="quote">"Pattern không phải solution — nó là conversation starter cho giải quyết vấn đề."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">CQRS</span>
+            <span class="skill-tag">Event Sourcing</span>
+            <span class="skill-tag">Saga</span>
+            <span class="skill-tag">Circuit Breaker</span>
+            <span class="skill-tag">Outbox Pattern</span>
+            <span class="skill-tag">DDD</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Lê Mẫu Thiết từng đọc cuốn 'Gang of Four Design Patterns' 3 lần và áp dụng EVERY pattern vào EVERY project. AbstractFactoryObserverStrategyDecoratorAdapter — code ông trông như architecture astronaut playground.
+
+Rồi một ngày, junior developer hỏi: 'Anh ơi, cái AbstractWidgetFactoryProxyDecorator này... làm gì ạ?' Ông nhìn code 5 phút, không nhớ. Đó là lúc ông ngộ ra: pattern cho sake of pattern = over-engineering. Pattern phải giải quyết ACTUAL PROBLEM.
+
+Ngày nay, ông focus vào distributed systems patterns — những pattern thực sự GIẢI QUYẾT vấn đề trong microservices và event-driven architectures. Motto: 'Biết 20 patterns nhưng chỉ dùng 3-4 thường xuyên. Biết KHÔNG dùng pattern quan trọng hơn biết DÙT PATTERNS.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: CQRS — Tách đọc và ghi</h3>
+                <p>Command Query Responsibility Segregation: write model (optimized for consistency, validation, business rules) tách biệt read model (optimized for queries, denormalized, fast). Write: command → validate → persist → publish event. Read: query → read from optimized read store (có thể là materialized view, Elasticsearch, Redis cache). Khi nào dùng: read/write patterns rất khác nhau, cần scale read independently, complex domain logic. Khi nào KHÔNG: CRUD app đơn giản — CQRS thêm complexity không cần thiết.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Event Sourcing — Lưu sự kiện, không lưu trạng thái</h3>
+                <p>Thay vì lưu current state trong DB, lưu SEQUENCE of events. Account balance = replay all transactions. Ưu: full audit trail, time-travel debugging, replay events to rebuild state. Nhược: eventual consistency, complex querying (cần projection), event schema evolution, replay performance. Dùng cho: financial systems, audit-critical domains, systems cần undo/redo. ĐỪNG dùng cho CRUD apps — overkill guaranteed.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Saga Pattern — Distributed Transactions</h3>
+                <p>Microservices: no distributed ACID transactions. Saga: sequence of local transactions, mỗi step publish event trigger next step. Compensation: nếu step N fail → execute compensation cho steps N-1, N-2, ..., 1. Choreography: services react to events (simple, decoupled). Orchestration: central coordinator manage flow (visible, easier to debug). Dùng orchestration cho complex flows (order processing), choreography cho simple flows (notification chain).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Circuit Breaker — Ngắt mạch khi lỗi</h3>
+                <p>Khi downstream service fails, tiếp tục gọi = waste resources + cascade failure. Circuit Breaker: CLOSED (normal, requests pass through) → OPEN (failures exceed threshold, requests fail fast without calling downstream) → HALF-OPEN (test requests to check if downstream recovered). Libraries: Resilience4j (Java), Polly (.NET), opossum (Node.js). Configure: failure threshold, timeout, reset timer. Kết hợp với retry (exponential backoff) và fallback (cached/default response).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Outbox Pattern — Reliable Event Publishing</h3>
+                <p>Vấn đề: save to DB + publish event. DB save success nhưng event publish fail → inconsistent state. Outbox: save domain data + event vào SAME database transaction (outbox table). Separate process poll outbox table → publish events → mark as published. Guarantees: at-least-once delivery (idempotent consumers handle duplicates). Alternative: Change Data Capture (CDC) tools (Debezium) capture DB changes → publish as events. No application code change needed.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Event Sourcing Replay Nightmare</h3>
+                <p>Banking system dùng event sourcing. 2 năm production, 500 triệu events. Cần rebuild read model (vì schema change). Replay 500 triệu events... mất 3 NGÀY.
+
+Trong 3 ngày đó, read model outdated → reports sai → executive decisions based on stale data. Team phải maintain 2 read models parallel: old (serving current queries) + new (being rebuilt). Operational complexity kinh hoàng.
+
+Fix: implement snapshots — save aggregate state tại checkpoint (every 1000 events). Replay từ snapshot thay vì từ event đầu tiên. Rebuild time: 3 ngày → 4 giờ. Lesson: event sourcing without snapshots = time bomb at scale.</p>
+                <div class="lesson">💡 Bài học: Event sourcing tại scale cần: 1) Snapshots cho aggregate state, 2) Projection rebuild strategy (parallel, blue-green), 3) Event schema versioning (upcasters), 4) Archival strategy cho old events. Plan cho scale DAY 1, không phải khi đã có 500 triệu events.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Circuit Breaker Saved Production</h3>
+                <p>Payment service call fraud detection service. Fraud service deploy buggy version → response time tăng từ 100ms lên 30 giây. Mỗi payment request blocked 30 giây chờ fraud check. Thread pool exhausted → payment service crash → ALL payments fail.
+
+After implementing circuit breaker: fraud service slow → circuit breaker OPEN after 5 failures → payment requests skip fraud check (fallback: allow transaction + flag for manual review) → payment service stays healthy. Fraud service team fix bug, circuit breaker HALF-OPEN → test request succeeds → CLOSED → normal operation resumes.
+
+Total impact with circuit breaker: 30 seconds of degraded service (manual fraud review). Without circuit breaker: 45 minutes of COMPLETE payment outage.</p>
+                <div class="lesson">💡 Bài học: Circuit breaker = insurance against downstream failures. Every external service call should have: circuit breaker (fail fast), timeout (don't wait forever), retry with backoff (transient errors), fallback (degraded but functional). Design fallback strategy per dependency: cache, default value, manual queue, graceful error message.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Saga Compensation Gone Wrong</h3>
+                <p>E-commerce order flow: Reserve inventory → Charge payment → Create shipment. Saga orchestrator handles flow. Payment charged but shipment creation fails (warehouse system down). Compensation: refund payment + unreserve inventory.
+
+Bug: refund compensation sends FULL refund amount, but payment service applies 2% processing fee → refund = original - 2%. Customer paid $100, refunded $98. 10,000 orders affected. Total: $200,000 discrepancy. Accounting team panics.
+
+Fix: compensation logic must account for REAL business rules (processing fees, tax, discounts). Test compensation flows as thoroughly as happy path. Saga testing should include: step N fails → verify compensation for steps 1 to N-1.</p>
+                <div class="lesson">💡 Bài học: Saga compensation logic is AS IMPORTANT as forward logic. Test scenarios: every step fails (N failure scenarios cho N steps). Compensation must be idempotent (re-run safe). Consider: partial failures, real-world business rules (fees, taxes), timing (refund processing time). Saga testing checklist should be part of Definition of Done.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Pattern cho mọi thứ</h3>
+                <p>AbstractSingletonProxyFactoryBean — khi mọi class cần pattern. Patterns có cost (complexity, indirection). Apply khi solving SPECIFIC problem, not prophylactically.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: CQRS + Event Sourcing cho CRUD app</h3>
+                <p>Blog website không cần event sourcing. Todo app không cần CQRS. Assess complexity budget: nếu team 3 người, startup phase, simple domain → KISS (Keep It Simple, Stupid).</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Saga without idempotency</h3>
+                <p>Network retry → saga step execute twice → double charge, double shipment. MỌII saga step PHẢI idempotent. Idempotency key + deduplication at each step.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Circuit breaker timeout quá ngắn</h3>
+                <p>Timeout 100ms cho service thường respond 80ms → circuit breaker always open → service 'down' khi thực ra chỉ slow. Set timeout based on P99 latency + buffer. Monitor và adjust.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Event schema không versioned</h3>
+                <p>Event sourcing: event schema changes → old events unreadable. Version every event, write upcasters (v1 → v2 transformers). Never delete old event schemas.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Lê Mẫu Thiết</span> — Mẫu Thiết Kế Pháp Sư</p>
+            <p>🧬 "Pattern không phải solution — nó là conversation starter cho giải quyết vấn đề."</p>
+        </div>
+    </div>
+</body>
+</html>

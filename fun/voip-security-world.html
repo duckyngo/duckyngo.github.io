@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới VoIP Security - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(239,68,68,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #ef4444, #8b5cf6, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: lockPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes lockPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px transparent); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(239,68,68,0.4)); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(239,68,68,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent5);
+    margin-bottom: 1.5rem;
+  }
+
+  .analogy-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent5), var(--accent4), var(--accent2), var(--accent));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(239,68,68,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent5);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Attack / Vendor Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .attack-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .attack-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .attack-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(239,68,68,0.3);
+  }
+
+  .attack-card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .attack-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .attack-card .card-type { color: var(--accent5); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .attack-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .attack-card.brute::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .attack-card.hijack::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .attack-card.toll::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .attack-card.eavesdrop::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .attack-card.vishing::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .attack-card.dos::before { background: linear-gradient(90deg, #10b981, #059669); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Cards */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* SIP Flow */
+  .sip-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .sip-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Mindset / Defense Cards */
+  .defense-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .defense-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .defense-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .defense-card .defense-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent3);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .defense-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .defense-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  .insight-box.danger {
+    background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(245,158,11,0.08));
+    border-left-color: var(--accent5);
+  }
+
+  .insight-box.danger h4 { color: var(--accent5); }
+
+  .insight-box.success {
+    background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.08));
+    border-left-color: var(--accent3);
+  }
+
+  .insight-box.success h4 { color: var(--accent3); }
+
+  /* Checklist */
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .checklist-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .checklist-card h4 { color: var(--accent); font-size: 1.1rem; margin-bottom: 1rem; }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(30,41,59,0.5);
+  }
+
+  .checklist-item:last-child { border-bottom: none; }
+
+  .check-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--accent3);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    margin-top: 2px;
+  }
+
+  .checklist-item p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .analogy-grid { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .checklist-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .defense-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent5); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">VoIP Security</a>
+  <a href="#why">Tại sao?</a>
+  <a href="#attacks">Attack Vectors</a>
+  <a href="#encryption">SRTP & ZRTP</a>
+  <a href="#tls">TLS cho SIP</a>
+  <a href="#defense">Phòng thủ</a>
+  <a href="#vpn">VPN</a>
+  <a href="#network">Network Security</a>
+  <a href="#warstories">War Stories</a>
+  <a href="#audit">Audit</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#128274;</div>
+  <h1>Thế Giới VoIP Security</h1>
+  <p class="subtitle">Từ toll fraud triệu đô đến eavesdropping quốc gia - Mọi thứ bạn cần biết để bảo vệ hệ thống thoại IP. Những câu chuyện thực, những bài học đắt giá, và bộ công cụ phòng thủ hoàn chỉnh.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHY VOIP SECURITY -->
+<section id="why">
+  <div class="intro-box">
+    <h2 class="section-title">Tại Sao VoIP Security Quan Trọng?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      Hãy tưởng tượng: Bạn là admin IT của một doanh nghiệp vừa. Sáng thứ Hai, bạn đến văn phòng, mở email và thấy hóa đơn điện thoại tháng vừa rồi: <strong style="color: var(--accent5);">$46,000</strong>. Bình thường chỉ $200. Ai đó đã hack vào hệ thống PBX của bạn cuối tuần, tạo hàng ngàn cuộc gọi đến các đầu số premium rate ở Somalia, Latvia, và Cuba. Đó là <strong>toll fraud</strong> - và nó xảy ra mỗi ngày, trên toàn thế giới.
+    </p>
+
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="icon">&#128275;</div>
+        <h3>VoIP Không Bảo Mật</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Cuộc gọi đi dạng plaintext<br>Như gửi bưu thiếp - ai cũng đọc được<br>Thiệt hại: <strong style="color: var(--accent5);">$$$$$</strong></p>
+      </div>
+      <div class="analogy-arrow">&#8594;</div>
+      <div class="analogy-box">
+        <div class="icon">&#128272;</div>
+        <h3>VoIP Được Bảo Mật</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Mã hóa end-to-end, firewall, IDS<br>Như thư bảo đảm trong két sắt<br>Thiệt hại: <strong style="color: var(--accent3);">Gần 0</strong></p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="num" style="color: var(--accent5);">$46B</div><div class="label">Thiệt hại toll fraud/năm (CFCA)</div></div>
+      <div class="stat"><div class="num" style="color: var(--accent4);">63%</div><div class="label">Doanh nghiệp từng bị tấn công VoIP</div></div>
+      <div class="stat"><div class="num" style="color: var(--accent5);">12 giây</div><div class="label">Thời gian trung bình brute-force SIP</div></div>
+      <div class="stat"><div class="num" style="color: var(--accent3);">85%</div><div class="label">Có thể ngăn bằng config đúng</div></div>
+    </div>
+
+    <div class="insight-box danger">
+      <h4>Câu chuyện có thật</h4>
+      <p>Năm 2020, một công ty luật nhỏ tại Australia bị hack hệ thống FreePBX qua SIP brute-force. Kẻ tấn công tạo <strong>11,000 cuộc gọi quốc tế</strong> trong 48 giờ cuối tuần. Hóa đơn: <strong>$120,000 AUD</strong>. Nguyên nhân? Password extension là "1234" và không có fail2ban. Nhà mạng từ chối hoàn tiền vì "lỗi bảo mật phía khách hàng". Công ty gần như phá sản.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ATTACK VECTORS -->
+<section id="attacks">
+  <h2 class="section-title" style="color: var(--accent5);">Các Vector Tấn Công VoIP</h2>
+  <p class="section-subtitle">Biết kẻ thù để phòng thủ - đây là 6 kiểu tấn công phổ biến nhất nhắm vào hệ thống VoIP</p>
+
+  <div class="card-grid">
+    <!-- SIP Brute Force -->
+    <div class="attack-card brute">
+      <div class="card-icon">&#128163;</div>
+      <h3>SIP Brute-Force</h3>
+      <div class="card-type">Tấn công xác thực</div>
+      <p>Kẻ tấn công dùng tool như SIPVicious, sipcrack để thử hàng triệu username/password trên cổng SIP 5060. Asterisk/FreePBX mặc định lắng nghe trên tất cả interface, đó là "cửa mở" cho attacker. Một khi có credential, chúng đăng ký extension giả và bắt đầu gọi.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num" style="color: var(--accent5);">5060</div><div class="label">Target Port</div></div>
+        <div class="stat"><div class="num">SIPVicious</div><div class="label">Tool phổ biến</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent4);">Phút</div><div class="label">Thời gian crack</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Phổ biến nhất</span>
+        <span class="tag">SIP REGISTER</span>
+        <span class="tag warn">Dễ thực hiện</span>
+        <span class="tag">Automated</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Cách hoạt động</h4>
+        <p>1. Scan port 5060 trên dải IP &#8594; 2. Gửi SIP OPTIONS để fingerprint &#8594; 3. Enumerate extensions bằng REGISTER/INVITE &#8594; 4. Brute-force password &#8594; 5. Đăng ký và gọi quốc tế.</p>
+      </div>
+    </div>
+
+    <!-- Registration Hijacking -->
+    <div class="attack-card hijack">
+      <div class="card-icon">&#128373;</div>
+      <h3>Registration Hijacking</h3>
+      <div class="card-type">Man-in-the-Middle</div>
+      <p>Attacker gửi SIP REGISTER giả mạo để "cướp" đăng ký extension hợp lệ. Khi thành công, mọi cuộc gọi đến extension đó sẽ được chuyển đến thiết bị của attacker. Victim không nhận được cuộc gọi nào, attacker nghe hết. Đặc biệt nguy hiểm trong mạng nội bộ không phân đoạn.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">MITM</div><div class="label">Kiểu tấn công</div></div>
+        <div class="stat"><div class="num">ARP</div><div class="label">Spoofing kết hợp</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent5);">Cao</div><div class="label">Mức nguy hiểm</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Nguy hiểm</span>
+        <span class="tag">SIP REGISTER</span>
+        <span class="tag warn">Khó phát hiện</span>
+        <span class="tag">Internal threat</span>
+      </div>
+    </div>
+
+    <!-- Toll Fraud -->
+    <div class="attack-card toll">
+      <div class="card-icon">&#128176;</div>
+      <h3>Toll Fraud (Cước gian lận)</h3>
+      <div class="card-type">Tài chính</div>
+      <p>Mục đích cuối cùng của hầu hết vụ hack VoIP. Attacker đăng ký vào PBX, tạo cuộc gọi đến các số premium rate (đầu số 1-900, số quốc tế đắt tiền). Chúng chia tiền với chủ đầu số premium. Thường xảy ra cuối tuần hoặc ngày lễ khi không ai theo dõi. CFCA ước tính thiệt hại toàn cầu <strong>$46 tỷ/năm</strong>.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num" style="color: var(--accent5);">$46B</div><div class="label">Thiệt hại/năm</div></div>
+        <div class="stat"><div class="num">Weekend</div><div class="label">Thời điểm yêu thích</div></div>
+        <div class="stat"><div class="num">IRSF</div><div class="label">Tên gọi khác</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Thiệt hại lớn nhất</span>
+        <span class="tag warn">Premium Rate</span>
+        <span class="tag">IRSF</span>
+        <span class="tag">Revenue sharing</span>
+      </div>
+    </div>
+
+    <!-- Eavesdropping -->
+    <div class="attack-card eavesdrop">
+      <div class="card-icon">&#128066;</div>
+      <h3>Eavesdropping (Nghe lén)</h3>
+      <div class="card-type">Bảo mật thông tin</div>
+      <p>Vì RTP mặc định không mã hóa, bất kỳ ai trên cùng segment mạng đều có thể capture và reconstruct cuộc gọi bằng Wireshark. Chỉ cần vào Telephony &#8594; RTP Streams &#8594; Play. Nghe rõ mồn một. Đây là lý do SRTP và network segmentation tồn tại. Trong môi trường doanh nghiệp, đây là rủi ro bảo mật thông tin nghiêm trọng nhất.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Wireshark</div><div class="label">Chỉ cần tool này</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent5);">0%</div><div class="label">RTP mặc định mã hóa</div></div>
+        <div class="stat"><div class="num">pcap</div><div class="label">File capture</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Bí mật kinh doanh</span>
+        <span class="tag">Wireshark</span>
+        <span class="tag warn">RTP plaintext</span>
+        <span class="tag">Passive attack</span>
+      </div>
+    </div>
+
+    <!-- Vishing -->
+    <div class="attack-card vishing">
+      <div class="card-icon">&#128225;</div>
+      <h3>Vishing (Voice Phishing)</h3>
+      <div class="card-type">Social Engineering</div>
+      <p>Kẻ tấn công giả mạo caller ID (SIP header dễ sửa) để gọi điện giả danh ngân hàng, cơ quan thuế, IT support. VoIP khiến việc này dễ dàng vì caller ID trong SIP chỉ là text field - không xác thực. Với auto-dialer, attacker có thể gọi hàng ngàn số trong vài phút. STIR/SHAKEN là framework đang được triển khai để chống lại.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Caller ID</div><div class="label">Dễ giả mạo</div></div>
+        <div class="stat"><div class="num">Robocall</div><div class="label">Auto-dialer</div></div>
+        <div class="stat"><div class="num">STIR</div><div class="label">Giải pháp</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Social Engineering</span>
+        <span class="tag">Caller ID Spoofing</span>
+        <span class="tag warn">Phổ biến</span>
+        <span class="tag">STIR/SHAKEN</span>
+      </div>
+    </div>
+
+    <!-- DoS -->
+    <div class="attack-card dos">
+      <div class="card-icon">&#128165;</div>
+      <h3>DoS/DDoS trên SIP</h3>
+      <div class="card-type">Từ chối dịch vụ</div>
+      <p>Tấn công làm sập hệ thống thoại bằng cách flood SIP INVITE, REGISTER, hoặc BYE. Asterisk đặc biệt vulnerable vì xử lý SIP trên single thread (trước phiên bản PJSIP). Một cuộc tấn công nhỏ ~1000 INVITE/giây đủ để hệ thống ngừng nhận cuộc gọi. Kết hợp với UDP amplification, attacker nhỏ cũng tạo được thiệt hại lớn.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">UDP</div><div class="label">Protocol yếu</div></div>
+        <div class="stat"><div class="num">1K/s</div><div class="label">Đủ để sập</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent5);">100%</div><div class="label">Downtime</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Service outage</span>
+        <span class="tag">SIP INVITE flood</span>
+        <span class="tag warn">UDP amplification</span>
+        <span class="tag">Volumetric</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attack Flow Diagram -->
+  <div class="sip-flow" style="margin-top: 2rem;">
+    <div class="flow-title">Chuỗi Tấn Công VoIP Điển Hình (Kill Chain)</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  <span style="color:var(--accent4);">Phase 1: Recon</span>          <span style="color:var(--accent4);">Phase 2: Exploit</span>        <span style="color:var(--accent4);">Phase 3: Profit</span>
+       |                        |                        |
+  nmap -sU -p 5060        SIPVicious svcrack       SIP INVITE to
+  &#8594; Tìm PBX mở port       &#8594; Brute-force pass       +882 (premium rate)
+       |                        |                        |
+  SIP OPTIONS              REGISTER thành công      Tạo 1000 cuộc gọi
+  &#8594; Fingerprint software   &#8594; Extension hijacked     &#8594; $10,000 trong 2h
+       |                        |                        |
+  svmap scan range         Tạo outbound route       <span style="color:var(--accent5);">Victim nhận bill</span>
+  &#8594; Enum extensions        &#8594; International dial     <span style="color:var(--accent5);">&#8594; Hàng chục ngàn $$$</span>
+    </pre>
+  </div>
+</section>
+
+<!-- SRTP & ZRTP -->
+<section id="encryption">
+  <h2 class="section-title" style="color: var(--accent3);">SRTP & ZRTP - Mã Hóa Giọng Nói</h2>
+  <p class="section-subtitle">Nếu RTP là bưu thiếp, thì SRTP là phong bì niêm phong - không ai đọc được nội dung ngoài người nhận</p>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SRTP (Secure RTP)</h4>
+      <p><strong>Chuẩn mã hóa chính.</strong> RFC 3711. Dùng AES-128 để mã hóa media stream. Key exchange qua SDES (trong SDP) hoặc DTLS-SRTP. Hầu hết IP phone và softphone hiện đại đều hỗ trợ. Là yêu cầu bắt buộc cho WebRTC.</p>
+      <div class="tag-row"><span class="tag good">Standard</span><span class="tag">AES-128</span><span class="tag good">Phổ biến</span><span class="tag">RFC 3711</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> ZRTP (Zimmermann RTP)</h4>
+      <p><strong>End-to-end, không cần PKI.</strong> Do Phil Zimmermann (PGP) tạo ra. Dùng Diffie-Hellman key exchange trực tiếp giữa 2 endpoint. Không phụ thuộc server. SAS (Short Authentication String) cho phép verify bằng giọng nói. Linphone, Signal đều dùng.</p>
+      <div class="tag-row"><span class="tag good">E2E</span><span class="tag">DH Exchange</span><span class="tag">No PKI</span><span class="tag good">Verified</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> DTLS-SRTP</h4>
+      <p><strong>Key exchange hiện đại.</strong> Dùng DTLS (Datagram TLS) để trao đổi key, sau đó dùng SRTP để mã hóa media. An toàn hơn SDES vì key không đi qua signaling path. Là phương thức bắt buộc cho WebRTC. Đang dần thay thế SDES.</p>
+      <div class="tag-row"><span class="tag good">Modern</span><span class="tag">WebRTC</span><span class="tag good">Secure key exchange</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status dead"></span> SDES (SDP Security Descriptions)</h4>
+      <p><strong>Key exchange cũ, có vấn đề.</strong> Crypto key nằm ngay trong SDP body (plaintext nếu SIP không dùng TLS). Nghĩa là nếu SIP signaling bị capture, attacker có key để decrypt SRTP. Chỉ an toàn khi kết hợp với SIP-TLS. Đang bị DTLS-SRTP thay thế.</p>
+      <div class="tag-row"><span class="tag hot">Key lộ nếu không TLS</span><span class="tag warn">Legacy</span><span class="tag">SDP inline</span></div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>RTP (không mã hóa)</th>
+          <th>SRTP + SDES</th>
+          <th>SRTP + DTLS</th>
+          <th>ZRTP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mã hóa media</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent3);">AES-128</td>
+          <td style="color: var(--accent3);">AES-128/256</td>
+          <td style="color: var(--accent3);">AES-256</td>
+        </tr>
+        <tr>
+          <td>Key exchange</td>
+          <td>N/A</td>
+          <td style="color: var(--accent4);">Trong SDP (lộ)</td>
+          <td style="color: var(--accent3);">DTLS handshake</td>
+          <td style="color: var(--accent3);">DH (peer-to-peer)</td>
+        </tr>
+        <tr>
+          <td>End-to-end</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent4);">Hop-by-hop</td>
+          <td style="color: var(--accent4);">Hop-by-hop</td>
+          <td style="color: var(--accent3);">True E2E</td>
+        </tr>
+        <tr>
+          <td>Cần TLS?</td>
+          <td>Không</td>
+          <td style="color: var(--accent5);">Bắt buộc!</td>
+          <td>Khuyến khích</td>
+          <td>Không cần</td>
+        </tr>
+        <tr>
+          <td>Hỗ trợ</td>
+          <td>Mọi thiết bị</td>
+          <td>Hầu hết</td>
+          <td>WebRTC, modern</td>
+          <td>Linphone, Signal</td>
+        </tr>
+        <tr>
+          <td>Overhead</td>
+          <td style="color: var(--accent3);">0%</td>
+          <td>~3-5%</td>
+          <td>~5-8%</td>
+          <td>~5-8%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box success">
+    <h4>Khuyến nghị thực tế</h4>
+    <p>Với hệ thống Asterisk/FreePBX hiện đại, luôn bật <strong>SRTP + TLS</strong> tối thiểu. Nếu dùng WebRTC (ví dụ Opal phone), DTLS-SRTP là mặc định. Với nhu cầu bảo mật cao (luật sư, bác sĩ, tài chính), cân nhắc <strong>ZRTP</strong> qua Linphone. Nhớ rằng: SRTP mà không có TLS cho SIP = khóa cửa nhưng để chìa dưới thảm.</p>
+  </div>
+</section>
+
+<!-- TLS FOR SIP -->
+<section id="tls">
+  <h2 class="section-title" style="color: var(--accent2);">TLS cho SIP Signaling</h2>
+  <p class="section-subtitle">SIP mặc định chạy UDP/TCP plaintext trên port 5060 - tất cả headers, credentials, SDP đều đọc được</p>
+
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">SIP không TLS vs có TLS - Sự khác biệt trong thực tế</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer" style="border-color: var(--accent5); background: rgba(239,68,68,0.05);">
+        <div class="layer-icon">&#128225;</div>
+        <h4>SIP Phone</h4>
+        <p>REGISTER + INVITE<br>Plaintext qua UDP 5060</p>
+      </div>
+      <div class="arch-arrow" style="color: var(--accent5);">&#8594; &#128065; &#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent5); background: rgba(239,68,68,0.05);">
+        <div class="layer-icon">&#128027;</div>
+        <h4>Attacker</h4>
+        <p>Wireshark capture<br>Thấy username/password/SDP</p>
+      </div>
+      <div class="arch-arrow" style="color: var(--accent5);">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128421;</div>
+        <h4>PBX Server</h4>
+        <p>Nhận REGISTER<br>Không biết bị nghe lén</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--accent3);">Với SIP-TLS (port 5061)</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.05);">
+        <div class="layer-icon">&#128225;</div>
+        <h4>SIP Phone</h4>
+        <p>TLS Handshake<br>Certificate verify</p>
+      </div>
+      <div class="arch-arrow" style="color: var(--accent3);">&#8594; &#128274; &#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent4); background: rgba(245,158,11,0.05);">
+        <div class="layer-icon">&#128027;</div>
+        <h4>Attacker</h4>
+        <p>Chỉ thấy mớ data<br>mã hóa, vô nghĩa</p>
+      </div>
+      <div class="arch-arrow" style="color: var(--accent3);">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.05);">
+        <div class="layer-icon">&#128421;</div>
+        <h4>PBX Server</h4>
+        <p>TLS verified<br>Encrypted signaling</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="defense-grid" style="margin-top: 2rem;">
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent2);">1</div>
+      <h4>Tạo Certificate</h4>
+      <p>Dùng Let's Encrypt (free) hoặc self-signed CA nội bộ. FreePBX có Certificate Manager built-in. Quan trọng: certificate phải match với hostname/IP của PBX, nếu không phone sẽ reject.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent2);">2</div>
+      <h4>Cấu hình PJSIP Transport</h4>
+      <p>Trong Asterisk/FreePBX, tạo TLS transport trên port 5061. Set <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.1rem 0.4rem; border-radius: 4px;">transport=tls</code> cho mỗi endpoint. Disable port 5060 nếu không cần thiết.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent2);">3</div>
+      <h4>Cấu hình Phone/Softphone</h4>
+      <p>Trên IP phone (Yealink, Grandstream, Fanvil), vào SIP Account &#8594; Transport = TLS. Upload CA certificate nếu dùng self-signed. Test bằng cách capture traffic - phải thấy TLS handshake, không thấy SIP plaintext.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent2);">4</div>
+      <h4>Mutual TLS (mTLS)</h4>
+      <p>Level cao nhất: cả server VÀ client đều phải có certificate. Phone không có cert hợp lệ = không kết nối được. Ngăn rogue device đăng ký vào PBX. Phức tạp hơn nhưng an toàn nhất.</p>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Lưu ý quan trọng về NAT và TLS</h4>
+    <p>SIP-TLS chạy trên <strong>TCP</strong> (không phải UDP). Điều này nghĩa là: (1) Firewall rules khác so với UDP 5060; (2) NAT traversal hơi khác, Contact header vẫn cần correct; (3) Performance overhead cao hơn một chút vì TCP + TLS handshake. Với hệ thống < 200 extensions, overhead này không đáng kể. Với hệ thống lớn, cân nhắc SBC để terminate TLS.</p>
+  </div>
+</section>
+
+<!-- DEFENSE TOOLS -->
+<section id="defense">
+  <h2 class="section-title" style="color: var(--accent3);">Công Cụ Phòng Thủ</h2>
+  <p class="section-subtitle">Lớp phòng thủ tốt nhất là nhiều lớp - defense in depth cho VoIP</p>
+
+  <div class="card-grid">
+    <!-- fail2ban -->
+    <div class="attack-card" style="border-top: 4px solid var(--accent3);">
+      <div class="card-icon">&#128737;</div>
+      <h3>Fail2ban cho Asterisk</h3>
+      <div class="card-type" style="color: var(--accent3);">Intrusion Prevention</div>
+      <p>Fail2ban đọc log Asterisk, phát hiện đăng nhập sai lặp đi lặp lại, và tự động ban IP bằng iptables. Đây là tuyến phòng thủ đầu tiên và quan trọng nhất. FreePBX có Intrusion Detection module tích hợp sẵn. Config đúng có thể chặn 95% brute-force attack.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num" style="color: var(--accent3);">95%</div><div class="label">Chặn brute-force</div></div>
+        <div class="stat"><div class="num">3-5</div><div class="label">Max retry</div></div>
+        <div class="stat"><div class="num">iptables</div><div class="label">Backend</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Bắt buộc</span>
+        <span class="tag">Log-based</span>
+        <span class="tag good">Free</span>
+        <span class="tag">iptables/nftables</span>
+      </div>
+    </div>
+
+    <!-- SIP Firewall -->
+    <div class="attack-card" style="border-top: 4px solid var(--accent);">
+      <div class="card-icon">&#128293;</div>
+      <h3>SBC / SIP Firewall</h3>
+      <div class="card-type" style="color: var(--accent);">Session Border Controller</div>
+      <p>SBC ngồi giữa Internet và PBX, kiểm tra mọi SIP message. Chức năng: topology hiding (ẩn IP nội bộ), rate limiting, protocol normalization, TLS termination, và media anchoring. Kamailio, OpenSIPS là open-source SBC phổ biến. Trong enterprise dùng AudioCodes, Oracle SBC.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Kamailio</div><div class="label">Open-source</div></div>
+        <div class="stat"><div class="num">Layer 7</div><div class="label">Inspection</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent3);">Deep</div><div class="label">SIP parsing</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Enterprise grade</span>
+        <span class="tag">Topology hiding</span>
+        <span class="tag">Rate limiting</span>
+        <span class="tag warn">Phức tạp</span>
+      </div>
+    </div>
+
+    <!-- Rate Limiting -->
+    <div class="attack-card" style="border-top: 4px solid var(--accent4);">
+      <div class="card-icon">&#9201;</div>
+      <h3>Rate Limiting & Call Limits</h3>
+      <div class="card-type" style="color: var(--accent4);">Traffic Control</div>
+      <p>Giới hạn số cuộc gọi đồng thời, số cuộc gọi/phút, và đặc biệt: giới hạn cuộc gọi quốc tế. Trong FreePBX: Extension &#8594; Advanced &#8594; Call Limit. Trong Asterisk: GROUP() + GROUP_COUNT() trong dialplan. Đây là safety net cuối cùng chống toll fraud - ngay cả khi attacker có credential, chúng không thể gọi nhiều.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2-5</div><div class="label">Max concurrent</div></div>
+        <div class="stat"><div class="num">Block</div><div class="label">Intl nếu cần</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent3);">$0</div><div class="label">Toll fraud loss</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Dễ triển khai</span>
+        <span class="tag warn">Cần tuning</span>
+        <span class="tag">Dialplan logic</span>
+        <span class="tag good">Chống toll fraud</span>
+      </div>
+    </div>
+
+    <!-- iptables/nftables -->
+    <div class="attack-card" style="border-top: 4px solid var(--accent2);">
+      <div class="card-icon">&#128736;</div>
+      <h3>iptables / nftables</h3>
+      <div class="card-type" style="color: var(--accent2);">Network Firewall</div>
+      <p>Tầng phòng thủ cơ bản nhất: chỉ cho phép SIP traffic từ các IP tin cậy (SIP trunk provider, office IP). Drop tất cả traffic khác đến port 5060/5061. Kết hợp GeoIP blocking để chặn toàn bộ quốc gia không cần thiết. Đơn giản nhưng cực kỳ hiệu quả.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Whitelist</div><div class="label">Approach</div></div>
+        <div class="stat"><div class="num">GeoIP</div><div class="label">Country block</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent3);">99%</div><div class="label">Scan blocked</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Cơ bản nhưng mạnh</span>
+        <span class="tag">IP whitelist</span>
+        <span class="tag good">GeoIP</span>
+        <span class="tag">Layer 3/4</span>
+      </div>
+    </div>
+
+    <!-- Monitoring -->
+    <div class="attack-card" style="border-top: 4px solid var(--accent3);">
+      <div class="card-icon">&#128200;</div>
+      <h3>Monitoring & Alerting</h3>
+      <div class="card-type" style="color: var(--accent3);">Giám sát</div>
+      <p>Thiết lập alert cho: cuộc gọi quốc tế bất thường, đăng ký từ IP lạ, số lượng cuộc gọi đồng thời tăng đột biến, failed registration spike. Dùng CDR (Call Detail Records) + Grafana/Prometheus hoặc đơn giản script cron check log. Phát hiện sớm = thiệt hại ít.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">CDR</div><div class="label">Data source</div></div>
+        <div class="stat"><div class="num">Alert</div><div class="label">Real-time</div></div>
+        <div class="stat"><div class="num" style="color: var(--accent3);">Sớm</div><div class="label">Phát hiện</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Early detection</span>
+        <span class="tag">CDR analysis</span>
+        <span class="tag">Grafana</span>
+        <span class="tag warn">Cần setup</span>
+      </div>
+    </div>
+
+    <!-- Strong Auth -->
+    <div class="attack-card" style="border-top: 4px solid var(--accent);">
+      <div class="card-icon">&#128273;</div>
+      <h3>Strong Authentication</h3>
+      <div class="card-type" style="color: var(--accent);">Xác thực</div>
+      <p>Password extension tối thiểu 16 ký tự, random. KHÔNG dùng extension number làm password (1001/1001 là "hello world" của VoIP hacking). IP-based authentication cho trunk. Certificate-based auth cho phone (mTLS). Đổi SIP realm từ default "asterisk" sang tên riêng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">16+</div><div class="label">Ký tự password</div></div>
+        <div class="stat"><div class="num">Random</div><div class="label">Generation</div></div>
+        <div class="stat"><div class="num">mTLS</div><div class="label">Best practice</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Nền tảng</span>
+        <span class="tag hot">Không 1234!</span>
+        <span class="tag">IP-based</span>
+        <span class="tag good">Certificate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Defense in Depth Diagram -->
+  <div class="arch-container" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Defense in Depth - Các Lớp Phòng Thủ</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer" style="border-color: var(--accent5); background: rgba(239,68,68,0.05);">
+        <div class="layer-icon">&#127760;</div>
+        <h4>Internet</h4>
+        <p>Attacker, scanner<br>Bot, script kiddie</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent4); background: rgba(245,158,11,0.05);">
+        <div class="layer-icon">&#128293;</div>
+        <h4>Firewall/GeoIP</h4>
+        <p>iptables whitelist<br>GeoIP block</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent2); background: rgba(139,92,246,0.05);">
+        <div class="layer-icon">&#128737;</div>
+        <h4>Fail2ban + SBC</h4>
+        <p>Rate limit, ban IP<br>SIP inspection</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.05);">
+        <div class="layer-icon">&#128274;</div>
+        <h4>TLS + SRTP</h4>
+        <p>Encrypted signaling<br>Encrypted media</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">&#128421;</div>
+        <h4>PBX Core</h4>
+        <p>Strong auth<br>Call limits</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VPN -->
+<section id="vpn">
+  <h2 class="section-title" style="color: var(--accent4);">VPN cho Voice Traffic</h2>
+  <p class="section-subtitle">Giải pháp "bọc tất cả trong tunnel" - đơn giản nhưng không hoàn hảo</p>
+
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th style="color: var(--accent3);">Ưu điểm (Pros)</th>
+          <th style="color: var(--accent5);">Nhược điểm (Cons)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Bảo mật</td>
+          <td style="color: var(--accent3);">Mã hóa toàn bộ traffic, kể cả SIP + RTP + management</td>
+          <td>Là single point of failure - VPN down = thoại chết</td>
+        </tr>
+        <tr>
+          <td>NAT</td>
+          <td style="color: var(--accent3);">Giải quyết triệt để NAT traversal - phone "trong cùng mạng" với PBX</td>
+          <td>Cần VPN client trên mọi thiết bị, IP phone thường không hỗ trợ</td>
+        </tr>
+        <tr>
+          <td>Latency</td>
+          <td>Acceptable với WireGuard (< 1ms overhead)</td>
+          <td style="color: var(--accent5);">OpenVPN TCP thêm 20-50ms, gây echo/delay. IPsec overhead vừa phải</td>
+        </tr>
+        <tr>
+          <td>Quản lý</td>
+          <td>Một tunnel, một policy - đơn giản hóa firewall</td>
+          <td style="color: var(--accent5);">Phải quản lý VPN infrastructure riêng. Certificate rotation, tunnel monitoring</td>
+        </tr>
+        <tr>
+          <td>QoS</td>
+          <td>Có thể mark DSCP bên trong tunnel</td>
+          <td style="color: var(--accent5);">ISP không thấy DSCP trong encrypted tunnel, không QoS được giữa site</td>
+        </tr>
+        <tr>
+          <td>IP Phone</td>
+          <td>Một số phone cao cấp hỗ trợ VPN client built-in</td>
+          <td style="color: var(--accent5);">Hầu hết phone giá rẻ/trung bình không có VPN. Cần router VPN tại site</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Khuyến nghị thực tế</h4>
+    <p><strong>Site-to-site VPN</strong> (WireGuard/IPsec giữa các văn phòng): Rất nên dùng. Voice traffic giữa các site chạy qua tunnel mã hóa, latency thấp, không cần config TLS/SRTP riêng. <strong>Remote worker VPN</strong>: Ổn nếu dùng WireGuard (UDP, nhẹ). Tránh OpenVPN TCP mode cho voice. <strong>Thay thế TLS+SRTP bằng VPN</strong>: KHÔNG nên. VPN là lớp phụ thêm, không thay thế encryption ở application layer. Defense in depth: dùng cả hai.</p>
+  </div>
+
+  <div class="defense-grid" style="margin-top: 2rem;">
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent4);">W</div>
+      <h4>WireGuard - Lựa chọn hàng đầu</h4>
+      <p>UDP-based, overhead cực thấp (< 1ms), kernel-level performance. Cực kỳ phù hợp cho voice. Config đơn giản. Nhưng: stateless nên không có keepalive mặc định, cần set PersistentKeepalive cho NAT.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent4);">I</div>
+      <h4>IPsec - Enterprise standard</h4>
+      <p>Hỗ trợ trên hầu hết router/firewall enterprise (pfSense, FortiGate, Cisco). IKEv2 nhanh hơn IKEv1. Phức tạp hơn WireGuard nhưng mature và được audit kỹ. Nhiều IP phone hỗ trợ IPsec built-in.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num" style="background: var(--accent5);">O</div>
+      <h4>OpenVPN - Tránh cho voice</h4>
+      <p>TCP mode thêm latency đáng kể. UDP mode tốt hơn nhưng overhead vẫn cao hơn WireGuard. Userspace processing chậm. Chỉ dùng khi không có lựa chọn khác. Nếu bắt buộc: dùng UDP mode, tăng sndbuf/rcvbuf.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NETWORK SECURITY -->
+<section id="network">
+  <h2 class="section-title" style="color: var(--accent);">Network Security Best Practices</h2>
+  <p class="section-subtitle">VoIP security không chỉ là config PBX - nó bắt đầu từ nền tảng mạng</p>
+
+  <div class="defense-grid">
+    <div class="defense-card">
+      <div class="defense-num">1</div>
+      <h4>VLAN Riêng cho Voice</h4>
+      <p>LUÔN tách voice traffic vào VLAN riêng. Không chỉ vì QoS mà còn vì security. Nếu workstation bị malware, attacker không thể sniff voice traffic ở VLAN khác. Cấu hình PVID trên switch port, DHCP scope riêng cho voice VLAN.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num">2</div>
+      <h4>802.1X cho IP Phone</h4>
+      <p>Port-based authentication: phone phải authenticate trước khi được vào voice VLAN. Ngăn rogue device cắm vào jack mạng. Hầu hết IP phone enterprise (Cisco, Yealink T4x/T5x) hỗ trợ 802.1X. Kết hợp MAB (MAC Authentication Bypass) cho phone không hỗ trợ.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num">3</div>
+      <h4>QoS - DSCP Marking</h4>
+      <p>Mark voice packets với DSCP EF (46), SIP signaling với DSCP CS3 (24). Ưu tiên voice trong hàng đợi switch/router. Không chỉ cải thiện chất lượng mà còn giúp monitoring - traffic không đúng DSCP trong voice VLAN = đáng ngờ.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num">4</div>
+      <h4>ACL giữa VLAN</h4>
+      <p>Chỉ cho phép traffic cần thiết giữa voice VLAN và data VLAN. Phone cần truy cập PBX (SIP + RTP) và DHCP/DNS. KHÔNG cho phép data VLAN truy cập voice VLAN trừ khi có lý do cụ thể (management). Principle of least privilege.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num">5</div>
+      <h4>DHCP Snooping + ARP Inspection</h4>
+      <p>Chống DHCP spoofing và ARP poisoning - hai kỹ thuật phổ biến để MITM trong LAN. Bật DHCP Snooping, Dynamic ARP Inspection (DAI), và IP Source Guard trên switch. Đây là phòng thủ layer 2 cơ bản nhưng nhiều nơi bỏ quên.</p>
+    </div>
+    <div class="defense-card">
+      <div class="defense-num">6</div>
+      <h4>DNS Security</h4>
+      <p>SIP phones resolve PBX hostname qua DNS. Nếu attacker poison DNS, phone sẽ đăng ký vào PBX giả. Dùng internal DNS server, DNSSEC nếu có thể. Hardcode PBX IP trên phone nếu môi trường nhỏ. Đừng để phone dùng public DNS cho internal resolution.</p>
+    </div>
+  </div>
+
+  <div class="insight-box success">
+    <h4>Mô hình tham khảo cho Homelab</h4>
+    <p>Với Proxmox cluster: tạo VLAN riêng cho voice (ví dụ VLAN 100), PBX VM có interface trên cả management VLAN và voice VLAN. IP phone chỉ ở voice VLAN. Firewall rules trên pfSense/OPNsense chỉ cho phép SIP (5061/tcp) + RTP (10000-20000/udp) từ voice VLAN đến PBX. Từ Internet: chỉ mở cho SIP trunk provider IP. Tất cả còn lại: DROP.</p>
+  </div>
+</section>
+
+<!-- WAR STORIES -->
+<section id="warstories">
+  <h2 class="section-title" style="color: var(--accent5);">War Stories - Các Vụ Hack Kinh Điển</h2>
+  <p class="section-subtitle">Những bài học được viết bằng tiền thật và nước mắt thật</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2009 - Pháp</span>
+        <h3>Vụ hack Asterisk $120K qua đêm</h3>
+        <p>Một ISP tại Pháp bị hack hệ thống Asterisk qua lỗ hổng AMI (Asterisk Manager Interface) mở ra Internet không password. Attacker originate hàng ngàn cuộc gọi đến premium rate numbers ở Châu Phi. Thiệt hại phát hiện vào sáng hôm sau: $120,000. AMI từ đó được khuyến cáo chỉ bind trên localhost.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2014 - Việt Nam</span>
+        <h3>FreePBX mở Internet, mất $15K</h3>
+        <p>Một văn phòng tại TP.HCM triển khai FreePBX để tiết kiệm chi phí. Admin mở port 5060 ra Internet để nhân viên remote dùng softphone. Không có fail2ban, password extension là 4 chữ số. Cuối tuần bị brute-force, attacker gọi đến Somalia/Cuba. Nhà mạng gửi bill $15,000 vào thứ Hai. Bài học: KHÔNG BAO GIỜ mở SIP ra Internet không bảo vệ.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2016 - UK</span>
+        <h3>Eavesdropping vụ kiện thương mại</h3>
+        <p>Trong một vụ kiện thương mại tại Anh, phát hiện rằng đối thủ đã cài agent trong công ty để sniff RTP traffic trên cùng VLAN. Toàn bộ cuộc gọi với luật sư bị ghi âm bất hợp pháp. Bằng chứng bị vứt, vụ kiện phải xử lại. Bài học: voice VLAN tách biệt + SRTP không phải luxury mà là necessity.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2019 - Toàn cầu</span>
+        <h3>CDR-Theft: đánh cắp metadata cuộc gọi</h3>
+        <p>Nhóm APT (Advanced Persistent Threat) tấn công nhiều nhà mạng viễn thông, đánh cắp CDR (Call Detail Records) của hàng triệu người dùng. Không cần nghe cuộc gọi - chỉ metadata (ai gọi ai, bao lâu, từ đâu) đã đủ để theo dõi mục tiêu. Operation Soft Cell. Bài học: bảo vệ CDR database cũng quan trọng như bảo vệ voice.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2021 - Global</span>
+        <h3>Robocall pandemic - 50 tỷ cuộc gọi lừa đảo</h3>
+        <p>Năm 2021, ước tính 50 tỷ robocall lừa đảo trên toàn cầu. VoIP khiến chi phí gọi gần bằng 0, caller ID dễ giả mạo. Các nước bắt đầu triển khai STIR/SHAKEN để xác thực caller ID. FCC phạt nhiều VoIP provider hàng triệu dollar vì để lọt robocall. Cuộc chiến vẫn đang tiếp diễn.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2023 - Châu Á</span>
+        <h3>SIP Trunk hijacking chuỗi khách sạn</h3>
+        <p>Chuỗi khách sạn tại Đông Nam Á bị hack SIP trunk credential. Attacker không gọi toll fraud mà chuyển hướng cuộc gọi đặt phòng đến call center giả, nhận booking giả, lấy thông tin thẻ tín dụng khách hàng. Thiệt hại tổng: hàng trăm ngàn USD tiền chargebacks + mất uy tín. Bài học: VoIP security không chỉ về tiền cước.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+  </div>
+
+  <div class="insight-box danger">
+    <h4>Pattern chung trong mọi vụ hack</h4>
+    <p>Phân tích các vụ trên, 4 yếu tố luôn xuất hiện: (1) <strong>SIP port mở ra Internet</strong> không bảo vệ; (2) <strong>Password yếu</strong> hoặc default; (3) <strong>Không có monitoring</strong> - phát hiện sau hàng ngàn cuộc gọi; (4) <strong>Không có call limit</strong> - attacker gọi không giới hạn. Khắc phục 4 điểm này đã giảm 90% rủi ro.</p>
+  </div>
+</section>
+
+<!-- SECURITY AUDIT CHECKLIST -->
+<section id="audit">
+  <h2 class="section-title" style="color: var(--accent3);">Security Audit Checklist</h2>
+  <p class="section-subtitle">Danh sách kiểm tra bảo mật VoIP - chạy qua mỗi quý hoặc sau mỗi lần thay đổi hệ thống</p>
+
+  <div class="checklist-grid">
+    <div class="checklist-card">
+      <h4>&#128274; Authentication & Access</h4>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Tất cả extension có password tối thiểu 16 ký tự, random</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Không có extension nào dùng extension number làm password</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>AMI/ARI chỉ bind trên localhost hoặc management IP</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Web GUI có password mạnh + HTTPS + IP restriction</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>SSH key-based auth, disable password login, đổi port</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>SIP realm đã đổi từ "asterisk" mặc định</p>
+      </div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>&#128293; Firewall & Network</h4>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Port 5060/5061 chỉ mở cho IP trunk provider + known IPs</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>RTP port range (10000-20000) chỉ mở cho cần thiết</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Fail2ban đang chạy, kiểm tra banned IPs gần đây</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>GeoIP blocking đang active cho các quốc gia không cần</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Voice VLAN tách biệt, ACL đúng giữa các VLAN</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>DHCP Snooping + ARP Inspection bật trên voice switch</p>
+      </div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>&#128272; Encryption</h4>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>TLS bật cho SIP signaling (port 5061)</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>SRTP bật cho tất cả extension</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Certificate còn hạn (kiểm tra expiry date)</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>TLS version >= 1.2, disable SSLv3/TLS 1.0/1.1</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Test: capture SIP traffic, verify không đọc được plaintext</p>
+      </div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>&#128176; Toll Fraud Prevention</h4>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Call limit (concurrent) đặt cho mỗi extension (2-5)</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Outbound route: block hoặc PIN cho gọi quốc tế</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Blacklist các dải số premium rate (1-900, +882, +883)</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Alert khi bill vượt ngưỡng (liên hệ nhà mạng set limit)</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Kiểm tra CDR: có cuộc gọi bất thường ngoài giờ làm việc?</p>
+      </div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>&#128187; System & Software</h4>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Asterisk/FreePBX đã cập nhật phiên bản mới nhất</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>OS đã patch security updates</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Không có service thừa chạy (FTP, Telnet, etc.)</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Backup config định kỳ + test restore</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Log rotation configured, logs được lưu ít nhất 90 ngày</p>
+      </div>
+    </div>
+
+    <div class="checklist-card">
+      <h4>&#128200; Monitoring & Response</h4>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Alert email/SMS khi failed registration > 10/phút</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Alert khi cuộc gọi quốc tế bất thường</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Có incident response plan cho VoIP breach</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Biết cách disable outbound calling khẩn cấp</p>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon">&#10003;</div>
+        <p>Số hotline nhà mạng để chặn toll fraud ngoài giờ</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent4);">Những Hiểu Nhầm Nguy Hiểm</h2>
+  <p class="section-subtitle">Những niềm tin sai lầm này đã khiến nhiều doanh nghiệp trả giá đắt</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"PBX nằm sau NAT thì an toàn rồi"</h4>
+      <p>Nhiều người nghĩ NAT = firewall. Sai! NAT chỉ translate địa chỉ, không phải security feature. Nếu bạn forward port 5060 vào PBX (rất phổ biến để phone remote hoạt động), PBX đã expose ra Internet. Hơn nữa, SIP ALG trên router thường gây thêm vấn đề bảo mật.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>NAT không phải firewall. Cần explicit firewall rules, fail2ban, VPN cho remote access. Tắt SIP ALG trên router.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Hacker chỉ nhắm vào công ty lớn"</h4>
+      <p>Ngược lại hoàn toàn. Công ty nhỏ là mục tiêu ưa thích vì: (1) không có IT security chuyên trách, (2) PBX cấu hình mặc định, (3) không monitor, (4) phát hiện chậm. Bot scan toàn bộ Internet liên tục, không phân biệt lớn nhỏ. Một PBX mở port 5060 sẽ bị scan trong vài giờ.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Tấn công VoIP là automated - bot quét hàng triệu IP, không quan tâm bạn là ai. Càng nhỏ càng dễ bị hack vì bảo mật yếu.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"SRTP là đủ, không cần TLS"</h4>
+      <p>SRTP mã hóa media (voice), nhưng nếu dùng SDES, crypto key nằm trong SDP body của SIP message. SIP không có TLS = SDP plaintext = attacker lấy được SRTP key = decrypt voice. Giống như khóa két sắt nhưng dán mật mã lên cửa.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>SRTP + TLS là cặp bắt buộc. Hoặc dùng DTLS-SRTP (key exchange riêng, không qua SIP). SRTP không TLS = bảo mật giả.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"FreePBX/Asterisk không an toàn"</h4>
+      <p>Asterisk và FreePBX bản thân không kém an toàn hơn các hệ thống thương mại. Vấn đề là cách triển khai: mở port ra Internet, password yếu, không update, không fail2ban. Cùng những lỗi đó trên Cisco CUCM hay Avaya cũng bị hack y vậy.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Mọi PBX đều an toàn nếu cấu hình đúng, và mọi PBX đều nguy hiểm nếu cấu hình sai. Open-source có lợi thế: cộng đồng audit code, patch nhanh.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Chỉ cần firewall là đủ bảo mật"</h4>
+      <p>Firewall (iptables) chặn traffic ở layer 3/4 - theo IP và port. Nhưng nếu bạn phải mở port 5060 cho SIP trunk hoặc remote user, firewall không phân biệt được SIP request hợp lệ vs tấn công. Cần SBC (layer 7 inspection), fail2ban (behavior-based), và strong auth.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Firewall là layer 1 trong defense-in-depth. Cần thêm: fail2ban, SBC, TLS, SRTP, strong passwords, monitoring. Nhiều lớp, mỗi lớp chặn một kiểu tấn công khác nhau.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Nghe lén VoIP thì khó, cần hacker cao tay"</h4>
+      <p>Thực tế, capture và replay RTP cực kỳ đơn giản. Wireshark có sẵn tính năng: Telephony &#8594; VoIP Calls &#8594; Play. Bất kỳ ai trên cùng network segment (hoặc có mirror port) đều làm được. Không cần "hacker" - một nhân viên IT bất mãn là đủ.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Nghe lén VoIP không mã hóa dễ như xem YouTube. SRTP + VLAN segmentation + DHCP snooping + ARP inspection là bắt buộc trong môi trường doanh nghiệp.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"VPN thay thế được TLS+SRTP"</h4>
+      <p>VPN mã hóa tunnel, nhưng: (1) nếu VPN bị compromise, tất cả voice lộ; (2) traffic nội bộ (cùng site) không qua VPN, vẫn plaintext; (3) VPN là transport security, TLS+SRTP là application security - hai lớp khác nhau. Defense in depth yêu cầu cả hai.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VPN là lớp bổ sung, không thay thế. Attacker bên trong mạng (insider threat) bypass VPN hoàn toàn. Luôn bật TLS+SRTP bất kể có VPN hay không.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Toll fraud chỉ xảy ra với SIP trunk"</h4>
+      <p>Sai. Bất kỳ PBX nào có outbound route ra PSTN đều là mục tiêu - kể cả qua ISDN PRI, GSM gateway, hay analog trunk. Attacker hack vào PBX rồi dùng bất kỳ đường ra nào. Thậm chí call forward tới số quốc tế cũng tạo được toll fraud mà không cần trunk direct.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Mọi đường ra PSTN đều là vector toll fraud. Restrict outbound routes, PIN cho quốc tế, call limit, alert - bất kể công nghệ trunk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent);">Cheat Sheet - Lệnh & Config Nhanh</h2>
+  <p class="section-subtitle">Copy-paste reference cho các tác vụ bảo mật VoIP phổ biến nhất</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Fail2ban cho Asterisk</h4>
+      <p>File: /etc/fail2ban/jail.local</p>
+      <code>[asterisk]
+enabled  = true
+filter   = asterisk
+action   = iptables-allports[name=asterisk, protocol=all]
+logpath  = /var/log/asterisk/messages
+maxretry = 3
+bantime  = 86400
+findtime = 600</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>iptables - Chỉ cho SIP từ trunk IP</h4>
+      <p>Whitelist approach cho SIP</p>
+      <code># Cho phep SIP trunk provider
+iptables -A INPUT -p udp -s 203.0.113.10 \
+  --dport 5060 -j ACCEPT
+# Cho phep TLS SIP
+iptables -A INPUT -p tcp -s 203.0.113.10 \
+  --dport 5061 -j ACCEPT
+# Drop tat ca SIP khac
+iptables -A INPUT -p udp --dport 5060 \
+  -j DROP
+iptables -A INPUT -p tcp --dport 5061 \
+  -j DROP</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>PJSIP TLS Transport (Asterisk)</h4>
+      <p>File: pjsip.conf hoac FreePBX GUI</p>
+      <code>[transport-tls]
+type = transport
+protocol = tls
+bind = 0.0.0.0:5061
+cert_file = /etc/asterisk/keys/cert.pem
+priv_key_file = /etc/asterisk/keys/key.pem
+ca_list_file = /etc/asterisk/keys/ca.pem
+method = tlsv1_2</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SRTP Endpoint Config</h4>
+      <p>PJSIP endpoint bat buoc SRTP</p>
+      <code>[1001]
+type = endpoint
+transport = transport-tls
+context = from-internal
+media_encryption = sdes
+media_encryption_optimistic = no
+; 'no' = bat buoc SRTP
+; 'yes' = fallback ve RTP neu khong ho tro</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Scan kiem tra SIP exposure</h4>
+      <p>Tu test bang SIPVicious (authorized only!)</p>
+      <code># Scan SIP services
+svmap 192.168.1.0/24
+
+# Enumerate extensions
+svwar -m REGISTER -e100-200 192.168.1.100
+
+# Test password strength
+svcrack -u 1001 -d wordlist.txt \
+  192.168.1.100
+
+# Nmap SIP scan
+nmap -sU -p 5060 --script=sip-methods \
+  target_ip</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Wireshark - Capture VoIP</h4>
+      <p>Kiem tra ma hoa co hoat dong</p>
+      <code># Capture filter cho SIP
+udp port 5060 or tcp port 5061
+
+# Display filter cho SIP
+sip
+
+# Display filter cho RTP
+rtp
+
+# Check VoIP calls
+Telephony > VoIP Calls > Play
+; Neu nghe duoc = KHONG ma hoa!
+; Neu loi "No codecs" = SRTP dang hoat dong</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>GeoIP Blocking (iptables + xtables)</h4>
+      <p>Chan SIP tu cac quoc gia khong can</p>
+      <code># Cai xtables-addons
+apt install xtables-addons-common
+
+# Chan SIP tu mot so quoc gia toll fraud
+iptables -A INPUT -p udp --dport 5060 \
+  -m geoip --src-cc SO,CU,LV,LT \
+  -j DROP
+
+# Hoac: chi cho phep VN + US
+iptables -A INPUT -p udp --dport 5060 \
+  -m geoip ! --src-cc VN,US \
+  -j DROP</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Asterisk CLI - Security Commands</h4>
+      <p>Kiem tra trang thai bao mat tu CLI</p>
+      <code># Xem registrations hien tai
+asterisk -rx "pjsip show registrations"
+
+# Xem contacts (ai dang online)
+asterisk -rx "pjsip show contacts"
+
+# Xem active channels
+asterisk -rx "core show channels"
+
+# Kiem tra TLS transport
+asterisk -rx "pjsip show transports"
+
+# Xem failed auth
+grep "failed" /var/log/asterisk/messages</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Call Limit trong Dialplan</h4>
+      <p>Gioi han cuoc goi dong thoi</p>
+      <code>; Trong extensions.conf
+[macro-call-limit]
+exten => s,1,Set(GROUP(limit)=${CALLERID(num)})
+exten => s,n,GotoIf($[${GROUP_COUNT(${CALLERID(num)}@limit)} > 3]?over)
+exten => s,n,Return()
+exten => s,n(over),Playback(all-circuits-busy)
+exten => s,n,Hangup()
+
+; Max 3 cuoc goi dong thoi/extension</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Let's Encrypt cho FreePBX</h4>
+      <p>Certificate mien phi cho SIP-TLS</p>
+      <code># FreePBX Certificate Manager
+Admin > Certificate Management
+> New Certificate > Let's Encrypt
+
+# Hoac CLI:
+fwconsole certificates --generate \
+  --type=le \
+  --hostname=pbx.example.com
+
+# Kiem tra cert expiry
+openssl x509 -enddate -noout \
+  -in /etc/asterisk/keys/cert.pem</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Emergency: Chan outbound ngay</h4>
+      <p>Khi nghi bi toll fraud</p>
+      <code># Cach 1: Chan tat ca SIP traffic
+iptables -I INPUT -p udp --dport 5060 \
+  -j DROP
+iptables -I INPUT -p tcp --dport 5061 \
+  -j DROP
+
+# Cach 2: Chan outbound trong Asterisk
+asterisk -rx "module unload chan_sip"
+# Hoac restart va disable outbound routes
+
+# Cach 3: Goi nha mang yeu cau block
+# Luu so hotline 24/7 cua ISP!</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Monitoring Script (Cron)</h4>
+      <p>Alert cuoc goi quoc te bat thuong</p>
+      <code>#!/bin/bash
+# Chay moi 15 phut qua cron
+INTL=$(asterisk -rx "core show channels" \
+  | grep -c "^SIP.*\+[0-9]")
+if [ "$INTL" -gt 5 ]; then
+  echo "ALERT: $INTL intl calls active" \
+    | mail -s "VoIP Alert" admin@co.vn
+fi
+
+# Crontab:
+# */15 * * * * /opt/voip-monitor.sh</code>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="font-size: 1.5rem; margin-bottom: 1rem;">&#128274;</p>
+  <p><strong>VoIP Security World</strong> - Trang tham khao bao mat VoIP toan dien</p>
+  <p style="margin-top: 0.5rem;">Bao mat la hanh trinh, khong phai dich den. Luon cap nhat, luon canh giac.</p>
+  <p style="margin-top: 1rem; color: var(--accent2);">Homelab Documentation Collection</p>
+</footer>
+
+</body>
+</html>

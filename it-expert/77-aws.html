@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mây Vàng Amazon Đại Sư - Chuyên Gia AWS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,153,0,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,153,0,0.2);
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(255,153,0,0.1);
+        }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #ff9900; text-shadow: 0 0 20px #ff990040; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #ff9900; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge {
+            background: rgba(255,153,0,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,153,0,0.2);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            color: #ff9900;
+            transition: all 0.3s;
+        }
+        .badge:hover { background: rgba(255,153,0,0.15); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,153,0,0.2); }
+        .section {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+        }
+        .section h2 { color: #ff9900; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(255,153,0,0.3); }
+        .tip { background: rgba(255,153,0,0.03); border-left: 4px solid #ff9900; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #ff9900; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 0.85em;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.6em; }
+            .container { padding: 10px; }
+            .section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">☁️</span>
+            <h1>Mây Vàng Amazon Đại Sư</h1>
+            <div class="title">Chuyên Gia Amazon Web Services | Người Đếm 200+ Dịch Vụ Mỗi Sáng</div>
+            <div class="quote">"AWS có hơn 200 dịch vụ, tôi chỉ hiểu khoảng 50, nhưng vẫn nhiều hơn bất kỳ ai tôi biết."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">☁️ EC2 Master</span>
+            <span class="badge">🪣 S3 Wizard</span>
+            <span class="badge">⚡ Lambda Expert</span>
+            <span class="badge">🔐 IAM Sorcerer</span>
+            <span class="badge">💰 Cost Explorer Pro</span>
+            <span class="badge">🏗️ CloudFormation</span>
+            <span class="badge">📊 CloudWatch</span>
+            <span class="badge">🌐 Route 53</span>
+            <span class="badge">🗄️ RDS/DynamoDB</span>
+            <span class="badge">🎯 Solutions Architect</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Ngày xửa ngày xưa, có một chàng trai trẻ mơ ước được làm việc với "đám mây". Bố mẹ tưởng con muốn làm nhà khí tượng, ai ngờ nó lại đi theo Amazon — không phải rừng Amazon, mà là cái công ty bán sách rồi bán luôn cả hạ tầng IT cho thế giới.</p>
+            <p>Chàng ta bắt đầu với một tài khoản free tier, tự tin rằng mình sẽ không bao giờ phải trả tiền. 3 tháng sau, hóa đơn $2,300 bay tới. Đó là ngày chàng ta giác ngộ rằng "free" trong AWS là một khái niệm tương đối, giống như "nhanh" trong hệ thống bảo hiểm.</p>
+            <p>Sau 12 năm chinh chiến, 8 chứng chỉ AWS, và vô số đêm trắng debug CloudFormation, chàng ta đã trở thành Mây Vàng Amazon Đại Sư — người có thể nhắm mắt gõ IAM policy mà vẫn không thiếu dấu phẩy (hầu hết thời gian).</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. IAM — Xương Sống Bảo Mật:</strong> Principle of Least Privilege không phải là khẩu hiệu, nó là lối sống. Mỗi IAM role chỉ nên có đúng quyền cần thiết, không hơn không kém. Dùng IAM Access Analyzer để tìm những quyền thừa. Tuyệt đối đừng bao giờ dùng root account cho bất cứ việc gì ngoài billing — root access key? Xóa ngay, đừng hỏi tại sao.
+            </div>
+            <div class="tip">
+                <strong>2. EC2 — Chọn Instance Như Chọn Vợ:</strong> Đừng mặc định lấy t3.medium cho mọi thứ. Hiểu rõ workload: CPU-bound chọn C series, memory-bound chọn R series, GPU chọn P/G series. Và nhớ: Reserved Instances tiết kiệm 40-70%, Spot Instances tiết kiệm đến 90% — nhưng Spot có thể bị thu hồi bất cứ lúc nào, nên chỉ dùng cho stateless workload.
+            </div>
+            <div class="tip">
+                <strong>3. S3 — Kho Vô Tận Nhưng Có Giá:</strong> S3 Standard cho data truy cập thường xuyên, S3 IA cho ít truy cập, S3 Glacier cho archive. Lifecycle policies là bạn thân nhất của bạn — tự động chuyển data xuống tier rẻ hơn. Và nhớ bật versioning + MFA delete cho bucket quan trọng, trừ khi bạn thích mất data.
+            </div>
+            <div class="tip">
+                <strong>4. Lambda — Serverless Không Có Nghĩa Là Không Lo:</strong> Cold start có thể lên tới 10 giây với Java/C#. Giữ package size nhỏ, dùng Provisioned Concurrency cho latency-sensitive functions. Và đừng quên: Lambda timeout tối đa 15 phút — nếu job chạy lâu hơn, nghĩ tới Step Functions hoặc Fargate.
+            </div>
+            <div class="tip">
+                <strong>5. Networking — VPC Là Nền Tảng:</strong> Thiết kế VPC từ đầu với đủ CIDR space. Dùng private subnets cho backend, public subnets chỉ cho ALB/NLB. NAT Gateway tốn tiền — xem xét VPC endpoints cho S3/DynamoDB. Transit Gateway khi có nhiều VPC cần kết nối.
+            </div>
+            <div class="tip">
+                <strong>6. CloudWatch — Mắt Thần Trên Mây:</strong> Custom metrics, dashboards, alarms — đừng chỉ dùng mặc định. Log Insights cho phân tích log nhanh. Và nhớ set billing alerts — đây là tip quan trọng nhất mà 90% người dùng bỏ qua cho đến khi nhận hóa đơn $10K.
+            </div>
+            <div class="tip">
+                <strong>7. Multi-Account Strategy:</strong> Dùng AWS Organizations + SCPs. Tách production, staging, development thành các account riêng. Centralized logging account, security account, shared services account. Landing Zone hoặc Control Tower giúp setup nhanh. Đừng bỏ tất cả trứng vào một account.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>🪣 Chuyện S3 Bucket Mở Cửa Đón Gió</h3>
+                <p>Năm 2019, một startup fintech quyết định lưu trữ dữ liệu khách hàng trên S3. Developer tạo bucket, bật public access "để test thử", rồi quên tắt. 3 tháng sau, một researcher bảo mật tìm thấy 2.3 triệu records khách hàng — tên, email, số CMND — nằm chình ình trên internet.</p>
+                <p>Ngày hôm đó, CEO gọi điện lúc 6 giờ sáng: "Tại sao dữ liệu của chúng ta trên Shodan?" CTO trả lời: "Shodan là gì?" Đại Sư phải bay từ Hà Nội vào Sài Gòn để cứu hỏa, mất 72 giờ không ngủ để kiểm tra mọi bucket, thiết lập S3 Block Public Access ở Organization level, và viết postmortem dài 15 trang.</p>
+                <div class="lesson">💡 Bài học: LUÔN bật S3 Block Public Access ở account level. Dùng AWS Config rules để detect public buckets. Và nhớ: "để test thử" là câu nguy hiểm nhất trong IT.</div>
+            </div>
+            <div class="story">
+                <h3>⚡ Chuyện Lambda Cold Start Ám Ảnh</h3>
+                <p>Một team chuyển payment processing sang Lambda cho "hiện đại". Java runtime, package 50MB, kết nối VPC. Kết quả: cold start 12 giây. Khách hàng bấm thanh toán, chờ 12 giây, tưởng bị lỗi, bấm lại, bị charge 2 lần.</p>
+                <p>Team lead la lên: "Serverless promised millisecond latency!" Đại Sư thở dài: "Nó promised millisecond EXECUTION, không phải STARTUP." Giải pháp: chuyển sang Node.js runtime (cold start 1-2 giây), bật Provisioned Concurrency cho payment functions, và refactor để Lambda không cần join VPC.</p>
+                <div class="lesson">💡 Bài học: Cold start phụ thuộc runtime, package size, VPC config. Đừng đặt latency-sensitive workloads lên Lambda mà không hiểu trade-offs. Provisioned Concurrency tốn tiền nhưng cần thiết cho production.</div>
+            </div>
+            <div class="story">
+                <h3>💸 Chuyện Hóa Đơn $50,000</h3>
+                <p>Một intern được giao task "test Kinesis Data Streams". Anh chàng tạo stream với 500 shards "cho chắc", chạy producer gửi dummy data 24/7 suốt 2 tuần kỳ thực tập. Không ai review, không ai có billing alert.</p>
+                <p>Cuối tháng, CFO nhận hóa đơn AWS: $50,000. Riêng Kinesis: $47,000. Cả công ty họp khẩn cấp. Intern bị gọi lên phòng giám đốc, run như cầy sấy. May mắn, AWS Support đồng ý credit lại phần lớn sau khi nghe giải thích.</p>
+                <p>Từ đó, công ty có thêm 3 rule mới: billing alert ở $100/$500/$1000, SCPs limit resource creation cho non-admin users, và intern phải pair-program với senior cho mọi cloud task.</p>
+                <div class="lesson">💡 Bài học: Billing alerts là BẮT BUỘC, không phải optional. Dùng AWS Budgets + Cost Anomaly Detection. Và đừng bao giờ cho intern tự do sáng tạo trên production account.</div>
+            </div>
+            <div class="story">
+                <h3>🔐 Chuyện Access Key Lên GitHub</h3>
+                <p>Một developer push code lên public repo, quên xóa AWS access key trong file config. Bot scanner phát hiện trong 3 phút. 5 phút sau, tài khoản AWS bị tạo 200 EC2 instances chạy crypto mining ở mọi region.</p>
+                <p>Hóa đơn chạy lên $8,000 trong 2 giờ trước khi CloudWatch alarm kêu. Đại Sư phải disable access key, terminate toàn bộ instances, và scan lại toàn bộ account cho backdoor IAM users.</p>
+                <div class="lesson">💡 Bài học: KHÔNG BAO GIỜ commit credentials vào git. Dùng aws-vault, environment variables, hoặc IAM roles. Enable git-secrets hooks. Và rotate keys định kỳ.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Dùng root account hàng ngày:</strong> Root account chỉ dùng cho billing và emergency. Tạo IAM users/roles cho mọi thứ khác. Enable MFA cho root — không có ngoại lệ.
+            </div>
+            <div class="mistake">
+                <strong>2. Không set billing alerts:</strong> Đây là sai lầm kinh điển nhất. Thiết lập AWS Budgets ngay khi tạo account. $0 budget notification cũng được — ít nhất bạn biết khi nào bắt đầu tốn tiền.
+            </div>
+            <div class="mistake">
+                <strong>3. Security group allow 0.0.0.0/0:</strong> Mở port cho toàn bộ internet "để test" rồi quên đóng. SSH port 22 mở public? Bạn sẽ thấy brute force attempts trong vòng 5 phút.
+            </div>
+            <div class="mistake">
+                <strong>4. Không dùng tags:</strong> 6 tháng sau bạn sẽ nhìn vào 200 EC2 instances và không biết cái nào của team nào, project nào. Tag everything: Name, Environment, Owner, CostCenter.
+            </div>
+            <div class="mistake">
+                <strong>5. Hard-code credentials trong code:</strong> Dùng IAM roles cho EC2, ECS task roles, Lambda execution roles. Secrets Manager cho database passwords. Parameter Store cho config. KHÔNG BAO GIỜ hard-code.
+            </div>
+            <div class="mistake">
+                <strong>6. Chọn sai region:</strong> Đặt backend ở us-east-1 nhưng user ở Đông Nam Á? Latency 200ms+. Nghiên cứu kỹ region pricing, latency, và service availability trước khi chọn.
+            </div>
+            <div class="mistake">
+                <strong>7. Không có disaster recovery plan:</strong> "S3 có 99.999999999% durability" — đúng, nhưng bạn vẫn có thể xóa nhầm. Cross-region replication, versioning, backup — plan trước khi cần.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #77</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

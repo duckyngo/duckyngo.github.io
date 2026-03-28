@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điện Toán Biên Đại Sư - Edge Computing Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0d2e 25%, #0d1a3e 50%, #0a0d2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #818cf8, #34d399, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5b4fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(16,185,129,0.2)); border: 1px solid rgba(99,102,241,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #a5b4fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; } .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(99,102,241,0.4), rgba(16,185,129,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(99,102,241,0.2); box-shadow: 0 8px 40px rgba(99,102,241,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5b4fc; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(99,102,241,0.06); border-left: 3px solid #818cf8; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5b4fc; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(16,185,129,0.06)); border: 1px solid rgba(99,102,241,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #34d399; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5b4fc; font-weight: 600; }
+        code { background: rgba(99,102,241,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #a5b4fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🌐</span>
+            <h1>Điện Toán Biên Đại Sư</h1>
+            <p class="subtitle">Trần Thị Rìa Mạng — Người Đưa Cloud Đến Gần Hơn</p>
+            <p class="quote">"Cloud là tuyệt vời — cho đến khi bạn cần response trong 5ms và internet latency là 50ms. Đó là lúc edge computing ra đời."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Edge Infrastructure</span>
+            <span class="skill-tag">Edge AI / TinyML</span>
+            <span class="skill-tag">5G MEC</span>
+            <span class="skill-tag">K3s / KubeEdge</span>
+            <span class="skill-tag">Offline-First</span>
+            <span class="skill-tag">Data Sync</span>
+            <span class="skill-tag">Latency Optimization</span>
+            <span class="skill-tag">Edge-Cloud Continuum</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Thị Rìa Mạng lớn lên ở vùng nông thôn — nơi internet đến muộn, đến chậm, và hay mất. Khi bạn cùng lớp thành phố nói về cloud computing, cô nghĩ: "Cloud ở đâu khi internet ở đây mất 3 ngày liên tục vì mưa bão?" Câu hỏi đó trở thành sứ mệnh: đưa khả năng tính toán đến gần người dùng nhất có thể — edge computing.</p>
+            <p>Kiếp nạn đầu: "Edge Node Mất Kết Nối 72 Giờ" — khi edge node ở remote site mất internet và phải tự survive với local data, local decisions, và zero cloud connectivity. Kiếp hai: "Data Sync Nightmare" — khi edge node online trở lại sau 3 ngày offline và phải sync 500GB data với cloud mà không conflict, không duplicate, không mất data. Kiếp ba: "Edge AI Enlightenment" — khi cô deploy AI model trên $35 Raspberry Pi, inference trong 20ms, và nhận ra rằng không phải mọi thứ cần GPU server $50,000.</p>
+            <p>Triết lý: "The best architecture is the one that works when nothing else does. Edge computing is about resilience, not just latency."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Edge Architecture — Where Cloud Meets Ground</h3>
+                <p>Edge tiers: Device edge (sensors, actuators — microseconds), Near edge/Gateway (aggregate, pre-process — milliseconds), Far edge/MEC (regional compute — single-digit ms), Cloud (centralized, unlimited resources — tens of ms). Design principle: process data as close to source as possible, send only what cloud NEEDS. Data reduction: raw sensor data 1MB/s -> edge aggregation -> 1KB/s to cloud (1000x reduction). Compute placement decision: latency requirements? bandwidth constraints? data sovereignty? intermittent connectivity? If any answer YES -> edge compute. K3s: lightweight Kubernetes cho edge (500MB RAM). KubeEdge: extend Kubernetes to edge nodes với offline autonomy.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Offline-First Design — Survive Without Cloud</h3>
+                <p>Edge nodes WILL lose connectivity. Design for it: local data store (SQLite, BoltDB), local decision-making (rules engine, ML inference), queue outbound data (store-and-forward). Sync strategy: eventual consistency (CAP theorem — choose AP over CP for edge). Conflict resolution: last-write-wins (simple), vector clocks (accurate), CRDTs (automatic merge). Data priority: critical alerts sync first khi connectivity restores, bulk telemetry later. Health monitoring: local watchdog, auto-restart failed services, self-healing. Và test offline scenario regularly — not just "works offline" but "works offline for 72 hours then syncs correctly".</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Edge AI — Inference Tại Hiện Trường</h3>
+                <p>Edge AI: run ML inference on edge devices instead of cloud. Benefits: low latency (no network roundtrip), privacy (data stays local), bandwidth savings (send results not raw data), works offline. Model optimization: quantization (FP32 -> INT8, 4x smaller, minimal accuracy loss), pruning (remove unnecessary weights), knowledge distillation (small model learns from large model). Runtimes: TensorFlow Lite (mobile/embedded), ONNX Runtime (cross-platform), TensorRT (NVIDIA), OpenVINO (Intel). Hardware: NVIDIA Jetson (GPU edge), Google Coral (TPU), Raspberry Pi + NPU hats. Use cases: visual inspection (defect detection), anomaly detection (vibration analysis), object detection (security cameras). Model update: OTA model deployment, A/B testing models at edge.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: 5G MEC — Edge Meets Telecom</h3>
+                <p>MEC (Multi-access Edge Computing): compute infrastructure deployed at cellular network edge (base station or aggregation point). Latency: < 10ms (vs 50-100ms to cloud). 5G + MEC enables: autonomous vehicles (V2X), AR/VR, remote surgery, industrial automation. Architecture: application deployed as containerized workload on MEC platform, accessed via 5G network slice. Network slicing: dedicated virtual network with guaranteed QoS for specific application. Standards: ETSI MEC APIs cho service discovery, traffic routing, location services. Challenge: MEC platforms are operator-specific — multi-operator support still evolving. Và MEC application phải handle mobility — user moves between base stations, application may need to migrate.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Data Synchronization — The Hardest Problem</h3>
+                <p>Edge-cloud data sync scenarios: (1) One-way edge->cloud (telemetry — easiest), (2) One-way cloud->edge (config updates, model updates), (3) Bi-directional (shared state — hardest). Strategies: store-and-forward cho telemetry (queue locally, push khi connected), delta sync cho configurations (chỉ gửi changes), CRDTs cho collaborative state (conflict-free by design). Tools: CouchDB/PouchDB (built-in sync), custom sync với message queues (MQTT QoS 1/2). Bandwidth optimization: compress data, batch messages, priority queuing (alerts > metrics > logs). Và always design for idempotent sync — resending same data should not create duplicates.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Edge Fleet Management — Quản Lý Nghìn Node</h3>
+                <p>1 edge node = manageable. 1,000 edge nodes across 500 locations = operational nightmare without proper tooling. Fleet management: centralized dashboard (device health, connectivity status, software versions), remote access (SSH tunneling qua cloud, zero-trust), software deployment (GitOps — Flux/ArgoCD push configs to edge K3s), monitoring (Prometheus + remote write to central Thanos/Cortex). Zero-touch provisioning: device boots, auto-configures, joins fleet. Canary deployments: update 1% edge nodes, monitor, expand. Và physical access plan: some edge problems require physical presence — know WHERE every device is và HOW to access it.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #7: Latency Optimization — Mỗi Millisecond Đều Quý</h3>
+                <p>Latency budget: network (dominated by distance — ~1ms per 100km fiber), processing (compute time), queuing (wait time). Optimization: move compute closer (edge), reduce payload size (protobuf > JSON), connection reuse (keep-alive, HTTP/2), pre-compute (cache results), reduce hops (direct connection vs proxy chain). Measure: P50, P95, P99 latency — average is misleading. Network optimization: anycast routing, TCP tuning (increase initial congestion window), QUIC protocol. For sub-ms requirements: FPGA/ASIC, kernel bypass (DPDK), real-time OS. Và remember: premature optimization is evil — measure first, optimize bottleneck, measure again.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: Edge Node Mất Kết Nối 5 Ngày — Và Sống Sót</h3>
+                <p>Remote monitoring station ở vùng núi: solar-powered edge node monitor landslide risk (soil moisture, tilt sensors, rainfall). Bão lớn, mất 4G connectivity 5 ngày. Node tiếp tục: collect sensor data locally (SQLite, ring buffer 7 ngày), run local anomaly detection, trigger local alarm (siren + SMS qua backup satellite modem) khi detect abnormal soil movement. Ngày 3: local alarm triggered, village evacuated. Ngày 5: connectivity restored, 5 ngày data sync to cloud trong 10 phút. Cloud dashboard shows: landslide risk was CRITICAL từ ngày 2.</p>
+                <p>Nếu node phụ thuộc cloud hoàn toàn: 5 ngày blind, no alarm, potential casualties. Offline-first design literally saved lives.</p>
+                <div class="lesson">💡 Bài học: Edge nodes in critical applications MUST function autonomously indefinitely. Offline-first is not nice-to-have — it's life-or-death requirement. Local decision-making, local storage, local alerting. Cloud is for analytics and oversight, not for real-time critical decisions at remote sites.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: Edge AI Inference — $35 Raspberry Pi vs $50,000 GPU Server</h3>
+                <p>Quality inspection trên dây chuyền sản xuất: detect surface defects trên sản phẩm moving at 2 items/second. Cloud approach: camera -> capture image -> upload to cloud -> GPU inference (100ms) -> return result. Total latency: 200-500ms (upload 50-200ms + inference 100ms + network jitter). Tốc độ dây chuyền: 500ms/item. Cloud latency > production speed = can't keep up. Plus: bandwidth cost cho 10 cameras x 5MP images x 2/second = 100MB/s = $expensive.</p>
+                <p>Edge AI approach: Raspberry Pi 4 + Google Coral USB Accelerator ($95 total). TensorFlow Lite model, quantized INT8. Inference time: 15ms. Total latency: 20ms (capture + inference). Keep up with production speed easily. Zero bandwidth cost. Works when internet down. Accuracy: 97.2% (vs 98.1% cloud model) — acceptable tradeoff.</p>
+                <div class="lesson">💡 Bài học: Not every AI workload needs a GPU server. Quantized models on edge hardware deliver real-time inference at fraction of the cost. Trade 1% accuracy for 10x lower latency và zero bandwidth cost. Edge AI is about the RIGHT model on the RIGHT hardware for the RIGHT use case.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: Data Sync Conflict — 500GB Dedup Nightmare</h3>
+                <p>Retail chain: 200 stores, each with edge POS system. Store systems work offline (handle sales, inventory). Sync to central cloud khi connected. Problem: store loses connectivity Friday evening, reconnects Monday morning. 3 ngày offline = 50,000 transactions queued. 200 stores x 50K = 10M transactions sync simultaneously Monday 8AM.</p>
+                <p>Worse: inventory conflicts. Store A sold last item of product X (local inventory = 0). Cloud inventory shows 5 (vì warehouse restocked Saturday). Which is correct? Both. Need merge: cloud inventory (5) - store sales (1) = 4. But what if customer ordered product X online Saturday expecting 5 in stock? Oversold.</p>
+                <p>Solution: priority-based sync (sales transactions first, inventory reconciliation second). Conflict resolution rules per data type. Real-time inventory reservation system khi online. Và accept that eventual consistency means some overselling — build business process to handle it gracefully (customer notification, alternative fulfillment).</p>
+                <div class="lesson">💡 Bài học: Distributed data = distributed problems. Conflicts are inevitable in edge-cloud sync. Design conflict resolution rules PER DATA TYPE before building the system. Accept eventual consistency and design business processes around it. Perfect consistency in distributed systems is a myth — embrace the chaos, manage it gracefully.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: "Edge is just small cloud"</h3>
+                <p>Edge has unique constraints: limited resources, intermittent connectivity, physical security risks, harsh environments. Design patterns differ significantly from cloud. Edge-specific architectures required.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Assume always-connected</h3>
+                <p>Edge nodes WILL lose connectivity. Design for offline from day 1, not as afterthought. Offline capability is architectural decision, not feature to add later.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Send all raw data to cloud</h3>
+                <p>1000 cameras x 30fps x 1080p = terabytes/day. Process at edge, send only insights/anomalies/aggregates to cloud. Edge is data filter, not data forwarder.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: No remote management capability</h3>
+                <p>Edge device deployed at remote site, bug discovered, no remote access = physical visit. Remote management (SSH tunnel, remote reboot, OTA update) mandatory BEFORE deployment.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Ignore physical security</h3>
+                <p>Edge devices are physically accessible — unlike cloud servers in locked datacenters. Encrypted storage, secure boot, tamper detection. Physical access = potential root access without these protections.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: No edge monitoring</h3>
+                <p>200 edge nodes, no centralized monitoring. One dies silently, nobody knows for weeks. Heartbeat monitoring, health dashboards, automatic alerting for offline/degraded nodes. Monitor the monitors.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #7: Single edge node = single point of failure</h3>
+                <p>Critical application running on ONE edge node. Node dies = application dies. Edge HA: redundant nodes, local failover, graceful degradation. Design for failure at every level.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Thị Rìa Mạng</span> — Điện Toán Biên Đại Sư</p>
+            <p>🌐 "The edge is where the digital world meets the physical world" 🌐</p>
+        </div>
+    </div>
+</body>
+</html>

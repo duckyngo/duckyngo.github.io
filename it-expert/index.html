@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đại Sảnh Chuyên Gia IT, AI, Cloud & Infra</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg-primary:#0a0a1a;
+    --bg-secondary:#12122a;
+    --glass-bg:rgba(255,255,255,0.04);
+    --glass-border:rgba(255,255,255,0.08);
+    --glass-hover:rgba(255,255,255,0.1);
+    --text-primary:#e8e8f0;
+    --text-secondary:#9898b8;
+    --accent-1:#6366f1;
+    --accent-2:#8b5cf6;
+    --accent-3:#ec4899;
+    --accent-4:#06b6d4;
+    --accent-5:#10b981;
+    --section-radius:20px;
+    --card-radius:14px;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg-primary);
+    color:var(--text-primary);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  body::before{
+    content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%,rgba(99,102,241,0.12),transparent),
+      radial-gradient(ellipse 60% 40% at 80% 80%,rgba(236,72,153,0.08),transparent),
+      radial-gradient(ellipse 50% 50% at 50% 50%,rgba(6,182,212,0.06),transparent);
+    pointer-events:none;z-index:0;
+  }
+  .container{max-width:1400px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+  /* Header */
+  .hero{text-align:center;padding:80px 0 40px}
+  .hero h1{
+    font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899,#06b6d4);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:16px;letter-spacing:-0.5px;
+  }
+  .hero .subtitle{
+    font-size:clamp(1rem,2vw,1.3rem);color:var(--text-secondary);
+    font-style:italic;margin-bottom:32px;
+  }
+  .stats{
+    display:flex;justify-content:center;gap:32px;flex-wrap:wrap;
+    margin-bottom:40px;
+  }
+  .stat{
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    border-radius:16px;padding:20px 32px;
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    transition:transform .3s,box-shadow .3s;
+  }
+  .stat:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(99,102,241,0.15)}
+  .stat-number{font-size:2.4rem;font-weight:800;
+    background:linear-gradient(135deg,var(--accent-1),var(--accent-3));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .stat-label{font-size:.9rem;color:var(--text-secondary);margin-top:4px}
+
+  /* Search */
+  .search-wrap{max-width:600px;margin:0 auto 48px;position:relative}
+  .search-wrap input{
+    width:100%;padding:16px 24px 16px 52px;
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    border-radius:50px;color:var(--text-primary);
+    font-size:1.05rem;outline:none;
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    transition:border-color .3s,box-shadow .3s;
+  }
+  .search-wrap input:focus{border-color:var(--accent-1);box-shadow:0 0 24px rgba(99,102,241,0.2)}
+  .search-wrap input::placeholder{color:var(--text-secondary)}
+  .search-wrap .search-icon{
+    position:absolute;left:20px;top:50%;transform:translateY(-50%);
+    font-size:1.2rem;pointer-events:none;
+  }
+  .search-count{text-align:center;color:var(--text-secondary);margin:-32px 0 32px;font-size:.9rem;display:none}
+
+  /* TOC */
+  .toc{
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    border-radius:var(--section-radius);padding:28px 36px;
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    margin-bottom:48px;
+  }
+  .toc h3{margin-bottom:16px;color:var(--accent-4);font-size:1.1rem}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+  .toc a{
+    color:var(--text-secondary);text-decoration:none;padding:6px 12px;
+    border-radius:8px;transition:all .2s;font-size:.92rem;display:block;
+  }
+  .toc a:hover{color:var(--text-primary);background:var(--glass-hover)}
+
+  /* Sections */
+  .major-section{margin-bottom:48px}
+  .section-header{
+    display:flex;align-items:center;gap:16px;cursor:pointer;
+    padding:20px 28px;
+    background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.06));
+    border:1px solid var(--glass-border);
+    border-radius:var(--section-radius);
+    margin-bottom:20px;
+    transition:all .3s;user-select:none;
+    position:sticky;top:0;z-index:10;
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  }
+  .section-header:hover{background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(139,92,246,0.1))}
+  .section-header h2{font-size:clamp(1.1rem,2.5vw,1.5rem);flex:1;font-weight:700}
+  .section-header .toggle{
+    font-size:1.5rem;transition:transform .3s;color:var(--accent-2);
+  }
+  .section-header.collapsed .toggle{transform:rotate(-90deg)}
+  .section-body{overflow:hidden;transition:max-height .5s ease,opacity .4s;max-height:8000px;opacity:1}
+  .section-body.hidden{max-height:0;opacity:0;margin-bottom:0}
+
+  .sub-section{margin-bottom:28px}
+  .sub-title{
+    font-size:1.1rem;color:var(--accent-4);margin-bottom:14px;
+    padding-left:8px;border-left:3px solid var(--accent-2);font-weight:600;
+  }
+
+  /* Cards Grid */
+  .cards-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--glass-bg);border:1px solid var(--glass-border);
+    border-radius:var(--card-radius);padding:18px 20px;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:all .3s cubic-bezier(.4,0,.2,1);
+    text-decoration:none;color:inherit;display:block;
+    position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--accent-1),var(--accent-3));
+    opacity:0;transition:opacity .3s;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(99,102,241,0.3);
+    box-shadow:0 12px 40px rgba(0,0,0,0.3),0 0 20px rgba(99,102,241,0.1);
+  }
+  .card:hover::before{opacity:1}
+  .card-emoji{font-size:1.8rem;margin-bottom:8px;display:block}
+  .card-name{font-weight:700;font-size:1rem;margin-bottom:4px;color:var(--text-primary)}
+  .card-tag{font-size:.82rem;color:var(--text-secondary);line-height:1.4}
+  .card.hidden-by-search{display:none}
+
+  /* Section color accents */
+  .major-section[data-section="1"] .section-header{background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(99,102,241,0.04))}
+  .major-section[data-section="2"] .section-header{background:linear-gradient(135deg,rgba(6,182,212,0.1),rgba(6,182,212,0.04))}
+  .major-section[data-section="3"] .section-header{background:linear-gradient(135deg,rgba(236,72,153,0.1),rgba(236,72,153,0.04))}
+  .major-section[data-section="4"] .section-header{background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.04))}
+  .major-section[data-section="5"] .section-header{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.04))}
+  .major-section[data-section="6"] .section-header{background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.04))}
+  .major-section[data-section="7"] .section-header{background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(168,85,247,0.04))}
+  .major-section[data-section="8"] .section-header{background:linear-gradient(135deg,rgba(14,165,233,0.1),rgba(14,165,233,0.04))}
+  .major-section[data-section="9"] .section-header{background:linear-gradient(135deg,rgba(34,197,94,0.1),rgba(34,197,94,0.04))}
+  .major-section[data-section="10"] .section-header{background:linear-gradient(135deg,rgba(251,146,60,0.1),rgba(251,146,60,0.04))}
+  .major-section[data-section="11"] .section-header{background:linear-gradient(135deg,rgba(56,189,248,0.1),rgba(56,189,248,0.04))}
+  .major-section[data-section="12"] .section-header{background:linear-gradient(135deg,rgba(192,132,252,0.1),rgba(192,132,252,0.04))}
+  .major-section[data-section="13"] .section-header{background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(251,191,36,0.04))}
+
+  /* Back to top */
+  .back-top{
+    position:fixed;bottom:32px;right:32px;z-index:100;
+    width:48px;height:48px;border-radius:50%;border:none;
+    background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+    color:#fff;font-size:1.4rem;cursor:pointer;
+    opacity:0;transform:translateY(20px);
+    transition:all .3s;box-shadow:0 4px 20px rgba(99,102,241,0.4);
+  }
+  .back-top.visible{opacity:1;transform:translateY(0)}
+  .back-top:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(99,102,241,0.5)}
+
+  /* Footer */
+  footer{
+    text-align:center;padding:48px 0 32px;
+    color:var(--text-secondary);font-size:.95rem;
+    border-top:1px solid var(--glass-border);margin-top:40px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .animate-in{animation:fadeUp .5s ease forwards}
+
+  /* Responsive */
+  @media(max-width:768px){
+    .hero{padding:48px 0 24px}
+    .stats{gap:12px}
+    .stat{padding:14px 20px}
+    .stat-number{font-size:1.8rem}
+    .section-header{padding:14px 18px}
+    .cards-grid{grid-template-columns:1fr}
+    .toc-grid{grid-template-columns:1fr 1fr}
+    .back-top{bottom:20px;right:20px;width:42px;height:42px}
+  }
+  @media(max-width:480px){
+    .toc-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Hero -->
+  <header class="hero">
+    <h1>&#x1f3db;&#xfe0f; Đại Sảnh Chuyên Gia IT, AI, Cloud &amp; Infra</h1>
+    <p class="subtitle">Mỗi domain là một thế giới — mỗi chuyên gia là một câu chuyện</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number">148</div>
+        <div class="stat-label">Chuyên Gia</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">13</div>
+        <div class="stat-label">Lĩnh Vực</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">&infin;</div>
+        <div class="stat-label">Câu Chuyện</div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">&#x1f50d;</span>
+      <input type="text" id="searchInput" placeholder="Tìm chuyên gia, công nghệ, framework...">
+    </div>
+    <div class="search-count" id="searchCount"></div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <h3>&#x1f4d1; Mục Lục Nhanh</h3>
+    <div class="toc-grid">
+      <a href="#s1">1. Software Engineering</a>
+      <a href="#s2">2. Data &amp; Database</a>
+      <a href="#s3">3. AI &amp; Machine Learning</a>
+      <a href="#s4">4. Cloud Computing</a>
+      <a href="#s5">5. Infrastructure &amp; Platform</a>
+      <a href="#s6">6. Security &amp; Compliance</a>
+      <a href="#s7">7. DevOps, SRE &amp; Platform Eng</a>
+      <a href="#s8">8. Telecom &amp; Real-time</a>
+      <a href="#s9">9. IoT &amp; Edge</a>
+      <a href="#s10">10. Blockchain &amp; Web3</a>
+      <a href="#s11">11. Project &amp; Product</a>
+      <a href="#s12">12. Emerging Domains</a>
+      <a href="#s13">13. Soft Skills</a>
+    </div>
+  </nav>
+
+  <!-- ===================== SECTION 1 ===================== -->
+  <section class="major-section" data-section="1" id="s1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f4bb; 1. SOFTWARE ENGINEERING</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="sub-section">
+        <h3 class="sub-title">1.1 Frontend Development</h3>
+        <div class="cards-grid">
+          <a class="card" href="01-html-css-js.html" data-keywords="html css javascript frontend cơ bản">
+            <span class="card-emoji">&#x1f310;</span>
+            <div class="card-name">HTML / CSS / JavaScript cốt lõi</div>
+            <div class="card-tag">Nền tảng vững chắc của mọi ứng dụng web</div>
+          </a>
+          <a class="card" href="02-frontend-framework.html" data-keywords="react angular vue svelte solid frontend framework">
+            <span class="card-emoji">&#x2699;&#xfe0f;</span>
+            <div class="card-name">Frontend Framework</div>
+            <div class="card-tag">React, Angular, Vue, Svelte, Solid</div>
+          </a>
+          <a class="card" href="03-meta-framework.html" data-keywords="nextjs nuxt remix astro sveltekit meta framework">
+            <span class="card-emoji">&#x1f680;</span>
+            <div class="card-name">Meta Framework</div>
+            <div class="card-tag">Next.js, Nuxt, Remix, Astro, SvelteKit</div>
+          </a>
+          <a class="card" href="04-css-framework.html" data-keywords="tailwind bootstrap material ui css framework">
+            <span class="card-emoji">&#x1f3a8;</span>
+            <div class="card-name">CSS Framework</div>
+            <div class="card-tag">Tailwind, Bootstrap, Material UI</div>
+          </a>
+          <a class="card" href="05-state-management.html" data-keywords="redux zustand pinia mobx state quản lý trạng thái">
+            <span class="card-emoji">&#x1f9e9;</span>
+            <div class="card-name">Quản lý Trạng thái</div>
+            <div class="card-tag">Redux, Zustand, Pinia, MobX</div>
+          </a>
+          <a class="card" href="06-frontend-testing.html" data-keywords="cypress playwright vitest jest kiểm thử frontend testing">
+            <span class="card-emoji">&#x1f9ea;</span>
+            <div class="card-name">Kiểm thử Frontend</div>
+            <div class="card-tag">Cypress, Playwright, Vitest, Jest</div>
+          </a>
+          <a class="card" href="07-web-performance.html" data-keywords="core web vitals lighthouse bundle hiệu năng web performance">
+            <span class="card-emoji">&#x26a1;</span>
+            <div class="card-name">Hiệu năng Web</div>
+            <div class="card-tag">Core Web Vitals, Lighthouse, tối ưu Bundle</div>
+          </a>
+          <a class="card" href="08-responsive-design.html" data-keywords="responsive mobile first thiết kế đáp ứng">
+            <span class="card-emoji">&#x1f4f1;</span>
+            <div class="card-name">Thiết kế Đáp ứng</div>
+            <div class="card-tag">Responsive &amp; Mobile-first</div>
+          </a>
+          <a class="card" href="09-accessibility.html" data-keywords="accessibility a11y truy cập khả năng tiếp cận">
+            <span class="card-emoji">&#x267f;</span>
+            <div class="card-name">Khả năng Tiếp cận</div>
+            <div class="card-tag">Accessibility / a11y — web cho mọi người</div>
+          </a>
+          <a class="card" href="10-web-components.html" data-keywords="web components micro frontend module">
+            <span class="card-emoji">&#x1f527;</span>
+            <div class="card-name">Web Components &amp; Micro-frontend</div>
+            <div class="card-tag">Component tái sử dụng, kiến trúc micro</div>
+          </a>
+          <a class="card" href="11-pwa.html" data-keywords="progressive web app pwa service worker offline">
+            <span class="card-emoji">&#x1f4f2;</span>
+            <div class="card-name">Progressive Web Apps</div>
+            <div class="card-tag">Ứng dụng web tiến bộ — offline, cài đặt được</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">1.2 Backend Development</h3>
+        <div class="cards-grid">
+          <a class="card" href="12-backend-languages.html" data-keywords="go rust java csharp python nodejs php ruby kotlin elixir backend ngôn ngữ">
+            <span class="card-emoji">&#x1f4dc;</span>
+            <div class="card-name">Ngôn ngữ Backend</div>
+            <div class="card-tag">Go, Rust, Java, C#, Python, Node.js, PHP, Ruby, Kotlin, Elixir</div>
+          </a>
+          <a class="card" href="13-backend-framework.html" data-keywords="spring boot asp.net django fastapi express nestjs laravel rails gin actix framework">
+            <span class="card-emoji">&#x1f3d7;&#xfe0f;</span>
+            <div class="card-name">Backend Framework</div>
+            <div class="card-tag">Spring Boot, ASP.NET, Django, FastAPI, Express, NestJS, Laravel, Rails</div>
+          </a>
+          <a class="card" href="14-api-design.html" data-keywords="rest graphql grpc trpc openapi swagger api thiết kế">
+            <span class="card-emoji">&#x1f517;</span>
+            <div class="card-name">Thiết kế API</div>
+            <div class="card-tag">REST, GraphQL, gRPC, tRPC, OpenAPI/Swagger</div>
+          </a>
+          <a class="card" href="15-auth.html" data-keywords="oauth2 oidc jwt saml rbac abac xác thực phân quyền authentication">
+            <span class="card-emoji">&#x1f512;</span>
+            <div class="card-name">Xác thực &amp; Phân quyền</div>
+            <div class="card-tag">OAuth2, OIDC, JWT, SAML, RBAC, ABAC</div>
+          </a>
+          <a class="card" href="16-architecture.html" data-keywords="monolith microservice serverless event driven kiến trúc architecture">
+            <span class="card-emoji">&#x1f3db;&#xfe0f;</span>
+            <div class="card-name">Kiến trúc Phần mềm</div>
+            <div class="card-tag">Monolith, Microservice, Modular Monolith, Serverless, Event-driven</div>
+          </a>
+          <a class="card" href="17-design-patterns.html" data-keywords="cqrs event sourcing saga circuit breaker outbox design pattern mẫu thiết kế">
+            <span class="card-emoji">&#x1f9e0;</span>
+            <div class="card-name">Mẫu Thiết kế Nâng cao</div>
+            <div class="card-tag">CQRS, Event Sourcing, Saga, Circuit Breaker, Outbox</div>
+          </a>
+          <a class="card" href="18-message-queue.html" data-keywords="rabbitmq kafka nats pulsar redis streams hàng đợi tin nhắn message queue">
+            <span class="card-emoji">&#x1f4e8;</span>
+            <div class="card-name">Hàng đợi Tin nhắn</div>
+            <div class="card-tag">RabbitMQ, Kafka, NATS, Pulsar, Redis Streams</div>
+          </a>
+          <a class="card" href="19-scheduling.html" data-keywords="celery hangfire bull temporal airflow lập lịch scheduling">
+            <span class="card-emoji">&#x23f0;</span>
+            <div class="card-name">Lập lịch &amp; Workflow</div>
+            <div class="card-tag">Celery, Hangfire, Bull, Temporal, Airflow</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">1.3 Mobile Development</h3>
+        <div class="cards-grid">
+          <a class="card" href="20-ios.html" data-keywords="swift swiftui uikit ios apple di động">
+            <span class="card-emoji">&#x1f34f;</span>
+            <div class="card-name">iOS Development</div>
+            <div class="card-tag">Swift, SwiftUI, UIKit</div>
+          </a>
+          <a class="card" href="21-android.html" data-keywords="kotlin jetpack compose android google di động">
+            <span class="card-emoji">&#x1f4f1;</span>
+            <div class="card-name">Android Development</div>
+            <div class="card-tag">Kotlin, Jetpack Compose</div>
+          </a>
+          <a class="card" href="22-cross-platform.html" data-keywords="flutter react native maui kotlin multiplatform đa nền tảng cross platform">
+            <span class="card-emoji">&#x1f300;</span>
+            <div class="card-name">Đa nền tảng</div>
+            <div class="card-tag">Flutter, React Native, .NET MAUI, Kotlin Multiplatform</div>
+          </a>
+          <a class="card" href="23-mobile-optimization.html" data-keywords="aso push notification deep linking tối ưu mobile">
+            <span class="card-emoji">&#x1f4f3;</span>
+            <div class="card-name">Tối ưu Mobile</div>
+            <div class="card-tag">ASO, Push notification, Deep linking</div>
+          </a>
+          <a class="card" href="24-device-testing.html" data-keywords="firebase test lab browserstack kiểm thử thiết bị device testing">
+            <span class="card-emoji">&#x1f50d;</span>
+            <div class="card-name">Kiểm thử Thiết bị</div>
+            <div class="card-tag">Firebase Test Lab, BrowserStack</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">1.4 Desktop &amp; Embedded</h3>
+        <div class="cards-grid">
+          <a class="card" href="25-desktop.html" data-keywords="electron tauri wpf winui qt gtk desktop ứng dụng máy tính">
+            <span class="card-emoji">&#x1f5a5;&#xfe0f;</span>
+            <div class="card-name">Desktop Development</div>
+            <div class="card-tag">Electron, Tauri, WPF, WinUI, Qt, GTK</div>
+          </a>
+          <a class="card" href="26-embedded.html" data-keywords="c cpp rust micropython arduino esp32 nhúng embedded">
+            <span class="card-emoji">&#x1f4df;</span>
+            <div class="card-name">Embedded Systems</div>
+            <div class="card-tag">C/C++, Rust, MicroPython, Arduino, ESP32</div>
+          </a>
+          <a class="card" href="27-rtos.html" data-keywords="rtos firmware hệ điều hành thời gian thực">
+            <span class="card-emoji">&#x2699;&#xfe0f;</span>
+            <div class="card-name">RTOS &amp; Firmware</div>
+            <div class="card-tag">Hệ điều hành thời gian thực &amp; phát triển firmware</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">1.5 Game Development</h3>
+        <div class="cards-grid">
+          <a class="card" href="28-game-engine.html" data-keywords="unity unreal godot game engine động cơ trò chơi">
+            <span class="card-emoji">&#x1f3ae;</span>
+            <div class="card-name">Game Engine</div>
+            <div class="card-tag">Unity, Unreal Engine, Godot</div>
+          </a>
+          <a class="card" href="29-graphics.html" data-keywords="opengl vulkan directx metal đồ họa graphics">
+            <span class="card-emoji">&#x1f5bc;&#xfe0f;</span>
+            <div class="card-name">Đồ họa Máy tính</div>
+            <div class="card-tag">OpenGL, Vulkan, DirectX, Metal</div>
+          </a>
+          <a class="card" href="30-game-systems.html" data-keywords="vật lý game ai game networking multiplayer hệ thống game">
+            <span class="card-emoji">&#x1f579;&#xfe0f;</span>
+            <div class="card-name">Hệ thống Game</div>
+            <div class="card-tag">Vật lý game, AI game, Networking multiplayer</div>
+          </a>
+          <a class="card" href="31-xr.html" data-keywords="vr ar mr thực tế ảo thực tế tăng cường xr">
+            <span class="card-emoji">&#x1f97d;</span>
+            <div class="card-name">VR / AR / MR</div>
+            <div class="card-tag">Thực tế ảo, thực tế tăng cường, thực tế hỗn hợp</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2 ===================== -->
+  <section class="major-section" data-section="2" id="s2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f4ca; 2. DATA &amp; DATABASE</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="sub-section">
+        <h3 class="sub-title">2.1 Cơ Sở Dữ Liệu</h3>
+        <div class="cards-grid">
+          <a class="card" href="32-rdbms.html" data-keywords="postgresql mysql mariadb sql server oracle rdbms quan hệ cơ sở dữ liệu">
+            <span class="card-emoji">&#x1f4be;</span>
+            <div class="card-name">RDBMS</div>
+            <div class="card-tag">PostgreSQL, MySQL, MariaDB, SQL Server, Oracle</div>
+          </a>
+          <a class="card" href="33-nosql-document.html" data-keywords="mongodb couchdb firebase firestore nosql document tài liệu">
+            <span class="card-emoji">&#x1f4c4;</span>
+            <div class="card-name">NoSQL Document</div>
+            <div class="card-tag">MongoDB, CouchDB, Firebase Firestore</div>
+          </a>
+          <a class="card" href="34-nosql-column.html" data-keywords="cassandra scylladb hbase dynamodb nosql column cột">
+            <span class="card-emoji">&#x1f4ca;</span>
+            <div class="card-name">NoSQL Column-family</div>
+            <div class="card-tag">Cassandra, ScyllaDB, HBase, DynamoDB</div>
+          </a>
+          <a class="card" href="35-key-value.html" data-keywords="redis memcached etcd valkey key value khóa giá trị">
+            <span class="card-emoji">&#x1f511;</span>
+            <div class="card-name">Key-Value Store</div>
+            <div class="card-tag">Redis, Memcached, etcd, Valkey</div>
+          </a>
+          <a class="card" href="36-graph-db.html" data-keywords="neo4j arangodb amazon neptune graph đồ thị">
+            <span class="card-emoji">&#x1f578;&#xfe0f;</span>
+            <div class="card-name">Graph Database</div>
+            <div class="card-tag">Neo4j, ArangoDB, Amazon Neptune</div>
+          </a>
+          <a class="card" href="37-timeseries.html" data-keywords="influxdb timescaledb prometheus questdb timeseries chuỗi thời gian">
+            <span class="card-emoji">&#x1f4c8;</span>
+            <div class="card-name">Time-series DB</div>
+            <div class="card-tag">InfluxDB, TimescaleDB, Prometheus, QuestDB</div>
+          </a>
+          <a class="card" href="38-vector-db.html" data-keywords="pinecone weaviate milvus qdrant pgvector vector embedding">
+            <span class="card-emoji">&#x1f9ed;</span>
+            <div class="card-name">Vector Database</div>
+            <div class="card-tag">Pinecone, Weaviate, Milvus, Qdrant, pgvector</div>
+          </a>
+          <a class="card" href="39-search-engine.html" data-keywords="elasticsearch opensearch meilisearch typesense tìm kiếm search engine">
+            <span class="card-emoji">&#x1f50e;</span>
+            <div class="card-name">Search Engine</div>
+            <div class="card-tag">Elasticsearch, OpenSearch, Meilisearch, Typesense</div>
+          </a>
+          <a class="card" href="40-newsql.html" data-keywords="cockroachdb tidb yugabytedb vitess newsql phân tán">
+            <span class="card-emoji">&#x1f4a0;</span>
+            <div class="card-name">NewSQL</div>
+            <div class="card-tag">CockroachDB, TiDB, YugabyteDB, Vitess</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">2.2 Data Engineering</h3>
+        <div class="cards-grid">
+          <a class="card" href="41-etl-pipeline.html" data-keywords="etl elt pipeline đường ống dữ liệu">
+            <span class="card-emoji">&#x1f504;</span>
+            <div class="card-name">ETL / ELT Pipeline</div>
+            <div class="card-tag">Xây dựng đường ống xử lý dữ liệu</div>
+          </a>
+          <a class="card" href="42-batch-processing.html" data-keywords="apache spark hadoop mapreduce dbt batch xử lý hàng loạt">
+            <span class="card-emoji">&#x1f4e6;</span>
+            <div class="card-name">Xử lý Hàng loạt</div>
+            <div class="card-tag">Apache Spark, Hadoop MapReduce, dbt</div>
+          </a>
+          <a class="card" href="43-stream-processing.html" data-keywords="apache flink kafka streams beam xử lý luồng stream processing">
+            <span class="card-emoji">&#x1f30a;</span>
+            <div class="card-name">Xử lý Luồng</div>
+            <div class="card-tag">Apache Flink, Kafka Streams, Apache Beam</div>
+          </a>
+          <a class="card" href="44-data-warehouse.html" data-keywords="snowflake bigquery redshift databricks clickhouse kho dữ liệu data warehouse">
+            <span class="card-emoji">&#x1f3ed;</span>
+            <div class="card-name">Kho Dữ liệu</div>
+            <div class="card-tag">Snowflake, BigQuery, Redshift, Databricks, ClickHouse</div>
+          </a>
+          <a class="card" href="45-data-lake.html" data-keywords="delta lake apache iceberg hudi hồ dữ liệu data lake">
+            <span class="card-emoji">&#x1f30c;</span>
+            <div class="card-name">Hồ Dữ liệu</div>
+            <div class="card-tag">Delta Lake, Apache Iceberg, Apache Hudi</div>
+          </a>
+          <a class="card" href="46-data-quality.html" data-keywords="data quality catalog chất lượng dữ liệu danh mục">
+            <span class="card-emoji">&#x2705;</span>
+            <div class="card-name">Chất lượng Dữ liệu</div>
+            <div class="card-tag">Data Quality &amp; Data catalog</div>
+          </a>
+          <a class="card" href="47-data-orchestration.html" data-keywords="airflow dagster prefect mage điều phối dữ liệu orchestration">
+            <span class="card-emoji">&#x1f3bc;</span>
+            <div class="card-name">Điều phối Dữ liệu</div>
+            <div class="card-tag">Airflow, Dagster, Prefect, Mage</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">2.3 Data Analytics &amp; BI</h3>
+        <div class="cards-grid">
+          <a class="card" href="48-bi-tools.html" data-keywords="power bi tableau looker metabase superset phân tích kinh doanh">
+            <span class="card-emoji">&#x1f4c9;</span>
+            <div class="card-name">Công cụ BI</div>
+            <div class="card-tag">Power BI, Tableau, Looker, Metabase, Superset</div>
+          </a>
+          <a class="card" href="49-statistics.html" data-keywords="thống kê ab testing phân tích statistics">
+            <span class="card-emoji">&#x1f4d0;</span>
+            <div class="card-name">Phân tích Thống kê</div>
+            <div class="card-tag">Phân tích thống kê &amp; A/B testing</div>
+          </a>
+          <a class="card" href="50-sql-advanced.html" data-keywords="sql nâng cao window functions truy vấn">
+            <span class="card-emoji">&#x1f4dd;</span>
+            <div class="card-name">SQL Nâng cao</div>
+            <div class="card-tag">SQL nâng cao &amp; Window functions</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">2.4 Data Governance</h3>
+        <div class="cards-grid">
+          <a class="card" href="51-data-governance.html" data-keywords="data lineage mdm gdpr ccpa quản trị dữ liệu governance">
+            <span class="card-emoji">&#x1f3db;&#xfe0f;</span>
+            <div class="card-name">Quản trị Dữ liệu</div>
+            <div class="card-tag">Data lineage, MDM, GDPR, CCPA</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3 ===================== -->
+  <section class="major-section" data-section="3" id="s3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f916; 3. AI &amp; MACHINE LEARNING</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="sub-section">
+        <h3 class="sub-title">3.1 ML Cổ Điển</h3>
+        <div class="cards-grid">
+          <a class="card" href="52-supervised-ml.html" data-keywords="regression classification svm random forest xgboost học có giám sát supervised">
+            <span class="card-emoji">&#x1f393;</span>
+            <div class="card-name">Học có Giám sát</div>
+            <div class="card-tag">Regression, Classification, SVM, Random Forest, XGBoost</div>
+          </a>
+          <a class="card" href="53-unsupervised-ml.html" data-keywords="clustering dimensionality reduction học không giám sát unsupervised">
+            <span class="card-emoji">&#x1f52e;</span>
+            <div class="card-name">Học không Giám sát</div>
+            <div class="card-tag">Clustering, Dimensionality Reduction</div>
+          </a>
+          <a class="card" href="54-feature-engineering.html" data-keywords="feature engineering store kỹ thuật đặc trưng">
+            <span class="card-emoji">&#x1f9f1;</span>
+            <div class="card-name">Kỹ thuật Đặc trưng</div>
+            <div class="card-tag">Feature engineering &amp; Feature store</div>
+          </a>
+          <a class="card" href="55-automl.html" data-keywords="automl auto-sklearn h2o google automl tự động hóa ml">
+            <span class="card-emoji">&#x1f3af;</span>
+            <div class="card-name">AutoML</div>
+            <div class="card-tag">Auto-sklearn, H2O, Google AutoML</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">3.2 Deep Learning</h3>
+        <div class="cards-grid">
+          <a class="card" href="56-neural-networks.html" data-keywords="cnn rnn lstm gru mạng nơ-ron neural network">
+            <span class="card-emoji">&#x1f9ec;</span>
+            <div class="card-name">Mạng Nơ-ron</div>
+            <div class="card-tag">CNN, RNN, LSTM, GRU</div>
+          </a>
+          <a class="card" href="57-dl-framework.html" data-keywords="pytorch tensorflow jax keras deep learning framework">
+            <span class="card-emoji">&#x1f525;</span>
+            <div class="card-name">DL Framework</div>
+            <div class="card-tag">PyTorch, TensorFlow, JAX, Keras</div>
+          </a>
+          <a class="card" href="58-transfer-learning.html" data-keywords="transfer learning fine-tuning học chuyển giao tinh chỉnh">
+            <span class="card-emoji">&#x1f504;</span>
+            <div class="card-name">Transfer Learning</div>
+            <div class="card-tag">Học chuyển giao &amp; Tinh chỉnh mô hình</div>
+          </a>
+          <a class="card" href="59-generative-models.html" data-keywords="gan vae diffusion models mô hình sinh generative">
+            <span class="card-emoji">&#x1f3a8;</span>
+            <div class="card-name">Mô hình Sinh</div>
+            <div class="card-tag">GAN, VAE, Diffusion Models</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">3.3 NLP</h3>
+        <div class="cards-grid">
+          <a class="card" href="60-nlp-basics.html" data-keywords="tokenization embedding nlp xử lý ngôn ngữ tự nhiên">
+            <span class="card-emoji">&#x1f4ac;</span>
+            <div class="card-name">NLP Cơ bản</div>
+            <div class="card-tag">Tokenization, Embedding</div>
+          </a>
+          <a class="card" href="61-transformer.html" data-keywords="transformer attention mechanism cơ chế chú ý">
+            <span class="card-emoji">&#x1f9e0;</span>
+            <div class="card-name">Transformer</div>
+            <div class="card-tag">Kiến trúc Transformer &amp; cơ chế Attention</div>
+          </a>
+          <a class="card" href="62-llm.html" data-keywords="llm gpt claude llama gemini large language model mô hình ngôn ngữ lớn">
+            <span class="card-emoji">&#x1f31f;</span>
+            <div class="card-name">Mô hình Ngôn ngữ Lớn</div>
+            <div class="card-tag">GPT, Claude, Llama, Gemini</div>
+          </a>
+          <a class="card" href="63-prompt-engineering.html" data-keywords="prompt engineering rag kỹ thuật prompt">
+            <span class="card-emoji">&#x270d;&#xfe0f;</span>
+            <div class="card-name">Prompt Engineering</div>
+            <div class="card-tag">Kỹ thuật Prompt &amp; RAG</div>
+          </a>
+          <a class="card" href="64-llm-finetuning.html" data-keywords="lora qlora rlhf dpo fine-tuning llm tinh chỉnh">
+            <span class="card-emoji">&#x1f3cb;&#xfe0f;</span>
+            <div class="card-name">Tinh chỉnh LLM</div>
+            <div class="card-tag">LoRA, QLoRA, RLHF, DPO</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">3.4 Computer Vision</h3>
+        <div class="cards-grid">
+          <a class="card" href="65-image-classification.html" data-keywords="phân loại ảnh object detection yolo detr thị giác máy tính">
+            <span class="card-emoji">&#x1f440;</span>
+            <div class="card-name">Phân loại &amp; Phát hiện</div>
+            <div class="card-tag">Phân loại ảnh, Object Detection (YOLO, DETR)</div>
+          </a>
+          <a class="card" href="66-segmentation.html" data-keywords="sam mask r-cnn ocr segmentation phân đoạn">
+            <span class="card-emoji">&#x1f9e9;</span>
+            <div class="card-name">Phân đoạn Ảnh</div>
+            <div class="card-tag">SAM, Mask R-CNN, OCR</div>
+          </a>
+          <a class="card" href="67-video-3d.html" data-keywords="video analysis 3d vision phân tích video thị giác 3d">
+            <span class="card-emoji">&#x1f3ac;</span>
+            <div class="card-name">Video &amp; 3D Vision</div>
+            <div class="card-tag">Phân tích video, Thị giác 3D</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">3.5 AI Engineering &amp; MLOps</h3>
+        <div class="cards-grid">
+          <a class="card" href="68-ml-pipeline.html" data-keywords="kubeflow mlflow vertex ai sagemaker ml pipeline đường ống">
+            <span class="card-emoji">&#x1f3ed;</span>
+            <div class="card-name">ML Pipeline</div>
+            <div class="card-tag">Kubeflow, MLflow, Vertex AI, SageMaker</div>
+          </a>
+          <a class="card" href="69-model-serving.html" data-keywords="torchserve triton vllm tgi ollama model serving phục vụ mô hình">
+            <span class="card-emoji">&#x1f4e1;</span>
+            <div class="card-name">Model Serving</div>
+            <div class="card-tag">TorchServe, Triton, vLLM, TGI, Ollama</div>
+          </a>
+          <a class="card" href="70-llmops.html" data-keywords="langchain llamaindex langsmith llmops vận hành llm">
+            <span class="card-emoji">&#x1f517;</span>
+            <div class="card-name">LLMOps</div>
+            <div class="card-tag">LangChain, LlamaIndex, LangSmith</div>
+          </a>
+          <a class="card" href="71-ai-agent.html" data-keywords="crewai autogen claude agent sdk ai agent tác nhân ai">
+            <span class="card-emoji">&#x1f916;</span>
+            <div class="card-name">AI Agent</div>
+            <div class="card-tag">CrewAI, AutoGen, Claude Agent SDK</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">3.6 AI Chuyên biệt</h3>
+        <div class="cards-grid">
+          <a class="card" href="72-reinforcement-learning.html" data-keywords="reinforcement learning học tăng cường">
+            <span class="card-emoji">&#x1f3c6;</span>
+            <div class="card-name">Học Tăng cường</div>
+            <div class="card-tag">Reinforcement Learning</div>
+          </a>
+          <a class="card" href="73-speech-audio.html" data-keywords="tts stt speaker diarization giọng nói âm thanh speech audio">
+            <span class="card-emoji">&#x1f3a4;</span>
+            <div class="card-name">Giọng nói &amp; Âm thanh</div>
+            <div class="card-tag">TTS, STT, Speaker diarization</div>
+          </a>
+          <a class="card" href="74-multimodal-ai.html" data-keywords="multimodal ai đa phương thức">
+            <span class="card-emoji">&#x1f308;</span>
+            <div class="card-name">AI Đa phương thức</div>
+            <div class="card-tag">Multimodal AI — văn bản, ảnh, âm thanh</div>
+          </a>
+          <a class="card" href="75-edge-ai.html" data-keywords="edge ai tinyml ai biên nhỏ gọn">
+            <span class="card-emoji">&#x1f4a1;</span>
+            <div class="card-name">Edge AI / TinyML</div>
+            <div class="card-tag">AI trên thiết bị biên, nhỏ gọn</div>
+          </a>
+          <a class="card" href="76-ai-safety.html" data-keywords="ai safety alignment an toàn ai căn chỉnh">
+            <span class="card-emoji">&#x1f6e1;&#xfe0f;</span>
+            <div class="card-name">AI Safety &amp; Alignment</div>
+            <div class="card-tag">An toàn AI &amp; Căn chỉnh mô hình</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 4 ===================== -->
+  <section class="major-section" data-section="4" id="s4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x2601;&#xfe0f; 4. CLOUD COMPUTING</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="sub-section">
+        <h3 class="sub-title">4.1 Cloud Providers</h3>
+        <div class="cards-grid">
+          <a class="card" href="77-aws.html" data-keywords="aws amazon web services đám mây">
+            <span class="card-emoji">&#x1f7e7;</span>
+            <div class="card-name">AWS</div>
+            <div class="card-tag">Amazon Web Services — ông lớn đám mây</div>
+          </a>
+          <a class="card" href="78-azure.html" data-keywords="azure microsoft đám mây cloud">
+            <span class="card-emoji">&#x1f535;</span>
+            <div class="card-name">Azure</div>
+            <div class="card-tag">Microsoft Azure — đám mây doanh nghiệp</div>
+          </a>
+          <a class="card" href="79-gcp.html" data-keywords="gcp google cloud platform đám mây">
+            <span class="card-emoji">&#x1f534;</span>
+            <div class="card-name">GCP</div>
+            <div class="card-tag">Google Cloud Platform — sức mạnh từ Google</div>
+          </a>
+          <a class="card" href="80-other-cloud.html" data-keywords="alibaba oracle ibm digitalocean hetzner cloudflare cloud khác">
+            <span class="card-emoji">&#x1f30d;</span>
+            <div class="card-name">Cloud khác</div>
+            <div class="card-tag">Alibaba, Oracle, IBM, DigitalOcean, Hetzner, Cloudflare</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">4.2 Cloud Architecture</h3>
+        <div class="cards-grid">
+          <a class="card" href="81-well-architected.html" data-keywords="well architected framework kiến trúc tốt">
+            <span class="card-emoji">&#x1f3d7;&#xfe0f;</span>
+            <div class="card-name">Well-Architected Framework</div>
+            <div class="card-tag">Nguyên tắc kiến trúc đám mây xuất sắc</div>
+          </a>
+          <a class="card" href="82-cloud-strategy.html" data-keywords="multi-cloud hybrid landing zone chiến lược đám mây">
+            <span class="card-emoji">&#x1f9ed;</span>
+            <div class="card-name">Chiến lược Cloud</div>
+            <div class="card-tag">Multi-cloud, Hybrid, Landing Zone</div>
+          </a>
+          <a class="card" href="83-serverless.html" data-keywords="serverless lambda functions không máy chủ">
+            <span class="card-emoji">&#x26a1;</span>
+            <div class="card-name">Serverless</div>
+            <div class="card-tag">Kiến trúc không máy chủ</div>
+          </a>
+          <a class="card" href="84-cloud-migration.html" data-keywords="cloud migration finops di chuyển đám mây tối ưu chi phí">
+            <span class="card-emoji">&#x1f69a;</span>
+            <div class="card-name">Cloud Migration &amp; FinOps</div>
+            <div class="card-tag">Di chuyển lên đám mây &amp; tối ưu chi phí</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">4.3-4.6 Cloud Services</h3>
+        <div class="cards-grid">
+          <a class="card" href="85-cloud-compute.html" data-keywords="vm container serverless edge hpc gpu compute tính toán đám mây">
+            <span class="card-emoji">&#x1f4bb;</span>
+            <div class="card-name">Cloud Compute</div>
+            <div class="card-tag">VM, Container, Serverless, Edge, HPC, GPU</div>
+          </a>
+          <a class="card" href="86-cloud-storage.html" data-keywords="object block file storage cdn backup lưu trữ đám mây">
+            <span class="card-emoji">&#x1f4e6;</span>
+            <div class="card-name">Cloud Storage</div>
+            <div class="card-tag">Object, Block, File storage, CDN, Backup</div>
+          </a>
+          <a class="card" href="87-cloud-networking.html" data-keywords="vpc load balancer dns vpn api gateway mạng đám mây">
+            <span class="card-emoji">&#x1f310;</span>
+            <div class="card-name">Cloud Networking</div>
+            <div class="card-tag">VPC, Load Balancer, DNS, VPN, API Gateway</div>
+          </a>
+          <a class="card" href="88-managed-services.html" data-keywords="managed db cache kafka k8s ai ml iot dịch vụ quản lý">
+            <span class="card-emoji">&#x1f3e2;</span>
+            <div class="card-name">Managed Services</div>
+            <div class="card-tag">Managed DB, Cache, Kafka, K8s, AI/ML, IoT</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 5 ===================== -->
+  <section class="major-section" data-section="5" id="s5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f3d7;&#xfe0f; 5. INFRASTRUCTURE &amp; PLATFORM</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.1 Linux &amp; OS</h3>
+        <div class="cards-grid">
+          <a class="card" href="89-linux.html" data-keywords="linux distros kernel systemd shell scripting hệ điều hành">
+            <span class="card-emoji">&#x1f427;</span>
+            <div class="card-name">Linux</div>
+            <div class="card-tag">Distros, kernel, systemd, shell scripting</div>
+          </a>
+          <a class="card" href="90-performance-tuning.html" data-keywords="cpu memory disk io network tuning hiệu năng tinh chỉnh">
+            <span class="card-emoji">&#x1f4a8;</span>
+            <div class="card-name">Tinh chỉnh Hiệu năng</div>
+            <div class="card-tag">CPU, Memory, Disk I/O, Network tuning</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.2 Networking</h3>
+        <div class="cards-grid">
+          <a class="card" href="91-osi-tcpip.html" data-keywords="osi tcp ip mô hình mạng networking model">
+            <span class="card-emoji">&#x1f4f6;</span>
+            <div class="card-name">Mô hình OSI &amp; TCP/IP</div>
+            <div class="card-tag">Nền tảng lý thuyết mạng máy tính</div>
+          </a>
+          <a class="card" href="92-protocols.html" data-keywords="tcp udp http dns dhcp bgp giao thức mạng protocols">
+            <span class="card-emoji">&#x1f4e1;</span>
+            <div class="card-name">Giao thức Mạng</div>
+            <div class="card-tag">TCP, UDP, HTTP/1-3, DNS, DHCP, BGP</div>
+          </a>
+          <a class="card" href="93-firewall.html" data-keywords="iptables nftables pf tường lửa firewall">
+            <span class="card-emoji">&#x1f6e1;&#xfe0f;</span>
+            <div class="card-name">Tường lửa</div>
+            <div class="card-tag">iptables, nftables, pf</div>
+          </a>
+          <a class="card" href="94-load-balancing.html" data-keywords="haproxy nginx envoy traefik cân bằng tải load balancing">
+            <span class="card-emoji">&#x2696;&#xfe0f;</span>
+            <div class="card-name">Cân bằng Tải</div>
+            <div class="card-tag">HAProxy, Nginx, Envoy, Traefik</div>
+          </a>
+          <a class="card" href="95-vpn.html" data-keywords="wireguard openvpn ipsec sd-wan vpn mạng riêng ảo">
+            <span class="card-emoji">&#x1f510;</span>
+            <div class="card-name">VPN &amp; SD-WAN</div>
+            <div class="card-tag">WireGuard, OpenVPN, IPSec, SD-WAN</div>
+          </a>
+          <a class="card" href="96-network-automation.html" data-keywords="ansible netmiko napalm tự động hóa mạng network automation">
+            <span class="card-emoji">&#x1f4a1;</span>
+            <div class="card-name">Tự động hóa Mạng</div>
+            <div class="card-tag">Ansible, Netmiko, NAPALM</div>
+          </a>
+          <a class="card" href="97-wifi-5g.html" data-keywords="wifi 6 7 5g lte không dây wireless">
+            <span class="card-emoji">&#x1f4e1;</span>
+            <div class="card-name">Wi-Fi &amp; 5G</div>
+            <div class="card-tag">Wi-Fi 6/7, 5G/LTE</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.3 Containers &amp; Orchestration</h3>
+        <div class="cards-grid">
+          <a class="card" href="98-docker.html" data-keywords="docker dockerfile docker compose container">
+            <span class="card-emoji">&#x1f433;</span>
+            <div class="card-name">Docker</div>
+            <div class="card-tag">Docker, Dockerfile, Docker Compose</div>
+          </a>
+          <a class="card" href="99-container-runtime.html" data-keywords="containerd cri-o podman container runtime">
+            <span class="card-emoji">&#x1f4e6;</span>
+            <div class="card-name">Container Runtime</div>
+            <div class="card-tag">containerd, CRI-O, Podman</div>
+          </a>
+          <a class="card" href="100-kubernetes.html" data-keywords="kubernetes k8s core cốt lõi điều phối container">
+            <span class="card-emoji">&#x2699;&#xfe0f;</span>
+            <div class="card-name">Kubernetes Core</div>
+            <div class="card-tag">Kubernetes — hệ thống điều phối container hàng đầu</div>
+          </a>
+          <a class="card" href="101-k8s-advanced.html" data-keywords="helm kustomize operators crd kubernetes nâng cao">
+            <span class="card-emoji">&#x1f680;</span>
+            <div class="card-name">K8s Nâng cao</div>
+            <div class="card-tag">Helm, Kustomize, Operators, CRD</div>
+          </a>
+          <a class="card" href="102-k8s-autoscaling.html" data-keywords="hpa vpa keda cluster autoscaler tự động mở rộng">
+            <span class="card-emoji">&#x1f4c8;</span>
+            <div class="card-name">K8s Autoscaling</div>
+            <div class="card-tag">HPA, VPA, KEDA, Cluster Autoscaler</div>
+          </a>
+          <a class="card" href="103-service-mesh.html" data-keywords="istio linkerd cilium service mesh lưới dịch vụ">
+            <span class="card-emoji">&#x1f578;&#xfe0f;</span>
+            <div class="card-name">Service Mesh</div>
+            <div class="card-tag">Istio, Linkerd, Cilium</div>
+          </a>
+          <a class="card" href="104-container-security.html" data-keywords="trivy falco opa gatekeeper bảo mật container security">
+            <span class="card-emoji">&#x1f512;</span>
+            <div class="card-name">Container Security</div>
+            <div class="card-tag">Trivy, Falco, OPA/Gatekeeper</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.4 Infrastructure as Code</h3>
+        <div class="cards-grid">
+          <a class="card" href="105-terraform.html" data-keywords="terraform opentofu iac hạ tầng mã code">
+            <span class="card-emoji">&#x1f30d;</span>
+            <div class="card-name">Terraform / OpenTofu</div>
+            <div class="card-tag">Hạ tầng dưới dạng mã — đa nền tảng</div>
+          </a>
+          <a class="card" href="106-pulumi.html" data-keywords="pulumi iac hạ tầng mã programming language">
+            <span class="card-emoji">&#x1f4bb;</span>
+            <div class="card-name">Pulumi</div>
+            <div class="card-tag">IaC bằng ngôn ngữ lập trình yêu thích</div>
+          </a>
+          <a class="card" href="107-cloud-iac.html" data-keywords="cloudformation cdk bicep iac đám mây native">
+            <span class="card-emoji">&#x2601;&#xfe0f;</span>
+            <div class="card-name">Cloud-native IaC</div>
+            <div class="card-tag">CloudFormation, CDK, Bicep</div>
+          </a>
+          <a class="card" href="108-config-management.html" data-keywords="ansible puppet chef saltstack quản lý cấu hình config management">
+            <span class="card-emoji">&#x1f4cb;</span>
+            <div class="card-name">Quản lý Cấu hình</div>
+            <div class="card-tag">Ansible, Puppet, Chef, SaltStack</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.5 CI/CD</h3>
+        <div class="cards-grid">
+          <a class="card" href="109-github-actions.html" data-keywords="github actions ci cd tích hợp liên tục">
+            <span class="card-emoji">&#x1f419;</span>
+            <div class="card-name">GitHub Actions</div>
+            <div class="card-tag">CI/CD mạnh mẽ từ GitHub</div>
+          </a>
+          <a class="card" href="110-gitlab-cicd.html" data-keywords="gitlab ci cd pipeline tích hợp liên tục">
+            <span class="card-emoji">&#x1f98a;</span>
+            <div class="card-name">GitLab CI/CD</div>
+            <div class="card-tag">CI/CD tích hợp sẵn trong GitLab</div>
+          </a>
+          <a class="card" href="111-jenkins.html" data-keywords="jenkins ci cd pipeline tự động hóa">
+            <span class="card-emoji">&#x1f477;</span>
+            <div class="card-name">Jenkins</div>
+            <div class="card-tag">Ông lão CI/CD — vẫn mạnh mẽ</div>
+          </a>
+          <a class="card" href="112-gitops.html" data-keywords="argocd flux gitops triển khai liên tục">
+            <span class="card-emoji">&#x1f500;</span>
+            <div class="card-name">GitOps</div>
+            <div class="card-tag">ArgoCD, Flux — Git là nguồn sự thật</div>
+          </a>
+          <a class="card" href="113-deployment-strategies.html" data-keywords="blue green canary rolling feature flags chiến lược triển khai">
+            <span class="card-emoji">&#x1f3af;</span>
+            <div class="card-name">Chiến lược Triển khai</div>
+            <div class="card-tag">Blue/Green, Canary, Rolling, Feature Flags</div>
+          </a>
+          <a class="card" href="114-artifact-management.html" data-keywords="nexus artifactory harbor artifact quản lý gói">
+            <span class="card-emoji">&#x1f4e6;</span>
+            <div class="card-name">Quản lý Artifact</div>
+            <div class="card-tag">Nexus, Artifactory, Harbor</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.6 Observability</h3>
+        <div class="cards-grid">
+          <a class="card" href="115-metrics.html" data-keywords="prometheus grafana datadog victoria metrics số liệu metrics">
+            <span class="card-emoji">&#x1f4ca;</span>
+            <div class="card-name">Metrics</div>
+            <div class="card-tag">Prometheus, Grafana, Datadog, Victoria Metrics</div>
+          </a>
+          <a class="card" href="116-logs.html" data-keywords="elk stack loki fluentd vector nhật ký logs">
+            <span class="card-emoji">&#x1f4d3;</span>
+            <div class="card-name">Logs</div>
+            <div class="card-tag">ELK Stack, Loki, Fluentd, Vector</div>
+          </a>
+          <a class="card" href="117-traces.html" data-keywords="jaeger zipkin tempo opentelemetry tracing dấu vết">
+            <span class="card-emoji">&#x1f50d;</span>
+            <div class="card-name">Traces</div>
+            <div class="card-tag">Jaeger, Zipkin, Tempo, OpenTelemetry</div>
+          </a>
+          <a class="card" href="118-alerting.html" data-keywords="pagerduty opsgenie alertmanager cảnh báo alerting">
+            <span class="card-emoji">&#x1f6a8;</span>
+            <div class="card-name">Cảnh báo</div>
+            <div class="card-tag">PagerDuty, OpsGenie, Alertmanager</div>
+          </a>
+          <a class="card" href="119-monitoring.html" data-keywords="apm rum synthetic monitoring sli slo sla giám sát">
+            <span class="card-emoji">&#x1f4c9;</span>
+            <div class="card-name">Giám sát Toàn diện</div>
+            <div class="card-tag">APM, RUM, Synthetic monitoring, SLI/SLO/SLA</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3 class="sub-title">5.7 Virtualization &amp; Homelab</h3>
+        <div class="cards-grid">
+          <a class="card" href="120-hypervisor.html" data-keywords="proxmox vmware hyper-v kvm qemu ảo hóa hypervisor">
+            <span class="card-emoji">&#x1f5a5;&#xfe0f;</span>
+            <div class="card-name">Hypervisor</div>
+            <div class="card-tag">Proxmox, VMware, Hyper-V, KVM/QEMU</div>
+          </a>
+          <a class="card" href="121-homelab.html" data-keywords="truenas unraid self-hosted homelab phòng lab tại nhà">
+            <span class="card-emoji">&#x1f3e0;</span>
+            <div class="card-name">Homelab</div>
+            <div class="card-tag">TrueNAS, Unraid, ứng dụng tự host</div>
+          </a>
+          <a class="card" href="122-home-automation.html" data-keywords="home assistant node-red nhà thông minh tự động hóa">
+            <span class="card-emoji">&#x1f3e1;</span>
+            <div class="card-name">Nhà Thông minh</div>
+            <div class="card-tag">Home Assistant, Node-RED</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 6 ===================== -->
+  <section class="major-section" data-section="6" id="s6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f6e1;&#xfe0f; 6. SECURITY &amp; COMPLIANCE</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="123-appsec.html" data-keywords="owasp sast dast sca bảo mật ứng dụng appsec">
+          <span class="card-emoji">&#x1f41b;</span>
+          <div class="card-name">Bảo mật Ứng dụng</div>
+          <div class="card-tag">OWASP, SAST, DAST, SCA</div>
+        </a>
+        <a class="card" href="124-secret-management.html" data-keywords="vault secrets manager sops sbom quản lý bí mật secret">
+          <span class="card-emoji">&#x1f511;</span>
+          <div class="card-name">Quản lý Bí mật</div>
+          <div class="card-tag">Vault, Secrets Manager, SOPS, SBOM</div>
+        </a>
+        <a class="card" href="125-infra-security.html" data-keywords="encryption pki zero trust waf bảo mật hạ tầng mã hóa">
+          <span class="card-emoji">&#x1f3f0;</span>
+          <div class="card-name">Bảo mật Hạ tầng</div>
+          <div class="card-tag">Encryption, PKI, Zero Trust, WAF</div>
+        </a>
+        <a class="card" href="126-iam.html" data-keywords="sso mfa oauth2 oidc keycloak auth0 định danh truy cập iam">
+          <span class="card-emoji">&#x1f464;</span>
+          <div class="card-name">Quản lý Định danh</div>
+          <div class="card-tag">SSO, MFA, OAuth2, OIDC, Keycloak, Auth0</div>
+        </a>
+        <a class="card" href="127-secops.html" data-keywords="siem soc incident response pentesting vận hành bảo mật secops">
+          <span class="card-emoji">&#x1f575;&#xfe0f;</span>
+          <div class="card-name">SecOps</div>
+          <div class="card-tag">SIEM, SOC, Incident Response, Pentesting</div>
+        </a>
+        <a class="card" href="128-compliance.html" data-keywords="iso 27001 soc 2 pci dss hipaa gdpr tuân thủ compliance">
+          <span class="card-emoji">&#x1f4dc;</span>
+          <div class="card-name">Tuân thủ &amp; Tiêu chuẩn</div>
+          <div class="card-tag">ISO 27001, SOC 2, PCI DSS, HIPAA, GDPR</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 7 ===================== -->
+  <section class="major-section" data-section="7" id="s7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f504; 7. DevOps, SRE &amp; Platform Engineering</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="129-devops-culture.html" data-keywords="devops culture dora metrics chatops văn hóa devops">
+          <span class="card-emoji">&#x1f91d;</span>
+          <div class="card-name">Văn hóa DevOps</div>
+          <div class="card-tag">DevOps Culture, DORA metrics, ChatOps</div>
+        </a>
+        <a class="card" href="130-sre.html" data-keywords="sre sli slo sla error budget chaos engineering kỹ sư độ tin cậy">
+          <span class="card-emoji">&#x1f4aa;</span>
+          <div class="card-name">SRE</div>
+          <div class="card-tag">SLI/SLO/SLA, Error Budget, Chaos Engineering</div>
+        </a>
+        <a class="card" href="131-platform-engineering.html" data-keywords="idp backstage developer experience platform engineering nền tảng kỹ thuật">
+          <span class="card-emoji">&#x1f3d7;&#xfe0f;</span>
+          <div class="card-name">Platform Engineering</div>
+          <div class="card-tag">IDP, Backstage, Developer Experience</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 8 ===================== -->
+  <section class="major-section" data-section="8" id="s8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f4de; 8. TELECOM &amp; REAL-TIME</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="132-voip-pbx.html" data-keywords="sip rtp asterisk freepbx 3cx voip pbx tổng đài điện thoại">
+          <span class="card-emoji">&#x260e;&#xfe0f;</span>
+          <div class="card-name">VoIP &amp; PBX</div>
+          <div class="card-tag">SIP, RTP, Asterisk, FreePBX, 3CX</div>
+        </a>
+        <a class="card" href="133-realtime-protocols.html" data-keywords="websocket sse webrtc grpc streaming mqtt giao thức thời gian thực">
+          <span class="card-emoji">&#x26a1;</span>
+          <div class="card-name">Giao thức Thời gian thực</div>
+          <div class="card-tag">WebSocket, SSE, WebRTC, gRPC streaming, MQTT</div>
+        </a>
+        <a class="card" href="134-video-streaming.html" data-keywords="rtmp hls dash livekit ffmpeg video streaming phát video">
+          <span class="card-emoji">&#x1f4f9;</span>
+          <div class="card-name">Video Streaming</div>
+          <div class="card-tag">RTMP, HLS, DASH, LiveKit, FFmpeg</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 9 ===================== -->
+  <section class="major-section" data-section="9" id="s9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f4e1; 9. IoT &amp; EDGE</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="135-iot-platforms.html" data-keywords="mqtt coap aws iot azure iot nền tảng iot internet vạn vật">
+          <span class="card-emoji">&#x1f4f2;</span>
+          <div class="card-name">Nền tảng IoT</div>
+          <div class="card-tag">MQTT, CoAP, AWS IoT, Azure IoT</div>
+        </a>
+        <a class="card" href="136-iiot.html" data-keywords="scada opc ua plc digital twin công nghiệp iiot">
+          <span class="card-emoji">&#x1f3ed;</span>
+          <div class="card-name">IoT Công nghiệp</div>
+          <div class="card-tag">SCADA, OPC UA, PLC, Digital Twin</div>
+        </a>
+        <a class="card" href="137-edge-computing.html" data-keywords="edge infra edge ai 5g mec tính toán biên">
+          <span class="card-emoji">&#x1f310;</span>
+          <div class="card-name">Edge Computing</div>
+          <div class="card-tag">Edge infra, Edge AI, 5G MEC</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 10 ===================== -->
+  <section class="major-section" data-section="10" id="s10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x26d3;&#xfe0f; 10. BLOCKCHAIN &amp; WEB3</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="138-blockchain.html" data-keywords="blockchain smart contracts defi nft zkp chuỗi khối web3">
+          <span class="card-emoji">&#x1f4b0;</span>
+          <div class="card-name">Blockchain &amp; Web3</div>
+          <div class="card-tag">Blockchain, Smart Contracts, DeFi, NFT, ZKP</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 11 ===================== -->
+  <section class="major-section" data-section="11" id="s11">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f4cb; 11. PROJECT &amp; PRODUCT</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="139-project-management.html" data-keywords="agile scrum kanban jira linear quản lý dự án project management">
+          <span class="card-emoji">&#x1f4c5;</span>
+          <div class="card-name">Quản lý Dự án</div>
+          <div class="card-tag">Agile, Scrum, Kanban, Jira, Linear</div>
+        </a>
+        <a class="card" href="140-product-management.html" data-keywords="product discovery roadmap analytics quản lý sản phẩm product management">
+          <span class="card-emoji">&#x1f4a1;</span>
+          <div class="card-name">Quản lý Sản phẩm</div>
+          <div class="card-tag">Product Discovery, Roadmap, Analytics</div>
+        </a>
+        <a class="card" href="141-ux-ui.html" data-keywords="design system figma usability testing thiết kế trải nghiệm ux ui">
+          <span class="card-emoji">&#x1f3a8;</span>
+          <div class="card-name">UX/UI Design</div>
+          <div class="card-tag">Design system, Figma, Usability testing</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 12 ===================== -->
+  <section class="major-section" data-section="12" id="s12">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f52d; 12. EMERGING DOMAINS</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="142-quantum.html" data-keywords="quantum computing tính toán lượng tử">
+          <span class="card-emoji">&#x269b;&#xfe0f;</span>
+          <div class="card-name">Tính toán Lượng tử</div>
+          <div class="card-tag">Quantum Computing — biên giới mới của tính toán</div>
+        </a>
+        <a class="card" href="143-biotech.html" data-keywords="bioinformatics healthtech sinh học tin sinh y tế">
+          <span class="card-emoji">&#x1f9ec;</span>
+          <div class="card-name">Công nghệ Sinh học</div>
+          <div class="card-tag">Bioinformatics, HealthTech</div>
+        </a>
+        <a class="card" href="144-gis.html" data-keywords="gis geospatial hệ thống thông tin địa lý không gian">
+          <span class="card-emoji">&#x1f5fa;&#xfe0f;</span>
+          <div class="card-name">GIS &amp; Không gian Địa lý</div>
+          <div class="card-tag">GIS &amp; Geospatial</div>
+        </a>
+        <a class="card" href="145-fintech.html" data-keywords="fintech payment trading tài chính công nghệ thanh toán giao dịch">
+          <span class="card-emoji">&#x1f4b3;</span>
+          <div class="card-name">FinTech</div>
+          <div class="card-tag">FinTech, Payment, Trading</div>
+        </a>
+        <a class="card" href="146-edtech.html" data-keywords="edtech lms adaptive learning giáo dục công nghệ">
+          <span class="card-emoji">&#x1f393;</span>
+          <div class="card-name">EdTech</div>
+          <div class="card-tag">EdTech, LMS, Adaptive learning</div>
+        </a>
+        <a class="card" href="147-autonomous.html" data-keywords="autonomous vehicles xe tự hành tự lái">
+          <span class="card-emoji">&#x1f697;</span>
+          <div class="card-name">Xe Tự hành</div>
+          <div class="card-tag">Autonomous Vehicles</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 13 ===================== -->
+  <section class="major-section" data-section="13" id="s13">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2>&#x1f4a1; 13. SOFT SKILLS</h2>
+      <span class="toggle">&#x25BC;</span>
+    </div>
+    <div class="section-body">
+      <div class="cards-grid">
+        <a class="card" href="148-soft-skills.html" data-keywords="technical writing system design career viết kỹ thuật thiết kế hệ thống sự nghiệp kỹ năng mềm">
+          <span class="card-emoji">&#x1f4dd;</span>
+          <div class="card-name">Kỹ năng Mềm</div>
+          <div class="card-tag">Technical writing, System design, Career</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Back to top button -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#x2191;</button>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>&#x1f916; Được tạo bởi AI — Kiến thức từ cộng đồng IT toàn cầu</p>
+    <p style="margin-top:8px;font-size:.85rem;color:rgba(255,255,255,0.3)">148 Chuyên Gia &bull; 13 Lĩnh Vực &bull; Vô Số Câu Chuyện</p>
+  </div>
+</footer>
+
+<script>
+// Toggle sections
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  header.classList.toggle('collapsed');
+  body.classList.toggle('hidden');
+}
+
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+const allCards = document.querySelectorAll('.card');
+const allSections = document.querySelectorAll('.major-section');
+const allSubSections = document.querySelectorAll('.sub-section');
+
+searchInput.addEventListener('input', function() {
+  const query = this.value.toLowerCase().trim();
+
+  if (!query) {
+    allCards.forEach(c => c.classList.remove('hidden-by-search'));
+    allSections.forEach(s => s.style.display = '');
+    allSubSections.forEach(s => s.style.display = '');
+    searchCount.style.display = 'none';
+    return;
+  }
+
+  const terms = query.split(/\s+/);
+  let visibleCount = 0;
+
+  allCards.forEach(card => {
+    const text = (card.textContent + ' ' + (card.dataset.keywords || '')).toLowerCase();
+    const match = terms.every(t => text.includes(t));
+    card.classList.toggle('hidden-by-search', !match);
+    if (match) visibleCount++;
+  });
+
+  // Hide empty sub-sections
+  allSubSections.forEach(sub => {
+    const visibleCards = sub.querySelectorAll('.card:not(.hidden-by-search)');
+    sub.style.display = visibleCards.length === 0 ? 'none' : '';
+  });
+
+  // Hide empty major sections
+  allSections.forEach(sec => {
+    const visibleCards = sec.querySelectorAll('.card:not(.hidden-by-search)');
+    sec.style.display = visibleCards.length === 0 ? 'none' : '';
+    // Expand sections with results
+    if (visibleCards.length > 0) {
+      const header = sec.querySelector('.section-header');
+      const body = sec.querySelector('.section-body');
+      header.classList.remove('collapsed');
+      body.classList.remove('hidden');
+    }
+  });
+
+  searchCount.textContent = `Tìm thấy ${visibleCount} chuyên gia`;
+  searchCount.style.display = 'block';
+});
+
+// Back to top button
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('visible', window.scrollY > 400);
+});
+
+// Animate sections on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('animate-in');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.major-section').forEach(sec => observer.observe(sec));
+
+// Keyboard shortcut: Ctrl/Cmd + K to focus search
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+});
+</script>
+
+</body>
+</html>

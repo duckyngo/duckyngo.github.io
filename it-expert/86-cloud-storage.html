@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lưu Trữ Mây Đại Sư - Chuyên Gia Object/Block/File Storage & CDN</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a2a 30%, #1a2a3a 60%, #0a2a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #10b981; text-shadow: 0 0 20px #10b98140; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #10b981; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #10b981; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+        .section h2 { color: #10b981; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #10b98130; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #10b981; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #10b981; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } .section { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">💾</span>
+            <h1>Lưu Trữ Mây Đại Sư</h1>
+            <div class="title">Chuyên Gia Object/Block/File Storage & CDN</div>
+            <div class="quote">"Dữ liệu giống như rượu vang: cần lưu trữ đúng cách, đúng nhiệt độ, và đúng giá. S3 Standard cho chai đang uống, Glacier cho chai để dành 50 năm."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">🪣 S3/GCS/Blob</span>
+            <span class="badge">📦 Block Storage</span>
+            <span class="badge">📁 File Storage</span>
+            <span class="badge">🌐 CDN Expert</span>
+            <span class="badge">❄️ Glacier/Archive</span>
+            <span class="badge">🔄 Replication</span>
+            <span class="badge">📋 Lifecycle Policies</span>
+            <span class="badge">🔐 Encryption</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế &amp; Lai Lịch</h2>
+            <p>Đại Sư bắt đầu sự nghiệp với tape backups — những cuộn băng từ mà chàng ta phải xoay bằng tay mỗi thứ Sáu. "Rotate tapes" là công việc thiêng liêng, nếu quên thì dữ liệu cả tuần bay hơi.</p><p>Khi S3 ra đời, chàng ta khóc vì vui sướng: "Unlimited storage? $0.023/GB? Không cần xoay tape nữa?" Nhưng niềm vui ngắn chẳng tày gang khi hóa đơn S3 tháng đầu tiên lên $5,000 vì team upload 200TB logs mà không set lifecycle policy.</p><p>Từ đó, Đại Sư trở thành chuyên gia tiering: biết chính xác khi nào chuyển data từ Standard xuống IA, từ IA xuống Glacier, và từ Glacier xuống Deep Archive. Chàng ta có thể tính chi phí storage trong giấc ngủ — và thường xuyên mơ thấy S3 pricing page.</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. S3 Storage Classes — Tiết Kiệm Có Chiến Lược:</strong> S3 Standard cho data truy cập thường xuyên. S3 Intelligent-Tiering tự động di chuyển data giữa tiers. S3 IA cho data truy cập ít (min 30 ngày). S3 Glacier Instant cho archive cần truy cập nhanh. Glacier Flexible cho archive 5-12 giờ retrieval. Deep Archive cho archive rẻ nhất ($0.00099/GB) nhưng retrieval 12-48 giờ. Lifecycle policies tự động transition — SET UP NGAY.
+            </div>
+            <div class="tip">
+                <strong>2. Block Storage — EBS Best Practices:</strong> gp3 cho general purpose (3000 IOPS baseline, cheaper than gp2). io2 Block Express cho high-performance databases (64,000 IOPS). st1 cho throughput-optimized (big data). Snapshot cho backup — incremental, cost-effective. LUÔN encrypt EBS volumes. Delete unattached volumes — money waste phổ biến nhất.
+            </div>
+            <div class="tip">
+                <strong>3. File Storage — EFS/FSx:</strong> EFS cho shared file system (NFS). FSx for Lustre cho HPC high-throughput. FSx for Windows cho SMB shares. FSx for NetApp ONTAP cho enterprise features. EFS Infrequent Access tier tiết kiệm 92%. Throughput mode: bursting vs provisioned — choose wisely.
+            </div>
+            <div class="tip">
+                <strong>4. CDN — Content Delivery Network:</strong> CloudFront, Azure CDN, Cloud CDN — cache content gần users. Origin Shield giảm load trên origin. Cache invalidation strategy quan trọng. Custom error pages cho UX. Lambda@Edge/CloudFront Functions cho edge logic. CDN không chỉ cho static content — API acceleration cũng hiệu quả.
+            </div>
+            <div class="tip">
+                <strong>5. Data Transfer — Chi Phí Ẩn:</strong> Data IN miễn phí trên hầu hết clouds. Data OUT tốn tiền: $0.09/GB (AWS). Cross-region transfer tốn tiền. VPC endpoints cho S3/DynamoDB giảm NAT Gateway costs. CloudFront có thể rẻ hơn direct S3 access cho high-traffic. Calculate data transfer costs TRƯỚC khi architect.
+            </div>
+            <div class="tip">
+                <strong>6. Disaster Recovery Storage:</strong> Cross-region replication cho S3 buckets quan trọng. RTO (Recovery Time Objective) và RPO (Recovery Point Objective) quyết định strategy. Backup rule 3-2-1: 3 copies, 2 different media, 1 offsite. Test restore regularly — backup không ai test restore = false sense of security.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>🪣 Chuyện S3 Glacier Retrieval Mất 12 Giờ</h3>
+                <p>Team cần restore 500GB data từ S3 Glacier cho audit compliance. Đã submit retrieval request và báo auditor: 'Dữ liệu sẽ sẵn sàng trong vài phút.' 12 giờ sau, data vẫn chưa available. Auditor không vui. Lý do: Glacier Flexible Retrieval mất 3-5 giờ standard, 5-12 giờ bulk. Team đã chọn Bulk để tiết kiệm — $2.50 thay vì $10 — nhưng mất 12 giờ. Nếu chọn Expedited: 1-5 phút, $30. Đáng lẽ nên dùng Glacier Instant Retrieval cho compliance data.</p>
+                <div class="lesson">💡 Bài học: Hiểu retrieval times của mỗi Glacier tier. Compliance data cần Glacier Instant Retrieval (milliseconds). Archive data ít khi cần → Glacier Flexible. Dữ liệu 'có thể cần gấp' → đừng để ở Deep Archive. Test retrieval TRƯỚC khi cần thật.</div>
+            </div>
+            <div class="story">
+                <h3>🌐 Chuyện CDN Serve Nội Dung Cũ</h3>
+                <p>E-commerce site deploy version mới với giá sản phẩm updated. CDN cache TTL: 24 giờ. Kết quả: một nửa users thấy giá cũ (từ CDN cache), nửa kia thấy giá mới (từ origin). Khách hàng mua hàng giá cũ (thấp hơn) → công ty lỗ $20K trong 1 ngày trước khi phát hiện.</p>
+                <div class="lesson">💡 Bài học: Cache invalidation là one of the hardest problems in CS. Dùng versioned URLs (style.v2.css) thay vì invalidation. Short TTL cho dynamic content. Cache-Control headers phải đúng. Deployment process phải include cache invalidation cho critical content.</div>
+            </div>
+            <div class="story">
+                <h3>💸 Chuyện 200TB Logs Không Ai Đọc</h3>
+                <p>Team enable detailed logging cho mọi services. CloudTrail, VPC Flow Logs, Application logs, Access logs — tất cả đổ vào S3 Standard. 6 tháng sau: 200TB logs, chi phí storage $4,600/tháng. Ai đã đọc logs cũ hơn 7 ngày? Không ai. Đại Sư implement: logs 0-7 ngày ở S3 Standard, 7-30 ngày ở S3 IA, 30-90 ngày ở Glacier, >90 ngày delete. Chi phí giảm xuống $800/tháng.</p>
+                <div class="lesson">💡 Bài học: Lifecycle policies là MUST HAVE cho logs. Hầu hết logs chỉ hữu ích 7-30 ngày. Archive cho compliance, delete khi không cần. S3 Analytics giúp identify optimal transition timing. Đừng để logs ở Standard tier mãi mãi.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Không set lifecycle policies:</strong> Data tích lũy ở S3 Standard mãi mãi. Chi phí tăng linear theo thời gian. Lifecycle policy đơn giản nhất: transition to IA sau 30 ngày, Glacier sau 90 ngày.
+            </div>
+            <div class="mistake">
+                <strong>2. Quên xóa EBS snapshots cũ:</strong> Mỗi snapshot tốn tiền. 500 snapshots x 100GB = $2,500/tháng. Retention policy: keep 7 ngày daily, 4 tuần weekly, 12 tháng monthly.
+            </div>
+            <div class="mistake">
+                <strong>3. Public S3 bucket:</strong> Đã nói rồi nhưng vẫn phải nhắc. Block Public Access ở account level. S3 bucket policies restrict access. Encryption at rest bắt buộc.
+            </div>
+            <div class="mistake">
+                <strong>4. Single-region storage cho critical data:</strong> S3 11 nines durability trong region. Nhưng region outage = data inaccessible. Cross-region replication cho mission-critical data.
+            </div>
+            <div class="mistake">
+                <strong>5. CDN không invalidate khi deploy:</strong> Users thấy phiên bản cũ. Versioned filenames hoặc invalidation trong CI/CD pipeline. Đừng rely vào TTL expiry cho deployments.
+            </div>
+            <div class="mistake">
+                <strong>6. Không monitor storage costs:</strong> S3 costs creep up slowly. Monthly review storage usage. S3 Storage Lens cho insights. Set cost alerts cho storage categories.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #86</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

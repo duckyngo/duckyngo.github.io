@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặc Trưng Luyện Kim Sư - Feature Engineering Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%);
+            color: #e0e0e0; min-height: 100vh; line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center; padding: 40px 20px;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,180,50,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #ffd54f; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(255,213,79,0.3); }
+        .header .title { font-size: 1.2em; color: #ffe082; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card {
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(15px);
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px; margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(255,180,50,0.1); }
+        .card h2 { color: #ffd54f; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge {
+            background: linear-gradient(135deg, rgba(255,180,50,0.3), rgba(255,150,0,0.2));
+            border: 1px solid rgba(255,200,100,0.3); padding: 8px 18px; border-radius: 25px;
+            font-size: 0.9em; color: #ffe082; transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { background: linear-gradient(135deg, rgba(255,180,50,0.5), rgba(255,150,0,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(255,180,50,0.3); }
+        .tip-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 30px; height: 30px; background: linear-gradient(135deg, #ff8f00, #ffc107);
+            border-radius: 50%; color: #1a1a2e; font-weight: bold; font-size: 0.85em;
+            margin-right: 10px; flex-shrink: 0;
+        }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #ffc107; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">⚗️</span>
+            <h1>Đặc Trưng Luyện Kim Sư</h1>
+            <div class="title">Feature Engineering & Feature Store Expert</div>
+            <div class="quote">"Data là quặng thô, feature là vàng ròng. Nghệ thuật luyện kim là biến đất đá thành châu báu."</div>
+            <div class="badge-container">
+                <span class="badge">🔬 Feature Selection</span>
+                <span class="badge">🔄 Encoding</span>
+                <span class="badge">⚖️ Scaling</span>
+                <span class="badge">🏪 Feast</span>
+                <span class="badge">🏗️ Tecton</span>
+                <span class="badge">🧬 Feature Crossing</span>
+                <span class="badge">📊 Target Encoding</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Đặc Trưng Luyện Kim Sư tên thật là <strong>Phạm Đặc Trưng</strong>, sinh ra trong gia đình có truyền thống luyện kim thật sự — bố anh làm thợ vàng ở Hà Nội. Từ nhỏ anh đã quen với việc "nhìn quặng đoán chất lượng vàng."</p>
+            <p>Vào nghề Data Science, anh phát hiện kỹ năng này cực kỳ hữu ích: nhìn raw data là biết feature nào có giá trị. Đồng nghiệp gọi anh là "Người thì thầm với data" vì anh có thể nhìn dataset 5 phút rồi đề xuất 3 features mới mà tăng model performance 15%.</p>
+            <p>Phương châm của anh: "Model chỉ tốt bằng features bạn đưa cho nó. Garbage features in, garbage predictions out. Gold features in, và XGBoost sẽ lo phần còn lại."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Luyện Kim</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Feature Selection — Bớt đi để thêm vào</h3>
+                    <p>Quá nhiều features = noise + overfitting + slow training. Ba cách tiếp cận: (1) <strong>Filter</strong>: correlation, mutual information, chi-square — nhanh nhưng thô. (2) <strong>Wrapper</strong>: recursive feature elimination (RFE) — chính xác nhưng chậm. (3) <strong>Embedded</strong>: L1 regularization, tree feature importance — cân bằng nhất. Trick: dùng <code>permutation_importance</code> thay vì <code>feature_importances_</code> — nó không bị bias bởi cardinality.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Encoding Categorical Features</h3>
+                    <p><strong>One-Hot</strong>: tốt khi cardinality < 10. <strong>Target Encoding</strong>: tốt cho high cardinality nhưng cẩn thận data leakage — luôn dùng fold-based encoding (encoding trên k-1 folds, apply lên fold còn lại). <strong>Ordinal</strong>: cho features có thứ tự tự nhiên (low/medium/high). <strong>Frequency Encoding</strong>: thay category bằng tần suất — đơn giản nhưng mất thông tin nếu hai categories có cùng frequency.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Feature Crossing — Tạo combo features</h3>
+                    <p>Đôi khi magic nằm ở sự kết hợp: <code>price_per_sqm = price / area</code>, <code>age_income_ratio = age / income</code>. Tree-based models tự tìm interactions, nhưng giúp chúng bằng explicit crossing sẽ nhanh hơn. Dùng <strong>PolynomialFeatures</strong> cho degree 2, nhưng cẩn thận explosion: 100 features → 5,050 features. Chỉ cross features có domain logic.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Temporal Features — Thời gian là vàng</h3>
+                    <p>Từ timestamp, tạo: <code>hour_of_day</code>, <code>day_of_week</code>, <code>is_weekend</code>, <code>month</code>, <code>quarter</code>. Cyclical encoding cho periodic features: <code>sin(2π * hour/24)</code>, <code>cos(2π * hour/24)</code>. Lag features: <code>value_1d_ago</code>, <code>value_7d_ago</code>. Rolling stats: <code>rolling_mean_7d</code>, <code>rolling_std_30d</code>. Diff features: <code>value - value_1d_ago</code>.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Feature Store — Hệ thống hóa features</h3>
+                    <p><strong>Feast</strong>: open-source, tốt cho batch + online serving. Define features as code, version control, share across teams. <strong>Tecton</strong>: managed, tốt cho real-time features (streaming). Feature store giải quyết: (1) training-serving skew, (2) feature reuse across projects, (3) point-in-time correctness. Năm 2026, bất kỳ team ML nào > 5 người đều nên có feature store.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">6</span>
+                <div class="tip-content">
+                    <h3>Handling Missing Values — Nghệ thuật điền chỗ trống</h3>
+                    <p>Đừng chỉ dùng mean/median imputation. Tốt hơn: <strong>KNN Imputation</strong>, <strong>IterativeImputer</strong> (MICE), hoặc tạo feature <code>is_missing</code> rồi impute đơn giản. Với tree-based models, có thể để missing (XGBoost/LightGBM handle native). Quan trọng: hiểu TẠI SAO data missing — MCAR, MAR, hay MNAR? Mỗi loại cần strategy khác nhau.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">7</span>
+                <div class="tip-content">
+                    <h3>Text Features — Khai thác text data</h3>
+                    <p>Ngoài TF-IDF, hãy tạo: <code>text_length</code>, <code>word_count</code>, <code>special_char_count</code>, <code>uppercase_ratio</code>. Với tên sản phẩm: extract brand, category từ text. Năm 2026: dùng sentence embeddings (từ pretrained models) làm features — <code>sentence-transformers</code> cho vector 384-768 chiều, rồi PCA xuống 50-100 chiều để tránh curse of dimensionality.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">🏆 Chuyện 1: Một feature tăng gấp đôi accuracy</div>
+                <p>Team anh Đặc Trưng đang build model dự đoán churn cho app thương mại điện tử. 50 features, XGBoost, F1 = 0.45. Cả team loay hoay 2 tuần tune model, thử đủ loại — không khá hơn.</p>
+                <p>Anh Đặc Trưng ngồi nhìn data 10 phút, rồi tạo MỘT feature: <code>days_since_last_purchase</code>. F1 nhảy lên 0.82. Cả team há hốc. Anh bình thản: "Khách hàng không mua gì 90 ngày thì... churn rồi còn gì."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Domain knowledge + creative feature engineering thường powerful hơn tuning model. Trước khi tune hyperparameters, hãy dành thời gian hiểu business logic và tạo features có ý nghĩa. Một feature đúng đáng giá bằng 100 features ngẫu nhiên.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">💀 Chuyện 2: Data leakage qua feature — kẻ giết người thầm lặng</div>
+                <p>Anh xây model dự đoán khách hàng sẽ mua premium plan. Có feature <code>total_premium_features_used</code>. Model đạt AUC 0.99. Tuyệt vời? KHÔNG.</p>
+                <p>Feature đó chỉ có giá trị > 0 khi khách hàng ĐÃ MUA premium. Model đang "nhìn tương lai." Remove feature, AUC xuống 0.68 — con số thật. Anh mất 1 tuần debug vì feature name trông vô hại.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Data leakage qua features là bug nguy hiểm nhất trong ML. Luôn hỏi: "Feature này có available tại thời điểm prediction không?" Nếu model quá tốt (AUC > 0.95 trên bài toán thực), hãy nghi ngờ data leakage trước khi ăn mừng.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🏪 Chuyện 3: Feature Store cứu team khỏi chaos</div>
+                <p>Trước khi có feature store, 5 data scientists trong team tạo features riêng, mỗi người một cách. Cùng feature "user_age" nhưng người tính theo năm, người tính theo ngày, người tính từ registration date, người tính từ birth date. Training và production dùng khác nhau → model production sai lung tung.</p>
+                <p>Anh Đặc Trưng setup Feast, define mọi features as code, version control trên Git. 3 tháng sau: zero training-serving skew, features reuse 70% across projects, onboarding member mới từ 2 tuần xuống 2 ngày.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Feature store không phải luxury — đó là necessity khi team > 3 người. Nó giải quyết: consistency, reusability, point-in-time correctness, và training-serving skew. Đầu tư vào feature store sớm, tiết kiệm vô số giờ debug sau này.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Target encoding không fold-based:</strong> Encode trên toàn bộ data → data leakage. Luôn dùng k-fold encoding hoặc leave-one-out encoding.
+            </div>
+            <div class="mistake">
+                <strong>❌ One-hot encoding cho high cardinality:</strong> City có 10,000 giá trị → 10,000 columns. Dùng target encoding, frequency encoding, hoặc embedding thay thế.
+            </div>
+            <div class="mistake">
+                <strong>❌ Fit scaler trên toàn bộ data:</strong> StandardScaler fit trên train+test → test data leak vào scaling. Luôn fit trên training set only, transform trên test.
+            </div>
+            <div class="mistake">
+                <strong>❌ Tạo feature không available at prediction time:</strong> Feature dùng data từ tương lai → model production sẽ sai. Kiểm tra temporal validity của mọi feature.
+            </div>
+            <div class="mistake">
+                <strong>❌ Quá nhiều features không chọn lọc:</strong> 1,000 features mà chỉ 50 useful → noise drowns signal. Feature selection là bắt buộc, không phải tùy chọn.
+            </div>
+            <div class="mistake">
+                <strong>❌ Bỏ qua missing value patterns:</strong> Missing data có thể là feature! Tạo <code>is_feature_X_missing</code> column — pattern of missingness thường informative.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>⚗️ Đặc Trưng Luyện Kim Sư — "Cho tôi data thô, tôi trả bạn features vàng."</p>
+            <p>Section 3: AI & Machine Learning · Expert #54</p>
+        </div>
+    </div>
+</body>
+</html>

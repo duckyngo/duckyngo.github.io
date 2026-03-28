@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điện Tử Đại Sư - Bậc Thầy Electron | PBX Agent Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue-50: #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-300: #93c5fd;
+            --blue-400: #60a5fa;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --blue-900: #1e3a8a;
+            --blue-950: #172554;
+            --cyan-400: #22d3ee;
+            --cyan-500: #06b6d4;
+            --cyan-600: #0891b2;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #020617 0%, #0c1a3a 25%, #0d1117 50%, #0c1a3a 75%, #020617 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--blue-500);
+            opacity: 0.08;
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) { width: 300px; height: 300px; top: 10%; left: -5%; animation-delay: 0s; animation-duration: 25s; }
+        .particle:nth-child(2) { width: 200px; height: 200px; top: 50%; right: -3%; animation-delay: -5s; animation-duration: 20s; background: var(--cyan-500); }
+        .particle:nth-child(3) { width: 150px; height: 150px; bottom: 10%; left: 30%; animation-delay: -10s; animation-duration: 30s; }
+        .particle:nth-child(4) { width: 250px; height: 250px; top: 30%; left: 50%; animation-delay: -7s; animation-duration: 22s; background: var(--cyan-400); opacity: 0.05; }
+        .particle:nth-child(5) { width: 180px; height: 180px; bottom: 30%; right: 20%; animation-delay: -12s; animation-duration: 28s; }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -50px) scale(1.1); }
+            50% { transform: translate(-20px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+
+        @keyframes electricPulse {
+            0%, 100% { text-shadow: 0 0 5px #60a5fa, 0 0 10px #3b82f6, 0 0 20px #2563eb; }
+            50% { text-shadow: 0 0 10px #22d3ee, 0 0 20px #06b6d4, 0 0 40px #3b82f6, 0 0 80px #2563eb; }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glowBorder {
+            0%, 100% { border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 0 15px rgba(59, 130, 246, 0.1); }
+            50% { border-color: rgba(34, 211, 238, 0.5); box-shadow: 0 0 25px rgba(34, 211, 238, 0.15); }
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .avatar-ring {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-ring::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #3b82f6, #22d3ee, #06b6d4, #2563eb, #3b82f6);
+            animation: rotateGlow 4s linear infinite;
+            z-index: 0;
+        }
+
+        .avatar-ring::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0c1a3a, #172554);
+            z-index: 1;
+        }
+
+        .avatar-emoji {
+            font-size: 5rem;
+            position: relative;
+            z-index: 2;
+            animation: electricPulse 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+        }
+
+        .agent-name {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #60a5fa, #22d3ee, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            animation: electricPulse 3s ease-in-out infinite;
+        }
+
+        .agent-title {
+            font-size: 1.2rem;
+            color: var(--cyan-400);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .agent-quote {
+            font-style: italic;
+            color: var(--blue-300);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            border-left: 3px solid var(--cyan-500);
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tech-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--blue-300);
+            transition: all 0.3s;
+        }
+
+        .tech-badge:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: var(--cyan-400);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .section-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out both, glowBorder 6s ease-in-out infinite;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .section-card:nth-child(2) { animation-delay: 0.1s; }
+        .section-card:nth-child(3) { animation-delay: 0.2s; }
+        .section-card:nth-child(4) { animation-delay: 0.3s; }
+        .section-card:nth-child(5) { animation-delay: 0.4s; }
+        .section-card:nth-child(6) { animation-delay: 0.5s; }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .section-card p, .section-card li {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-card code {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            color: var(--cyan-400);
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .insight-item {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .insight-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(34, 211, 238, 0.1));
+            border-color: var(--cyan-400);
+            transform: translateX(5px);
+        }
+
+        .insight-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue-600), var(--cyan-500));
+            color: white;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--blue-300);
+            margin-bottom: 0.3rem;
+        }
+
+        .insight-desc {
+            color: #94a3b8;
+            font-size: 0.92rem;
+            margin-top: 0.4rem;
+        }
+
+        .story-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.15), rgba(6, 182, 212, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--blue-400), var(--cyan-500));
+        }
+
+        .story-title {
+            font-weight: 700;
+            color: var(--cyan-400);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .story-card p {
+            color: #b0bec5;
+            font-size: 0.95rem;
+            padding-left: 0.5rem;
+        }
+
+        .story-moral {
+            margin-top: 0.8rem;
+            padding: 0.6rem 1rem;
+            background: rgba(34, 211, 238, 0.08);
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--blue-300);
+            font-size: 0.9rem;
+        }
+
+        .mistake-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .mistake-item:last-child {
+            border-bottom: none;
+        }
+
+        .mistake-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #dc2626, #f87171);
+            color: white;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mistake-content strong {
+            color: #f87171;
+        }
+
+        .mistake-content p {
+            color: #94a3b8;
+            font-size: 0.92rem;
+            margin-top: 0.2rem;
+        }
+
+        .pbx-highlight {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(34, 211, 238, 0.08));
+            border: 1px solid rgba(34, 211, 238, 0.25);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .pbx-highlight h4 {
+            color: var(--cyan-400);
+            margin-bottom: 0.4rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #475569;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+            margin-top: 2rem;
+        }
+
+        .footer span {
+            color: var(--blue-400);
+            font-weight: 600;
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 1rem; }
+            .hero { padding: 2.5rem 1rem; }
+            .agent-name { font-size: 2rem; }
+            .section-card { padding: 1.5rem; }
+            .avatar-ring { width: 140px; height: 140px; }
+            .avatar-emoji { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+        <!-- Hero / Avatar -->
+        <section class="hero">
+            <div class="avatar-ring">
+                <div class="avatar-emoji">&#9889;</div>
+            </div>
+            <h1 class="agent-name">&#272;i&#7879;n T&#7917; &#272;&#7841;i S&#432;</h1>
+            <div class="agent-title">B&#7853;c Th&#7847;y Electron &bull; Agent #03</div>
+            <div class="agent-quote">
+                "Chromium &#417;i Chromium, ng&#432;&#7901;i mang c&#7843; th&#7871; gi&#7899;i web nh&#233;t v&#224;o m&#7897;t c&#225;i h&#7897;p desktop, r&#7891;i g&#7885;i &#273;&#243; l&#224; 'native app'. Nh&#432;ng m&#224; th&#244;i, ta y&#234;u ng&#432;&#7901;i v&#7851;n ph&#7843;i y&#234;u!"
+            </div>
+            <div class="tech-badges">
+                <span class="tech-badge">Electron 23.x</span>
+                <span class="tech-badge">Electron.NET</span>
+                <span class="tech-badge">electron-builder</span>
+                <span class="tech-badge">Main Process</span>
+                <span class="tech-badge">Renderer</span>
+                <span class="tech-badge">IPC</span>
+                <span class="tech-badge">Auto-Update</span>
+                <span class="tech-badge">Node.js Integration</span>
+            </div>
+        </section>
+
+        <!-- Experience & Expertise -->
+        <section class="section-card">
+            <div class="section-title">
+                <span class="section-icon">&#128218;</span>
+                Th&#226;n Th&#7871; &amp; Lai L&#7883;ch
+            </div>
+            <p style="margin-bottom: 1rem;">
+                H&#7891;i x&#432;a, khi lo&#224;i ng&#432;&#7901;i c&#242;n ph&#7843;i vi&#7871;t desktop app b&#7857;ng C++ v&#7899;i Win32 API, ta &#273;&#227; nh&#236;n th&#7845;y t&#432;&#417;ng lai: m&#7897;t ng&#224;y n&#224;o &#273;&#243;, ch&#7881; c&#7847;n bi&#7871;t HTML, CSS, v&#224; JavaScript l&#224; c&#243; th&#7875; l&#224;m app desktop. Ng&#432;&#7901;i ta c&#432;&#7901;i ta. R&#7891;i Electron ra &#273;&#7901;i. Gi&#7901; ai c&#432;&#7901;i ai?
+            </p>
+            <p style="margin-bottom: 1rem;">
+                Ta l&#224; <strong style="color: var(--cyan-400);">&#272;i&#7879;n T&#7917; &#272;&#7841;i S&#432;</strong>, chuy&#234;n gia g&#7889;c t&#7915; th&#7901;i Electron c&#242;n t&#234;n l&#224; Atom Shell. Ta &#273;&#227; ch&#7913;ng ki&#7871;n t&#7915; ng&#224;y VS Code ch&#7881; l&#224; m&#7897;t &#253; t&#432;&#7903;ng &#273;i&#234;n r&#7891; tr&#234;n gi&#7845;y, &#273;&#7871;n khi n&#243; tr&#7903; th&#224;nh editor ph&#7893; bi&#7871;n nh&#7845;t h&#224;nh tinh. Ta hi&#7875;u t&#7915;ng ng&#243;c ng&#225;ch c&#7911;a <strong style="color: var(--blue-300);">Main Process</strong> v&#224; <strong style="color: var(--blue-300);">Renderer Process</strong>, bi&#7871;t c&#225;ch &#273;i&#7873;u khi&#7875;n <strong style="color: var(--blue-300);">IPC</strong> nh&#432; ch&#7881; huy d&#224;n nh&#7841;c.
+            </p>
+            <p>
+                V&#7899;i d&#7921; &#225;n PBX, ta c&#242;n ph&#7843;i l&#224;m vi&#7879;c v&#7899;i <strong style="color: var(--cyan-400);">Electron.NET</strong> &mdash; c&#225;i c&#7847;u n&#7889;i k&#7923; di&#7879;u gi&#7919;a th&#7871; gi&#7899;i .NET v&#224; Electron. N&#243; gi&#7889;ng nh&#432; g&#7855;n &#273;&#7897;ng c&#417; t&#234;n l&#7917;a v&#224;o xe &#273;&#7841;p v&#7853;y &mdash; nghe th&#236; k&#7923; l&#7841; nh&#432;ng ch&#7841;y th&#236; m&#432;&#7907;t ph&#7871;t! Vue.js ph&#237;a tr&#432;&#7899;c, .NET 8 ph&#237;a sau, Electron b&#7885;c ngo&#224;i, <strong style="color: var(--blue-300);">electron-builder</strong> &#273;&#243;ng g&#243;i &mdash; ho&#224;n h&#7843;o!
+            </p>
+        </section>
+
+        <!-- Insights / Bi Kip -->
+        <section class="section-card">
+            <div class="section-title">
+                <span class="section-icon">&#128220;</span>
+                B&#237; K&#237;p &#272;i&#7879;n T&#7917;
+            </div>
+            <p style="margin-bottom: 1.2rem; color: #94a3b8;">
+                Nh&#7919;ng b&#237; k&#237;p n&#224;y ta t&#237;ch g&#243;p qua h&#224;ng ng&#224;n l&#7847;n debug l&#250;c 3 gi&#7901; s&#225;ng. M&#7895;i c&#225;i &#273;&#7873;u &#273;&#432;&#7907;c vi&#7871;t b&#7857;ng m&#7891; h&#244;i v&#224; n&#432;&#7899;c m&#7855;t (v&#224; c&#224; ph&#234;).
+            </p>
+            <div class="insight-grid">
+                <div class="insight-item">
+                    <div>
+                        <span class="insight-number">1</span>
+                        <span class="insight-title">Main vs Renderer &mdash; Hai Th&#7871; Gi&#7899;i Song Song</span>
+                    </div>
+                    <div class="insight-desc">
+                        Main Process l&#224; &#244;ng ch&#7911; nh&#224;, qu&#7843;n l&#253; c&#7917;a s&#7893;, tray, menu. Renderer Process l&#224; &#273;&#7913;a con, ch&#7881; bi&#7871;t v&#7869; giao di&#7879;n. Hai &#273;&#7913;a mu&#7889;n n&#243;i chuy&#7879;n ph&#7843;i qua IPC &mdash; kh&#244;ng &#273;&#432;&#7907;c n&#243;i chuy&#7879;n tr&#7921;c ti&#7871;p. Nh&#432; hai &#273;&#7913;a y&#234;u nhau qua th&#432; v&#7853;y &#273;&#243;!
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div>
+                        <span class="insight-number">2</span>
+                        <span class="insight-title">IPC l&#224; M&#7841;ch M&#225;u &mdash; &#272;&#7915;ng Bao Gi&#7901; Xem Nh&#7865;</span>
+                    </div>
+                    <div class="insight-desc">
+                        <code>ipcMain.handle()</code> v&#224; <code>ipcRenderer.invoke()</code> l&#224; c&#7863;p &#273;&#244;i ho&#224;n h&#7843;o. Nh&#432;ng nh&#7899;: serialize d&#7919; li&#7879;u qua IPC c&#243; chi ph&#237;. G&#7917;i c&#7843; m&#7897;t c&#225;i object 50MB qua IPC th&#236; app &#273;&#417; nh&#432; &#244;ng gi&#224; leo c&#7847;u thang. H&#227;y g&#7917;i &#237;t th&#244;i, g&#7917;i &#273;&#7911; th&#244;i.
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div>
+                        <span class="insight-number">3</span>
+                        <span class="insight-title">Electron.NET Bridge &mdash; .NET G&#7863;p Chromium</span>
+                    </div>
+                    <div class="insight-desc">
+                        Electron.NET cho ph&#233;p .NET backend giao ti&#7871;p v&#7899;i Electron qua m&#7897;t socket n&#7897;i b&#7897;. N&#243; gi&#7889;ng nh&#432; phi&#234;n d&#7883;ch vi&#234;n gi&#7919;a hai n&#432;&#7899;c v&#7853;y. M&#7897;t b&#234;n n&#243;i C#, m&#7897;t b&#234;n n&#243;i JavaScript, &#7903; gi&#7919;a l&#224; &#272;i&#7879;n T&#7917; &#272;&#7841;i S&#432; d&#7883;ch qua d&#7883;ch l&#7841;i.
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div>
+                        <span class="insight-number">4</span>
+                        <span class="insight-title">Auto-Update &mdash; Ngh&#7879; Thu&#7853;t C&#7853;p Nh&#7853;t Kh&#244;ng &#272;au</span>
+                    </div>
+                    <div class="insight-desc">
+                        <code>electron-updater</code> l&#224; b&#7843;o b&#7889;i, nh&#432;ng c&#7845;u h&#236;nh sai th&#236; ng&#432;&#7901;i d&#249;ng s&#7869; &#273;&#432;&#7907;c "th&#432;&#7903;ng th&#7913;c" m&#224;n h&#236;nh tr&#7855;ng v&#297;nh c&#7917;u. Ph&#7843;i test tr&#234;n m&#7885;i OS, ki&#7875;m tra code signing, v&#224; lu&#244;n c&#243; fallback. Kh&#244;ng ai mu&#7889;n user g&#7885;i &#273;i&#7879;n ch&#7917;i l&#250;c 2h s&#225;ng &#273;&#226;u!
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div>
+                        <span class="insight-number">5</span>
+                        <span class="insight-title">Native API &mdash; S&#7913;c M&#7841;nh Th&#7853;t S&#7921;</span>
+                    </div>
+                    <div class="insight-desc">
+                        Notification, system tray, clipboard, global shortcuts, file dialog &mdash; &#273;&#226;y m&#7899;i l&#224; l&#253; do Electron t&#7891;n t&#7841;i. Web app th&#432;&#7901;ng kh&#244;ng l&#224;m &#273;&#432;&#7907;c nh&#7919;ng th&#7913; n&#224;y. V&#7899;i PBX, ta c&#7847;n tray icon &#273;&#7875; ch&#7841;y n&#7873;n, notification cho cu&#7897;c g&#7885;i &#273;&#7871;n, v&#224; global hotkey &#273;&#7875; nh&#7845;c m&#225;y nhanh.
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div>
+                        <span class="insight-number">6</span>
+                        <span class="insight-title">Security &mdash; Context Isolation L&#224; L&#225; Ch&#7855;n</span>
+                    </div>
+                    <div class="insight-desc">
+                        T&#7915; Electron 12+, <code>contextIsolation: true</code> l&#224; m&#7863;c &#273;&#7883;nh. &#272;&#7915;ng bao gi&#7901; t&#7855;t n&#243;! <code>nodeIntegration: false</code> trong renderer. D&#249;ng <code>preload script</code> &#273;&#7875; expose ch&#7881; nh&#7919;ng API c&#7847;n thi&#7871;t. B&#7843;o m&#7853;t nh&#432; kh&#243;a c&#7917;a &mdash; m&#7903; h&#7871;t th&#236; &#259;n tr&#7897;m v&#224;o tho&#7843;i m&#225;i.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fun Stories -->
+        <section class="section-card">
+            <div class="section-title">
+                <span class="section-icon">&#128214;</span>
+                Chuy&#7879;n K&#7875; &#272;&#234;m Khuya
+            </div>
+            <p style="margin-bottom: 1.2rem; color: #94a3b8;">
+                Ng&#7891;i xu&#7889;ng &#273;&#226;y, &#273;&#7875; &#244;ng k&#7875; cho nghe m&#7845;y c&#226;u chuy&#7879;n x&#432;a...
+            </p>
+
+            <div class="story-card">
+                <div class="story-title">&#128123; Chuy&#7879;n Con Qu&#7927; &#258;n RAM</div>
+                <p>
+                    Ng&#224;y x&#432;a, c&#243; m&#7897;t ch&#224;ng l&#7853;p tr&#236;nh vi&#234;n tr&#7867; tu&#7893;i, h&#259;ng say vi&#7871;t app Electron &#273;&#7847;u ti&#234;n. Ch&#224;ng m&#7903; 15 c&#225;i BrowserWindow, m&#7895;i c&#225;i load m&#7897;t trang web kh&#225;c nhau, r&#7891;i kh&#244;ng bao gi&#7901; <code>win.destroy()</code>. M&#225;y ch&#224;ng c&#243; 8GB RAM. App ch&#224;ng ng&#7889;n 6GB.
+                </p>
+                <p style="margin-top: 0.5rem;">
+                    Ch&#224;ng th&#7855;c m&#7855;c: "Sao m&#225;y ch&#7853;m v&#7853;y ta?" R&#7891;i ch&#224;ng m&#7903; Task Manager v&#224; th&#7845;y 15 c&#225;i process Electron &#273;ang nh&#7843;y m&#250;a. Ch&#224;ng kh&#243;c. M&#225;y ch&#224;ng c&#361;ng kh&#243;c (v&#236; swap file).
+                </p>
+                <div class="story-moral">
+                    &#128161; B&#224;i h&#7885;c: M&#7895;i BrowserWindow l&#224; m&#7897;t process ri&#234;ng v&#7899;i Chromium ri&#234;ng. Nh&#7899; destroy khi kh&#244;ng d&#249;ng. RAM kh&#244;ng ph&#7843;i v&#244; h&#7841;n nh&#432; t&#236;nh y&#234;u &#273;&#226;u con!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-title">&#128230; Chuy&#7879;n C&#225;i App 500MB</div>
+                <p>
+                    C&#243; m&#7897;t team n&#7885;, vi&#7871;t m&#7897;t c&#225;i app ch&#7881; hi&#7879;n "Hello World". H&#7885; h&#224;o h&#7913;ng build b&#7857;ng electron-builder. File installer ra: <strong style="color: #f87171;">487MB</strong>. S&#7871;p h&#7887;i: "App l&#224;m g&#236; m&#224; n&#7917;a GB v&#7853;y?" Team tr&#7843; l&#7901;i: "D&#7841;... n&#243; ch&#224;o h&#7887;i th&#244;i &#7841;."
+                </p>
+                <p style="margin-top: 0.5rem;">
+                    L&#253; do? Electron &#273;&#243;ng g&#243;i c&#7843; Chromium + Node.js v&#224;o. Mu&#7889;n nh&#7887; h&#417;n th&#236; d&#249;ng <code>asar</code> pack, lo&#7841;i b&#7887; devDependencies, v&#224; c&#226;n nh&#7855;c d&#249;ng <code>electron-builder</code> v&#7899;i config t&#7889;i &#432;u. Ho&#7863;c c&#7913; ch&#7845;p nh&#7853;n &#273;i, v&#236; VS Code c&#361;ng 300MB m&#224; ai c&#361;ng x&#224;i.
+                </p>
+                <div class="story-moral">
+                    &#128161; B&#224;i h&#7885;c: Electron app lu&#244;n "m&#7853;p". H&#227;y t&#7889;i &#432;u nh&#7919;ng g&#236; c&#243; th&#7875;, nh&#432;ng &#273;&#7915;ng mong &#273;&#7907;i n&#243; g&#7847;y nh&#432; app native. &#272;&#243; l&#224; c&#225;i gi&#225; c&#7911;a s&#7921; ti&#7879;n l&#7907;i.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-title">&#128172; Chuy&#7879;n IPC Lo&#7841;n X&#7841;</div>
+                <p>
+                    Ng&#224;y n&#7885;, c&#243; m&#7897;t dev g&#7917;i IPC message t&#7915; renderer m&#224; kh&#244;ng &#273;&#7863;t t&#234;n channel r&#245; r&#224;ng. Channel n&#224;o c&#361;ng t&#234;n "data", "message", "update". &#272;&#7871;n khi c&#243; 20 c&#225;i listener tr&#234;n c&#249;ng channel "data", m&#7895;i l&#7847;n g&#7917;i m&#7897;t message, c&#7843; 20 &#273;&#7913;a &#273;&#7873;u nh&#7843;y d&#7921;ng l&#234;n x&#7917; l&#253;.
+                </p>
+                <p style="margin-top: 0.5rem;">
+                    K&#7871;t qu&#7843;? App hi&#7879;n 20 c&#225;i notification c&#249;ng l&#250;c, database ghi 20 l&#7847;n, v&#224; CPU kh&#243;c th&#233;t. Dev &#273;&#243; b&#7883; team g&#7885;i l&#224; "&#272;&#7843;ng IPC H&#7895;n Lo&#7841;n" su&#7889;t 3 th&#225;ng.
+                </p>
+                <div class="story-moral">
+                    &#128161; B&#224;i h&#7885;c: &#272;&#7863;t t&#234;n IPC channel nh&#432; &#273;&#7863;t t&#234;n con &mdash; ph&#7843;i r&#245; r&#224;ng, kh&#244;ng tr&#249;ng l&#7863;p, v&#224; c&#243; ngh&#297;a. V&#237; d&#7909;: <code>phone:incoming-call</code>, <code>settings:update-config</code>.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-title">&#128274; Chuy&#7879;n Anh Dev Qu&#234;n Kh&#243;a C&#7917;a</div>
+                <p>
+                    Anh dev m&#7899;i v&#224;o ngh&#7873;, nghe ai &#273;&#243; n&#243;i <code>nodeIntegration: true</code> ti&#7879;n l&#7855;m, kh&#7887;i c&#7847;n preload script. Anh b&#7853;t lu&#244;n, app ch&#7841;y m&#432;&#7907;t. R&#7891;i m&#7897;t ng&#224;y, app load m&#7897;t c&#225;i iframe t&#7915; b&#234;n ngo&#224;i. Iframe &#273;&#243; v&#244; t&#432; ch&#7841;y <code>require('fs')</code> v&#224; &#273;&#7885;c to&#224;n b&#7897; &#7893; c&#7913;ng.
+                </p>
+                <p style="margin-top: 0.5rem;">
+                    Anh dev m&#7845;t ng&#7911; 3 &#273;&#234;m s&#7917;a l&#7895;i b&#7843;o m&#7853;t. T&#7915; &#273;&#243; anh lu&#244;n &#273;&#7863;t <code>contextIsolation: true</code> v&#224; vi&#7871;t preload script &#273;&#224;ng ho&#224;ng.
+                </p>
+                <div class="story-moral">
+                    &#128161; B&#224;i h&#7885;c: B&#7843;o m&#7853;t kh&#244;ng ph&#7843;i t&#249;y ch&#7885;n. Context isolation l&#224; b&#7855;t bu&#7897;c. Kh&#244;ng c&#243; ngo&#7841;i l&#7879;!
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Mistakes -->
+        <section class="section-card">
+            <div class="section-title">
+                <span class="section-icon">&#9888;&#65039;</span>
+                Nh&#7919;ng Sai L&#7847;m Kinh &#272;i&#7875;n
+            </div>
+            <p style="margin-bottom: 1rem; color: #94a3b8;">
+                Ta &#273;&#227; th&#7845;y nh&#7919;ng sai l&#7847;m n&#224;y l&#7863;p &#273;i l&#7863;p l&#7841;i su&#7889;t m&#7845;y ch&#7909;c n&#259;m. &#272;&#7885;c &#273;i r&#7891;i &#273;&#7915;ng l&#7863;p l&#7841;i, &#244;ng xin!
+            </p>
+
+            <div class="mistake-item">
+                <span class="mistake-num">1</span>
+                <div class="mistake-content">
+                    <strong>B&#7853;t nodeIntegration, t&#7855;t contextIsolation</strong>
+                    <p>"Ti&#7879;n m&#224;!" &mdash; C&#226;u n&#243;i cu&#7889;i c&#249;ng tr&#432;&#7899;c khi b&#7883; hack. Gi&#7889;ng nh&#432; &#273;&#7875; ch&#236;a kh&#243;a nh&#224; tr&#234;n th&#7843;m ch&#249;i ch&#226;n v&#7853;y.</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-num">2</span>
+                <div class="mistake-content">
+                    <strong>Kh&#244;ng bao gi&#7901; destroy BrowserWindow</strong>
+                    <p>M&#7903; 10 c&#7917;a s&#7893;, &#273;&#243;ng 0 c&#7917;a s&#7893;. RAM bay h&#417;i nh&#432; n&#432;&#7899;c s&#244;i. &#272;&#7871;n khi Task Manager b&#225;o 4GB th&#236; m&#7899;i gi&#7853;t m&#236;nh: "&#7910;a, c&#225;i app c&#7911;a m&#236;nh x&#224;i nhi&#7873;u v&#7853;y?"</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-num">3</span>
+                <div class="mistake-content">
+                    <strong>G&#7917;i d&#7919; li&#7879;u kh&#7893;ng l&#7891; qua IPC</strong>
+                    <p>IPC serialize b&#7857;ng structured clone. G&#7917;i m&#7897;t c&#225;i array 1 tri&#7879;u ph&#7847;n t&#7917; th&#236; app &#273;&#244;ng c&#7913;ng 5 gi&#226;y. Ng&#432;&#7901;i d&#249;ng t&#432;&#7903;ng app ch&#7871;t, b&#7845;m t&#7855;t, m&#7903; l&#7841;i. V&#242;ng l&#7863;p &#273;au kh&#7893;.</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-num">4</span>
+                <div class="mistake-content">
+                    <strong>Kh&#244;ng c&#7845;u h&#236;nh electron-builder &#273;&#224;ng ho&#224;ng</strong>
+                    <p>Build ra file 800MB v&#236; &#273;&#243;ng g&#243;i c&#7843; <code>node_modules</code> dev, th&#432; m&#7909;c test, v&#224; file <code>.env</code> ch&#7913;a m&#7853;t kh&#7849;u database. S&#7871;p xem installer, h&#7887;i: "C&#243; ph&#7843;i &#273;ang g&#7917;i c&#7843; h&#7879; &#273;i&#7873;u h&#224;nh k&#232;m theo kh&#244;ng?"</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-num">5</span>
+                <div class="mistake-content">
+                    <strong>Qu&#234;n x&#7917; l&#253; deep link v&#224; single instance</strong>
+                    <p>User click link m&#7903; app, app m&#7903; th&#234;m m&#7897;t instance m&#7899;i. Click l&#7847;n n&#7919;a, th&#234;m m&#7897;t c&#225;i n&#7919;a. 10 ph&#250;t sau c&#243; 15 c&#225;i app &#273;ang ch&#7841;y. D&#249;ng <code>app.requestSingleInstanceLock()</code> &#273;i, xin c&#225;c ch&#225;u!</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-num">6</span>
+                <div class="mistake-content">
+                    <strong>Kh&#244;ng test auto-update tr&#234;n production build</strong>
+                    <p>Dev build ch&#7841;y ngon. Production build update l&#7895;i. User b&#7883; k&#7865;t &#7903; phi&#234;n b&#7843;n c&#361;, kh&#244;ng update &#273;&#432;&#7907;c, kh&#244;ng quay l&#7841;i &#273;&#432;&#7907;c. Gi&#7889;ng nh&#432; k&#7865;t gi&#7919;a c&#7847;u &mdash; ti&#7871;n kh&#244;ng &#273;&#432;&#7907;c, l&#249;i kh&#244;ng xong.</p>
+                </div>
+            </div>
+
+            <div class="mistake-item">
+                <span class="mistake-num">7</span>
+                <div class="mistake-content">
+                    <strong>Blocking main process b&#7857;ng sync operations</strong>
+                    <p>D&#249;ng <code>fs.readFileSync()</code> trong main process &#273;&#7875; &#273;&#7885;c file 200MB. App &#273;&#244;ng c&#7913;ng, c&#7917;a s&#7893; tr&#7855;ng b&#7879;ch, user t&#432;&#7903;ng m&#225;y h&#432;. Nh&#7899;: main process m&#224; b&#7883; block th&#236; TO&#192;N B&#7896; app &#273;&#7913;ng h&#236;nh!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PBX Project Relevance -->
+        <section class="section-card">
+            <div class="section-title">
+                <span class="section-icon">&#128222;</span>
+                Vai Tr&#242; Trong D&#7921; &#193;n PBX
+            </div>
+            <p style="margin-bottom: 1rem;">
+                Trong d&#7921; &#225;n PBX, Electron kh&#244;ng ph&#7843;i nh&#226;n v&#7853;t ch&#237;nh, nh&#432;ng l&#224; <strong style="color: var(--cyan-400);">b&#7897; &#225;o gi&#225;p</strong> cho to&#224;n b&#7897; &#7913;ng d&#7909;ng. Kh&#244;ng c&#243; n&#243;, app ch&#7881; l&#224; m&#7897;t trang web. C&#243; n&#243;, app tr&#7903; th&#224;nh ph&#7847;n m&#7873;m desktop &#273;&#237;ch th&#7921;c.
+            </p>
+
+            <div class="pbx-highlight">
+                <h4>&#9889; Electron.NET 23.6.2 &mdash; C&#7847;u N&#7889;i Ma Thu&#7853;t</h4>
+                <p style="color: #94a3b8; font-size: 0.92rem;">
+                    PBX d&#249;ng <strong>Electron.NET</strong> &#273;&#7875; b&#7885;c &#7913;ng d&#7909;ng Vue.js + .NET 8 th&#224;nh desktop app. .NET backend ch&#7841;y nh&#432; server n&#7897;i b&#7897;, Electron l&#224;m shell giao di&#7879;n, v&#224; IPC bridge k&#7871;t n&#7889;i hai th&#7871; gi&#7899;i. Kh&#244;ng c&#7847;n ch&#7841;y ri&#234;ng server, kh&#244;ng c&#7847;n m&#7903; browser &mdash; t&#7845;t c&#7843; g&#243;i g&#7885;n trong m&#7897;t file <code>.exe</code>.
+                </p>
+            </div>
+
+            <div class="pbx-highlight" style="margin-top: 0.8rem;">
+                <h4>&#128230; electron-builder &mdash; &#272;&#243;ng G&#243;i V&#224; Ph&#226;n Ph&#7889;i</h4>
+                <p style="color: #94a3b8; font-size: 0.92rem;">
+                    Electron-builder &#273;&#243;ng g&#243;i app th&#224;nh installer cho Windows (NSIS), macOS (DMG), v&#224; Linux (AppImage). V&#7899;i PBX, ta ch&#7911; y&#7871;u build cho Windows v&#236; IP Phone agent d&#249;ng PC. C&#7845;u h&#236;nh asar, code signing, v&#224; auto-update &#273;&#7873;u n&#7857;m trong <code>electron-builder.yml</code>.
+                </p>
+            </div>
+
+            <div class="pbx-highlight" style="margin-top: 0.8rem;">
+                <h4>&#128227; Tray &amp; Notification &mdash; Linh H&#7891;n C&#7911;a PBX Desktop</h4>
+                <p style="color: #94a3b8; font-size: 0.92rem;">
+                    PBX c&#7847;n ch&#7841;y n&#7873;n (system tray) &#273;&#7875; lu&#244;n s&#7861;n s&#224;ng nh&#7853;n cu&#7897;c g&#7885;i. Khi c&#243; cu&#7897;c g&#7885;i &#273;&#7871;n, native notification hi&#7879;n l&#234;n d&#249; user &#273;ang l&#224;m vi&#7879;c kh&#225;c. Global hotkey cho ph&#233;p nh&#7845;c/g&#225;c m&#225;y b&#7857;ng ph&#237;m t&#7855;t. &#272;&#226;y l&#224; nh&#7919;ng th&#7913; web app thu&#7847;n t&#250;y kh&#244;ng l&#224;m &#273;&#432;&#7907;c!
+                </p>
+            </div>
+
+            <div class="pbx-highlight" style="margin-top: 0.8rem;">
+                <h4>&#128190; Offline &amp; Local Storage</h4>
+                <p style="color: #94a3b8; font-size: 0.92rem;">
+                    Nh&#7901; Electron, PBX app c&#243; th&#7875; truy c&#7853;p file system &#273;&#7875; l&#432;u log cu&#7897;c g&#7885;i, cache d&#7919; li&#7879;u offline v&#7899;i IndexedDB/Dexie, v&#224; t&#432;&#417;ng t&#225;c v&#7899;i thi&#7871;t b&#7883; ph&#7847;n c&#7913;ng (headset, microphone) qua native API. &#272;&#7897;i tr&#432;&#7903;ng Electron b&#7843;o &#273;&#7843;m m&#7885;i th&#7913; ch&#7841;y m&#432;&#7907;t nh&#432; nh&#7841;c!
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p><span>&#272;i&#7879;n T&#7917; &#272;&#7841;i S&#432;</span> &mdash; Agent #03 | PBX Virtual Expert Team</p>
+            <p style="margin-top: 0.3rem;">Electron.NET 23.6.2 &bull; electron-builder &bull; Chromium-powered Desktop</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #334155;">
+                "M&#7895;i pixel tr&#234;n m&#224;n h&#236;nh &#273;&#7873;u &#273;&#432;&#7907;c render b&#7903;i Chromium. &#272;&#7855;t hay r&#7867; g&#236; th&#236; c&#361;ng l&#224; web th&#244;i, nh&#432;ng m&#224; l&#224; web sang ch&#7843;nh!"
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

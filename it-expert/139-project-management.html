@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Dự Án Đại Sư - Agile & Scrum</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #2d1b69 50%, #1a0a2e 75%, #0a0a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        .hero {
+            text-align: center; padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15));
+            border-radius: 24px; border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden;
+        }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #818cf8, #60a5fa, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5b4fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(59,130,246,0.2)); border: 1px solid rgba(139,92,246,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #c4b5fd; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; }
+        .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; }
+        .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(59,130,246,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139,92,246,0.3); }
+
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(139,92,246,0.2); box-shadow: 0 8px 40px rgba(139,92,246,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5b4fc; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+
+        .tip { background: rgba(139,92,246,0.06); border-left: 3px solid #818cf8; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5b4fc; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+
+        .story { background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.06)); border: 1px solid rgba(59,130,246,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #60a5fa; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5b4fc; font-weight: 600; }
+        code { background: rgba(139,92,246,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #c4b5fd; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">📋</span>
+            <h1>Quản Lý Dự Án Đại Sư</h1>
+            <p class="subtitle">Trần Thị Sprint — Nữ Hoàng Agile, Scrum & Deadline</p>
+            <p class="quote">"Sprint planning giống hẹn hò: ai cũng hứa hẹn nhiều nhưng deliver thì tuỳ duyên."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">Agile / Scrum</span>
+            <span class="skill-tag">Kanban</span>
+            <span class="skill-tag">Jira / Linear</span>
+            <span class="skill-tag">Sprint Planning</span>
+            <span class="skill-tag">Retrospectives</span>
+            <span class="skill-tag">Velocity Tracking</span>
+            <span class="skill-tag">Risk Management</span>
+            <span class="skill-tag">Stakeholder Comms</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Thị Sprint là truyền nhân đời thứ 7 của dòng họ quản lý — ông cố nội từng là đốc công xây kim tự tháp (dùng Waterfall methodology, dĩ nhiên — vì kim tự tháp xây từ dưới lên trên). Cô bắt đầu sự nghiệp bằng việc quản lý dự án bằng Excel, mỗi ngày mở file lên thấy 47 cột và 2000 dòng, scroll ngang phải mất 30 giây mới tới cột cuối.</p>
+            <p>Kiếp nạn đầu tiên là dự án Waterfall 18 tháng — khách hàng nói "tôi muốn giống Facebook" lúc kickoff, 18 tháng sau nhận được cái giống MySpace. Kiếp nạn thứ hai là chuyển đổi Agile mà quên training team — kết quả là làm Waterfall nhưng chia thành sprint 2 tuần, gọi là "WaterScrum".</p>
+            <p>Sau nhiều năm chiến đấu với scope creep, stakeholder thay đổi ý kiến mỗi ngày, và developer estimate "2 ngày" nhưng làm 2 tuần, cô đạt đến cảnh giới "Zen PM" — nơi mà mọi deadline đều là suggestion và mọi estimation đều nhân 3.</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Sprint Planning — Nghệ thuật nói "Không"</h3>
+                <p>Sprint capacity = team size × sprint days × focus factor (thường 0.6-0.8). Đừng bao giờ plan 100% capacity — luôn để buffer 20% cho bugs, meetings, và "urgent" requests từ CEO lúc 4h chiều thứ 6. Dùng planning poker cho estimation — không phải vì nó chính xác, mà vì nó bắt team thảo luận những assumption khác nhau. Story points đo complexity, KHÔNG phải thời gian. Và quan trọng nhất: nếu PO muốn thêm item vào sprint, phải bỏ item khác ra. Sprint có scope cố định.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: Retrospective — Buổi họp quan trọng nhất mà ai cũng muốn skip</h3>
+                <p>Retrospective không phải để blame — mà để improve. Format đơn giản nhất: What went well? What didn't? What to try next? Nhưng quan trọng là ACTION ITEMS phải có owner và deadline. Retro không có action items = therapy session. Rotate format để team không chán: Start-Stop-Continue, 4Ls (Liked, Learned, Lacked, Longed For), Mad-Sad-Glad. Và Scrum Master phải follow up action items trong sprint tiếp theo.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Velocity — Con số không nói dối (nhưng hay bị hiểu sai)</h3>
+                <p>Velocity là tổng story points hoàn thành trong sprint. Nó dùng để FORECAST, không phải đo PERFORMANCE. Đừng bao giờ so sánh velocity giữa các team — story points không standardized. Team A estimate 5 points cho cùng task mà team B estimate 13. Trend mới quan trọng: velocity ổn định = team dự đoán được. Velocity giảm liên tục = có vấn đề (tech debt? morale? unclear requirements?). ĐỪNG gắn velocity với KPI — team sẽ inflate points thay vì improve.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: Kanban — Khi Scrum quá rigid</h3>
+                <p>Kanban tập trung vào FLOW thay vì SPRINT. WIP (Work In Progress) limits là trái tim của Kanban — giới hạn số task đang làm đồng thời để tránh context switching. Lead time (từ request đến done) và cycle time (từ bắt đầu làm đến done) là metrics chính. Visualize workflow trên board với các column rõ ràng. Pull system: dev tự pull task khi ready, không bị push. Kanban phù hợp cho maintenance, support, và teams có work liên tục không chia sprint được.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Estimation — Nghệ thuật đoán có cơ sở</h3>
+                <p>T-shirt sizing (S/M/L/XL) cho rough estimation. Planning poker cho sprint-level. Three-point estimation (optimistic + most likely + pessimistic) / 3 cho project-level. Rule of thumb: developer estimate × π ≈ actual time (không đùa, Pi factor là kinh nghiệm thực tế). Chia task lớn thành task nhỏ (&lt;1 ngày) để estimation chính xác hơn. Và LUÔN track actual vs estimated để calibrate theo thời gian.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Stakeholder Management — Quản lý kỳ vọng quan trọng hơn quản lý dự án</h3>
+                <p>Stakeholder matrix: Power × Interest → Manage closely / Keep satisfied / Keep informed / Monitor. Communicate bad news sớm — surprise là kẻ thù số 1 của trust. Status update ngắn gọn: 3 bullets cho progress, 1 bullet cho blockers, 1 bullet cho next steps. RACI matrix cho mỗi major decision. Và nhớ: stakeholder nói "I want it simple" nhưng họ muốn nói "I want everything but don't want to think about complexity".</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Jira Có 500 Tickets Không Ai Đóng</h3>
+                <p>Team tôi dùng Jira 3 năm. Mỗi buổi sáng standup, tôi mở board và thấy 500+ tickets. Có ticket từ 2 năm trước: "Fix login button color" — assignee đã nghỉ việc, reporter cũng đã nghỉ việc, cái button đã bị redesign 3 lần. Nhưng ticket vẫn nằm đó, như một di tích khảo cổ.</p>
+                <p>Có ticket status "In Progress" từ tháng 3... năm ngoái. Có ticket estimate 1 point nhưng đã chuyển qua 15 sprints. Có epic gọi là "Tech Debt" chứa 200 tickets mà không ai dám mở ra đọc vì sợ trầm cảm. Backlog trở thành nghĩa trang tickets — nơi ý tưởng đến để chết.</p>
+                <p>Giải pháp? "Backlog Bankruptcy". Tôi tạo filter: mọi ticket older than 6 months + no activity → bulk close với comment "Closed due to staleness. Reopen if still relevant." 400 tickets biến mất. Không ai complaint. Không ai reopen. Chứng tỏ 80% backlog là rác.</p>
+                <div class="lesson">💡 Bài học: Backlog cần grooming thường xuyên — ít nhất mỗi tháng. Ticket không có context đầy đủ = ticket vô dụng. Áp dụng quy tắc: nếu ticket hơn 3 tháng không ai động đến, nó có thể bị close. Backlog gọn = team tập trung = deliver tốt hơn.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: Sprint Scope Creep — Khi "Chỉ Thêm Một Tí" Giết Chết Sprint</h3>
+                <p>Sprint 14, plan đẹp: 30 story points, 5 user stories, definition of done rõ ràng. Ngày thứ 2, PO chạy vào: "Khách hàng cần thêm export PDF, chỉ mất 1 ngày thôi." OK, thêm vào. Ngày thứ 4, CEO email: "Competitor vừa launch feature X, mình cần có feature X tuần sau." Thêm vào. Ngày thứ 7, sales call: "Deal $500K nhưng cần integration với SAP." Thêm vào.</p>
+                <p>Kết quả sprint 14: plan 30 points, thực tế nhét 65 points vào. Complete được 20 points. 3 user stories dở dang. Team burn out. Morale giảm. Sprint review trở thành buổi xin lỗi. Và PO nói: "Sao sprint này team chậm thế?"</p>
+                <p>Từ sprint 15, tôi áp dụng "Sprint Protection Protocol": mọi thay đổi scope phải qua Change Request Form — 1 trang A4, cần signature PO + SM + Tech Lead. Số change requests giảm 90% vì không ai muốn fill form.</p>
+                <div class="lesson">💡 Bài học: Sprint scope freeze sau sprint planning. Urgent items → next sprint (trừ production outage). Nếu thêm vào thì phải bỏ ra. Scrum Master là shield cho team — bảo vệ sprint khỏi scope creep là job #1. Và friction (như form) là công cụ tốt để filter yêu cầu thật sự urgent vs "urgent".</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: Daily Standup Kéo Dài 1 Tiếng</h3>
+                <p>Standup bắt đầu lúc 9:00. Developer A: "Hôm qua tôi fix bug login, để tôi share screen giải thích approach..." — 15 phút demo code. Developer B: "Tôi có question về architecture cho ticket này..." — debate 20 phút về microservices vs monolith. QA: "Tôi tìm thấy bug mới, để tôi show..." — reproduce bug live, treo máy 2 lần.</p>
+                <p>10:00 — standup "kết thúc". Team mất 1 tiếng productive time. Multiply × 10 người × 5 ngày = 50 man-hours/tuần cho một buổi họp 15 phút. Có người bắt đầu "bận" lúc 9:00 và quên join. Morale của standup giảm dần.</p>
+                <p>Giải pháp: Strict format — mỗi người MAX 2 phút: "Done / Doing / Blockers". Mọi discussion → "parking lot" — note lại và họp riêng sau standup với người liên quan. Timer 15 phút cho cả buổi. Standup đứng (literally) — không ai muốn debate architecture khi đang đứng.</p>
+                <div class="lesson">💡 Bài học: Standup là synchronization meeting, không phải problem-solving meeting. 3 câu: yesterday / today / blockers. Discussion → take offline. Scrum Master enforce time box. Và đúng, đứng thật sự giúp họp ngắn hơn — thử đi, hiệu quả bất ngờ.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: "Agile" nhưng thực chất là Waterfall chia nhỏ</h3>
+                <p>Sprint 2 tuần nhưng requirement đã fix cứng từ đầu, không có feedback loop, không retrospective → đó là mini-Waterfall, không phải Agile. Agile là mindset, không phải ceremony. Nếu team không thể thay đổi direction sau mỗi sprint, bạn đang làm Waterfall với extra meetings.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Estimate = Commitment</h3>
+                <p>Estimate là dự đoán, không phải hứa hẹn. Khi management biến estimate thành deadline, team sẽ padding estimate để "safe". 2 ngày estimate → nói 5 ngày. Kết quả: Parkinson's Law — task expand to fill the time allotted. Trust team, track velocity, dùng range thay vì số cụ thể.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Scrum Master = Project Manager = Team Lead</h3>
+                <p>Scrum Master không phải boss. SM facilitate, không dictate. SM remove blockers, không assign tasks. SM protect team, không report team. Nếu SM đang assign Jira tickets và chase deadlines, đó là Project Manager mặc áo Scrum Master.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Skip retrospective vì "không có thời gian"</h3>
+                <p>Retro là cơ chế continuous improvement duy nhất. Bỏ retro = bỏ cơ hội cải thiện = repeat same mistakes forever. Team nào nói "chúng tôi không cần retro vì mọi thứ đều tốt" — đó chính là team cần retro nhất, vì họ đã mất khả năng tự nhận biết vấn đề.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Quá nhiều tools, quá ít process</h3>
+                <p>Jira + Confluence + Slack + Notion + Trello + Asana + Monday + Linear — team dùng 8 tools nhưng không ai biết source of truth ở đâu. Tool là phương tiện, process là đường đi. Chọn 1-2 tools, define rõ "gì ở đâu", và stick with it. Tool mới không giải quyết process cũ.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Velocity inflation — Story points arms race</h3>
+                <p>Khi management dùng velocity làm KPI, team bắt đầu inflate story points. Task 3 points → estimate 8 points. Velocity tăng trên biểu đồ nhưng output thực tế không đổi. Goodhart's Law: "When a measure becomes a target, it ceases to be a good measure."</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #7: Không có Definition of Done rõ ràng</h3>
+                <p>"Done" với dev = code xong. "Done" với QA = test xong. "Done" với PO = deployed to production. Nếu team không align Definition of Done trước sprint, sẽ có drama cuối sprint khi PO review và nói "cái này chưa done mà". DoD phải explicit, written, và mọi người đồng ý.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Thị Sprint</span> — Quản Lý Dự Án Đại Sư</p>
+            <p>📋 "Dự án thất bại không phải vì thiếu Jira tickets — mà vì thừa meetings và thiếu communication."</p>
+        </div>
+    </div>
+</body>
+</html>

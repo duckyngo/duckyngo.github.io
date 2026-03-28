@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khung Trời Học Sâu - DL Framework Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%);
+            color: #e0e0e0; min-height: 100vh; line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center; padding: 40px 20px;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,87,34,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #ff8a65; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(255,138,101,0.3); }
+        .header .title { font-size: 1.2em; color: #ffab91; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card {
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(15px);
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px; margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(255,87,34,0.1); }
+        .card h2 { color: #ff8a65; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge {
+            background: linear-gradient(135deg, rgba(255,87,34,0.3), rgba(200,60,20,0.2));
+            border: 1px solid rgba(255,138,101,0.3); padding: 8px 18px; border-radius: 25px;
+            font-size: 0.9em; color: #ffab91; transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { background: linear-gradient(135deg, rgba(255,87,34,0.5), rgba(200,60,20,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(255,87,34,0.3); }
+        .tip-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 30px; height: 30px; background: linear-gradient(135deg, #ff5722, #ff8a65);
+            border-radius: 50%; color: white; font-weight: bold; font-size: 0.85em;
+            margin-right: 10px; flex-shrink: 0;
+        }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #ff5722; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">🔧</span>
+            <h1>Khung Trời Học Sâu</h1>
+            <div class="title">PyTorch, TensorFlow, JAX, Keras Expert</div>
+            <div class="quote">"TensorFlow hay PyTorch? Câu hỏi này đã chia rẽ nhiều tình bạn hơn cả vim vs emacs."</div>
+            <div class="badge-container">
+                <span class="badge">🔥 PyTorch</span>
+                <span class="badge">🧊 TensorFlow</span>
+                <span class="badge">⚡ JAX</span>
+                <span class="badge">🎯 Keras</span>
+                <span class="badge">🖥️ CUDA</span>
+                <span class="badge">🌐 Distributed Training</span>
+                <span class="badge">📊 TensorBoard</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Khung Trời Học Sâu tên thật là <strong>Hoàng Framework</strong>, biệt danh "Người đi giữa hai thế giới." Anh bắt đầu với TensorFlow 1.x (thời kỳ <code>tf.Session</code> đen tối), survive qua TF2 migration, rồi "phản bội" sang PyTorch.</p>
+            <p>"Tôi không phản bội," anh giải thích. "Tôi đi theo ánh sáng. Và ánh sáng năm 2020 là eager execution." Nhưng rồi JAX xuất hiện, và anh lại bị cám dỗ bởi <code>jit</code> và <code>vmap</code>.</p>
+            <p>Hiện tại anh là "polyglot DL engineer" — viết production code bằng PyTorch, research bằng JAX, và vẫn maintain legacy TF code vì "có những thứ không ai dám refactor." Mỗi khi có intern hỏi "nên học framework nào?", anh trả lời: "PyTorch. Nhưng hãy chuẩn bị tinh thần cho framework tiếp theo."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Framework</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>PyTorch — Vua của Research & Production (2026)</h3>
+                    <p>Năm 2026, PyTorch chiếm ~80% market. Lý do: eager execution (debug bằng print!), Pythonic API, ecosystem mạnh (HuggingFace, Lightning). <strong>PyTorch 2.x</strong> với <code>torch.compile()</code> tăng speed 30-200% không đổi code. Dùng <code>torch.compile(model)</code> cho production. <strong>PyTorch Lightning</strong> cho training loop boilerplate. <code>torchrun</code> cho distributed training.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>JAX — Tương lai của High-Performance ML</h3>
+                    <p>JAX = NumPy + autograd + XLA compiler. <code>jit</code>: compile Python → optimized XLA. <code>vmap</code>: vectorize any function. <code>pmap</code>: parallelize across devices. JAX code nhanh hơn PyTorch 2-5x cho certain workloads (nhất là TPU). Nhưng: functional programming style, khó debug, ecosystem nhỏ hơn. Dùng JAX khi: cần maximum performance, TPU training, hoặc research cần custom gradients.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>CUDA Management — Nghệ thuật quản lý GPU</h3>
+                    <p>GPU memory là tài nguyên quý nhất. Tricks: (1) <code>torch.cuda.empty_cache()</code> giải phóng cached memory. (2) Mixed precision training (<code>torch.cuda.amp</code>) giảm memory 50%, tăng speed 2x. (3) Gradient accumulation: simulate large batch trên small GPU. (4) <code>torch.utils.checkpoint</code>: trade compute for memory. (5) Monitor memory: <code>nvidia-smi</code> hoặc <code>torch.cuda.memory_summary()</code>.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Distributed Training — Scale lên nhiều GPU</h3>
+                    <p><strong>DataParallel</strong>: đơn giản nhưng bottleneck ở GPU 0 (gradient aggregation). <strong>DistributedDataParallel (DDP)</strong>: tốt hơn, each GPU có copy riêng, all-reduce gradients. Dùng <code>torchrun --nproc_per_node=4</code>. <strong>FSDP</strong> (Fully Sharded Data Parallel): shard model across GPUs, train model lớn hơn GPU memory. <strong>DeepSpeed</strong>: ZeRO optimization stages 1-3, offload to CPU/NVMe.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Mixed Precision Training — Nhanh hơn, nhẹ hơn</h3>
+                    <p>FP16 thay vì FP32: memory giảm 50%, speed tăng 2-3x trên GPU có Tensor Cores. PyTorch: <code>torch.cuda.amp.autocast()</code> + <code>GradScaler</code>. Cẩn thận: một số operations cần FP32 (loss, softmax, layer norm) — autocast handle tự động. <strong>BFloat16</strong>: ít underflow hơn FP16, supported trên A100+. Năm 2026: FP8 training đang trở thành standard trên H100/B100.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">6</span>
+                <div class="tip-content">
+                    <h3>Profiling & Optimization</h3>
+                    <p><strong>PyTorch Profiler</strong>: <code>torch.profiler.profile()</code> + TensorBoard plugin. Tìm bottleneck: CPU-GPU transfer, data loading, kernel execution. <strong>Data loading</strong>: <code>num_workers=4*num_gpus</code>, <code>pin_memory=True</code>, <code>persistent_workers=True</code>. Pre-fetch data để GPU không idle. Profile trước khi optimize — đừng đoán bottleneck ở đâu.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">💀 Chuyện 1: CUDA out of memory — nỗi ám ảnh muôn đời</div>
+                <p><code>RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB</code> — dòng chữ này xuất hiện trong giấc mơ của anh Framework. Một lần, anh đang train model với batch_size=64 trên V100 16GB. Out of memory. Giảm xuống 32. Vẫn OOM. 16. Vẫn OOM. 8. Vẫn OOM.</p>
+                <p>Cuối cùng phát hiện: code có bug — append output vào list mỗi step mà không detach → gradient graph tích lũy → memory leak vô hạn. Fix: <code>loss.item()</code> thay vì <code>loss</code>, <code>output.detach()</code> khi log.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> CUDA OOM thường không phải do model lớn, mà do memory leak. Top causes: (1) Không detach tensors khi logging, (2) Tích lũy gradients không clear, (3) Không dùng <code>torch.no_grad()</code> khi inference. Dùng <code>torch.cuda.memory_summary()</code> để debug.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">😱 Chuyện 2: TF1 → TF2 migration — 6 tháng ác mộng</div>
+                <p>Năm 2020, công ty anh Framework có 200,000 dòng code TensorFlow 1.x. Sếp quyết định: "Migrate sang TF2!" Estimate: 2 tháng. Thực tế: 6 tháng.</p>
+                <p><code>tf.Session</code> biến mất. <code>tf.placeholder</code> biến mất. <code>tf.contrib</code> biến mất hoàn toàn. Mỗi ngày là một surprise: function quen thuộc bỗng deprecated, API thay đổi signature, model behavior khác subtle. Cuối cùng anh viết tool tự động convert — tool cũng bug.</p>
+                <p>Từ kinh nghiệm đó, anh có rule: "Chọn framework có backward compatibility. Hoặc chọn PyTorch."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Framework migration là project lớn hơn bạn nghĩ. Luôn: (1) Abstract framework-specific code behind interfaces, (2) Có comprehensive test suite TRƯỚC khi migrate, (3) Migrate incrementally, không big-bang. Và cân nhắc: có đáng migrate không, hay viết code mới tốt hơn?</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🚀 Chuyện 3: torch.compile() — "tốn 1 phút compile, tiết kiệm 1 ngày train"</div>
+                <p>Anh Framework đang train ViT model, mỗi epoch mất 45 phút trên 4 A100. Tổng 100 epochs = 75 giờ. Một ngày, anh thêm MỘT DÒNG: <code>model = torch.compile(model)</code>.</p>
+                <p>Epoch đầu tiên: 60 phút (compile overhead). Từ epoch 2: 18 phút/epoch. Tổng: 30 giờ thay vì 75 giờ. Tiết kiệm $900 cloud bill. Anh gửi email toàn công ty: "Nếu bạn chưa dùng torch.compile, bạn đang đốt tiền."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> <code>torch.compile()</code> trong PyTorch 2.x là free performance. Hầu hết models tăng 30-200% speed với zero code change. Cẩn thận: dynamic shapes và custom ops có thể gây graph breaks. Dùng <code>torch._dynamo.config.suppress_errors = True</code> để fallback gracefully.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Không dùng mixed precision:</strong> Train FP32 trên GPU có Tensor Cores = lãng phí 50% memory và 2-3x speed. Dùng AMP.
+            </div>
+            <div class="mistake">
+                <strong>❌ DataLoader với num_workers=0:</strong> GPU idle chờ CPU load data. Set <code>num_workers=4*num_gpus</code>, <code>pin_memory=True</code>.
+            </div>
+            <div class="mistake">
+                <strong>❌ DataParallel thay vì DDP:</strong> DataParallel bottleneck ở GPU 0. Luôn dùng DistributedDataParallel cho multi-GPU.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không detach khi logging:</strong> <code>losses.append(loss)</code> giữ entire computation graph → memory leak. Dùng <code>loss.item()</code>.
+            </div>
+            <div class="mistake">
+                <strong>❌ Quên torch.no_grad() khi inference:</strong> Lãng phí memory cho gradient computation không cần thiết. Luôn wrap inference trong <code>with torch.no_grad():</code>.
+            </div>
+            <div class="mistake">
+                <strong>❌ Hard-code device:</strong> <code>.cuda()</code> thay vì <code>.to(device)</code>. Code không chạy được trên CPU hoặc multi-GPU.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không profile trước khi optimize:</strong> Tưởng bottleneck ở model computation, thực tế ở data loading. Profile first, optimize second.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🔧 Khung Trời Học Sâu — "Framework nào cũng được, miễn là train xong trước deadline."</p>
+            <p>Section 3: AI & Machine Learning · Expert #57</p>
+        </div>
+    </div>
+</body>
+</html>

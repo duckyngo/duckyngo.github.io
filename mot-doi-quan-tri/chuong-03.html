@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 3: Những quí nhân — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#E74C3C 0%,var(--navy) 50%,#2D6A4F 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #E74C3C;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .portrait-card{background:white;border-radius:16px;padding:32px;box-shadow:var(--shadow);margin:20px 0;display:flex;gap:24px;align-items:flex-start;border-top:5px solid var(--orange);}
+  .portrait-card.kasame{border-top-color:var(--gold);}
+  .portrait-avatar{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;background:linear-gradient(135deg,var(--orange),#FF9A62);}
+  .portrait-card.kasame .portrait-avatar{background:linear-gradient(135deg,var(--gold),#F0A500);}
+  .portrait-body h3{font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:4px;}
+  .portrait-body .role{font-size:0.85rem;color:var(--orange);font-weight:600;margin-bottom:12px;}
+  .portrait-body p{font-size:0.9rem;color:#555;line-height:1.7;}
+  .portrait-body .key-habit{background:#FFF3E0;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:0.85rem;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .quote-box.dark{background:linear-gradient(135deg,var(--navy),#2A5F8F);}
+  .quote-box.dark p{color:white;}
+  .quote-box.dark cite{color:var(--gold);}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.portrait-card{flex-direction:column;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-02.html" class="nav-btn">← Chương 2</a>
+    <a href="chuong-04.html" class="nav-btn">Chương 4 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🌟 Chương 3</div>
+  <span class="hero-emoji">🤝</span>
+  <h1>Những Quí Nhân, <span>Những Người Mẫu</span></h1>
+  <p class="hero-sub">Những người thầy không bao giờ đứng trên bục giảng — họ sống bài học đó mỗi ngày.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Trong hành trình quản trị, không phải sách vở hay trường lớp mà là những con người cụ thể đã định hình tư duy của GS. Phan Văn Trường. Hai trong số đó để lại dấu ấn sâu nhất: Jean-Pierre Desgeorges và Kasame Chatikavanij — hai phong cách, một triết lý.
+  </div>
+
+  <div class="cards-title">👤 Hai Người Thầy Vĩ Đại</div>
+
+  <div class="portrait-card">
+    <div class="portrait-avatar">🏔️</div>
+    <div class="portrait-body">
+      <h3>Jean-Pierre Desgeorges</h3>
+      <div class="role">Lãnh đạo người Pháp — Sếp trực tiếp của tác giả</div>
+      <p>Ông Desgeorges không tổ chức hội thảo văn hóa doanh nghiệp. Ông không viết bản tuyên ngôn giá trị. Ông <em>sống</em> văn hóa đó mỗi ngày. Năm nào ông cũng dành 150 ngày đi thực địa — gặp trực tiếp từng đội ngũ, từng công trường, từng khách hàng.</p>
+      <div class="key-habit">📍 150 ngày/năm đi thực địa — không phải họp trong phòng máy lạnh</div>
+    </div>
+  </div>
+
+  <div class="portrait-card kasame">
+    <div class="portrait-avatar">🌸</div>
+    <div class="portrait-body">
+      <h3>Kasame Chatikavanij</h3>
+      <div class="role">Lãnh đạo Thái Lan — Người dạy về phẩm giá của nhân viên</div>
+      <p>Kasame tổ chức một bữa tiệc cuối năm đặc biệt — không phải cho cấp quản lý hay những nhân viên xuất sắc nhất. Ông mời những người có mức lương thấp nhất trong công ty. Thông điệp không cần lời giải thích: <em>mỗi người đều có giá trị, không phân biệt vị trí.</em></p>
+      <div class="key-habit" style="background:#FFFDE7;">🎉 Bữa tiệc dành cho nhân viên lương thấp nhất — một cử chỉ làm thay đổi văn hóa</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Bài Học Từ Hai Người Thầy</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">👣</div>
+      <div class="card-num">01</div>
+      <h3>Lãnh đạo bằng hành động</h3>
+      <p>Không phải bằng lời nói, tầm nhìn đẹp hay slide PowerPoint. Văn hóa doanh nghiệp được xây bằng từng hành động cụ thể của người lãnh đạo.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">💛</div>
+      <div class="card-num">02</div>
+      <h3>Ai cũng có phẩm giá</h3>
+      <p>Người lái xe, người lao công, nhân viên mức thấp nhất — họ xứng đáng được tôn trọng như bất kỳ ai. Đây không phải triết lý — đây là hành động.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">03</div>
+      <h3>Văn hóa = Hành vi lặp lại</h3>
+      <p>Văn hóa không phải là điều bạn viết trên tường. Đó là những gì bạn làm mỗi ngày — đặc biệt khi không ai nhìn.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🔄</div>
+      <div class="card-num">04</div>
+      <h3>Học từ người đi trước</h3>
+      <p>Tìm người thầy thật sự — không phải người giỏi nhất hay giàu nhất, mà là người có phẩm cách bạn muốn noi theo.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Ông Desgeorges không bao giờ nói về văn hóa.<br>Ông sống văn hóa đó mỗi ngày."</p>
+    <cite>— GS. Phan Văn Trường về Jean-Pierre Desgeorges</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>150 ngày thực địa — con số biết nói:</strong> Trong 365 ngày, ông Desgeorges dành hơn 40% thời gian đi gặp trực tiếp đội ngũ. Không có email, slide hay báo cáo nào thay thế được việc nhìn thẳng vào mắt nhau và hiểu thực tế đang diễn ra.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-text">
+      <strong>Bữa tiệc của Kasame — marketing nội bộ thiên tài:</strong> Một quyết định đơn giản nhưng lan rộng ra toàn công ty. Mọi người đều biết — kể cả những người không được mời — rằng đây là nơi mỗi cá nhân đều được trân trọng.
+    </div>
+  </div>
+
+  <div class="quote-box dark">
+    <p>"Người thầy tốt nhất không phải người dạy bạn nhiều nhất —<br>mà là người truyền cảm hứng để bạn tự học."</p>
+    <cite>— Triết lý từ Chương 3</cite>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Tìm người thầy có phẩm cách bạn ngưỡng mộ — không nhất thiết phải là người thành công nhất.</li>
+      <li>Văn hóa doanh nghiệp được tạo ra bởi hành động của lãnh đạo, không phải tuyên ngôn trên tường.</li>
+      <li>Đi thực địa nhiều — xa bàn giấy, gần thực tế. 150 ngày/năm là chuẩn mực đáng học hỏi.</li>
+      <li>Trân trọng từng thành viên, bất kể vị trí. Cử chỉ nhỏ có thể tạo ra tác động văn hóa lớn.</li>
+      <li>Mang theo ký ức về những người thầy vĩ đại — họ sẽ tiếp tục dẫn đường bạn dù không còn ở bên.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-02.html" class="bnav-btn">← Chương 2</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-04.html" class="bnav-btn next">Chương 4: "Đố Ai?" →</a>
+  </div>
+</div>
+
+</body>
+</html>

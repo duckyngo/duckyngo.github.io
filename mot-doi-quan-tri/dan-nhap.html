@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dẫn Nhập — Một Đời Quản Trị</title>
+<style>
+  :root {
+    --orange:#FF6B35; --navy:#1A3A5C; --gold:#F7C948;
+    --green:#2D6A4F; --white:#FFFFFF; --gray:#F5F5F5;
+    --shadow:0 4px 20px rgba(0,0,0,0.1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+
+  /* Nav */
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;display:flex;align-items:center;gap:6px;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .nav-btn.disabled{opacity:0.3;pointer-events:none;}
+
+  /* Hero */
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,#1E5F8F 60%,var(--orange) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+
+  /* Content */
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--orange);}
+
+  /* Cards grid */
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card.purple .card-num{background:#8E44AD;}
+
+  /* Quote */
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+
+  /* Callout */
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+
+  /* Lesson */
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+
+  /* Bottom Nav */
+  .bottom-nav{background:var(--gray);padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <span class="nav-btn disabled">← Trước</span>
+    <a href="chuong-01.html" class="nav-btn">Chương 1 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🌅 Dẫn Nhập</div>
+  <span class="hero-emoji">📖</span>
+  <h1>Từ Một Lời <span>Của Cha...</span></h1>
+  <p class="hero-sub">Tại sao Nokia chết? Tại sao Kodak biến mất? Câu trả lời nằm ở chỗ khác bạn nghĩ.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Cuốn sách bắt đầu bằng một câu hỏi đơn giản nhưng sâu sắc: <strong>tại sao những công ty vĩ đại lại chết?</strong> Nokia quản lý cực tốt — quy trình chặt, KPI rõ, báo cáo đúng giờ. Kodak cũng vậy. Nhưng cả hai đều chết. Vì sao? Vì <em>quản lý</em> và <em>quản trị</em> là hai thứ hoàn toàn khác nhau.
+  </div>
+
+  <div class="cards-title">🔑 5 Điểm Cốt Lõi</div>
+  <div class="cards-grid">
+
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <div class="card-num">01</div>
+      <h3>Quản lý ≠ Quản trị</h3>
+      <p>Quản lý là làm <em>đúng cách</em>. Quản trị là làm <em>đúng việc</em>. Hai điều này có thể mâu thuẫn nhau hoàn toàn.</p>
+    </div>
+
+    <div class="card gold">
+      <div class="card-icon">💀</div>
+      <div class="card-num">02</div>
+      <h3>Nokia & Kodak — Bài học đắt giá</h3>
+      <p>Cả hai quản lý xuất sắc nhưng quản trị kém — không nhìn thấy hướng đi đúng của thế giới đang thay đổi.</p>
+    </div>
+
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">03</div>
+      <h3>Mục tiêu: Trường tồn</h3>
+      <p>Doanh nghiệp không được sinh ra để kiếm lợi nhuận. Lợi nhuận chỉ là <em>kết quả</em>, không phải mục tiêu.</p>
+    </div>
+
+    <div class="card navy">
+      <div class="card-icon">👨‍👧</div>
+      <div class="card-num">04</div>
+      <h3>Lời cha truyền lại</h3>
+      <p>Triết lý quản trị của tác giả bắt nguồn từ những giá trị gia đình — cái nền văn hóa không ai dạy ở trường.</p>
+    </div>
+
+    <div class="card purple">
+      <div class="card-icon">🧭</div>
+      <div class="card-num">05</div>
+      <h3>Nhân sự cần Lãnh đạo</h3>
+      <p>Công việc thì cần quản lý. Còn con người — họ cần được <em>lãnh đạo</em>, không phải quản lý.</p>
+    </div>
+
+  </div>
+
+  <div class="quote-box">
+    <p>"Quản trị tốt mà quản lý dở thì doanh nghiệp vẫn sống.<br>
+    Quản lý tốt mà quản trị dở thì doanh nghiệp chắc chắn sẽ chết."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Bẫy phổ biến nhất:</strong> Nhiều lãnh đạo tự hào về hệ thống KPI, quy trình chặt chẽ — nhưng đang đi sai hướng. Quản lý tốt một con thuyền đang đi sai hướng thì chỉ đến sai chỗ <em>nhanh hơn</em> mà thôi.
+    </div>
+  </div>
+
+  <div class="quote-box" style="background:linear-gradient(135deg,var(--navy),#2A5F8F);">
+    <p style="color:white;">"Công việc thì cần được quản lý;<br>nhân sự thì cần được lãnh đạo."</p>
+    <cite style="color:var(--gold);">— Grace Murray Hopper</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Câu hỏi tự vấn:</strong> Bạn đang quản lý doanh nghiệp hay đang <em>quản trị</em> nó? Bạn đang tối ưu hóa cỗ máy hiện tại, hay đang đặt câu hỏi liệu cỗ máy đó có đang đi đúng hướng không?
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Phân biệt rõ quản lý (management) và quản trị (governance) — đây là nền tảng của cả cuốn sách.</li>
+      <li>Nokia và Kodak là minh chứng: hiệu quả vận hành không thay thế được tầm nhìn chiến lược.</li>
+      <li>Mục tiêu của doanh nghiệp phải là trường tồn — lợi nhuận chỉ là phương tiện, không phải đích đến.</li>
+      <li>Con người cần được lãnh đạo bằng tầm nhìn và giá trị, không chỉ bằng KPI và quy trình.</li>
+      <li>Văn hóa gia đình và những giá trị truyền thống có thể là nền tảng cho quản trị hiện đại.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="index.html" class="bnav-btn">🏠 Về Trang Chủ</a>
+    <a href="chuong-01.html" class="bnav-btn next">Chương 1: Trời phú hay học tập? →</a>
+  </div>
+</div>
+
+</body>
+</html>

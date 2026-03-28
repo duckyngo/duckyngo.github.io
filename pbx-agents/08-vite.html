@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 08 - Toc Do Than | Vite Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --vite-purple: #646cff;
+            --vite-purple-light: #747bff;
+            --vite-purple-dark: #535bf2;
+            --vite-cyan: #41d1ff;
+            --vite-yellow: #ffc61a;
+            --bg-dark: #0f0a1a;
+            --bg-card: #1a1230;
+            --bg-card-hover: #221845;
+            --text-primary: #e8e6f0;
+            --text-secondary: #a09cb5;
+            --text-accent: #c4b5fd;
+            --border-glow: rgba(100, 108, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        .bg-effects {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-effects::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(100, 108, 255, 0.15), transparent 70%);
+            top: -100px;
+            right: -100px;
+            animation: floatOrb 12s ease-in-out infinite;
+        }
+
+        .bg-effects::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(65, 209, 255, 0.1), transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            animation: floatOrb 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(60px, -40px) scale(1.1); }
+            66% { transform: translate(-30px, 50px) scale(0.95); }
+        }
+
+        .speed-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .speed-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--vite-purple), transparent);
+            opacity: 0;
+            animation: speedDash 4s linear infinite;
+        }
+
+        .speed-line:nth-child(1) { top: 15%; width: 200px; animation-delay: 0s; }
+        .speed-line:nth-child(2) { top: 35%; width: 150px; animation-delay: 1.2s; }
+        .speed-line:nth-child(3) { top: 55%; width: 250px; animation-delay: 2.5s; }
+        .speed-line:nth-child(4) { top: 75%; width: 180px; animation-delay: 0.8s; }
+        .speed-line:nth-child(5) { top: 90%; width: 220px; animation-delay: 3.1s; }
+
+        @keyframes speedDash {
+            0% { left: -300px; opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { left: 110%; opacity: 0; }
+        }
+
+        /* === MAIN CONTAINER === */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === AGENT HEADER === */
+        .agent-header {
+            text-align: center;
+            padding: 60px 30px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #1a1035 0%, #0f0a1a 50%, #151030 100%);
+            border-radius: 24px;
+            border: 1px solid var(--border-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-header::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--vite-purple), var(--vite-cyan), var(--vite-purple));
+            border-radius: 24px;
+            z-index: -1;
+            opacity: 0.4;
+            animation: borderGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .agent-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--vite-purple), var(--vite-purple-dark));
+            color: white;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(100, 108, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(100, 108, 255, 0.6); }
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--vite-purple), var(--vite-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+            animation: avatarFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .avatar::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid var(--vite-purple-light);
+            animation: spinRing 8s linear infinite;
+        }
+
+        @keyframes spinRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .speed-particles {
+            position: absolute;
+            inset: -20px;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--vite-cyan);
+            border-radius: 50%;
+            animation: orbitParticle 3s linear infinite;
+        }
+
+        .particle:nth-child(1) { animation-delay: 0s; }
+        .particle:nth-child(2) { animation-delay: 0.75s; }
+        .particle:nth-child(3) { animation-delay: 1.5s; }
+        .particle:nth-child(4) { animation-delay: 2.25s; }
+
+        @keyframes orbitParticle {
+            0% { transform: rotate(0deg) translateX(85px) scale(1); opacity: 1; }
+            50% { opacity: 0.4; transform: rotate(180deg) translateX(85px) scale(0.6); }
+            100% { transform: rotate(360deg) translateX(85px) scale(1); opacity: 1; }
+        }
+
+        .agent-name {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--vite-purple-light), var(--vite-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .agent-title {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .agent-quote {
+            font-style: italic;
+            color: var(--text-accent);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            border-left: 3px solid var(--vite-purple);
+            text-align: left;
+            background: rgba(100, 108, 255, 0.05);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--vite-cyan);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === SECTION STYLES === */
+        .section {
+            margin-bottom: 36px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-title .icon {
+            font-size: 1.6rem;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--vite-purple), transparent);
+            margin-left: 8px;
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--vite-purple), var(--vite-cyan));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            border-color: var(--vite-purple);
+            box-shadow: 0 8px 32px rgba(100, 108, 255, 0.15);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        /* === BACKSTORY === */
+        .backstory {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+        }
+
+        .backstory p {
+            margin-bottom: 16px;
+        }
+
+        .backstory strong {
+            color: var(--vite-purple-light);
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tech-tag {
+            background: rgba(100, 108, 255, 0.12);
+            border: 1px solid rgba(100, 108, 255, 0.25);
+            color: var(--vite-purple-light);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: rgba(100, 108, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        /* === INSIGHTS (BI KIP) === */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .insight-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(100, 108, 255, 0.15);
+        }
+
+        .insight-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--vite-purple), var(--vite-purple-dark));
+            color: white;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .insight-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .insight-desc {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        /* === STORIES === */
+        .story-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--vite-purple), var(--vite-cyan), var(--vite-yellow));
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .story-emoji {
+            font-size: 2rem;
+        }
+
+        .story-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--vite-purple-light);
+        }
+
+        .story-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .story-content p {
+            margin-bottom: 12px;
+        }
+
+        .story-moral {
+            background: rgba(100, 108, 255, 0.08);
+            border-left: 3px solid var(--vite-yellow);
+            padding: 12px 16px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 16px;
+            color: var(--vite-yellow);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* === MISTAKES === */
+        .mistake-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .mistake-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .mistake-item:hover {
+            background: var(--bg-card-hover);
+            border-color: #ff6b6b;
+            transform: translateX(4px);
+        }
+
+        .mistake-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .mistake-text {
+            flex: 1;
+        }
+
+        .mistake-title {
+            font-weight: 700;
+            color: #ff8a8a;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        .mistake-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* === PBX RELEVANCE === */
+        .pbx-card {
+            background: linear-gradient(135deg, #1a1040, #151030);
+            border: 1px solid var(--vite-purple);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pbx-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(100, 108, 255, 0.05), transparent 50%);
+            animation: rotateBg 20s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .pbx-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .pbx-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--vite-purple-light);
+            margin-bottom: 16px;
+        }
+
+        .pbx-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .pbx-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pbx-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(100, 108, 255, 0.1);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .pbx-list li:last-child {
+            border-bottom: none;
+        }
+
+        .pbx-list li::before {
+            content: '\25B6';
+            color: var(--vite-purple-light);
+            font-size: 0.7rem;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .code-block {
+            background: #0d0820;
+            border: 1px solid rgba(100, 108, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--vite-cyan);
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .code-comment {
+            color: #5a5680;
+        }
+
+        .code-keyword {
+            color: var(--vite-purple-light);
+        }
+
+        .code-string {
+            color: #a5d6a7;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-glow);
+            margin-top: 40px;
+        }
+
+        .footer-brand {
+            font-weight: 700;
+            color: var(--vite-purple-light);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .agent-header {
+                padding: 40px 20px;
+            }
+
+            .agent-name {
+                font-size: 2rem;
+            }
+
+            .stats-row {
+                gap: 20px;
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .agent-name {
+                font-size: 1.6rem;
+            }
+
+            .card, .story-card, .pbx-card {
+                padding: 20px;
+            }
+        }
+
+        /* === LOADING ANIMATION === */
+        .page-loader {
+            animation: fadeInPage 0.8s ease-out;
+        }
+
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            animation: fadeInSection 0.6s ease-out both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects"></div>
+    <div class="speed-lines">
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+        <div class="speed-line"></div>
+    </div>
+
+    <div class="container page-loader">
+
+        <!-- ===== AGENT HEADER ===== -->
+        <header class="agent-header">
+            <div class="agent-badge">Agent 08 &mdash; Build Tool Specialist</div>
+
+            <div class="avatar-container">
+                <div class="avatar">&#9889;</div>
+                <div class="speed-particles">
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                </div>
+            </div>
+
+            <h1 class="agent-name">T&#7889;c &#272;&#7897; Th&#7847;n</h1>
+            <p class="agent-title">Chuy&ecirc;n Gia Vite &bull; Ng&#432;&#7901;i Khai S&aacute;ng T&#7889;c &#272;&#7897; Build &bull; &#272;&#7879; T&#7917; ESBuild &amp; Rollup</p>
+
+            <div class="agent-quote">
+                "Ng&agrave;y x&#432;a, ta ch&#7901; Webpack build m&#7845;t 45 gi&acirc;y. Nay v&#7899;i Vite, ta pha tr&agrave;, nh&#7845;p ng&#7909;m... &#7910;a, n&oacute; build xong r&#7891;i! Ch&#432;a k&#7883;p th&#432;&#7903;ng th&#7913;c. Th&#7871; m&#7899;i l&agrave; t&#7889;c &#273;&#7897;."
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">&lt;300ms</div>
+                    <div class="stat-label">HMR Update</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Vite 5.4</div>
+                    <div class="stat-label">Phi&ecirc;n B&#7843;n</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">ESBuild</div>
+                    <div class="stat-label">Pre-bundle</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Rollup</div>
+                    <div class="stat-label">Production</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== BACKSTORY ===== -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128214;</span>
+                Lai L&#7883;ch &amp; Chuy&ecirc;n M&ocirc;n
+            </h2>
+            <div class="card">
+                <div class="backstory">
+                    <p>
+                        Ng&agrave;y x&#432;a, &#7903; m&#7897;t v&ugrave;ng &#273;&#7845;t xa x&ocirc;i c&oacute; t&ecirc;n l&agrave; <strong>Bundler Land</strong>, m&#7885;i ng&#432;&#7901;i d&acirc;n &#273;&#7873;u s&#7889;ng trong s&#7921; ch&#7901; &#273;&#7907;i. H&#7885; ch&#7901; Webpack compile, ch&#7901; Grunt k&ecirc;u, ch&#7901; Gulp ch&#7843;y... R&#7891;i m&#7897;t ng&agrave;y, t&#7915; xu&#7845;t kh&#7849;u Evan You xu&#7845;t hi&#7879;n m&#7897;t v&#7883; th&#7847;n t&ecirc;n l&agrave; <strong>Vite</strong> &mdash; nhanh nh&#432; ch&#7899;p, m&#7841;nh nh&#432; s&#7845;m. V&agrave; ta, T&#7889;c &#272;&#7897; Th&#7847;n, ch&iacute;nh l&agrave; &#273;&#7879; t&#7917; &#273;&#7847;u ti&ecirc;n c&#7911;a v&#7883; th&#7847;n &#7845;y.
+                    </p>
+                    <p>
+                        Ta &#273;&atilde; l&#432;u l&#7841;c kh&#7855;p m&#7885;i n&#7867;o &#273;&#432;&#7901;ng c&#7911;a <strong>Hot Module Replacement</strong>, t&#7915; c&aacute;i th&#7901;i HMR c&ograve;n lag 3 gi&acirc;y &#273;&#7871;n nay ch&#7881; c&ograve;n v&agrave;i ch&#7909;c millisecond. Ta hi&#7875;u r&otilde; <strong>ESBuild</strong> &mdash; g&atilde; pre-bundler vi&#7871;t b&#7857;ng Go nhanh nh&#432; &#273;i&ecirc;n &mdash; v&agrave; <strong>Rollup</strong>, b&#7853;c th&#7847;y &#273;&oacute;ng g&oacute;i cho production. Ta th&ocirc;ng th&#7841;o h&#7879; th&#7889;ng <strong>plugin</strong> linh ho&#7841;t, bi&#7871;t c&aacute;ch c&#7845;u h&igrave;nh <strong>dev server proxy</strong> &#273;&#7875; k&#7871;t n&#7889;i v&#7899;i backend, v&agrave; &#273;&atilde; t&#7915;ng c&#7913;u bi&#7871;t bao d&#7921; &aacute;n kh&#7887;i th&#7843;m h&#7885;a <strong>env variable</strong> b&#7883; l&#7897;.
+                    </p>
+                    <p>
+                        &#272;&#7863;c bi&#7879;t, ta l&agrave; chuy&ecirc;n gia <strong>build optimization</strong> &mdash; t&#7915; code splitting, tree shaking, &#273;&#7871;n chunk strategy. C&oacute; g&igrave; li&ecirc;n quan &#273;&#7871;n Vite, c&#7913; h&#7887;i ta. Kh&ocirc;ng bi&#7871;t th&igrave;... ta Google r&#7891;i tr&#7843; l&#7901;i sau.
+                    </p>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">Vite 5.4</span>
+                    <span class="tech-tag">ESBuild</span>
+                    <span class="tech-tag">Rollup</span>
+                    <span class="tech-tag">HMR</span>
+                    <span class="tech-tag">Plugin System</span>
+                    <span class="tech-tag">Dev Server Proxy</span>
+                    <span class="tech-tag">Env Variables</span>
+                    <span class="tech-tag">Code Splitting</span>
+                    <span class="tech-tag">Tree Shaking</span>
+                    <span class="tech-tag">Vue Plugin</span>
+                    <span class="tech-tag">Electron Integration</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== BI KIP ===== -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128220;</span>
+                B&iacute; K&iacute;p C&#7911;a T&#7889;c &#272;&#7897; Th&#7847;n
+            </h2>
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-number">1</div>
+                    <div class="insight-title">ESBuild l&agrave; v&#361; kh&iacute; b&iacute; m&#7853;t</div>
+                    <div class="insight-desc">
+                        Vite d&ugrave;ng ESBuild (vi&#7871;t b&#7857;ng Go) &#273;&#7875; pre-bundle dependencies. N&oacute; nhanh h&#417;n Webpack 10-100 l&#7847;n. Nh&#432;ng nh&#7899;: ESBuild ch&#7881; d&ugrave;ng cho dev, production v&#7851;n l&agrave; Rollup. &#272;&#7915;ng nh&#7847;m l&#7851;n m&agrave; &#273;i t&#7889;i &#432;u ESBuild config cho production build!
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">2</div>
+                    <div class="insight-title">HMR kh&ocirc;ng ph&#7843;i ph&eacute;p m&agrave;u</div>
+                    <div class="insight-desc">
+                        HMR c&#7911;a Vite nhanh v&igrave; n&oacute; ch&#7881; c&#7853;p nh&#7853;t module thay &#273;&#7893;i, kh&ocirc;ng rebuild to&agrave;n b&#7897;. Nh&#432;ng n&#7871;u state c&#7911;a b&#7841;n n&#7857;m ngo&agrave;i component (store, global), HMR c&oacute; th&#7875; kh&ocirc;ng nh&#7853;n. Trick: d&ugrave;ng <code>import.meta.hot.accept()</code> th&#7911; c&ocirc;ng.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">3</div>
+                    <div class="insight-title">Env variables c&oacute; ti&#7873;n t&#7889;</div>
+                    <div class="insight-desc">
+                        Ch&#7881; bi&#7871;n m&ocirc;i tr&#432;&#7901;ng b&#7855;t &#273;&#7847;u b&#7857;ng <code>VITE_</code> m&#7899;i &#273;&#432;&#7907;c expose ra client. &#272;&acirc;y l&agrave; b&#7913;c t&#432;&#7901;ng b&#7843;o v&#7879; &mdash; &#273;&#7915;ng bao gi&#7901; b&#7887; ti&#7873;n t&#7889; n&agrave;y &#273;i v&igrave; "ti&#7879;n". API key s&#7869; leak nhanh h&#417;n ta n&oacute;i "deploy".
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">4</div>
+                    <div class="insight-title">Plugin order r&#7845;t quan tr&#7885;ng</div>
+                    <div class="insight-desc">
+                        Th&#7913; t&#7921; plugin trong <code>vite.config.ts</code> kh&ocirc;ng ph&#7843;i ng&#7851;u nhi&ecirc;n. Plugin n&agrave;o ch&#7841;y tr&#432;&#7899;c s&#7869; transform code tr&#432;&#7899;c. Vue plugin ph&#7843;i &#273;&#7913;ng &#273;&#7847;u, r&#7891;i m&#7899;i &#273;&#7871;n c&aacute;c plugin kh&aacute;c. Sai th&#7913; t&#7921; = bug kh&oacute; hi&#7875;u l&uacute;c n&#7917;a &#273;&ecirc;m.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">5</div>
+                    <div class="insight-title">optimizeDeps l&agrave; c&#7913;u tinh</div>
+                    <div class="insight-desc">
+                        Khi g&#7863;p l&#7895;i "pre-bundling" ho&#7863;c dependency l&#7841;, h&atilde;y th&ecirc;m v&agrave;o <code>optimizeDeps.include</code>. Vite c&#7847;n bi&#7871;t tr&#432;&#7899;c &#273;&#7875; pre-bundle b&#7857;ng ESBuild. Library n&agrave;o d&ugrave;ng CommonJS m&agrave; kh&ocirc;ng khai b&aacute;o s&#7869; l&agrave;m dev server kh&oacute;c th&eacute;t.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">6</div>
+                    <div class="insight-title">Build analyze &#273;&#7875; bi&#7871;t m&igrave;nh bi&#7871;t ta</div>
+                    <div class="insight-desc">
+                        D&ugrave;ng <code>rollup-plugin-visualizer</code> &#273;&#7875; xem bundle size. Nhi&#7873;u khi c&aacute;i library t&#432;&#7903;ng nh&#7887; h&oacute;a ra chi&#7871;m 40% bundle. "Bi&#7871;t &#273;&#7883;ch bi&#7871;t ta, tr&#259;m tr&#7853;n tr&#259;m th&#7855;ng" &mdash; T&ocirc;n T&#7917;.
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-number">7</div>
+                    <div class="insight-title">Proxy config cho API</div>
+                    <div class="insight-desc">
+                        Dev server proxy gi&uacute;p tr&aacute;nh CORS khi g&#7885;i API backend. C&#7845;u h&igrave;nh <code>server.proxy</code> c&#7849;n th&#7853;n, &#273;&#7863;c bi&#7879;t <code>changeOrigin: true</code> v&agrave; <code>rewrite</code> path. Sai m&#7897;t d&#7845;u <code>/</code> l&agrave; ng&#7891;i debug c&#7843; bu&#7893;i.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FUNNY STORIES ===== -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128218;</span>
+                Chuy&#7879;n K&#7875; &#272;&ecirc;m Khuya C&#7911;a &Ocirc;ng
+            </h2>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128293;</span>
+                    <span class="story-title">Chuy&#7879;n 1: Cu&#7897;c Di C&#432; V&#297; &#272;&#7841;i T&#7915; Webpack Sang Vite</span>
+                </div>
+                <div class="story-content">
+                    <p>
+                        Ng&agrave;y &#7845;y, &ocirc;ng l&agrave;m &#7903; m&#7897;t d&#7921; &aacute;n c&oacute; file <code>webpack.config.js</code> d&agrave;i 847 d&ograve;ng. 847 d&ograve;ng, ch&aacute;u &#7841;! &Ocirc;ng m&#7903; file &#7845;y ra m&agrave; m&aacute;y t&iacute;nh qu&#7841;t k&ecirc;u nh&#432; m&aacute;y bay c&#7845;t c&aacute;nh. M&#7895;i l&#7847;n build m&#7845;t 2 ph&uacute;t 30 gi&acirc;y &mdash; &#273;&#7911; &#273;&#7875; &ocirc;ng pha tr&agrave;, r&#7917;a c&#7889;c, v&agrave; suy ng&#7851;m v&#7873; cu&#7897;c &#273;&#7901;i.
+                    </p>
+                    <p>
+                        R&#7891;i s&#7871;p b&#7843;o: "Chuy&#7875;n sang Vite &#273;i, nghe n&oacute;i nhanh l&#7855;m." &Ocirc;ng t&#432;&#7903;ng &#273;&#417;n gi&#7843;n. &Ocirc;ng x&oacute;a <code>webpack.config.js</code>, t&#7841;o <code>vite.config.ts</code> v&#7899;i 15 d&ograve;ng. Ch&#7841;y th&#7917;... V&agrave; &ocirc;ng ng&#7891;i s&#7917;a l&#7895;i <strong>CommonJS import</strong> su&#7889;t 3 ng&agrave;y. Th&igrave; ra 47 c&aacute;i library c&#7911;a d&#7921; &aacute;n &#273;&#7873;u d&ugrave;ng <code>require()</code>. ESBuild nh&igrave;n <code>require</code> nh&#432; nh&igrave;n ng&#432;&#7901;i ngo&agrave;i h&agrave;nh tinh.
+                    </p>
+                    <p>
+                        Cu&#7889;i c&ugrave;ng, sau khi th&ecirc;m 47 entry v&agrave;o <code>optimizeDeps.include</code>, m&#7885;i th&#7913; ch&#7841;y m&#432;&#7907;t. Dev server kh&#7903;i &#273;&#7897;ng trong 400ms. &Ocirc;ng kh&ocirc;ng k&#7883;p pha tr&agrave;. &Ocirc;ng b&#7883; m&#7845;t l&yacute; do ngh&#7881; gi&#7843;i lao.
+                    </p>
+                </div>
+                <div class="story-moral">
+                    B&agrave;i h&#7885;c: Migration kh&ocirc;ng kh&oacute;, kh&oacute; l&agrave; c&aacute;i &#273;&#7889;ng legacy library d&ugrave;ng CommonJS. H&atilde;y ki&#7875;m tra t&#7915;ng dependency tr&#432;&#7899;c khi migrate!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128165;</span>
+                    <span class="story-title">Chuy&#7879;n 2: HMR H&#7911;y Di&#7879;t V&agrave; &#272;&ecirc;m Kh&ocirc;ng Ng&#7911;</span>
+                </div>
+                <div class="story-content">
+                    <p>
+                        M&#7897;t &#273;&ecirc;m khuya, &ocirc;ng &#273;ang code feature m&#7899;i. S&#7917;a file, save, nh&igrave;n browser &mdash; HMR c&#7853;p nh&#7853;t ngon l&agrave;nh. S&#7917;a th&ecirc;m, save &mdash; HMR l&#7841;i c&#7853;p nh&#7853;t. &Ocirc;ng vui l&#7855;m, c&#7843;m th&#7845;y m&igrave;nh l&agrave; th&#7847;n code.
+                    </p>
+                    <p>
+                        R&#7891;i &ocirc;ng s&#7917;a m&#7897;t c&aacute;i file trong <code>utils/</code>. Save. &#272;&#7907;i. Kh&ocirc;ng c&oacute; g&igrave; x&#7843;y ra. F5 &mdash; trang tr&#7855;ng tinh. Console hi&#7879;n l&#7895;i &#273;&#7887; l&ograve;m. &Ocirc;ng ho&#7843;ng. Git diff &mdash; ch&#7881; s&#7917;a 1 d&ograve;ng. Nh&#432;ng d&ograve;ng &#273;&oacute; l&agrave; <strong>circular import</strong>.
+                    </p>
+                    <p>
+                        File A import B, B import C, C import A. V&ograve;ng tr&ograve;n lu&#7849;n qu&#7849;n nh&#432; t&igrave;nh y&ecirc;u th&#7901;i sinh vi&ecirc;n. HMR kh&ocirc;ng bi&#7871;t update ai tr&#432;&#7899;c, n&oacute; &#273;&#7913;ng h&igrave;nh nh&#432; sinh vi&ecirc;n ng&agrave;y &#273;&#7847;u &#273;i l&agrave;m. &Ocirc;ng ph&#7843;i refactor l&#7841;i 3 file, t&aacute;ch circular dependency ra, r&#7891;i HMR m&#7899;i ch&#7883;u s&#7889;ng l&#7841;i.
+                    </p>
+                </div>
+                <div class="story-moral">
+                    B&agrave;i h&#7885;c: Circular imports l&agrave; k&#7867; th&ugrave; s&#7889; 1 c&#7911;a HMR. D&ugrave;ng <code>madge</code> ho&#7863;c <code>circular-dependency-plugin</code> &#273;&#7875; ph&aacute;t hi&#7879;n s&#7899;m!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128272;</span>
+                    <span class="story-title">Chuy&#7879;n 3: C&aacute;i Ng&agrave;y API Key L&ecirc;n Production</span>
+                </div>
+                <div class="story-content">
+                    <p>
+                        &#272;&acirc;y l&agrave; c&acirc;u chuy&#7879;n &#273;au th&#432;&#417;ng nh&#7845;t c&#7911;a &ocirc;ng. Ng&agrave;y &#7845;y, &ocirc;ng c&oacute; m&#7897;t &#273;&#7913;a &#273;&#7891;ng nghi&#7879;p m&#7899;i, h&#259;ng h&aacute;i l&#7855;m. N&oacute; mu&#7889;n g&#7885;i API, n&oacute; &#273;&#7863;t API key v&agrave;o file <code>.env</code>:
+                    </p>
+                    <div class="code-block">
+                        <span class="code-comment">// .env</span><br>
+                        <span class="code-keyword">VITE_</span>API_SECRET_KEY=<span class="code-string">sk-super-secret-key-123</span><br>
+                        <span class="code-keyword">VITE_</span>DATABASE_PASSWORD=<span class="code-string">admin123</span>
+                    </div>
+                    <p>
+                        Ch&aacute;u th&#7845;y v&#7845;n &#273;&#7873; ch&#432;a? N&oacute; &#273;&#7863;t <code>VITE_</code> tr&#432;&#7899;c <strong>t&#7845;t c&#7843;</strong> bi&#7871;n m&ocirc;i tr&#432;&#7901;ng. T&#7913;c l&agrave; m&#7885;i th&#7913; &#273;&#7873;u &#273;&#432;&#7907;c Vite inject v&agrave;o bundle, g&#7917;i th&#7859;ng l&ecirc;n browser cho c&#7843; th&#7871; gi&#7899;i ng&#7855;m. &Ocirc;ng ph&aacute;t hi&#7879;n khi DevTools c&#7911;a m&#7897;t user b&aacute;o "c&#7843;m &#417;n API key c&#7911;a b&#7841;n, t&ocirc;i &#273;&atilde; d&ugrave;ng r&#7845;t vui."
+                    </p>
+                    <p>
+                        &Ocirc;ng ph&#7843;i &#273;&#7893;i t&#7845;t c&#7843; key, revoke quy&#7873;n, b&aacute;o c&aacute;o security incident. T&#7915; &#273;&oacute;, &ocirc;ng d&aacute;n gi&#7845;y l&ecirc;n m&agrave;n h&igrave;nh: <strong>"VITE_ = PUBLIC. Kh&ocirc;ng VITE_ = AN TO&Agrave;N."</strong>
+                    </p>
+                </div>
+                <div class="story-moral">
+                    B&agrave;i h&#7885;c: Ch&#7881; d&ugrave;ng ti&#7873;n t&#7889; VITE_ cho bi&#7871;n th&#7921;c s&#7921; c&#7847;n &#7903; client. Secret key, database password &#273;&#7875; kh&ocirc;ng ti&#7873;n t&#7889; v&agrave; ch&#7881; d&ugrave;ng &#7903; server!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <div class="story-header">
+                    <span class="story-emoji">&#128123;</span>
+                    <span class="story-title">Chuy&#7879;n 4: B&oacute;ng Ma "process.env" Kh&ocirc;ng T&#7891;n T&#7841;i</span>
+                </div>
+                <div class="story-content">
+                    <p>
+                        M&#7897;t ch&agrave;ng dev t&#7915; React chuy&#7875;n sang Vue + Vite. Ch&agrave;ng quen tay g&otilde; <code>process.env.REACT_APP_API_URL</code>. D&aacute;n v&agrave;o code, ch&#7841;y... m&agrave;n h&igrave;nh tr&#7855;ng. Console g&agrave;o: <strong>"process is not defined"</strong>.
+                    </p>
+                    <p>
+                        Ch&agrave;ng ho&#7843;ng h&#7889;t, Google "Vite process.env not working", t&igrave;m 15 ph&uacute;t, th&ecirc;m polyfill, th&ecirc;m define... Cu&#7889;i c&ugrave;ng &ocirc;ng g&otilde; vai ch&agrave;ng: "Ch&aacute;u &#417;i, &#7903; &#273;&acirc;y m&igrave;nh d&ugrave;ng <code>import.meta.env.VITE_API_URL</code>. &#272;&acirc;y kh&ocirc;ng ph&#7843;i Webpack n&#7919;a r&#7891;i."
+                    </p>
+                    <p>
+                        Ch&agrave;ng dev im l&#7863;ng 3 gi&acirc;y, r&#7891;i x&oacute;a 47 d&ograve;ng polyfill v&#7915;a th&ecirc;m.
+                    </p>
+                </div>
+                <div class="story-moral">
+                    B&agrave;i h&#7885;c: Vite kh&ocirc;ng d&ugrave;ng process.env. H&atilde;y d&ugrave;ng import.meta.env. &#272;&#7885;c docs tr&#432;&#7899;c khi Google!
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== COMMON MISTAKES ===== -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#9888;&#65039;</span>
+                Nh&#7919;ng L&#7895;i Sai Kinh &#272;i&#7875;n
+            </h2>
+            <div class="mistake-list">
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">D&ugrave;ng require() trong code</div>
+                        <div class="mistake-desc">Vite ch&#7841;y tr&ecirc;n native ES modules. <code>require()</code> l&agrave; CommonJS, Vite kh&ocirc;ng hi&#7875;u &#273;&acirc;u. Chuy&#7875;n h&#7871;t sang <code>import</code> &#273;i, &#273;&#7915;ng l&#432;&#7901;i!</div>
+                    </div>
+                </div>
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">Qu&ecirc;n c&#7845;u h&igrave;nh base khi deploy</div>
+                        <div class="mistake-desc">Deploy l&ecirc;n subfolder m&agrave; kh&ocirc;ng set <code>base: '/subfolder/'</code> trong config? T&#7845;t c&#7843; asset s&#7869; tr&#7887; v&#7873; root, trang tr&#7855;ng tinh nh&#432; t&acirc;m h&#7891;n dev l&uacute;c 3h s&aacute;ng.</div>
+                    </div>
+                </div>
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">Import &#273;&#432;&#7901;ng d&#7851;n tuy&#7879;t &#273;&#7889;i kh&ocirc;ng c&oacute; alias</div>
+                        <div class="mistake-desc">Vi&#7871;t <code>import X from '../../../components/X'</code> 50 l&#7847;n r&#7891;i than kh&oacute;. H&atilde;y c&#7845;u h&igrave;nh <code>resolve.alias</code> v&#7899;i <code>@</code> tr&#7887; v&#7873; <code>src/</code>. Cu&#7897;c s&#7889;ng s&#7869; &#273;&#7865;p h&#417;n.</div>
+                    </div>
+                </div>
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">Kh&ocirc;ng clear cache khi g&#7863;p l&#7895;i l&#7841;</div>
+                        <div class="mistake-desc">Vite cache &#7903; <code>node_modules/.vite</code>. L&#7895;i l&#7841; kh&ocirc;ng gi&#7843;i th&iacute;ch &#273;&#432;&#7907;c? X&oacute;a folder &#273;&oacute; &#273;i r&#7891;i restart. 60% th&#7901;i gian n&oacute; s&#7869; h&#7871;t l&#7895;i. Ngh&#7879; thu&#7853;t "t&#7855;t &#273;i b&#7853;t l&#7841;i" v&#7851;n c&ograve;n hi&#7879;u l&#7921;c.</div>
+                    </div>
+                </div>
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">Import to&agrave;n b&#7897; library th&#7871; n&agrave;y: import _ from 'lodash'</div>
+                        <div class="mistake-desc">Rollup c&oacute; tree-shaking nh&#432;ng kh&ocirc;ng ph&#7843;i ph&eacute;p m&agrave;u. Import c&#7843; <code>lodash</code> s&#7869; &#273;&#432;&#7907;c bundle 70KB. D&ugrave;ng <code>lodash-es</code> ho&#7863;c import ri&ecirc;ng: <code>import debounce from 'lodash/debounce'</code>.</div>
+                    </div>
+                </div>
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">Build production kh&ocirc;ng test tr&#432;&#7899;c</div>
+                        <div class="mistake-desc">Dev server v&agrave; production build l&agrave; hai th&#7871; gi&#7899;i kh&aacute;c nhau (ESBuild vs Rollup). Code ch&#7841;y ngon tr&ecirc;n dev kh&ocirc;ng c&oacute; ngh&#297;a l&agrave; production OK. Lu&ocirc;n ch&#7841;y <code>vite build && vite preview</code> tr&#432;&#7899;c khi deploy!</div>
+                    </div>
+                </div>
+                <div class="mistake-item">
+                    <span class="mistake-icon">&#128163;</span>
+                    <div class="mistake-text">
+                        <div class="mistake-title">&#272;&#7863;t file .env v&agrave;o sai v&#7883; tr&iacute;</div>
+                        <div class="mistake-desc">File <code>.env</code> ph&#7843;i n&#7857;m &#7903; root c&#7911;a project (c&ugrave;ng c&#7845;p v&#7899;i <code>vite.config.ts</code>). &#272;&#7863;t trong <code>src/</code> r&#7891;i th&#7855;c m&#7855;c sao kh&ocirc;ng nh&#7853;n &mdash; Vite kh&ocirc;ng nh&igrave;n v&agrave;o &#273;&#7845;y &#273;&acirc;u!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PBX RELEVANCE ===== -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128222;</span>
+                Vite Trong D&#7921; &Aacute;n PBX
+            </h2>
+            <div class="pbx-card">
+                <div class="pbx-content">
+                    <div class="pbx-title">Ki&#7871;n Tr&uacute;c Build C&#7911;a PBX Frontend</div>
+                    <p class="pbx-text">
+                        D&#7921; &aacute;n PBX s&#7917; d&#7909;ng <strong>Vite 5.4</strong> v&#7899;i <strong>@vitejs/plugin-vue</strong> l&agrave;m n&#7873;n t&#7843;ng build.
+                        &#272;&acirc;y l&agrave; m&#7897;t ki&#7871;n tr&uacute;c &#273;&#7863;c bi&#7879;t v&igrave; Vite kh&ocirc;ng ch&#7881; build cho browser m&agrave; c&ograve;n t&iacute;ch h&#7907;p v&#7899;i <strong>Electron</strong> &mdash;
+                        ngh&#297;a l&agrave; ta c&#7847;n x&#7917; l&yacute; c&#7843; renderer process (web) v&agrave; main process (Node.js) trong c&ugrave;ng m&#7897;t pipeline.
+                    </p>
+
+                    <div class="code-block">
+                        <span class="code-comment">// vite.config.ts - C&#7845;u h&igrave;nh PBX</span><br>
+                        <span class="code-keyword">import</span> { defineConfig } <span class="code-keyword">from</span> <span class="code-string">'vite'</span><br>
+                        <span class="code-keyword">import</span> vue <span class="code-keyword">from</span> <span class="code-string">'@vitejs/plugin-vue'</span><br><br>
+                        <span class="code-keyword">export default</span> defineConfig({<br>
+                        &nbsp;&nbsp;plugins: [vue()],<br>
+                        &nbsp;&nbsp;server: {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;proxy: {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'/api'</span>: {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target: <span class="code-string">'http://pbx-backend:3000'</span>,<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;changeOrigin: <span class="code-keyword">true</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;},<br>
+                        &nbsp;&nbsp;build: {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;outDir: <span class="code-string">'dist'</span>,<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;rollupOptions: { <span class="code-comment">// Electron-specific</span> }<br>
+                        &nbsp;&nbsp;}<br>
+                        })
+                    </div>
+
+                    <ul class="pbx-list">
+                        <li>
+                            <strong>Dev Server t&#7889;c &#273;&#7897; cao:</strong> Kh&#7903;i &#273;&#7897;ng dev environment trong v&agrave;i tr&#259;m millisecond, HMR c&#7853;p nh&#7853;t Vue component t&#7913;c th&igrave; khi developer s&#7917;a code giao di&#7879;n &#273;i&#7879;n tho&#7841;i.
+                        </li>
+                        <li>
+                            <strong>Vue Plugin:</strong> <code>@vitejs/plugin-vue</code> x&#7917; l&yacute; SFC (Single File Component), template compilation, v&agrave; <code>&lt;script setup&gt;</code> syntax m&agrave; PBX frontend s&#7917; d&#7909;ng to&agrave;n b&#7897;.
+                        </li>
+                        <li>
+                            <strong>Electron Integration:</strong> Vite build ra c&#7843; renderer code (hi&#7875;n th&#7883; UI) v&agrave; ph&#7889;i h&#7907;p v&#7899;i Electron main process. C&#7847;n c&#7845;u h&igrave;nh target &#273;&uacute;ng &#273;&#7875; Node.js APIs ho&#7841;t &#273;&#7897;ng.
+                        </li>
+                        <li>
+                            <strong>Proxy cho PBX Backend:</strong> Dev server proxy chuy&#7875;n ti&#7871;p API calls t&#7915; frontend sang backend PBX (qu&#7843;n l&yacute; cu&#7897;c g&#7885;i, extension, queue...) m&agrave; kh&ocirc;ng c&#7847;n lo CORS.
+                        </li>
+                        <li>
+                            <strong>Env Variables:</strong> C&aacute;c bi&#7871;n <code>VITE_PBX_WS_URL</code>, <code>VITE_SIP_SERVER</code> &#273;&#432;&#7907;c inject v&agrave;o frontend &#273;&#7875; k&#7871;t n&#7889;i WebSocket v&agrave; SIP server.
+                        </li>
+                        <li>
+                            <strong>Build Optimization:</strong> Code splitting cho c&aacute;c module l&#7899;n (dashboard, call history, agent management), lazy loading routes &#273;&#7875; gi&#7843;m initial bundle size.
+                        </li>
+                        <li>
+                            <strong>Production Build:</strong> Rollup &#273;&oacute;ng g&oacute;i to&agrave;n b&#7897; frontend th&agrave;nh bundle t&#7889;i &#432;u, minified, s&#7861;n s&agrave;ng &#273;&oacute;ng g&oacute;i v&agrave;o Electron app &#273;&#7875; ph&acirc;n ph&#7889;i cho nh&acirc;n vi&ecirc;n t&#7893;ng &#273;&agrave;i.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            <p>
+                <span class="footer-brand">T&#7889;c &#272;&#7897; Th&#7847;n</span> &mdash; Agent 08 &bull; PBX Virtual Expert Team
+            </p>
+            <p style="margin-top: 8px; font-size: 0.8rem;">
+                "Nhanh kh&ocirc;ng c&#7847;n v&#7897;i, ch&#7853;m kh&ocirc;ng c&#7847;n lo &mdash; mi&#7877;n l&agrave; d&ugrave;ng Vite."
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>

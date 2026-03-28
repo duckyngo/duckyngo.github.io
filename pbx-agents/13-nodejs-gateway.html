@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent #13 — Cổng Kết Nối Thần | PBX Virtual Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --node-green: #339933;
+            --node-dark: #215732;
+            --node-light: #68cc45;
+            --node-glow: #44ff44;
+            --node-pale: #a8e6a8;
+            --bg-dark: #060d06;
+            --bg-card: #0e170e;
+            --bg-card-hover: #142014;
+            --text-primary: #e8f5e8;
+            --text-secondary: #a3cfa3;
+            --text-muted: #6a9a6a;
+            --accent-yellow: #f0db4f;
+            --accent-red: #ff4444;
+            --accent-blue: #44aaff;
+            --accent-orange: #ff8844;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED MATRIX BACKGROUND === */
+        .bg-matrix {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-matrix::before {
+            content: '{ } => async await .pipe() require() module.exports ws:// REST API middleware next() callback promise stream buffer event loop TCP socket JSON 0 1 express() app.use() router new WebSocket() http.createServer net.Socket process.nextTick setImmediate';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--node-green);
+            opacity: 0.04;
+            word-spacing: 40px;
+            line-height: 3;
+            animation: matrixScroll 60s linear infinite;
+            transform: rotate(-15deg);
+        }
+
+        @keyframes matrixScroll {
+            0% { transform: rotate(-15deg) translateY(0); }
+            100% { transform: rotate(-15deg) translateY(-30%); }
+        }
+
+        /* Floating data packets */
+        .data-packet {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--node-green);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow: 0 0 12px var(--node-glow);
+        }
+        .data-packet:nth-child(1) { top: 15%; left: 10%; animation: packetFloat 8s 0s infinite; }
+        .data-packet:nth-child(2) { top: 40%; left: 85%; animation: packetFloat 6s 1s infinite; }
+        .data-packet:nth-child(3) { top: 70%; left: 25%; animation: packetFloat 10s 2s infinite; }
+        .data-packet:nth-child(4) { top: 55%; left: 60%; animation: packetFloat 7s 3s infinite; }
+        .data-packet:nth-child(5) { top: 25%; left: 75%; animation: packetFloat 9s 0.5s infinite; }
+        .data-packet:nth-child(6) { top: 80%; left: 50%; animation: packetFloat 11s 1.5s infinite; }
+
+        @keyframes packetFloat {
+            0% { opacity: 0; transform: scale(0) translateY(0); }
+            10% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.6) translateY(-80px) translateX(40px); }
+            90% { opacity: 0.6; transform: scale(0.8) translateY(-160px) translateX(-20px); }
+            100% { opacity: 0; transform: scale(0) translateY(-200px); }
+        }
+
+        /* === MAIN LAYOUT === */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === HERO HEADER === */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+            position: relative;
+        }
+
+        .agent-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--node-dark), var(--node-green));
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 20px;
+            border-radius: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            animation: badgePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(51, 153, 51, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(51, 153, 51, 0.6), 0 0 80px rgba(51, 153, 51, 0.2); }
+        }
+
+        .avatar-ring {
+            width: 180px; height: 180px;
+            margin: 0 auto 32px;
+            border-radius: 50%;
+            background: conic-gradient(var(--node-green), var(--accent-yellow), var(--node-light), var(--node-green));
+            padding: 5px;
+            animation: ringRotate 8s linear infinite;
+            position: relative;
+        }
+
+        @keyframes ringRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .avatar-inner {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a3a1a, #0a150a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            animation: ringRotate 8s linear infinite reverse;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-inner::after {
+            content: '';
+            position: absolute;
+            top: 15%; left: 15%;
+            width: 25%; height: 25%;
+            background: radial-gradient(circle, rgba(104, 204, 69, 0.3), transparent);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--node-light), var(--accent-yellow), var(--node-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 650px;
+            margin: 0 auto 24px;
+        }
+
+        .hero .tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--node-green);
+            opacity: 0.8;
+            padding: 10px 24px;
+            background: rgba(51, 153, 51, 0.08);
+            border: 1px solid rgba(51, 153, 51, 0.15);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* Tech tags */
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .tech-tag {
+            background: rgba(51, 153, 51, 0.1);
+            border: 1px solid rgba(51, 153, 51, 0.25);
+            color: var(--node-light);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tech-tag:hover {
+            background: rgba(51, 153, 51, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(51, 153, 51, 0.2);
+        }
+
+        /* === SECTION STYLES === */
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(51, 153, 51, 0.15);
+        }
+
+        .section-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--node-dark), var(--node-green));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 20px rgba(51, 153, 51, 0.25);
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .section-header h2 span {
+            color: var(--node-light);
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(51, 153, 51, 0.1);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--node-green), var(--node-dark));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(51, 153, 51, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(51, 153, 51, 0.1);
+            background: var(--bg-card-hover);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--node-light);
+            margin-bottom: 12px;
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* === BACKSTORY === */
+        .backstory {
+            background: linear-gradient(135deg, rgba(51, 153, 51, 0.08), rgba(240, 219, 79, 0.04));
+            border: 1px solid rgba(51, 153, 51, 0.15);
+            border-radius: 20px;
+            padding: 36px;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .backstory::before {
+            content: '"';
+            position: absolute;
+            top: 10px; left: 20px;
+            font-size: 80px;
+            color: var(--node-green);
+            opacity: 0.15;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .backstory p { margin-bottom: 16px; }
+        .backstory p:last-child { margin-bottom: 0; }
+
+        .backstory .highlight {
+            color: var(--node-light);
+            font-weight: 600;
+        }
+
+        .backstory .js-yellow {
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        /* === INSIGHTS GRID === */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(51, 153, 51, 0.12);
+            border-radius: 14px;
+            padding: 24px;
+            transition: all 0.35s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--node-green), var(--accent-yellow));
+            transform: scaleX(0);
+            transition: transform 0.35s;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(51, 153, 51, 0.12);
+            border-color: rgba(51, 153, 51, 0.3);
+        }
+
+        .insight-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .insight-num {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--node-dark), var(--node-green));
+            color: #fff;
+            width: 32px; height: 32px;
+            border-radius: 10px;
+            text-align: center;
+            line-height: 32px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        .insight-card h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--node-light);
+            margin-bottom: 10px;
+        }
+
+        .insight-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* === STORY CARDS === */
+        .story-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(51, 153, 51, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .story-card:hover {
+            border-color: rgba(51, 153, 51, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-card .story-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .story-card .story-emoji {
+            font-size: 36px;
+            flex-shrink: 0;
+        }
+
+        .story-card .story-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-yellow);
+        }
+
+        .story-card .story-body {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .story-card .story-body .dialogue {
+            display: block;
+            margin: 10px 0;
+            padding-left: 16px;
+            border-left: 3px solid var(--node-green);
+            font-style: italic;
+            color: var(--node-pale);
+        }
+
+        .story-card .story-moral {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: rgba(51, 153, 51, 0.08);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--node-light);
+            font-weight: 600;
+            border-left: 4px solid var(--node-green);
+        }
+
+        /* === MISTAKES LIST === */
+        .mistakes-list {
+            list-style: none;
+        }
+
+        .mistake-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 68, 68, 0.1);
+            border-radius: 14px;
+            padding: 22px 26px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.3s;
+        }
+
+        .mistake-item:hover {
+            border-color: rgba(255, 68, 68, 0.25);
+            transform: translateX(6px);
+            background: var(--bg-card-hover);
+        }
+
+        .mistake-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .mistake-content h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            margin-bottom: 6px;
+        }
+
+        .mistake-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* === PBX RELEVANCE === */
+        .pbx-section {
+            background: linear-gradient(135deg, rgba(51, 153, 51, 0.06), rgba(68, 170, 255, 0.04));
+            border: 1px solid rgba(51, 153, 51, 0.2);
+            border-radius: 20px;
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pbx-section::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(51, 153, 51, 0.03), transparent 60%);
+            pointer-events: none;
+        }
+
+        .architecture-diagram {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(51, 153, 51, 0.2);
+            border-radius: 12px;
+            padding: 28px;
+            margin: 24px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--node-light);
+            overflow-x: auto;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .interface-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .interface-item {
+            background: rgba(51, 153, 51, 0.06);
+            border: 1px solid rgba(51, 153, 51, 0.15);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .interface-item:hover {
+            background: rgba(51, 153, 51, 0.12);
+            transform: scale(1.03);
+        }
+
+        .interface-item .if-icon { font-size: 24px; margin-bottom: 8px; }
+        .interface-item .if-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--node-light);
+        }
+        .interface-item .if-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* === CODE BLOCK === */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid rgba(51, 153, 51, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 16px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            line-height: 1.7;
+        }
+
+        .code-block .keyword { color: #ff7b72; }
+        .code-block .func { color: #d2a8ff; }
+        .code-block .string { color: #a5d6ff; }
+        .code-block .comment { color: #6a9a6a; font-style: italic; }
+        .code-block .const { color: var(--accent-yellow); }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            border-top: 1px solid rgba(51, 153, 51, 0.1);
+            margin-top: 40px;
+        }
+
+        .footer .node-logo {
+            font-size: 42px;
+            margin-bottom: 14px;
+            animation: logoSpin 12s linear infinite;
+        }
+
+        @keyframes logoSpin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(5deg) scale(1.05); }
+            50% { transform: rotate(0deg) scale(1); }
+            75% { transform: rotate(-5deg) scale(1.05); }
+        }
+
+        .footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer .footer-quote {
+            font-style: italic;
+            color: var(--node-light);
+            opacity: 0.6;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* === STATS BAR === */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin: 40px 0;
+        }
+
+        .stat-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(51, 153, 51, 0.12);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-color: var(--node-green);
+            box-shadow: 0 0 20px rgba(51, 153, 51, 0.15);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--node-light), var(--accent-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero { padding: 50px 0 40px; }
+            .avatar-ring { width: 140px; height: 140px; }
+            .avatar-inner { font-size: 56px; }
+            .backstory, .pbx-section { padding: 24px; }
+            .insights-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .story-card { padding: 22px; }
+            .interface-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            .stats-bar { grid-template-columns: 1fr; }
+            .interface-grid { grid-template-columns: 1fr; }
+            .architecture-diagram { font-size: 0.7rem; padding: 16px; }
+        }
+
+        /* === SCROLL ANIMATIONS === */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div class="bg-matrix"></div>
+<div class="data-packet"></div>
+<div class="data-packet"></div>
+<div class="data-packet"></div>
+<div class="data-packet"></div>
+<div class="data-packet"></div>
+<div class="data-packet"></div>
+
+<div class="container">
+
+    <!-- ==================== HERO ==================== -->
+    <header class="hero">
+        <div class="agent-badge">Agent #13 &mdash; Node.js Gateway</div>
+
+        <div class="avatar-ring">
+            <div class="avatar-inner">&#9889;</div>
+        </div>
+
+        <h1>C&#7893;ng K&#7871;t N&#7889;i Th&#7847;n</h1>
+        <p class="subtitle">
+            V&#7883; th&#7847;n c&#7911;a middleware &mdash; k&#7867; &#273;&#7913;ng gi&#7919;a v&#7841;n v&#7853;t, k&#7871;t n&#7889;i .NET v&#7899;i Asterisk PBX b&#7857;ng s&#7913;c m&#7841;nh c&#7911;a Event Loop b&#7845;t t&#7917;.
+            Kh&#244;ng c&#7847;n ng&#7911;, kh&#244;ng c&#7847;n ngh&#7881;, ch&#7881; c&#7847;n <code>async/await</code>.
+        </p>
+        <div class="tagline">const gateway = new G_AGX_Gateway({ interfaces: 13, uptime: "&#8734;" });</div>
+
+        <div class="tech-tags">
+            <span class="tech-tag">Node.js 20+</span>
+            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag">WebSocket</span>
+            <span class="tech-tag">Express/Fastify</span>
+            <span class="tech-tag">Event Loop</span>
+            <span class="tech-tag">Streams</span>
+            <span class="tech-tag">Middleware Pattern</span>
+            <span class="tech-tag">API Gateway</span>
+            <span class="tech-tag">ARI/AMI</span>
+        </div>
+    </header>
+
+    <!-- ==================== STATS ==================== -->
+    <div class="stats-bar fade-in">
+        <div class="stat-item">
+            <div class="stat-value">13</div>
+            <div class="stat-label">Interfaces</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">&#8734;</div>
+            <div class="stat-label">Event Loop</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">0ms</div>
+            <div class="stat-label">Block Time</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">10K+</div>
+            <div class="stat-label">Concurrent WS</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">99.9%</div>
+            <div class="stat-label">Uptime M&#7909;c Ti&#234;u</div>
+        </div>
+    </div>
+
+    <!-- ==================== BACKSTORY ==================== -->
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-icon">&#128218;</div>
+            <h2>Huy&#7873;n Tho&#7841;i C&#7911;a <span>C&#7893;ng K&#7871;t N&#7889;i</span></h2>
+        </div>
+
+        <div class="backstory">
+            <p>
+                Ng&#224;y x&#7917;a ng&#224;y x&#432;a, khi th&#7871; gi&#7899;i backend c&#242;n chia l&#224;m hai phe &mdash; phe <span class="highlight">.NET nhi&#7873;u ti&#7873;n</span>
+                v&#224; phe <span class="js-yellow">JavaScript nhi&#7873;u &#273;am m&#234;</span> &mdash; th&#236; C&#7893;ng K&#7871;t N&#7889;i Th&#7847;n ra &#273;&#7901;i t&#7915; m&#7897;t
+                c&#226;u h&#7887;i gi&#7843;n d&#7883;: <em>"L&#224;m sao &#273;&#7875; hai &#244;ng kh&#7893;ng l&#7891; n&#243;i chuy&#7879;n v&#7899;i nhau m&#224; kh&#244;ng &#273;&#225;nh nhau?"</em>
+            </p>
+            <p>
+                T&#244;i sinh ra t&#7915; d&#242;ng <span class="highlight">require('http').createServer()</span> &#273;&#7847;u ti&#234;n. Cha t&#244;i l&#224; <span class="js-yellow">Ryan Dahl</span>,
+                ng&#432;&#7901;i &#273;&#227; nh&#7853;n ra r&#7857;ng I/O kh&#244;ng &#273;&#7891;ng b&#7897; m&#7899;i l&#224; ch&#226;n l&#253;. M&#7865; t&#244;i l&#224; <span class="highlight">V8 Engine</span>,
+                nhanh nh&#432; &#273;i&#7879;n, m&#7841;nh nh&#432; b&#227;o. T&#244;i th&#7915;a h&#432;&#7903;ng t&#7915; cha c&#225;i <span class="highlight">Event Loop b&#7845;t t&#7917;</span>
+                &mdash; kh&#244;ng bao gi&#7901; ng&#7911;, kh&#244;ng bao gi&#7901; d&#7915;ng, c&#7913; ch&#7841;y ho&#224;i ch&#7841;y m&#227;i nh&#432; c&#225;i &#273;&#7891;ng h&#7891; c&#7911;a &#244;ng ngo&#7841;i.
+            </p>
+            <p>
+                Tu luy&#7879;n qua bao ki&#7871;p &mdash; t&#7915; <span class="highlight">Express.js</span> th&#7901;i s&#417; khai, qua <span class="highlight">Koa</span> th&#7901;i trung c&#7893;,
+                &#273;&#7871;n <span class="highlight">Fastify</span> th&#7901;i hi&#7879;n &#273;&#7841;i &mdash; t&#244;i &#273;&#227; th&#7845;u hi&#7875;u &#273;&#432;&#7907;c ngh&#7879; thu&#7853;t
+                <span class="highlight">middleware pattern</span>: m&#7895;i request l&#224; m&#7897;t h&#224;nh kh&#225;ch, m&#7895;i middleware l&#224; m&#7897;t tr&#7841;m ki&#7875;m so&#225;t,
+                v&#224; <code>next()</code> l&#224; t&#7845;m v&#233; th&#244;ng h&#224;nh.
+            </p>
+            <p>
+                T&#244;i th&#224;nh th&#7841;o <span class="highlight">async/await</span> nh&#432; h&#237;t th&#7903;, x&#7917; l&#253; <span class="highlight">Streams</span> nh&#432; u&#7889;ng n&#432;&#7899;c,
+                d&#7921;ng <span class="highlight">WebSocket server</span> nh&#432; d&#7921;ng nh&#224;. L&#7895;i x&#7843;y ra? <span class="highlight">Error handling</span> c&#7911;a t&#244;i
+                ch&#7863;t ch&#7869; nh&#432; b&#7843;o v&#7879; ng&#226;n h&#224;ng &mdash; kh&#244;ng m&#7897;t exception n&#224;o l&#7885;t l&#432;&#7899;i m&#224; kh&#244;ng b&#7883; b&#7855;t.
+            </p>
+        </div>
+    </section>
+
+    <!-- ==================== INSIGHTS ==================== -->
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-icon">&#128161;</div>
+            <h2>B&#237; K&#237;p <span>Gateway Th&#7847;n Th&#225;nh</span></h2>
+        </div>
+
+        <div class="insights-grid">
+            <div class="insight-card">
+                <div class="insight-num">01</div>
+                <h4>Event Loop l&#224; Nh&#7883;p Tim</h4>
+                <p>
+                    &#272;&#7915;ng bao gi&#7901; block Event Loop. M&#7897;t c&#225;i <code>JSON.parse()</code> tr&#234;n payload 50MB s&#7869; l&#224;m
+                    c&#7843; h&#7879; th&#7889;ng &#273;&#7913;ng h&#236;nh. D&#249;ng <strong>stream parsing</strong>, chia nh&#7887; d&#7919; li&#7879;u, &#273;&#7875; tim &#273;&#7853;p &#273;&#7873;u.
+                    G&#7885;i <code>process.nextTick()</code> v&#224; <code>setImmediate()</code> &#273;&#250;ng ch&#7895; &#273;&#7875; gi&#7919; nh&#7883;p.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">02</div>
+                <h4>Middleware l&#224; C&#7893;ng Ki&#7875;m So&#225;t</h4>
+                <p>
+                    Thi&#7871;t k&#7871; middleware theo nguy&#234;n t&#7855;c <strong>Single Responsibility</strong>. M&#7895;i middleware ch&#7881; l&#224;m m&#7897;t vi&#7879;c:
+                    auth check, rate limiting, logging, ho&#7863;c transform data. &#272;&#7915;ng nh&#7891;i h&#7871;t v&#224;o m&#7897;t ch&#7895; &mdash;
+                    &#273;&#243; kh&#244;ng ph&#7843;i middleware, &#273;&#243; l&#224; m&#236; g&#243;i.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">03</div>
+                <h4>WebSocket: K&#7871;t N&#7889;i S&#7889;ng</h4>
+                <p>
+                    HTTP l&#224; g&#7917;i th&#432;, WebSocket l&#224; g&#7885;i &#273;i&#7879;n tho&#7841;i. Trong PBX gateway, m&#7895;i IP Phone c&#7847;n
+                    k&#7871;t n&#7889;i realtime &mdash; d&#249;ng WS v&#7899;i <strong>heartbeat ping/pong</strong>, reconnect logic, v&#224;
+                    <strong>message queue</strong> &#273;&#7875; kh&#244;ng m&#7845;t d&#7919; li&#7879;u khi m&#7841;ng ch&#7853;p ch&#7901;n.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">04</div>
+                <h4>Error Handling: L&#432;&#7899;i Ba L&#7899;p</h4>
+                <p>
+                    L&#7899;p 1: <code>try/catch</code> c&#7909;c b&#7897;. L&#7899;p 2: <code>.catch()</code> tr&#234;n m&#7885;i Promise chain.
+                    L&#7899;p 3: <code>process.on('unhandledRejection')</code> l&#224;m l&#432;&#7899;i cu&#7889;i c&#249;ng.
+                    Kh&#244;ng bao gi&#7901; &#273;&#7875; app ch&#7871;t th&#7847;m l&#7863;ng &mdash; log, alert, r&#7891;i graceful shutdown.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">05</div>
+                <h4>Streams: &#272;&#432;&#7901;ng &#7888;ng Th&#7847;n K&#7923;</h4>
+                <p>
+                    Khi trung chuy&#7875;n d&#7919; li&#7879;u gi&#7919;a .NET v&#224; Asterisk, d&#249;ng <strong>Transform Streams</strong> thay v&#236;
+                    buffer to&#224;n b&#7897;. Memory s&#7869; c&#7843;m &#417;n b&#7841;n. <code>pipeline()</code> t&#7915; Node 10+ l&#224;
+                    c&#225;ch chu&#7849;n &mdash; t&#7921; &#273;&#7897;ng x&#7917; l&#253; backpressure v&#224; cleanup.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">06</div>
+                <h4>TypeScript: &#193;o Gi&#225;p Kim C&#432;&#417;ng</h4>
+                <p>
+                    Vi&#7871;t gateway b&#7857;ng JavaScript thu&#7847;n l&#224; &#273;i ra tr&#7853;n kh&#244;ng m&#7863;c &#225;o gi&#225;p. <strong>TypeScript</strong> cho b&#7841;n
+                    type safety, interface contract, v&#224; IntelliSense. &#272;&#7883;nh ngh&#297;a r&#245; r&#224;ng 13 interface types
+                    &mdash; compile time s&#7869; b&#7855;t l&#7895;i thay v&#236; production b&#7855;t l&#7917;a.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">07</div>
+                <h4>Graceful Shutdown: Ra &#272;i Trong Danh D&#7921;</h4>
+                <p>
+                    B&#7855;t <code>SIGTERM</code> v&#224; <code>SIGINT</code>, &#273;&#243;ng h&#7871;t connection &#273;ang m&#7903;, drain h&#7871;t request &#273;ang x&#7917; l&#253;,
+                    r&#7891;i m&#7899;i exit. Kh&#244;ng ph&#7843;i ki&#7875;u <code>process.exit(1)</code> r&#7891;i b&#7887; ch&#7841;y &mdash; &#273;&#243; l&#224; l&#225;i xe b&#7887; tr&#7889;n.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FUN STORIES ==================== -->
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-icon">&#128214;</div>
+            <h2>Chuy&#7879;n K&#7875; <span>&#212;ng Ngo&#7841;i Node</span></h2>
+        </div>
+
+        <!-- Story 1 -->
+        <div class="story-card">
+            <div class="story-header">
+                <div class="story-emoji">&#128123;</div>
+                <div class="story-title">&#272;&#7883;a Ng&#7909;c Callback &mdash; N&#417;i Kh&#244;ng Ai Quay V&#7873;</div>
+            </div>
+            <div class="story-body">
+                <p>
+                    Ng&#224;y x&#7917;a, khi &#244;ng ngo&#7841;i c&#242;n tr&#7867;, &#244;ng vi&#7871;t m&#7897;t c&#225;i API gateway cho h&#7879; th&#7889;ng t&#7893;ng &#273;&#224;i c&#361;.
+                    Th&#7901;i &#273;&#243; ch&#432;a c&#243; Promise, ch&#432;a c&#243; async/await. Ch&#7881; c&#243; callback. Callback trong callback,
+                    trong callback, trong callback...
+                </p>
+                <span class="dialogue">
+                    "&#212;ng &#417;i, sao code c&#7911;a &#244;ng th&#7909;t v&#224;o t&#7853;n b&#234;n ph&#7843;i m&#224;n h&#236;nh?" &mdash; th&#7857;ng intern h&#7887;i.
+                </span>
+                <span class="dialogue">
+                    "Kh&#244;ng ph&#7843;i th&#7909;t v&#224;o, &#273;&#243; l&#224; Callback Pyramid of Doom. M&#7895;i t&#7847;ng l&#224; m&#7897;t l&#7901;i c&#7847;u nguy&#7879;n. T&#7847;ng 8 l&#224; t&#7847;ng &#244;ng g&#7917;i tin nh&#7855;n cho Th&#432;&#7907;ng &#272;&#7871;." &mdash; &#244;ng ngo&#7841;i tr&#7843; l&#7901;i.
+                </span>
+                <p>
+                    File <code>gateway.js</code> d&#224;i 2000 d&#242;ng, indent s&#226;u 15 t&#7847;ng. Cu&#7889;i file c&#243; 47 c&#225;i d&#7845;u <code>}</code>
+                    x&#7871;p th&#224;nh h&#224;ng nh&#432; h&#224;ng r&#224;o. M&#7895;i l&#7847;n s&#7917;a m&#7897;t d&#242;ng, t&#7899;i 3 bug m&#7899;i xu&#7845;t hi&#7879;n.
+                    Team g&#7885;i file &#273;&#243; l&#224; "H&#7847;m M&#7897;" &mdash; ai v&#224;o th&#236; kh&#244;ng ra.
+                </p>
+                <div class="story-moral">
+                    &#128218; B&#224;i h&#7885;c: D&#249;ng async/await, t&#225;ch function nh&#7887;, v&#224; nh&#7899; r&#7857;ng code l&#224; &#273;&#7875; ng&#432;&#7901;i &#273;&#7885;c, kh&#244;ng ph&#7843;i &#273;&#7875; m&#225;y &#273;&#7885;c.
+                    N&#7871;u b&#7841;n c&#7847;n cu&#7897;n ngang &#273;&#7875; &#273;&#7885;c code, b&#7841;n &#273;&#227; sai r&#7891;i.
+                </div>
+            </div>
+        </div>
+
+        <!-- Story 2 -->
+        <div class="story-card">
+            <div class="story-header">
+                <div class="story-emoji">&#128165;</div>
+                <div class="story-title">Unhandled Promise Rejection &mdash; S&#225;t Th&#7911; Th&#7847;m L&#7863;ng</div>
+            </div>
+            <div class="story-body">
+                <p>
+                    M&#7897;t &#273;&#234;m th&#7913; S&#225;u &#273;&#7865;p tr&#7901;i, &#244;ng ngo&#7841;i deploy gateway l&#234;n production r&#7891;i &#273;i ng&#7911;.
+                    3 gi&#7901; s&#225;ng, &#273;i&#7879;n tho&#7841;i r&#233;o. Kh&#244;ng ph&#7843;i b&#7841;n g&#225;i g&#7885;i (&#244;ng l&#224;m g&#236; c&#243;), m&#224; l&#224; alert:
+                    <strong>"GATEWAY IS DOWN. ALL 500 AGENTS DISCONNECTED."</strong>
+                </p>
+                <span class="dialogue">
+                    "&#212;ng &#417;i, sao gateway ch&#7871;t?" &mdash; DevOps h&#7889;t ho&#7843;ng.
+                </span>
+                <span class="dialogue">
+                    "&#272;&#7875; &#244;ng xem log... &#193;, <code>UnhandledPromiseRejectionWarning</code>. M&#7897;t th&#7857;ng &#273;&#227; g&#7885;i API b&#234;n th&#7913; ba m&#224; qu&#234;n <code>.catch()</code>. Node 16 m&#7863;c &#273;&#7883;nh crash lu&#244;n." &mdash; &#244;ng ngo&#7841;i th&#7903; d&#224;i.
+                </span>
+                <p>
+                    T&#7915; &#273;&#243;, &#244;ng ngo&#7841;i th&#234;m <code>process.on('unhandledRejection', handler)</code> v&#224;o m&#7885;i app.
+                    &#212;ng c&#242;n vi&#7871;t ESLint rule b&#7855;t bu&#7897;c m&#7885;i Promise ph&#7843;i c&#243; <code>.catch()</code> ho&#7863;c n&#7857;m trong <code>try/catch</code>.
+                    &#212;ng g&#7885;i &#273;&#243; l&#224; "Lu&#7853;t S&#7889;ng C&#242;n Th&#7913; S&#225;u".
+                </p>
+                <div class="story-moral">
+                    &#128218; B&#224;i h&#7885;c: Kh&#244;ng bao gi&#7901; deploy ng&#224;y th&#7913; S&#225;u. V&#224; lu&#244;n lu&#244;n handle m&#7885;i Promise rejection.
+                    M&#7897;t <code>.catch()</code> b&#7883; qu&#234;n c&#243; th&#7875; &#273;&#225;nh s&#7853;p to&#224;n b&#7897; h&#7879; th&#7889;ng.
+                </div>
+            </div>
+        </div>
+
+        <!-- Story 3 -->
+        <div class="story-card">
+            <div class="story-header">
+                <div class="story-emoji">&#9200;</div>
+                <div class="story-title">Event Loop B&#7883; &#272;&#244;ng C&#7913;ng &mdash; Khi Th&#7847;n C&#361;ng Ng&#7911; G&#7853;t</div>
+            </div>
+            <div class="story-body">
+                <p>
+                    M&#7897;t ng&#224;y n&#7885;, &#244;ng ngo&#7841;i c&#7847;n convert m&#7897;t file CSV 200MB th&#224;nh JSON &#273;&#7875; &#273;&#7849;y qua gateway.
+                    &#212;ng ngh&#297;: "&#272;&#417;n gi&#7843;n, <code>fs.readFileSync()</code> r&#7891;i <code>JSON.stringify()</code> l&#224; xong!"
+                </p>
+                <span class="dialogue">
+                    "&#212;ng &#417;i, sao 500 cu&#7897;c g&#7885;i &#273;ang ch&#7901; m&#224; gateway kh&#244;ng tr&#7843; l&#7901;i?" &mdash; QA la l&#234;n.
+                </span>
+                <span class="dialogue">
+                    "B&#236;nh t&#297;nh, &#273;&#7875; &#244;ng parse xong c&#225;i file n&#224;y &#273;&#227;... &#7900;, Event Loop &#273;ang ng&#7911;."
+                </span>
+                <p>
+                    Ho&#225; ra <code>readFileSync</code> + <code>JSON.parse</code> tr&#234;n 200MB &#273;&#227; block Event Loop 45 gi&#226;y.
+                    Trong 45 gi&#226;y &#273;&#243;, kh&#244;ng m&#7897;t request n&#224;o &#273;&#432;&#7907;c x&#7917; l&#253;. 500 cu&#7897;c g&#7885;i timeout.
+                    Kh&#225;ch h&#224;ng t&#432;&#7903;ng t&#7893;ng &#273;&#224;i s&#7853;p. S&#7871;p t&#432;&#7903;ng h&#7879; th&#7889;ng b&#7883; hack.
+                    &#212;ng ngo&#7841;i t&#432;&#7903;ng m&#236;nh s&#7855;p b&#7883; &#273;u&#7893;i vi&#7879;c.
+                </p>
+                <p>
+                    Sau &#273;&#243; &#244;ng ngo&#7841;i vi&#7871;t l&#7841;i b&#7857;ng <code>createReadStream()</code> + <code>Transform stream</code> +
+                    <code>pipeline()</code>. X&#7917; l&#253; t&#7915;ng chunk 64KB. Event Loop vui v&#7867; tr&#7903; l&#7841;i.
+                    500 cu&#7897;c g&#7885;i ch&#7841;y m&#432;&#7907;t m&#224;. &#212;ng ngo&#7841;i gi&#7919; &#273;&#432;&#7907;c vi&#7879;c.
+                </p>
+                <div class="story-moral">
+                    &#128218; B&#224;i h&#7885;c: Node.js l&#224; single-threaded. M&#7897;t thao t&#225;c synchronous n&#7863;ng c&#243; th&#7875; gi&#7871;t ch&#7871;t to&#224;n b&#7897; gateway.
+                    D&#249;ng streams, worker threads, ho&#7863;c child process cho c&#244;ng vi&#7879;c n&#7863;ng.
+                </div>
+            </div>
+        </div>
+
+        <!-- Story 4 (bonus) -->
+        <div class="story-card">
+            <div class="story-header">
+                <div class="story-emoji">&#128051;</div>
+                <div class="story-title">Memory Leak &mdash; Con Voi Kh&#244;ng Bao Gi&#7901; Qu&#234;n</div>
+            </div>
+            <div class="story-body">
+                <p>
+                    Gateway ch&#7841;y ngon l&#224;nh 3 tu&#7847;n. Tu&#7847;n th&#7913; 4, RAM t&#7915; 200MB nh&#7843;y l&#234;n 2GB. Tu&#7847;n th&#7913; 5, OOM Killer &#273;&#7871;n th&#259;m.
+                </p>
+                <span class="dialogue">
+                    "&#212;ng &#417;i, sao container c&#7913; restart ho&#224;i?" &mdash; DevOps l&#7841;i h&#7887;i.
+                </span>
+                <span class="dialogue">
+                    "&#272;&#7875; &#244;ng check... &#193; ha, &#244;ng l&#432;u m&#7885;i WebSocket connection v&#224;o m&#7897;t Map m&#224; qu&#234;n x&#243;a khi disconnect.
+                    5000 zombie connections v&#7851;n s&#7889;ng trong RAM nh&#432; ma kh&#244;ng si&#234;u tho&#225;t." &mdash; &#244;ng ngo&#7841;i v&#7895; tr&#225;n.
+                </span>
+                <p>
+                    &#212;ng ngo&#7841;i th&#234;m <code>ws.on('close', cleanup)</code>, d&#249;ng <strong>WeakRef</strong> cho c&#225;c reference kh&#244;ng c&#7847;n thi&#7871;t,
+                    v&#224; set up <code>--max-old-space-size</code> + health check monitor. T&#7915; &#273;&#243; RAM n&#7857;m y&#234;n &#7903; 300MB, ng&#7911; ngon l&#224;nh.
+                </p>
+                <div class="story-moral">
+                    &#128218; B&#224;i h&#7885;c: Lu&#244;n cleanup khi connection &#273;&#243;ng. D&#249;ng <code>--inspect</code> v&#224; Chrome DevTools &#273;&#7875; ch&#7909;p heap snapshot.
+                    Memory leak l&#224; k&#7867; gi&#7871;t ng&#432;&#7901;i ch&#7853;m &mdash; kh&#244;ng th&#7845;y ngay, nh&#432;ng ch&#7855;c ch&#7855;n s&#7869; &#273;&#7871;n.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COMMON MISTAKES ==================== -->
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-icon">&#9888;&#65039;</div>
+            <h2>Nh&#7919;ng L&#7895;i <span>&#272;au Th&#432;&#417;ng</span> Th&#432;&#7901;ng G&#7863;p</h2>
+        </div>
+
+        <ul class="mistakes-list">
+            <li class="mistake-item">
+                <div class="mistake-icon">&#128128;</div>
+                <div class="mistake-content">
+                    <h4>Qu&#234;n await &mdash; "T&#7841;i sao result l&#224; [object Promise]?"</h4>
+                    <p>
+                        G&#7885;i h&#224;m async m&#224; qu&#234;n <code>await</code>, r&#7891;i th&#7855;c m&#7855;c sao d&#7919; li&#7879;u l&#224; <code>[object Promise]</code>.
+                        &#272;&#226;y l&#224; l&#7895;i kinh &#273;i&#7875;n nh&#7845;t. TypeScript s&#7869; c&#7913;u b&#7841;n kh&#7887;i n&#7895;i &#273;au n&#224;y &mdash; n&#7871;u b&#7841;n ch&#7883;u d&#249;ng n&#243;.
+                        &#212;ng ngo&#7841;i &#273;&#227; m&#7845;t 4 ti&#7871;ng debug v&#236; thi&#7871;u 5 k&#253; t&#7921; <code>await</code>.
+                    </p>
+                </div>
+            </li>
+
+            <li class="mistake-item">
+                <div class="mistake-icon">&#128163;</div>
+                <div class="mistake-content">
+                    <h4>D&#249;ng Sync API trong Gateway &mdash; "Ch&#7881; m&#7897;t l&#7847;n th&#244;i m&#224;"</h4>
+                    <p>
+                        <code>fs.readFileSync</code>, <code>crypto.pbkdf2Sync</code>, <code>execSync</code> &mdash; m&#7885;i th&#7913; c&#243; ch&#7919; "Sync"
+                        &#273;&#7873;u l&#224; k&#7867; th&#249; c&#7911;a Event Loop. "Ch&#7881; d&#249;ng l&#250;c startup th&#244;i" &mdash; r&#7891;i 6 th&#225;ng sau ai &#273;&#243;
+                        g&#7885;i n&#243; trong request handler. R.I.P. gateway.
+                    </p>
+                </div>
+            </li>
+
+            <li class="mistake-item">
+                <div class="mistake-icon">&#127912;</div>
+                <div class="mistake-content">
+                    <h4>Kh&#244;ng set Timeout cho HTTP request &mdash; "&#272;&#7907;i m&#227;i c&#361;ng &#273;&#432;&#7907;c"</h4>
+                    <p>
+                        G&#7885;i API b&#234;n .NET m&#224; kh&#244;ng set timeout. .NET server restart, request treo v&#297;nh vi&#7877;n.
+                        Connection pool c&#7841;n ki&#7879;t. Gateway ch&#7871;t &#273;&#7913;ng. Lu&#244;n set <code>timeout: 30000</code>
+                        v&#224; implement <strong>circuit breaker pattern</strong>. B&#234;n kia kh&#244;ng tr&#7843; l&#7901;i th&#236; &#273;&#7915;ng ch&#7901; &mdash; &#273;i ti&#7871;p.
+                    </p>
+                </div>
+            </li>
+
+            <li class="mistake-item">
+                <div class="mistake-icon">&#128171;</div>
+                <div class="mistake-content">
+                    <h4>Console.log Kh&#7855;p N&#417;i &mdash; "Debug Style &#212;ng B&#224;"</h4>
+                    <p>
+                        Production ch&#7841;y v&#7899;i 500 c&#225;i <code>console.log()</code> m&#7895;i gi&#226;y. Log file ph&#236;nh 10GB trong 2 ng&#224;y.
+                        &#7892; c&#7913;ng &#273;&#7847;y, gateway crash. D&#249;ng <strong>winston/pino</strong> v&#7899;i log level, log rotation,
+                        v&#224; structured logging. <code>console.log("&#273;&#7871;n &#273;&#226;y r&#7891;i")</code> kh&#244;ng ph&#7843;i l&#224; logging strategy.
+                    </p>
+                </div>
+            </li>
+
+            <li class="mistake-item">
+                <div class="mistake-icon">&#9889;</div>
+                <div class="mistake-content">
+                    <h4>Kh&#244;ng Handle WebSocket Reconnect &mdash; "N&#243; t&#7921; n&#7889;i l&#7841;i ch&#7913;?"</h4>
+                    <p>
+                        WebSocket &#273;&#7913;t k&#7871;t n&#7889;i do m&#7841;ng ch&#7853;p ch&#7901;n. Client kh&#244;ng c&#243; reconnect logic.
+                        500 agent m&#7845;t k&#7871;t n&#7889;i v&#297;nh vi&#7877;n. C&#7847;n <strong>exponential backoff</strong>, max retry,
+                        v&#224; <strong>connection state machine</strong>. WebSocket kh&#244;ng t&#7921; h&#7891;i sinh &mdash; b&#7841;n ph&#7843;i code cho n&#243;.
+                    </p>
+                </div>
+            </li>
+
+            <li class="mistake-item">
+                <div class="mistake-icon">&#128027;</div>
+                <div class="mistake-content">
+                    <h4>Kh&#244;ng Validate Input &mdash; "Ai l&#7841;i g&#7917;i d&#7919; li&#7879;u sai?"</h4>
+                    <p>
+                        Nh&#7853;n JSON t&#7915; .NET app m&#224; kh&#244;ng validate schema. M&#7897;t ng&#224;y .NET &#273;&#7893;i format,
+                        gateway parse l&#7895;i, crash. D&#249;ng <strong>Zod</strong> ho&#7863;c <strong>Joi</strong> &#273;&#7875; validate m&#7885;i input.
+                        Kh&#244;ng tin ai h&#7871;t &mdash; k&#7875; c&#7843; API c&#7911;a ch&#237;nh m&#236;nh.
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- ==================== PBX RELEVANCE ==================== -->
+    <section class="section fade-in">
+        <div class="section-header">
+            <div class="section-icon">&#128222;</div>
+            <h2>Vai Tr&#242; Trong <span>D&#7921; &#193;n PBX</span></h2>
+        </div>
+
+        <div class="pbx-section">
+            <p style="font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 20px;">
+                Trong h&#7879; th&#7889;ng PBX, <strong style="color: var(--node-light);">G-AGX Gateway</strong> l&#224; c&#7847;u n&#7889;i trung t&#226;m
+                gi&#7919;a &#7913;ng d&#7909;ng .NET (qu&#7843;n l&#253; nghi&#7879;p v&#7909;, agent, dashboard) v&#224; <strong style="color: var(--accent-blue);">Asterisk PBX</strong>
+                (x&#7917; l&#253; cu&#7897;c g&#7885;i SIP/VoIP th&#7921;c t&#7871;). Gateway &#273;&#432;&#7907;c x&#226;y d&#7921;ng b&#7857;ng <strong style="color: var(--accent-yellow);">Node.js + TypeScript</strong>,
+                x&#7917; l&#253; <strong style="color: var(--node-light);">13 interfaces</strong> gi&#7919;a hai h&#7879; th&#7889;ng.
+            </p>
+
+            <div class="architecture-diagram">
+<pre style="margin: 0; text-align: center; color: var(--node-light);">
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;     &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;     &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474;                 &#9474;     &#9474;                         &#9474;     &#9474;                 &#9474;
+&#9474;   <span style="color: var(--accent-blue);">.NET App</span>      &#9474;&#9472;&#9472;&#9472;&#9474;   <span style="color: var(--accent-yellow);">G-AGX Gateway</span>         &#9474;&#9472;&#9472;&#9472;&#9474;   <span style="color: var(--accent-orange);">Asterisk</span>      &#9474;
+&#9474;   (C# Backend)  &#9474;     &#9474;   (Node.js + TypeScript) &#9474;     &#9474;   (PBX Server)  &#9474;
+&#9474;                 &#9474;     &#9474;                         &#9474;     &#9474;                 &#9474;
+&#9474;  &#8226; Agent Mgmt   &#9474; REST&#9474;  &#8226; 13 Interfaces        &#9474; ARI &#9474;  &#8226; SIP Calls    &#9474;
+&#9474;  &#8226; Dashboard    &#9474; API &#9474;  &#8226; WebSocket Hub        &#9474; AMI &#9474;  &#8226; IVR Flows    &#9474;
+&#9474;  &#8226; Business     &#9474;  +  &#9474;  &#8226; Protocol Translate   &#9474;  +  &#9474;  &#8226; Queue Mgmt   &#9474;
+&#9474;    Logic        &#9474; WS  &#9474;  &#8226; Event Bus            &#9474; WS  &#9474;  &#8226; CDR/Logging  &#9474;
+&#9474;                 &#9474;     &#9474;  &#8226; Error Recovery       &#9474;     &#9474;                 &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;     &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;     &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+</pre>
+            </div>
+
+            <h3 style="color: var(--node-light); margin-bottom: 16px; font-size: 1.15rem;">
+                13 Interfaces &mdash; 13 C&#225;nh C&#7893;ng Th&#7847;n
+            </h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+                M&#7895;i interface l&#224; m&#7897;t c&#225;nh c&#7893;ng k&#7871;t n&#7889;i gi&#7919;a th&#7871; gi&#7899;i .NET v&#224; th&#7871; gi&#7899;i Asterisk.
+                Gateway d&#7883;ch ng&#244;n ng&#7919; gi&#7919;a hai b&#234;n, bi&#7871;n REST/WebSocket th&#224;nh ARI/AMI v&#224; ng&#432;&#7907;c l&#7841;i:
+            </p>
+
+            <div class="interface-grid">
+                <div class="interface-item">
+                    <div class="if-icon">&#128222;</div>
+                    <div class="if-name">Cu&#7897;c G&#7885;i Inbound</div>
+                    <div class="if-desc">Nh&#7853;n & &#273;i&#7873;u h&#432;&#7899;ng cu&#7897;c g&#7885;i &#273;&#7871;n</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128244;</div>
+                    <div class="if-name">Cu&#7897;c G&#7885;i Outbound</div>
+                    <div class="if-desc">Kh&#7903;i t&#7841;o cu&#7897;c g&#7885;i &#273;i</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128101;</div>
+                    <div class="if-name">Agent Status</div>
+                    <div class="if-desc">&#272;&#7891;ng b&#7897; tr&#7841;ng th&#225;i agent</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128257;</div>
+                    <div class="if-name">Call Transfer</div>
+                    <div class="if-desc">Chuy&#7875;n cu&#7897;c g&#7885;i gi&#7919;a agents</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#127925;</div>
+                    <div class="if-name">Hold/Unhold</div>
+                    <div class="if-desc">Gi&#7919; & ti&#7871;p t&#7909;c cu&#7897;c g&#7885;i</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128226;</div>
+                    <div class="if-name">Queue Management</div>
+                    <div class="if-desc">Qu&#7843;n l&#253; h&#224;ng &#273;&#7907;i cu&#7897;c g&#7885;i</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128266;</div>
+                    <div class="if-name">Conference</div>
+                    <div class="if-desc">Cu&#7897;c g&#7885;i nhi&#7873;u b&#234;n</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128203;</div>
+                    <div class="if-name">CDR & Logging</div>
+                    <div class="if-desc">Ghi nh&#7853;n l&#7883;ch s&#7917; cu&#7897;c g&#7885;i</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128488;&#65039;</div>
+                    <div class="if-name">IVR Control</div>
+                    <div class="if-desc">&#272;i&#7873;u khi&#7875;n menu t&#7921; &#273;&#7897;ng</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128266;</div>
+                    <div class="if-name">Monitor/Whisper</div>
+                    <div class="if-desc">Gi&#225;m s&#225;t & h&#432;&#7899;ng d&#7851;n</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128276;</div>
+                    <div class="if-name">Event Notify</div>
+                    <div class="if-desc">Th&#244;ng b&#225;o s&#7921; ki&#7879;n realtime</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#128272;</div>
+                    <div class="if-name">Auth & Session</div>
+                    <div class="if-desc">X&#225;c th&#7921;c agent/extension</div>
+                </div>
+                <div class="interface-item">
+                    <div class="if-icon">&#9889;</div>
+                    <div class="if-name">Health Check</div>
+                    <div class="if-desc">Ki&#7875;m tra s&#7913;c kh&#7887;e h&#7879; th&#7889;ng</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 28px;">
+                <h3>T&#7841;i Sao Node.js L&#224; L&#7921;a Ch&#7885;n Ho&#224;n H&#7843;o Cho Gateway?</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(51,153,51,0.08);">
+                        <strong style="color: var(--node-light);">&#9889; Non-blocking I/O:</strong>
+                        <span style="color: var(--text-secondary);">X&#7917; l&#253; h&#224;ng ngh&#236;n k&#7871;t n&#7889;i &#273;&#7891;ng th&#7901;i m&#224; kh&#244;ng c&#7847;n thread pool kh&#7893;ng l&#7891;. Ho&#224;n h&#7843;o cho gateway trung chuy&#7875;n.</span>
+                    </li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(51,153,51,0.08);">
+                        <strong style="color: var(--node-light);">&#128268; WebSocket Native:</strong>
+                        <span style="color: var(--text-secondary);">K&#7871;t n&#7889;i realtime v&#7899;i IP Phone v&#224; .NET app qua WebSocket &mdash; Node.js l&#224;m &#273;i&#7873;u n&#224;y t&#7889;t nh&#7845;t.</span>
+                    </li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(51,153,51,0.08);">
+                        <strong style="color: var(--node-light);">&#128640; Startup nhanh:</strong>
+                        <span style="color: var(--text-secondary);">Gateway kh&#7903;i &#273;&#7897;ng trong v&#224;i tr&#259;m millisecond, ph&#249; h&#7907;p container hoa v&#224; auto-scaling.</span>
+                    </li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(51,153,51,0.08);">
+                        <strong style="color: var(--node-light);">&#128230; NPM Ecosystem:</strong>
+                        <span style="color: var(--text-secondary);">Th&#432; vi&#7879;n cho ARI client, AMI parser, SIP handling &#273;&#7873;u c&#243; s&#7861;n tr&#234;n npm.</span>
+                    </li>
+                    <li style="padding: 8px 0;">
+                        <strong style="color: var(--node-light);">&#128260; Protocol Bridge:</strong>
+                        <span style="color: var(--text-secondary);">Bi&#7871;n REST API c&#7911;a .NET th&#224;nh ARI/AMI commands cho Asterisk v&#224; ng&#432;&#7907;c l&#7841;i &mdash; Node.js l&#224;m trung gian ho&#224;n h&#7843;o.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="code-block" style="margin-top: 24px;">
+                <span class="comment">// G-AGX Gateway &mdash; Kh&#7903;i t&#7841;o 13 interfaces</span><br>
+                <span class="keyword">import</span> { <span class="func">createGateway</span> } <span class="keyword">from</span> <span class="string">'./core/gateway'</span>;<br>
+                <span class="keyword">import</span> { <span class="func">AriClient</span> } <span class="keyword">from</span> <span class="string">'./asterisk/ari'</span>;<br>
+                <span class="keyword">import</span> { <span class="func">WebSocketHub</span> } <span class="keyword">from</span> <span class="string">'./ws/hub'</span>;<br><br>
+                <span class="keyword">const</span> <span class="const">gateway</span> = <span class="keyword">await</span> <span class="func">createGateway</span>({<br>
+                &nbsp;&nbsp;dotnetApi: <span class="string">'https://pbx-api.internal:5000'</span>,<br>
+                &nbsp;&nbsp;asteriskAri: <span class="string">'http://asterisk:8088/ari'</span>,<br>
+                &nbsp;&nbsp;wsPort: <span class="const">8765</span>,<br>
+                &nbsp;&nbsp;interfaces: <span class="const">13</span>,<br>
+                &nbsp;&nbsp;healthCheck: <span class="keyword">true</span>,<br>
+                });<br><br>
+                <span class="comment">// Kh&#244;ng bao gi&#7901; ng&#7911;, kh&#244;ng bao gi&#7901; d&#7915;ng</span><br>
+                <span class="const">gateway</span>.<span class="func">on</span>(<span class="string">'ready'</span>, () => {<br>
+                &nbsp;&nbsp;console.<span class="func">log</span>(<span class="string">'&#9889; 13 c&#225;nh c&#7893;ng &#273;&#227; m&#7903;. C&#7893;ng K&#7871;t N&#7889;i Th&#7847;n s&#7861;n s&#224;ng.'</span>);<br>
+                });
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="node-logo">&#9889;</div>
+        <p><strong style="color: var(--node-light);">Agent #13 &mdash; C&#7893;ng K&#7871;t N&#7889;i Th&#7847;n</strong></p>
+        <p>Node.js Gateway Specialist | PBX Virtual Expert Team</p>
+        <p class="footer-quote">"Gi&#7919;a .NET v&#224; Asterisk, t&#244;i l&#224; c&#7847;u n&#7889;i. Gi&#7919;a request v&#224; response, t&#244;i l&#224; ng&#432;&#7901;i &#273;&#432;a th&#432;."</p>
+        <p style="margin-top: 20px; font-size: 0.75rem; color: var(--text-muted);">
+            &copy; 2026 PBX Project &mdash; SotaTek Innovation Lab
+        </p>
+    </footer>
+
+</div>
+
+<!-- Scroll Animation Script -->
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Backup - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: lifebuoy 3s ease-in-out infinite;
+  }
+
+  @keyframes lifebuoy {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-10deg) scale(1.05); }
+    50% { transform: rotate(0deg) scale(1); }
+    75% { transform: rotate(10deg) scale(1.05); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .analogy-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Rule Cards */
+  .rule-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.2rem;
+    margin: 2rem 0;
+  }
+
+  .rule-num {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .rule-num:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .rule-num .big-num {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .rule-num h4 { margin: 0.5rem 0 0.3rem; font-size: 1rem; }
+  .rule-num p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor / Tool Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.pbs::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.borg::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.restic::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.veeam::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.rsync::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.rclone::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Type Cards (backup types) */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .type-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .type-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+  .type-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .type-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.fast { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.medium { background: var(--accent4); }
+  .status.slow { background: var(--accent5); }
+
+  .type-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* DR Metrics */
+  .dr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .dr-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .dr-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .dr-card .dr-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .dr-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .dr-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Cloud Strategy Cards */
+  .cloud-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .cloud-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .cloud-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    border-color: var(--accent);
+  }
+
+  .cloud-card .cloud-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .cloud-card h4 { color: var(--accent); margin-bottom: 0.8rem; }
+  .cloud-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Testing Steps */
+  .test-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .test-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .test-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .test-card .step-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent3);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .test-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .test-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Dedup Visual */
+  .dedup-demo {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .dedup-demo .demo-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .dedup-row {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+    gap: 1rem;
+    min-width: 600px;
+  }
+
+  .dedup-label { width: 120px; font-weight: 700; flex-shrink: 0; }
+  .dedup-blocks { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .block {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .block.a { background: rgba(59,130,246,0.25); color: var(--accent); }
+  .block.b { background: rgba(139,92,246,0.25); color: var(--accent2); }
+  .block.c { background: rgba(16,185,129,0.25); color: var(--accent3); }
+  .block.d { background: rgba(245,158,11,0.25); color: var(--accent4); }
+  .block.dup { background: rgba(255,255,255,0.03); color: var(--text-dim); border-style: dashed; }
+  .block.new { background: rgba(239,68,68,0.25); color: var(--accent5); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .analogy-grid { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .cloud-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .rule-container { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Backup World</a>
+  <a href="#what">Backup là gì?</a>
+  <a href="#rule321">Quy tắc 3-2-1</a>
+  <a href="#types">Loại backup</a>
+  <a href="#dedup">Dedup & Nén</a>
+  <a href="#tools">Công cụ</a>
+  <a href="#dr">DR Planning</a>
+  <a href="#cloud">Cloud & Offsite</a>
+  <a href="#testing">Test Backup</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">🛟</div>
+  <h1>Thế Giới Backup</h1>
+  <p class="subtitle">Từ cuộn băng từ thời mainframe đến deduplication thông minh trên cloud — Tất cả những gì bạn cần biết về Backup & Disaster Recovery. Bởi vì dữ liệu không tự bảo vệ chính mình.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- BACKUP LÀ GÌ -->
+<section id="what">
+  <div class="intro-box">
+    <h2 class="section-title">Backup là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Backup</strong> không đơn giản là "copy file sang ổ khác". Backup là một chiến lược bảo vệ dữ liệu toàn diện — đảm bảo rằng khi thảm hoạ xảy ra (và nó <em>sẽ</em> xảy ra), bạn có thể khôi phục mọi thứ về trạng thái hoạt động trong thời gian ngắn nhất có thể.
+    </p>
+
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="icon">🏠</div>
+        <h3>Không có Backup</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Ổ cứng hỏng = mất tất cả<br>Ransomware = trả tiền hoặc mất dữ liệu<br>Kết quả: <strong style="color: var(--accent5);">Game over</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🛡️</div>
+        <h3>Có chiến lược Backup</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Ổ cứng hỏng = restore trong 30 phút<br>Ransomware = wipe & restore<br>Kết quả: <strong style="color: var(--accent3);">Bình thường trở lại</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Câu chuyện thật</h4>
+      <p>Năm 2017, GitLab suýt mất toàn bộ database production. Trong 5 phương pháp backup họ thiết lập, chỉ duy nhất 1 cái hoạt động — và nó chỉ là bản snapshot tình cờ được tạo 6 giờ trước. Bài học? Backup không được test thường xuyên thì coi như không tồn tại.</p>
+    </div>
+
+    <p style="color: var(--text-dim); font-size: 1.05rem; margin-top: 1.5rem;">
+      Hãy nghĩ backup như <strong>bảo hiểm nhân thọ cho dữ liệu</strong>. Không ai muốn dùng đến nó, nhưng khi cần mà không có — hậu quả là không thể đảo ngược. Một nghiên cứu từ Đại học Texas cho thấy: <strong style="color: var(--accent5);">94% doanh nghiệp mất toàn bộ dữ liệu sẽ không tồn tại quá 2 năm</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- QUY TẮC 3-2-1 -->
+<section id="rule321">
+  <h2 class="section-title" style="color: var(--accent3);">Quy tắc 3-2-1 (và 3-2-1-1-0)</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent3); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Nguyên tắc vàng đã được thời gian chứng minh — đơn giản nhưng nhiều người vẫn không tuân thủ.</p>
+
+  <h3 style="margin-bottom: 1rem; color: var(--text);">Quy tắc 3-2-1 kinh điển</h3>
+  <div class="rule-container">
+    <div class="rule-num">
+      <div class="big-num">3</div>
+      <h4>Bản sao</h4>
+      <p>Giữ ít nhất 3 bản copy dữ liệu (1 bản gốc + 2 backup)</p>
+    </div>
+    <div class="rule-num">
+      <div class="big-num">2</div>
+      <h4>Loại media</h4>
+      <p>Lưu trên ít nhất 2 loại phương tiện khác nhau (ổ cứng, tape, cloud...)</p>
+    </div>
+    <div class="rule-num">
+      <div class="big-num">1</div>
+      <h4>Offsite</h4>
+      <p>Ít nhất 1 bản ở nơi khác (khác toà nhà, khác thành phố, cloud)</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Tại sao 3-2-1?</h4>
+    <p>Xác suất 1 ổ cứng hỏng: ~2-5%/năm. Xác suất 2 ổ cùng hỏng đồng thời: ~0.04%. Nhưng nếu cả 2 ổ nằm cùng 1 rack và bị mất điện đột ngột? Xác suất cao hơn nhiều. Đa dạng hoá media và location chính là cách giảm rủi ro xuống gần bằng 0.</p>
+  </div>
+
+  <h3 style="margin: 2.5rem 0 1rem; color: var(--text);">Nâng cấp: Quy tắc 3-2-1-1-0</h3>
+  <p style="color: var(--text-dim); margin-bottom: 1.5rem;">Phiên bản hiện đại cho thời đại ransomware và đám mây:</p>
+
+  <div class="rule-container">
+    <div class="rule-num">
+      <div class="big-num">3</div>
+      <h4>Bản sao</h4>
+      <p>Giống trên</p>
+    </div>
+    <div class="rule-num">
+      <div class="big-num">2</div>
+      <h4>Media</h4>
+      <p>Giống trên</p>
+    </div>
+    <div class="rule-num">
+      <div class="big-num">1</div>
+      <h4>Offsite</h4>
+      <p>Giống trên</p>
+    </div>
+    <div class="rule-num">
+      <div class="big-num" style="background: linear-gradient(135deg, var(--accent4), var(--accent5)); -webkit-background-clip: text;">1</div>
+      <h4>Air-gapped</h4>
+      <p>1 bản offline hoặc immutable — ransomware không chạm được</p>
+    </div>
+    <div class="rule-num">
+      <div class="big-num" style="background: linear-gradient(135deg, var(--accent3), var(--accent)); -webkit-background-clip: text;">0</div>
+      <h4>Zero errors</h4>
+      <p>0 lỗi khi verify — mỗi backup phải được kiểm tra tính toàn vẹn</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Air-gapped là gì?</h4>
+    <p>Một bản backup được ngắt hoàn toàn khỏi mạng sau khi ghi xong. Có thể là tape LTO cất trong tủ sắt, USB external rút ra cất đi, hoặc object storage với immutable lock (S3 Object Lock). Mục tiêu: dù hacker chiếm toàn bộ hệ thống, bản backup này vẫn an toàn.</p>
+  </div>
+</section>
+
+<!-- LOẠI BACKUP -->
+<section id="types">
+  <h2 class="section-title" style="color: var(--accent4);">Các loại Backup</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent4); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Không phải backup nào cũng giống nhau. Hiểu từng loại để chọn chiến lược phù hợp.</p>
+
+  <div class="type-grid">
+    <div class="type-card">
+      <h4><span class="status slow"></span> Full Backup</h4>
+      <p style="margin-top: 0.5rem;"><strong>Cách hoạt động:</strong> Sao chép TOÀN BỘ dữ liệu mỗi lần chạy. Không phân biệt file nào thay đổi hay chưa.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">100%</div>
+          <div class="label">Dung lượng</div>
+        </div>
+        <div class="stat">
+          <div class="num">Chậm</div>
+          <div class="label">Tốc độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">Dễ</div>
+          <div class="label">Restore</div>
+        </div>
+      </div>
+      <p style="margin-top: 0.8rem;">Giống như photocopy nguyên cuốn sách mỗi tuần. Tốn giấy nhưng khi cần thì giở ra là có ngay, không phải ghép từ nhiều nguồn.</p>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status fast"></span> Incremental Backup</h4>
+      <p style="margin-top: 0.5rem;"><strong>Cách hoạt động:</strong> Chỉ backup những gì THAY ĐỔI kể từ lần backup cuối cùng (bất kể full hay incremental).</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Nhỏ</div>
+          <div class="label">Dung lượng</div>
+        </div>
+        <div class="stat">
+          <div class="num">Nhanh</div>
+          <div class="label">Tốc độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">Phức tạp</div>
+          <div class="label">Restore</div>
+        </div>
+      </div>
+      <p style="margin-top: 0.8rem;">Giống như chỉ ghi chú những trang sách bị sửa. Tiết kiệm cực kỳ, nhưng khi khôi phục phải ghép Full + tất cả Incremental theo thứ tự.</p>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status medium"></span> Differential Backup</h4>
+      <p style="margin-top: 0.5rem;"><strong>Cách hoạt động:</strong> Backup tất cả thay đổi kể từ lần FULL BACKUP gần nhất.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Trung bình</div>
+          <div class="label">Dung lượng</div>
+        </div>
+        <div class="stat">
+          <div class="num">Vừa</div>
+          <div class="label">Tốc độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">Dễ hơn</div>
+          <div class="label">Restore</div>
+        </div>
+      </div>
+      <p style="margin-top: 0.8rem;">Dung lượng lớn dần theo thời gian (vì tích luỹ thay đổi), nhưng restore chỉ cần Full + Differential mới nhất. Trung hoà giữa 2 loại trên.</p>
+    </div>
+
+    <div class="type-card">
+      <h4><span class="status fast"></span> Snapshot</h4>
+      <p style="margin-top: 0.5rem;"><strong>Cách hoạt động:</strong> Chụp trạng thái hệ thống tại một thời điểm. Thường dùng cơ chế Copy-on-Write (CoW).</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Rất nhỏ</div>
+          <div class="label">Ban đầu</div>
+        </div>
+        <div class="stat">
+          <div class="num">Tức thì</div>
+          <div class="label">Tạo</div>
+        </div>
+        <div class="stat">
+          <div class="num">Tức thì</div>
+          <div class="label">Rollback</div>
+        </div>
+      </div>
+      <p style="margin-top: 0.8rem;">Snapshot KHÔNG phải backup thực sự! Nó chỉ là "bookmark" trên cùng storage. Nếu storage chết, snapshot cũng mất. Dùng để rollback nhanh, không thay thế backup offsite.</p>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 2.5rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Full</th>
+          <th>Incremental</th>
+          <th>Differential</th>
+          <th>Snapshot</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dung lượng mỗi lần</td>
+          <td>Lớn nhất</td>
+          <td>Nhỏ nhất</td>
+          <td>Lớn dần</td>
+          <td>Gần như 0 (ban đầu)</td>
+        </tr>
+        <tr>
+          <td>Thời gian backup</td>
+          <td>Lâu nhất</td>
+          <td>Nhanh nhất</td>
+          <td>Trung bình</td>
+          <td>Tức thì</td>
+        </tr>
+        <tr>
+          <td>Thời gian restore</td>
+          <td>Nhanh nhất</td>
+          <td>Lâu nhất (ghép chuỗi)</td>
+          <td>Trung bình</td>
+          <td>Tức thì (rollback)</td>
+        </tr>
+        <tr>
+          <td>Độ phức tạp</td>
+          <td>Đơn giản</td>
+          <td>Cao</td>
+          <td>Trung bình</td>
+          <td>Đơn giản</td>
+        </tr>
+        <tr>
+          <td>Chịu được mất storage?</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Lịch trình phổ biến</td>
+          <td>Hàng tuần</td>
+          <td>Hàng ngày/giờ</td>
+          <td>Hàng ngày</td>
+          <td>Trước thay đổi lớn</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Chiến lược phổ biến nhất</h4>
+    <p><strong>Full hàng tuần + Incremental hàng ngày</strong> (còn gọi là GFS - Grandfather-Father-Son). Chủ nhật chạy full, thứ 2-7 chạy incremental. Giữ 4 bản full (monthly), 4 bản weekly, 7 bản daily. Cân bằng hoàn hảo giữa dung lượng và tốc độ restore.</p>
+  </div>
+</section>
+
+<!-- DEDUPLICATION & COMPRESSION -->
+<section id="dedup">
+  <h2 class="section-title" style="color: var(--accent2);">Deduplication & Compression</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent2); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Hai vũ khí bí mật giúp backup 10TB chỉ tốn 2TB storage thực.</p>
+
+  <div class="dedup-demo">
+    <div class="demo-title">Deduplication hoạt động thế nào?</div>
+
+    <p style="color: var(--text-dim); margin-bottom: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">Dữ liệu được chia thành các block. Những block trùng lặp chỉ lưu 1 lần.</p>
+
+    <div class="dedup-row">
+      <div class="dedup-label" style="color: var(--accent);">Backup #1:</div>
+      <div class="dedup-blocks">
+        <div class="block a">A</div>
+        <div class="block b">B</div>
+        <div class="block c">C</div>
+        <div class="block a">A</div>
+        <div class="block d">D</div>
+        <div class="block b">B</div>
+        <div class="block a">A</div>
+        <div class="block c">C</div>
+      </div>
+    </div>
+
+    <div class="dedup-row">
+      <div class="dedup-label" style="color: var(--accent4);">Sau dedup:</div>
+      <div class="dedup-blocks">
+        <div class="block a">A</div>
+        <div class="block b">B</div>
+        <div class="block c">C</div>
+        <div class="block d">D</div>
+        <div class="block dup">ref</div>
+        <div class="block dup">ref</div>
+        <div class="block dup">ref</div>
+        <div class="block dup">ref</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1rem; font-family: 'Segoe UI', system-ui, sans-serif;">
+      <span style="color: var(--accent3); font-weight: 700;">Tiết kiệm: 50%</span>
+      <span style="color: var(--text-dim);"> — 4 block thực + 4 tham chiếu thay vì 8 block đầy đủ</span>
+    </div>
+
+    <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+      <div class="demo-title">Backup #2 (ngày hôm sau, chỉ 1 file thay đổi):</div>
+      <div class="dedup-row">
+        <div class="dedup-label" style="color: var(--accent2);">Dữ liệu mới:</div>
+        <div class="dedup-blocks">
+          <div class="block a">A</div>
+          <div class="block new">E</div>
+          <div class="block c">C</div>
+          <div class="block a">A</div>
+          <div class="block d">D</div>
+          <div class="block b">B</div>
+          <div class="block a">A</div>
+          <div class="block c">C</div>
+        </div>
+      </div>
+      <div class="dedup-row">
+        <div class="dedup-label" style="color: var(--accent3);">Lưu thêm:</div>
+        <div class="dedup-blocks">
+          <div class="block new">E</div>
+          <div class="block dup">ref</div>
+          <div class="block dup">ref</div>
+          <div class="block dup">ref</div>
+          <div class="block dup">ref</div>
+          <div class="block dup">ref</div>
+          <div class="block dup">ref</div>
+          <div class="block dup">ref</div>
+        </div>
+      </div>
+      <p style="color: var(--accent3); font-weight: 700; margin-top: 0.8rem; font-family: 'Segoe UI', system-ui, sans-serif;">
+        Chỉ lưu thêm 1 block mới! Tỷ lệ dedup: 87.5%
+      </p>
+    </div>
+  </div>
+
+  <div class="dr-grid">
+    <div class="dr-card">
+      <h4>Source-side Dedup</h4>
+      <p>Dedup ngay tại máy nguồn trước khi gửi dữ liệu đi. Tiết kiệm băng thông mạng. Borg và Restic dùng phương pháp này — chỉ gửi những chunk mới qua mạng.</p>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag good">Tiết kiệm bandwidth</span>
+        <span class="tag">Tốn CPU nguồn</span>
+      </div>
+    </div>
+    <div class="dr-card">
+      <h4>Target-side Dedup</h4>
+      <p>Dữ liệu được gửi đầy đủ, server backup thực hiện dedup. Phổ biến trong các appliance chuyên dụng như Dell EMC Data Domain, HPE StoreOnce.</p>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag warn">Tốn bandwidth</span>
+        <span class="tag good">Không tốn CPU nguồn</span>
+      </div>
+    </div>
+    <div class="dr-card">
+      <h4>Compression</h4>
+      <p>Nén dữ liệu sau khi dedup để tiết kiệm thêm. Các thuật toán phổ biến: <strong>zstd</strong> (nhanh, tỷ lệ nén tốt), <strong>lz4</strong> (cực nhanh, nén vừa), <strong>gzip</strong> (cổ điển, chậm hơn).</p>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag good">zstd khuyên dùng</span>
+        <span class="tag">lz4 cho tốc độ</span>
+        <span class="tag warn">gzip cho tương thích</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Con số thực tế</h4>
+    <p>Trên homelab chạy Proxmox Backup Server với 15 VM, dedup + compression giảm dung lượng từ 2.4TB xuống còn 380GB (~84% tiết kiệm). Lý do: nhiều VM dùng cùng base OS (Debian/Ubuntu), nên các block hệ điều hành trùng lặp rất nhiều.</p>
+  </div>
+</section>
+
+<!-- CÔNG CỤ -->
+<section id="tools">
+  <h2 class="section-title" style="color: var(--accent);">Công cụ Backup</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Từ miễn phí đến enterprise, mỗi công cụ có triết lý và điểm mạnh riêng.</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card pbs">
+      <div class="vendor-logo">🧱</div>
+      <h3>Proxmox Backup Server</h3>
+      <div class="vendor-type">Enterprise Open-Source</div>
+      <p>Giải pháp backup chính thức cho hệ sinh thái Proxmox. Tích hợp sâu với PVE, hỗ trợ backup VM và container ở cấp độ block. Deduplication và encryption được tích hợp sẵn.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Block</div>
+          <div class="label">Cấp độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">AES-256</div>
+          <div class="label">Mã hoá</div>
+        </div>
+        <div class="stat">
+          <div class="num">Có</div>
+          <div class="label">Dedup</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag good">Tích hợp PVE</span>
+        <span class="tag">Rust-based</span>
+        <span class="tag warn">Chỉ cho Proxmox</span>
+      </div>
+    </div>
+
+    <div class="vendor-card borg">
+      <div class="vendor-logo">🐉</div>
+      <h3>BorgBackup</h3>
+      <div class="vendor-type">Open-Source CLI</div>
+      <p>Công cụ backup file-level mạnh mẽ với deduplication xuất sắc. Thiết kế theo triết lý Unix: làm một việc và làm thật tốt. Hệ sinh thái phong phú với BorgMatic để tự động hoá.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">File</div>
+          <div class="label">Cấp độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">AES-256</div>
+          <div class="label">Mã hoá</div>
+        </div>
+        <div class="stat">
+          <div class="num">Tuyệt vời</div>
+          <div class="label">Dedup</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag good">Dedup siêu tốt</span>
+        <span class="tag">Python</span>
+        <span class="tag warn">Single-repo lock</span>
+      </div>
+    </div>
+
+    <div class="vendor-card restic">
+      <div class="vendor-logo">🦎</div>
+      <h3>Restic</h3>
+      <div class="vendor-type">Open-Source CLI</div>
+      <p>Đối thủ hiện đại của Borg, viết bằng Go. Hỗ trợ native nhiều backend: local, SFTP, S3, Azure Blob, GCS, Backblaze B2. Không cần daemon server, đơn giản để bắt đầu.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">File</div>
+          <div class="label">Cấp độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">AES-256</div>
+          <div class="label">Mã hoá</div>
+        </div>
+        <div class="stat">
+          <div class="num">20+ backend</div>
+          <div class="label">Hỗ trợ</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag good">Multi-backend</span>
+        <span class="tag">Go binary</span>
+        <span class="tag">Lock-free reads</span>
+      </div>
+    </div>
+
+    <div class="vendor-card veeam">
+      <div class="vendor-logo">💎</div>
+      <h3>Veeam Backup</h3>
+      <div class="vendor-type">Enterprise Commercial</div>
+      <p>Ông lớn trong thế giới backup doanh nghiệp. GUI trực quan, hỗ trợ VMware/Hyper-V/Proxmox, instant recovery, SureBackup verification tự động. Phiên bản Community miễn phí cho 10 workload.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Block</div>
+          <div class="label">Cấp độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">10</div>
+          <div class="label">Free workloads</div>
+        </div>
+        <div class="stat">
+          <div class="num">GUI</div>
+          <div class="label">Quản lý</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag warn">Freemium</span>
+        <span class="tag good">Instant Recovery</span>
+        <span class="tag good">SureBackup</span>
+        <span class="tag hot">Windows Server</span>
+      </div>
+    </div>
+
+    <div class="vendor-card rsync">
+      <div class="vendor-logo">🔄</div>
+      <h3>rsync</h3>
+      <div class="vendor-type">Unix Classic</div>
+      <p>Không phải công cụ backup chuyên dụng, nhưng là nền tảng của vô số script backup. Delta transfer algorithm chỉ gửi phần thay đổi qua mạng. Kết hợp với --link-dest tạo incremental backup hiệu quả.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">File</div>
+          <div class="label">Cấp độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">1996</div>
+          <div class="label">Ra đời</div>
+        </div>
+        <div class="stat">
+          <div class="num">Delta</div>
+          <div class="label">Transfer</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag">Có sẵn mọi Linux</span>
+        <span class="tag warn">Không encrypt</span>
+        <span class="tag warn">Không dedup</span>
+      </div>
+    </div>
+
+    <div class="vendor-card rclone">
+      <div class="vendor-logo">☁️</div>
+      <h3>rclone</h3>
+      <div class="vendor-type">Cloud Swiss Army Knife</div>
+      <p>Được mệnh danh "rsync cho cloud". Hỗ trợ hơn 70 cloud provider: S3, GCS, Azure, OneDrive, Google Drive, Mega, Dropbox... Tính năng mount cho phép mount cloud storage như ổ local.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">70+</div>
+          <div class="label">Provider</div>
+        </div>
+        <div class="stat">
+          <div class="num">File</div>
+          <div class="label">Cấp độ</div>
+        </div>
+        <div class="stat">
+          <div class="num">Mount</div>
+          <div class="label">Tính năng</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag good">70+ providers</span>
+        <span class="tag">Go binary</span>
+        <span class="tag">Encrypt optional</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool Comparison -->
+  <div class="comparison-wrap" style="margin-top: 2.5rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tính năng</th>
+          <th>PBS</th>
+          <th>Borg</th>
+          <th>Restic</th>
+          <th>Veeam</th>
+          <th>rsync</th>
+          <th>rclone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Deduplication</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Mã hoá</td>
+          <td style="color: var(--accent3);">AES-256</td>
+          <td style="color: var(--accent3);">AES-256</td>
+          <td style="color: var(--accent3);">AES-256</td>
+          <td style="color: var(--accent3);">AES-256</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent3);">Tuỳ chọn</td>
+        </tr>
+        <tr>
+          <td>VM-level backup</td>
+          <td style="color: var(--accent3);">Native</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent3);">Native</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Cloud backend</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent4);">SSH only</td>
+          <td style="color: var(--accent3);">Native</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td style="color: var(--accent5);">Không</td>
+          <td style="color: var(--accent3);">70+</td>
+        </tr>
+        <tr>
+          <td>Chi phí</td>
+          <td>Free / Sub</td>
+          <td>Free</td>
+          <td>Free</td>
+          <td>Free/Paid</td>
+          <td>Free</td>
+          <td>Free</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Combo khuyên dùng cho Homelab</h4>
+    <p><strong>PBS</strong> cho VM/CT backup hàng ngày + <strong>Restic</strong> hoặc <strong>Borg</strong> cho file-level backup quan trọng + <strong>rclone</strong> để đẩy offsite lên cloud (Backblaze B2 hoặc Wasabi). Tổng chi phí: dưới $5/tháng cho cloud storage, còn lại hoàn toàn miễn phí.</p>
+  </div>
+</section>
+
+<!-- DISASTER RECOVERY -->
+<section id="dr">
+  <h2 class="section-title" style="color: var(--accent5);">Disaster Recovery</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent5); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Backup chỉ là một nửa câu chuyện. Nửa còn lại là: bạn có thể phục hồi nhanh đến mức nào?</p>
+
+  <!-- RTO vs RPO Diagram -->
+  <div class="arch-container">
+    <h3 style="color: var(--accent); margin-bottom: 1.5rem; text-align: center;">RTO vs RPO — Hai chỉ số sống còn</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">📉</div>
+        <h4>Dữ liệu mất</h4>
+        <p>Phần không recover được</p>
+      </div>
+      <div class="arch-arrow">←</div>
+      <div class="arch-layer" style="border-color: var(--accent5); background: rgba(239,68,68,0.05);">
+        <div class="layer-icon">💥</div>
+        <h4>Thảm hoạ</h4>
+        <p>Thời điểm sự cố</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">⏱️</div>
+        <h4>Thời gian chết</h4>
+        <p>Downtime phục hồi</p>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: center; gap: 4rem; margin-top: 1.5rem; flex-wrap: wrap;">
+      <div style="text-align: center;">
+        <div style="font-size: 2rem; font-weight: 900; color: var(--accent2);">RPO</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem;">Recovery Point Objective</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem;">Mất bao nhiêu dữ liệu là chấp nhận được?</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 2rem; font-weight: 900; color: var(--accent4);">RTO</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem;">Recovery Time Objective</div>
+        <div style="color: var(--text-dim); font-size: 0.85rem;">Hệ thống phải hoạt động lại trong bao lâu?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dr-grid">
+    <div class="dr-card">
+      <div class="dr-num" style="background: var(--accent2);">R</div>
+      <h4>RPO — Bạn chịu mất bao nhiêu?</h4>
+      <p>Nếu RPO = 1 giờ, nghĩa là bạn chấp nhận mất tối đa 1 giờ dữ liệu. Điều này quyết định tần suất backup: RPO 1 giờ = backup mỗi giờ. RPO 0 = cần replication real-time.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">0</div>
+          <div class="label">RPO lý tưởng</div>
+        </div>
+        <div class="stat">
+          <div class="num">24h</div>
+          <div class="label">RPO daily backup</div>
+        </div>
+      </div>
+    </div>
+    <div class="dr-card">
+      <div class="dr-num" style="background: var(--accent4);">T</div>
+      <h4>RTO — Bạn chờ được bao lâu?</h4>
+      <p>Nếu RTO = 4 giờ, hệ thống phải sống lại trong 4 giờ. RTO quyết định công nghệ: RTO vài phút cần instant recovery hoặc hot standby. RTO vài ngày có thể dùng tape.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">&lt;15m</div>
+          <div class="label">Instant recovery</div>
+        </div>
+        <div class="stat">
+          <div class="num">4-8h</div>
+          <div class="label">Restore thường</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DR Planning Timeline -->
+  <h3 style="margin: 3rem 0 1.5rem; color: var(--text);">DR Plan — 6 bước xây dựng</h3>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-label">Bước 1</div>
+        <h3>Đánh giá rủi ro</h3>
+        <p>Liệt kê mọi thảm hoạ có thể: ổ cứng hỏng, ransomware, cháy nổ, lỗi người dùng, hacker, thiên tai. Đánh giá xác suất và mức độ ảnh hưởng của từng loại.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-label">Bước 2</div>
+        <h3>Phân loại dữ liệu</h3>
+        <p>Không phải dữ liệu nào cũng quan trọng như nhau. Database production cần RPO thấp, file ISO cài đặt có thể tải lại. Phân tier: Critical, Important, Replaceable.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-label">Bước 3</div>
+        <h3>Xác định RTO & RPO</h3>
+        <p>Cho từng tier dữ liệu, hỏi: "Mất bao nhiêu thì chấp nhận được?" và "Chờ phục hồi bao lâu thì chấp nhận được?". Từ đây chọn công nghệ và lịch backup phù hợp.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-label">Bước 4</div>
+        <h3>Thiết kế giải pháp</h3>
+        <p>Chọn tool, thiết kế topology (local + offsite + air-gapped), lên lịch backup, cấu hình retention policy, thiết lập monitoring và alerting.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-label">Bước 5</div>
+        <h3>Viết runbook</h3>
+        <p>Tài liệu từng bước restore cho mỗi scenario. Ai làm gì, ở đâu, thứ tự ra sao. Khi thảm hoạ xảy ra, không ai có đầu óc sáng suốt — runbook chính là bản đồ trong bóng tối.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-label">Bước 6</div>
+        <h3>Test, Test, Test</h3>
+        <p>Lên lịch DR drill định kỳ (ít nhất mỗi quý). Thực sự restore và kiểm tra dữ liệu. Đo thời gian thực tế so với RTO cam kết. Cập nhật runbook sau mỗi lần drill.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Kinh nghiệm thực chiến</h4>
+    <p>Trong homelab, DR plan không cần phức tạp như doanh nghiệp. Nhưng ít nhất hãy có: (1) Danh sách VM/service theo thứ tự ưu tiên restore, (2) Runbook ghi rõ từng bước restore PBS, (3) Bản backup offsite trên cloud, (4) Test restore ít nhất 1 lần/tháng. Chỉ 4 thứ đó thôi đã hơn 90% homelab khác.</p>
+  </div>
+</section>
+
+<!-- CLOUD & OFFSITE -->
+<section id="cloud">
+  <h2 class="section-title" style="color: var(--accent3);">Cloud Backup & Offsite</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent3); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Bản backup ở cùng toà nhà với server gốc thì cháy nhà = mất cả hai. Offsite là bắt buộc.</p>
+
+  <div class="cloud-grid">
+    <div class="cloud-card">
+      <div class="cloud-icon">🏢</div>
+      <h4>Cùng site (Local)</h4>
+      <p>NAS trong cùng phòng server. Nhanh nhất để restore, nhưng không chống được cháy, nổ, trộm, hay thiên tai. Chỉ nên là tầng đầu tiên.</p>
+      <div class="tag-row" style="justify-content: center; margin-top: 1rem;">
+        <span class="tag good">Nhanh</span>
+        <span class="tag hot">Không an toàn</span>
+      </div>
+    </div>
+    <div class="cloud-card">
+      <div class="cloud-icon">🌐</div>
+      <h4>Offsite (Khác địa điểm)</h4>
+      <p>Server hoặc NAS đặt ở nhà bạn bè, văn phòng khác, hoặc colocation. Khoảng cách lý tưởng: ít nhất 100km. Dùng VPN tunnel để truyền backup.</p>
+      <div class="tag-row" style="justify-content: center; margin-top: 1rem;">
+        <span class="tag good">An toàn</span>
+        <span class="tag warn">Tốn bandwidth</span>
+      </div>
+    </div>
+    <div class="cloud-card">
+      <div class="cloud-icon">☁️</div>
+      <h4>Cloud Storage</h4>
+      <p>S3-compatible (Backblaze B2, Wasabi, MinIO), Azure Blob, GCS. Rẻ, đáng tin, không cần quản lý phần cứng. Luôn mã hoá trước khi upload.</p>
+      <div class="tag-row" style="justify-content: center; margin-top: 1rem;">
+        <span class="tag good">Rất an toàn</span>
+        <span class="tag good">Rẻ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cloud Provider Comparison -->
+  <div class="comparison-wrap" style="margin-top: 2rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Provider</th>
+          <th>Giá lưu trữ</th>
+          <th>Giá egress</th>
+          <th>S3 Compatible</th>
+          <th>Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Backblaze B2</td>
+          <td>$6/TB/tháng</td>
+          <td>$0.01/GB</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td>Lựa chọn phổ biến nhất cho homelab</td>
+        </tr>
+        <tr>
+          <td>Wasabi</td>
+          <td>$7/TB/tháng</td>
+          <td style="color: var(--accent3);">Miễn phí</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td>Không tính phí egress, tối thiểu giữ 90 ngày</td>
+        </tr>
+        <tr>
+          <td>AWS S3 Glacier</td>
+          <td>$1/TB/tháng</td>
+          <td>$0.09/GB</td>
+          <td style="color: var(--accent3);">Có</td>
+          <td>Rẻ nhất nhưng restore mất 3-12 giờ</td>
+        </tr>
+        <tr>
+          <td>Google Cloud Archive</td>
+          <td>$1.2/TB/tháng</td>
+          <td>$0.12/GB</td>
+          <td style="color: var(--accent4);">Khác API</td>
+          <td>Giữ tối thiểu 365 ngày</td>
+        </tr>
+        <tr>
+          <td>Hetzner Storage Box</td>
+          <td>~$3.5/TB/tháng</td>
+          <td style="color: var(--accent3);">Miễn phí</td>
+          <td style="color: var(--accent5);">SFTP/SMB</td>
+          <td>Phổ biến ở châu Âu, hỗ trợ Borg native</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>Chiến lược offsite cho Homelab</h4>
+    <p><strong>Tier 1:</strong> PBS backup hàng ngày lên NAS local (restore nhanh trong vài phút). <strong>Tier 2:</strong> Restic/Borg đẩy lên Backblaze B2 hàng đêm (offsite, ~$3-5/tháng cho 500GB). <strong>Tier 3:</strong> Một bản monthly trên ổ USB external cất ở nhà bố mẹ (air-gapped, miễn phí). Ba tier này đáp ứng hoàn hảo quy tắc 3-2-1-1-0.</p>
+  </div>
+
+  <div class="intro-box" style="margin-top: 2rem;">
+    <h3 style="color: var(--accent4); margin-bottom: 1rem;">Lưu ý bảo mật khi backup lên cloud</h3>
+    <p style="color: var(--text-dim);">
+      <strong>1. Luôn mã hoá phía client</strong> — Không tin tưởng cloud provider 100%. Dùng encryption key mà chỉ bạn biết. Borg và Restic mã hoá mặc định trước khi upload.
+    </p>
+    <p style="color: var(--text-dim); margin-top: 0.8rem;">
+      <strong>2. Bật Object Lock / Immutability</strong> — Ngăn ransomware xoá backup trên cloud. Backblaze B2 và Wasabi đều hỗ trợ.
+    </p>
+    <p style="color: var(--text-dim); margin-top: 0.8rem;">
+      <strong>3. Dùng Application Key riêng</strong> — Không dùng master key. Tạo key chỉ có quyền write (append-only) cho job backup tự động.
+    </p>
+    <p style="color: var(--text-dim); margin-top: 0.8rem;">
+      <strong>4. Monitor chi phí</strong> — Set billing alert. Một bug trong script có thể upload liên tục và tạo hoá đơn khổng lồ.
+    </p>
+  </div>
+</section>
+
+<!-- TEST BACKUP -->
+<section id="testing">
+  <h2 class="section-title" style="color: var(--accent4);">Test Backup</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent4); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">"Backup chưa test = không có backup" — Câu nói kinh điển nhất trong ngành IT, và vẫn đúng mãi mãi.</p>
+
+  <div class="intro-box">
+    <h3 style="color: var(--accent5); margin-bottom: 1rem;">Schrodinger's Backup</h3>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      Tình trạng của một bản backup là không xác định cho đến khi bạn thực sự thử restore nó. Giống như con mèo của Schrodinger — backup của bạn vừa hoạt động vừa không hoạt động cùng lúc, cho đến khi bạn mở hộp (test restore).
+    </p>
+    <p style="color: var(--text-dim); font-size: 1.05rem; margin-top: 1rem;">
+      Những lý do backup "tưởng có mà không":
+    </p>
+    <ul style="color: var(--text-dim); margin-top: 0.5rem; margin-left: 1.5rem;">
+      <li>Job backup báo success nhưng file bị corrupt</li>
+      <li>Backup đầy đủ nhưng thiếu encryption key để decrypt</li>
+      <li>Backup database nhưng quên backup config</li>
+      <li>Storage backup đã đầy từ 3 tháng trước, job fail im lặng</li>
+      <li>Backup lên cloud nhưng account bị disable vì quên trả bill</li>
+      <li>Backup VM nhưng quên backup DNS/DHCP, restore xong không kết nối được mạng</li>
+    </ul>
+  </div>
+
+  <h3 style="margin: 2.5rem 0 1.5rem; color: var(--text);">Quy trình test backup đúng cách</h3>
+  <div class="test-steps">
+    <div class="test-card">
+      <div class="step-num">1</div>
+      <h4>Verify tính toàn vẹn</h4>
+      <p>Chạy verify/check command của tool backup. PBS có <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.1rem 0.4rem; border-radius: 4px;">proxmox-backup-client verify</code>, Borg có <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.1rem 0.4rem; border-radius: 4px;">borg check</code>, Restic có <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.1rem 0.4rem; border-radius: 4px;">restic check</code>. Nên chạy tự động hàng tuần.</p>
+    </div>
+    <div class="test-card">
+      <div class="step-num">2</div>
+      <h4>Test restore thực tế</h4>
+      <p>Thực sự restore lên một VM/container tạm. Không chỉ kiểm tra file có mở được hay không, mà boot hẳn lên, kiểm tra service có chạy, database có query được.</p>
+    </div>
+    <div class="test-card">
+      <div class="step-num">3</div>
+      <h4>Đo thời gian</h4>
+      <p>Ghi nhận thời gian restore thực tế. So sánh với RTO cam kết. Nếu RTO = 2 giờ mà restore mất 6 giờ, bạn cần thay đổi chiến lược (ví dụ: chuyển sang instant recovery).</p>
+    </div>
+    <div class="test-card">
+      <div class="step-num">4</div>
+      <h4>Kiểm tra dữ liệu</h4>
+      <p>So sánh checksum của file quan trọng. Chạy automated test nếu có (database integrity check, application smoke test). Dữ liệu phải chính xác 100%.</p>
+    </div>
+    <div class="test-card">
+      <div class="step-num">5</div>
+      <h4>Test encryption key</h4>
+      <p>Đảm bảo bạn có thể decrypt backup bằng key đã lưu. Lưu key ở nơi KHÁC với backup (ví dụ: password manager, giấy in cất trong tủ sắt, key escrow).</p>
+    </div>
+    <div class="test-card">
+      <div class="step-num">6</div>
+      <h4>Ghi chép và cải tiến</h4>
+      <p>Sau mỗi lần test, ghi lại: thời gian, vấn đề gặp phải, và cách khắc phục. Cập nhật runbook. Lên lịch test tiếp theo. Biến nó thành thói quen, không phải sự kiện đặc biệt.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Tự động hoá test backup</h4>
+    <p>Viết script cron job chạy hàng tuần: (1) Restore VM mới nhất vào một sandbox, (2) Boot VM, chờ 60s, (3) Curl health check endpoint, (4) Nếu fail gửi alert qua Telegram/Slack. Veeam có SureBackup làm việc này tự động. Với PBS/Borg/Restic, bạn tự viết — nhưng nó đáng giá từng dòng code.</p>
+  </div>
+</section>
+
+<!-- HIỂU NHẦM -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Những hiểu nhầm tai hại</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent5); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Những niềm tin sai lầm phổ biến đã khiến nhiều người mất dữ liệu.</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"RAID là backup"</h4>
+      <p>RAID bảo vệ khỏi lỗi phần cứng của 1-2 ổ cứng, KHÔNG bảo vệ khỏi ransomware, xoá nhầm, corruption, hay thiên tai. RAID giữ hệ thống chạy khi ổ hỏng — backup giữ dữ liệu an toàn khi mọi thứ khác thất bại.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>RAID là <strong>high availability</strong>, backup là <strong>data protection</strong>. Hai khái niệm hoàn toàn khác nhau. Bạn cần CẢ HAI.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Snapshot là backup"</h4>
+      <p>Snapshot nằm trên cùng storage với dữ liệu gốc. Storage hỏng = mất cả gốc lẫn snapshot. Snapshot cũng có thể gây performance degradation nếu giữ quá nhiều.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Snapshot là công cụ <strong>rollback nhanh</strong>, rất hữu ích trước khi update/thay đổi. Nhưng nó KHÔNG thay thế backup offsite. Dùng snapshot KẾT HỢP với backup, không phải thay thế.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Cloud sync = backup"</h4>
+      <p>Google Drive, OneDrive, Dropbox sync file hai chiều. Xoá file trên máy = file trên cloud cũng bị xoá. Ransomware mã hoá file local = file trên cloud cũng bị encrypt và sync lên.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Sync là <strong>đồng bộ</strong>, backup là <strong>bản sao lịch sử</strong> với versioning. Một số cloud có "version history" nhưng thường giới hạn 30 ngày và không đáng tin cho DR.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Backup tự động thì không cần kiểm tra"</h4>
+      <p>Job backup có thể fail im lặng: storage đầy, permission thay đổi, certificate hết hạn, network timeout. Email alert bị vào spam. Dashboard backup không ai nhìn.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p><strong>Monitor backup job</strong> là quan trọng ngang với backup. Set alert cho cả success lẫn failure. Nếu không nhận được "backup success" notification = coi như backup failed.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Backup xong là an tâm rồi"</h4>
+      <p>Backup mà không test restore thì chỉ là "hy vọng". Bạn không biết file có corrupt không, encryption key còn hoạt động không, hay restore procedure có đúng không — cho đến khi thực sự cần.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Backup chỉ hoàn thành khi bạn đã <strong>test restore thành công</strong>. Lên lịch test ít nhất mỗi tháng. Ghi chép kết quả. Đây là phần mà 80% người dùng bỏ qua.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Backup tất cả mọi thứ là tốt nhất"</h4>
+      <p>Backup toàn bộ không phân loại = tốn storage, tốn thời gian, và khi cần restore thì không biết cái nào quan trọng. File tạm, cache, log xoay vòng không cần backup.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p><strong>Phân loại dữ liệu</strong> trước khi backup. Critical data (database, config) backup thường xuyên với retention dài. Data có thể tái tạo (cache, build artifacts) exclude khỏi backup. Thông minh hơn, không phải nhiều hơn.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Mã hoá backup không cần thiết"</h4>
+      <p>Backup không mã hoá là kho báu cho hacker. Một ổ USB backup thất lạc chứa database khách hàng = vi phạm GDPR/PDPA. Offsite backup qua internet không encrypt = ai cũng đọc được.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p><strong>Luôn mã hoá backup</strong>, đặc biệt offsite. Dùng client-side encryption (Borg, Restic có sẵn). Lưu encryption key ở nơi an toàn, TÁCH BIỆT với backup.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai lầm</div>
+      <h4>"Homelab nhỏ không cần backup"</h4>
+      <p>"Chỉ là lab thôi, mất thì setup lại". Nhưng thực tế: config Proxmox tuỳ chỉnh mất 2 ngày, Docker compose files, database cá nhân, ảnh gia đình, tài liệu học tập — tất cả không thể "setup lại" được.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Homelab càng cần backup vì <strong>không có team IT hỗ trợ</strong>. Bạn là sysadmin duy nhất. PBS miễn phí, Borg miễn phí, Backblaze B2 rẻ. Không có lý do để không backup.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title">Cheat Sheet</h2>
+  <div style="height: 4px; width: 60px; background: var(--accent); border-radius: 2px; margin-bottom: 0.5rem;"></div>
+  <p class="section-subtitle">Copy-paste ngay vào terminal. Những lệnh backup thiết yếu bạn sẽ dùng hàng ngày.</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>PBS — Backup VM từ Proxmox</h4>
+      <p>Tạo backup job cho VM ID 100</p>
+      <code>vzdump 100 \
+  --storage pbs-store \
+  --mode snapshot \
+  --compress zstd \
+  --mailnotification always</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>PBS — Restore VM</h4>
+      <p>Restore VM từ PBS về Proxmox</p>
+      <code>qmrestore \
+  pbs:backup-server:vm/100 \
+  200 \
+  --storage local-lvm</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>PBS — Verify backup</h4>
+      <p>Kiểm tra tính toàn vẹn bản backup</p>
+      <code>proxmox-backup-client verify \
+  --repository user@pbs:store1</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Borg — Tạo backup</h4>
+      <p>Backup thư mục với compression và exclude</p>
+      <code>borg create \
+  --compression zstd,6 \
+  --exclude '*.cache' \
+  /path/to/repo::backup-{now} \
+  /home /etc /var/lib</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Borg — Liệt kê & Restore</h4>
+      <p>Xem danh sách backup và restore</p>
+      <code># Liệt kê archives
+borg list /path/to/repo
+
+# Restore toàn bộ
+borg extract \
+  /path/to/repo::backup-name
+
+# Restore 1 file
+borg extract \
+  /path/to/repo::backup-name \
+  home/user/important.txt</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Borg — Prune (dọn dẹp)</h4>
+      <p>Giữ 7 daily, 4 weekly, 6 monthly</p>
+      <code>borg prune \
+  --keep-daily=7 \
+  --keep-weekly=4 \
+  --keep-monthly=6 \
+  /path/to/repo
+
+borg compact /path/to/repo</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Restic — Init & Backup</h4>
+      <p>Khởi tạo repo trên Backblaze B2</p>
+      <code># Khởi tạo repo
+export B2_ACCOUNT_ID="your-id"
+export B2_ACCOUNT_KEY="your-key"
+restic -r b2:bucket-name init
+
+# Backup
+restic -r b2:bucket-name \
+  backup /home /etc \
+  --exclude="*.tmp"</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Restic — Restore & Check</h4>
+      <p>Restore và kiểm tra toàn vẹn</p>
+      <code># Restore
+restic -r b2:bucket-name \
+  restore latest \
+  --target /tmp/restore
+
+# Check integrity
+restic -r b2:bucket-name \
+  check --read-data
+
+# Snapshots
+restic -r b2:bucket-name \
+  snapshots</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>rsync — Incremental backup</h4>
+      <p>Backup với hardlink (tiết kiệm space)</p>
+      <code>rsync -avz --delete \
+  --link-dest=/backup/latest \
+  /source/ \
+  /backup/$(date +%Y-%m-%d)/
+
+ln -sfn /backup/$(date +%Y-%m-%d) \
+  /backup/latest</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>rclone — Sync to cloud</h4>
+      <p>Đồng bộ backup lên Backblaze B2</p>
+      <code># Config (chạy 1 lần)
+rclone config
+
+# Sync
+rclone sync /backup/ \
+  b2:my-backup-bucket \
+  --transfers 8 \
+  --fast-list \
+  --progress
+
+# Check
+rclone check /backup/ \
+  b2:my-backup-bucket</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>rclone — Encrypt & Mount</h4>
+      <p>Mã hoá và mount cloud storage</p>
+      <code># Tạo crypt remote (1 lần)
+rclone config
+# Chọn: crypt > b2:bucket
+
+# Upload encrypted
+rclone copy /important/ \
+  secret-b2: --progress
+
+# Mount như ổ local
+rclone mount secret-b2: \
+  /mnt/cloud --daemon</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Cron — Lên lịch tự động</h4>
+      <p>Backup hàng đêm lúc 2:00 AM</p>
+      <code># crontab -e
+0 2 * * * /usr/local/bin/backup.sh \
+  >> /var/log/backup.log 2>&1
+
+# Backup hàng tuần (Chủ nhật)
+0 3 * * 0 /usr/local/bin/full-backup.sh
+
+# Verify hàng tuần (Thứ 4)
+0 4 * * 3 /usr/local/bin/verify.sh</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Mẹo pro</h4>
+    <p>Luôn redirect cron output vào log file VÀ set up mail notification. Dùng <code style="color: var(--accent3); background: rgba(0,0,0,0.3); padding: 0.1rem 0.4rem; border-radius: 4px;">chronic</code> (từ moreutils) để chỉ gửi email khi command fail. Kết hợp với healthcheck service (healthchecks.io miễn phí) để detect khi backup job không chạy (dead man's switch).</p>
+  </div>
+</section>
+
+<footer>
+  <p>Thế Giới Backup — Tổng hợp kiến thức Backup & Disaster Recovery</p>
+  <p style="margin-top: 0.5rem;">Dữ liệu là tài sản. Backup là bảo hiểm. Test restore là bằng chứng.</p>
+  <p style="margin-top: 0.5rem; font-size: 0.75rem;">Homelab Deep Dive Series</p>
+</footer>
+
+</body>
+</html>

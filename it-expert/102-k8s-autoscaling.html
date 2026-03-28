@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tự Co Giãn Đại Sư - Chuyên Gia HPA, VPA, KEDA & Cluster Autoscaler</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a0a 30%, #2a2a0a 60%, #3a2a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #f59e0b; text-shadow: 0 0 20px #f59e0b40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #f59e0b; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #f59e0b; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #f59e0b; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f59e0b30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #f59e0b; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #f59e0b; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">📈</span><h1>Tự Co Giãn Đại Sư</h1><div class="title">Chuyên Gia HPA, VPA, KEDA & Cluster Autoscaler</div><div class="quote">"Auto-scaling giống như mua bảo hiểm: bạn trả thêm tiền để sẵn sàng cho điều tồi tệ nhất. Nhưng nếu thiếu, khi cần thì không có."</div></div>
+        <div class="badges">            <span class="badge">📈 HPA Expert</span>
+            <span class="badge">📊 VPA Master</span>
+            <span class="badge">⚡ KEDA</span>
+            <span class="badge">🔄 Cluster Autoscaler</span>
+            <span class="badge">🎯 Custom Metrics</span>
+            <span class="badge">🔢 Scale-to-Zero</span>
+            <span class="badge">📉 Cost Optimization</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư từng manually scale deployments: kubectl scale --replicas=10 lúc 8 giờ sáng, kubectl scale --replicas=2 lúc 10 giờ tối. Mỗi ngày. "Tôi là human autoscaler," chàng ta tự trào.</p><p>Khi HPA (Horizontal Pod Autoscaler) ra đời, chàng ta cấu hình: scale on CPU > 70%. Works! Cho đến khi traffic spike nhanh hơn pod startup time. Users thấy latency spike 30 giây trước khi HPA react. "Reactive scaling has a delay," chàng ta giác ngộ.</p><p>Rồi KEDA (Kubernetes Event-Driven Autoscaling): scale based on queue length, HTTP requests, cron schedule. Scale-to-zero cho cost savings. "Now we are talking!" Nhưng scale-to-zero + cold start = tradeoff. Cuộc đời autoscaling là chuỗi tradeoffs vô tận.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. HPA — Horizontal Pod Autoscaler:</strong> Scale pods based on metrics: CPU, memory, custom metrics. Target utilization: 70% CPU common. minReplicas, maxReplicas setting. Scaling behavior: scaleUp/scaleDown policies (stabilization window, percentage). Use request-based metrics thay vì utilization cho accurate scaling. Multiple metrics supported (CPU AND custom).</div>
+            <div class="tip"><strong>2. VPA — Vertical Pod Autoscaler:</strong> Automatically adjust pod resource requests/limits. Modes: Off (recommend only), Auto (apply), Initial (set at creation). KHÔNG dùng VPA + HPA trên same metric (conflict). VPA recreates pods khi adjusting = brief downtime. Good for: right-sizing workloads bạn không biết optimal resources.</div>
+            <div class="tip"><strong>3. KEDA — Event-Driven Scaling:</strong> Scale based on event sources: Kafka lag, SQS queue length, Prometheus metrics, cron schedule. ScaledObject CRD cho configuration. Scale-to-zero capability (HPA không support). 60+ scalers available. Perfect for: batch processing, event-driven microservices, scheduled workloads.</div>
+            <div class="tip"><strong>4. Cluster Autoscaler:</strong> Scale nodes based on pending pods (insufficient resources). Scale down nodes with low utilization. Cloud provider integration (ASG cho AWS, VMSS cho Azure). Settings: scan-interval, scale-down-delay. Karpenter (AWS): faster, more flexible alternative — provisions RIGHT instance type cho pending pods.</div>
+            <div class="tip"><strong>5. Custom Metrics — Beyond CPU:</strong> Prometheus Adapter cho Prometheus metrics → K8s custom metrics API. External metrics: SQS queue depth, Datadog metrics. Business metrics: requests per second, queue length. Custom metrics cho accurate scaling theo actual workload, không chỉ CPU.</div>
+            <div class="tip"><strong>6. Scaling Best Practices:</strong> Start with HPA on CPU/memory. Add custom metrics khi CPU doesn't correlate với load. minReplicas ≥ 2 cho HA. maxReplicas = cost guardrail. PodDisruptionBudgets cho scale-down safety. Pre-scaling cho predicted traffic (scheduled scaling). Test scaling behavior under load.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📈 Chuyện HPA Flapping</h3><p>HPA configured: min 2, max 20, target CPU 50%. Traffic oscillating → HPA scale up → CPU drops → scale down → CPU rises → scale up → repeat. Pod count ping-ponging: 2 → 8 → 3 → 7 → 4 → 9. Container images pulled/removed constantly. Node resources wasted.</p><p>Fix: stabilization window (scaleDown: stabilizationWindowSeconds: 300). Scale down slower than scale up. Target CPU 70% thay vì 50% (less sensitive). Result: stable pod count, smooth scaling.</p><div class="lesson">💡 Bài học: HPA flapping = aggressive scaling configuration. Stabilization windows smooth oscillations. Scale up fast, scale down slow. Higher target utilization = less sensitive. Behavior policies trong HPA v2 cho fine control.</div></div>
+            <div class="story"><h3>⏰ Chuyện Cluster Autoscaler Quá Chậm</h3><p>Flash sale: traffic spike 10x trong 30 giây. HPA create pending pods. Cluster Autoscaler detect pending pods → request new nodes from cloud provider. Node provisioning: 3-5 phút (AWS ASG). Pods scheduled after 5 phút. Users experience 5 phút degraded service.</p><p>Fix: Karpenter (provisions in 60 giây). Over-provision: keep warm nodes (pause pods với low priority). Predictive scaling: schedule scale-up 15 phút trước expected spike. Cloud provider: warm pools cho faster instance launch.</p><div class="lesson">💡 Bài học: Cluster autoscaler has minutes-level latency. For spiky workloads: over-provision với warm nodes. Karpenter cho faster provisioning. Predictive/scheduled scaling cho known events. Combine HPA + Cluster Autoscaler + prediction cho comprehensive scaling.</div></div>
+            <div class="story"><h3>💰 Chuyện Scale-to-Zero Tiết Kiệm 80%</h3><p>Development cluster 50 microservices, mỗi cái minimum 2 replicas. Cost: $3,000/tháng. Usage ngoài giờ làm việc: gần 0. Đại Sư deploy KEDA với cron scaler: scale-to-zero from 8pm to 8am, weekends. Business hours: normal scaling. Result: 14 giờ/ngày × 5 ngày = 70 giờ scaled, 98 giờ/tuần at zero. Cost giảm xuống $600/tháng. Tiết kiệm $2,400/tháng.</p><div class="lesson">💡 Bài học: Scale-to-zero cho non-production environments = massive savings. KEDA cron scaler cho scheduled scaling. Cold start tradeoff acceptable cho dev/staging. Production: keep minReplicas ≥ 1. FinOps quick win: schedule non-prod scaling.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. HPA và VPA cùng metric:</strong> HPA scale pods, VPA resize pods — trên cùng CPU metric → conflict. Dùng HPA cho CPU, VPA chỉ cho memory (Off mode recommend).</div>
+            <div class="mistake"><strong>2. maxReplicas quá cao:</strong> maxReplicas: 1000 → runaway scaling → exhaust cluster resources → cost explosion. Set realistic max based on capacity và budget.</div>
+            <div class="mistake"><strong>3. Không test scaling behavior:</strong> Assumption: HPA sẽ handle Black Friday. Reality: scaling too slow, too aggressive, or wrong direction. Load test scaling before production events.</div>
+            <div class="mistake"><strong>4. Ignore scale-down:</strong> Focus on scale-up, ignore scale-down delay. Pods chạy idle 30 phút trước scale-down = waste. Tune scaleDown policies.</div>
+            <div class="mistake"><strong>5. Custom metrics unstable:</strong> Custom metric source (Prometheus) down → HPA can't scale → stuck at current replicas. Fallback metrics, metric reliability monitoring.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #102</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

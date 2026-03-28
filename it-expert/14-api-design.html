@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao Diện Lập Trình Đại Sư - Bậc Thầy API Design</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(34,211,238,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #06b6d4, #22d3ee, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #67e8f9; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(34,211,238,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #67e8f9; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #67e8f9; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #06b6d4; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #67e8f9; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #22d3ee; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #67e8f9; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #67e8f9; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🔌</span>
+            <h1>Giao Diện Lập Trình Đại Sư</h1>
+            <p class="subtitle">Hoàng API — Bậc Thầy API Design</p>
+            <p class="quote">"API tốt như một câu chuyện hay — dễ hiểu, nhất quán, và không có plot holes."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">REST</span>
+            <span class="skill-tag">GraphQL</span>
+            <span class="skill-tag">gRPC</span>
+            <span class="skill-tag">tRPC</span>
+            <span class="skill-tag">OpenAPI</span>
+            <span class="skill-tag">API Versioning</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Hoàng API bắt đầu khi REST còn được viết hoa thành 'REST' một cách trang trọng. Ông từng design API cho ngân hàng — nơi mà một endpoint sai format có thể gây ra chuyển tiền nhầm. Kinh nghiệm đó dạy ông: API design là giao kèo (contract) — phá vỡ giao kèo là phá vỡ niềm tin.
+
+Ông sống qua cuộc chiến REST vs SOAP, rồi REST vs GraphQL, rồi GraphQL vs gRPC. Mỗi cuộc chiến, ông đều đứng giữa và nói: 'Đúng tool cho đúng job.' Ông đặc biệt ghét developer nói 'REST is dead' hoặc 'GraphQL solves everything' — vì cả hai đều sai.
+
+Motto: 'API là sản phẩm. Treat it like one — documentation, versioning, backward compatibility, developer experience.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: REST Done Right — Không chỉ là CRUD</h3>
+                <p>REST = Representational State Transfer, không phải 'dùng HTTP methods cho CRUD'. Resources (nouns, not verbs): <code>/users</code> không phải <code>/getUsers</code>. HTTP methods: GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE (remove). Status codes: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 429 Too Many Requests, 500 Internal Server Error. Pagination: cursor-based (scalable) > offset-based (simple). HATEOAS: response chứa links đến related actions — client không hardcode URLs.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: GraphQL — Khi Client Cần Linh Hoạt</h3>
+                <p>Client request ĐÚNG data cần — không thừa (over-fetching), không thiếu (under-fetching). Single endpoint, strongly typed schema. Introspection: client khám phá API schema tự động. Subscriptions cho real-time data. Nhược: complexity cao (resolver, N+1 queries, caching khó), learning curve, tooling requirement. DataLoader pattern giải quyết N+1. Persisted queries cho security (client chỉ gửi query hash, không gửi full query). Dùng cho: mobile apps cần flexible data fetching, BFF (Backend for Frontend), complex data relationships.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: gRPC — Performance cho Microservices</h3>
+                <p>Protocol Buffers (protobuf): binary serialization, 10x nhỏ hơn JSON, typed schema. HTTP/2: multiplexing, server push, header compression. Streaming: unary, server streaming, client streaming, bidirectional streaming. Code generation: .proto file → client/server code in any language. Dùng cho: inter-service communication (microservices), mobile apps (bandwidth sensitive), real-time streaming. KHÔNG dùng cho: browser (cần gRPC-web proxy), public APIs (tooling/debugging khó hơn REST/GraphQL).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: tRPC — End-to-End Type Safety</h3>
+                <p>TypeScript fullstack: define API on server, call type-safely from client — ZERO code generation, ZERO schema duplication. Server: define router with procedures. Client: import type, call like function. Autocompletion, compile-time error checking. Perfect cho: Next.js/Nuxt fullstack apps, TypeScript monorepos. Limitation: TypeScript only (server + client), không phù hợp cho public APIs (cần language-agnostic protocol).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: API Versioning — Khi thay đổi là unavoidable</h3>
+                <p>URL versioning: <code>/api/v1/users</code> — simple, clear, cacheable. Header versioning: <code>Accept: application/vnd.api.v2+json</code> — URL clean nhưng ẩn version. Query param: <code>/api/users?version=2</code> — easy nhưng messy. Best practice: URL versioning cho simplicity + cacheability. KHÔNG breaking changes nếu possible: add fields (don't remove), deprecate (don't delete), new endpoint (don't modify). sunset header cho deprecation timeline.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #6: API Documentation — Swagger/OpenAPI</h3>
+                <p>OpenAPI Specification: describe API bằng YAML/JSON → auto-generate documentation (Swagger UI, ReDoc), client SDKs, mock servers, tests. Design-first: write spec → implement → validate against spec. Code-first: annotate code → generate spec. Tools: Swagger Editor, Stoplight Studio, Redocly. Documentation là FEATURE — API without docs = API nobody uses. Include: examples, error responses, rate limits, authentication guide.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: REST Endpoint Explosion — 200 Endpoints Cho 1 App</h3>
+                <p>Startup build mobile app, backend team create REST API. Mỗi screen cần data khác nhau → endpoint riêng. Home screen: <code>/api/home-feed</code>. Profile with posts: <code>/api/user-profile-with-posts</code>. Profile with photos: <code>/api/user-profile-with-photos</code>. User with friends and mutual friends: <code>/api/user-friends-mutual</code>.
+
+6 tháng: 200 endpoints, hầu hết chỉ serve 1 screen. Mobile team thay đổi UI → backend phải tạo endpoint mới. Backend team thành 'endpoint factory' cho mobile team. API documentation outdated vì thay đổi quá nhanh.
+
+Team evaluate GraphQL: single endpoint, mobile client request đúng fields cần. Migration 3 tháng. Kết quả: 200 endpoints → 1 GraphQL endpoint + clear schema. Mobile team tự quyết data cần, backend team focus vào resolvers và performance.</p>
+                <div class="lesson">💡 Bài học: Khi client needs drive API shape quá nhiều → GraphQL shines. Khi API simple, CRUD-based, nhiều consumers → REST stable hơn. BFF (Backend for Frontend) pattern: thin API layer customize response cho specific client, giữ core API clean.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: GraphQL N+1 Query — Performance Sinkhole</h3>
+                <p>GraphQL API, query users with posts. Resolver: load users → for each user, load posts (separate DB query). 100 users = 1 + 100 = 101 queries. Trang load 5 giây. DBA gọi: 'Cái gì đang blast database 100 queries/request?'
+
+Fix: DataLoader — batch multiple <code>getUserPosts(userId)</code> calls into single <code>getUserPostsBatch(userIds)</code> query. 101 queries → 2 queries. Response time: 5s → 200ms. DataLoader là MUST-HAVE cho bất kỳ GraphQL server nào — đừng deploy production GraphQL mà không có DataLoader.</p>
+                <div class="lesson">💡 Bài học: GraphQL's flexibility = N+1 trap. LUÔN implement DataLoader (hoặc equivalent batching) cho mọi resolver fetch data. Monitor query complexity — dùng query cost analysis, depth limiting, và timeout để prevent abuse. Automated performance testing cho common queries.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: API Breaking Change Without Versioning</h3>
+                <p>API v1 response: <code>{{'name': 'Nguyễn Văn A'}}</code>. Team quyết định split thành first/last name: <code>{{'firstName': 'A', 'lastName': 'Nguyễn Văn'}}</code>. Deploy trực tiếp lên production, không version, không deprecation warning.
+
+Kết quả: 3 mobile apps, 2 partner integrations, 1 webhook consumer — tất cả crash cùng lúc. Mobile app display 'undefined undefined' thay vì tên user. Partner gọi: 'API các bạn broken.' Hotfix: rollback, thêm cả <code>name</code> (old) + <code>firstName</code>/<code>lastName</code> (new), deprecation header cho <code>name</code> field, 6-month sunset period.
+
+Tổng thiệt hại: 4 giờ downtime, 3 angry partner emails, 1 App Store review 'app hiển thị tên sai'.</p>
+                <div class="lesson">💡 Bài học: API backward compatibility là SACRED. Quy tắc: 1) Add fields, don't remove 2) Deprecate before removing 3) Version khi breaking changes unavoidable 4) Communicate timeline to consumers 5) Automated contract tests (Pact) catch breaking changes trước khi deploy.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Verbs in REST URLs</h3>
+                <p><code>/api/getUsers</code>, <code>/api/createUser</code>, <code>/api/deleteUser</code> — HTTP method đã express verb rồi. Dùng: <code>GET /api/users</code>, <code>POST /api/users</code>, <code>DELETE /api/users/:id</code>.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Inconsistent response format</h3>
+                <p>Endpoint A trả <code>{{'data': [...]}}</code>, endpoint B trả <code>[...]</code>, endpoint C trả <code>{{'users': [...]}}</code>. Standardize: <code>{{'data': ..., 'meta': ..., 'errors': ...}}</code> cho mọi endpoint.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Không rate limit</h3>
+                <p>Không rate limit = một client gửi 10,000 requests/second → service crash. Implement rate limiting: per-client, per-endpoint. Return <code>429 Too Many Requests</code> + <code>Retry-After</code> header.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Expose internal IDs</h3>
+                <p>Auto-increment database IDs → attacker enumerate: /users/1, /users/2, /users/3... Dùng UUIDs hoặc hashids cho external-facing IDs.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Không handle partial failures</h3>
+                <p>API A calls API B, API C. B succeeds, C fails. What happens to B's changes? Implement: saga pattern, compensation transactions, or idempotent retry. ĐỪNG leave system in inconsistent state.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Hoàng API</span> — Giao Diện Lập Trình Đại Sư</p>
+            <p>🔌 "API tốt như một câu chuyện hay — dễ hiểu, nhất quán, và không có plot holes."</p>
+        </div>
+    </div>
+</body>
+</html>

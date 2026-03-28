@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video & 3D Đại Sư - Video Analysis & 3D Vision Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,152,0,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #ffb74d; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(255,183,77,0.3); }
+        .header .title { font-size: 1.2em; color: #ffe0b2; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(255,152,0,0.1); }
+        .card h2 { color: #ffb74d; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(255,152,0,0.3), rgba(200,120,0,0.2)); border: 1px solid rgba(255,183,77,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #ffe0b2; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(255,152,0,0.5), rgba(200,120,0,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(255,152,0,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #ff9800, #ffb74d); border-radius: 50%; color: #1a1a2e; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #ff9800; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">🎬</span>
+            <h1>Video & 3D Đại Sư</h1>
+            <div class="title">Video Analysis, 3D Vision, Point Cloud Expert</div>
+            <div class="quote">"Video là ảnh có thời gian. 3D là ảnh có chiều sâu. Kết hợp cả hai? Đó là thực tại ảo — và budget ảo."</div>
+            <div class="badge-container">
+                <span class="badge">🎥 Action Recognition</span>
+                <span class="badge">🌊 Optical Flow</span>
+                <span class="badge">📏 Depth Estimation</span>
+                <span class="badge">☁️ Point Cloud</span>
+                <span class="badge">🏗️ 3D Reconstruction</span>
+                <span class="badge">🎯 Object Tracking</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Video & 3D Đại Sư tên thật là <strong>Không Gian Hùng</strong>, cựu kỹ sư VFX (Visual Effects) chuyển sang AI. "Tôi từng tạo 3D models bằng tay cho phim — bây giờ AI làm trong 5 phút. Nhưng AI vẫn sai bàn tay, nên tôi chưa thất nghiệp."</p>
+            <p>Anh là người đầu tiên trong công ty deploy real-time video analysis system — "camera 30 FPS, model xử lý 3 FPS, team nghĩ 3 FPS là real-time." Sau 6 tháng optimize: 25 FPS. "Gần real-time," anh nói. "Gần đủ."</p>
+            <p>Ngoài công việc, anh nghiên cứu 3D reconstruction từ ảnh drone — "biến 100 ảnh chụp trên trời thành 3D model của cả tòa nhà. Hoặc 3D model của đống artifacts, tùy quality ảnh."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Video & 3D</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Video Understanding — Frame by frame hay cả clip?</h3>
+                    <p>Hai approaches: (1) <strong>Frame-level</strong>: chạy image model trên mỗi frame (simple, nhưng miss temporal info). (2) <strong>Clip-level</strong>: 3D CNN, Video Transformers process nhiều frames. Models: <strong>TimeSformer</strong>, <strong>VideoMAE</strong>, <strong>InternVideo</strong>. Trick: sample frames thay vì process tất cả — 8-16 frames đều đặn từ clip đủ cho action recognition. Keyframe extraction: dùng scene change detection để chọn representative frames.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Object Tracking — Follow the target</h3>
+                    <p><strong>ByteTrack</strong>: YOLO detect + tracking by association (IoU matching). Simple, fast, effective. <strong>BoT-SORT</strong>: add appearance features cho better re-identification. <strong>SAM 2</strong>: segment and track trong video. Pipeline: detect (YOLO) → track (ByteTrack) → count unique objects. Tricks: Kalman filter predict position khi object bị occluded. Re-ID features ngăn ID switch khi objects cross paths.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Depth Estimation — 2D thành 2.5D</h3>
+                    <p><strong>Monocular depth</strong>: estimate depth từ single image. <strong>Depth Anything V2</strong> (2024): zero-shot, robust, fast. <strong>MiDaS</strong>: relative depth, cross-domain. <strong>ZoeDepth</strong>: metric depth (actual distances). Applications: AR, robotics, 3D photo effect. Trick: monocular depth là relative (gần/xa) — cần calibration cho metric depth. Stereo cameras cho accurate metric depth.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Point Cloud Processing</h3>
+                    <p>Point cloud từ LiDAR, depth cameras, photogrammetry. Models: <strong>PointNet++</strong> (classic), <strong>Point Transformer</strong> (attention on points). Tasks: classification, segmentation, object detection (3D bounding boxes). Preprocessing: voxelization (grid), downsampling (FPS), normal estimation. <strong>Open3D</strong>: Python library cho point cloud processing. Autonomous driving: LiDAR point cloud + camera images = multimodal 3D detection.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>3D Reconstruction — NeRF và Gaussian Splatting</h3>
+                    <p><strong>NeRF</strong> (2020): neural radiance field, photorealistic novel views từ ảnh. Chậm (train hours, render seconds). <strong>3D Gaussian Splatting</strong> (2023): real-time rendering, train nhanh hơn NeRF 100x. Năm 2026: Gaussian Splatting dominant cho real-time 3D. Input: 20-100 ảnh từ nhiều góc. Pipeline: COLMAP (camera poses) → Gaussian Splatting → 3D model. Applications: virtual tours, e-commerce 3D products, digital twins.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">🐌 Chuyện 1: Video model xử lý 1 FPS</div>
+                <p>Camera an ninh 30 FPS, model action recognition xử lý: 1 FPS trên GPU T4. "Real-time" theo spec sheet nhưng thực tế miss 97% frames. Hành động "đánh nhau" xảy ra trong 15 frames → model chỉ thấy 1 frame → classify "đứng."</p>
+                <p>Fix: (1) Lightweight model (MobileNet backbone), (2) Process keyframes only (motion detection trigger), (3) TensorRT optimization. Kết quả: 15 FPS — đủ để catch most actions. "Real-time là relative," anh Không Gian triết lý. "1 FPS cũng real-time nếu action đủ chậm."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Video processing = compute intensive. Không cần process mọi frame: keyframe extraction, motion-triggered processing, model distillation. FPS requirement phụ thuộc vào action speed. And always: profile trên target hardware TRƯỚC khi commit specifications.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">👻 Chuyện 2: 3D reconstruction artifact</div>
+                <p>Khách hàng cần 3D model căn hộ mẫu từ 50 ảnh điện thoại. Gaussian Splatting ra kết quả: phòng khách đẹp, bếp OK, nhưng bathroom — gương phản chiếu tạo "vũ trụ song song" trong 3D model. Nhìn vào gương, thấy một căn phòng khác không tồn tại.</p>
+                <p>Reflective surfaces (gương, kính, kim loại bóng) là nightmare cho 3D reconstruction. Fix: mask gương trước khi reconstruct, hoặc apply anti-reflection coating (literally — dán giấy mờ lên gương khi chụp).</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> 3D reconstruction fails trên reflective, transparent, và textureless surfaces. Prepare scene: cover mirrors, avoid glass reflections, ensure varied textures. Post-process: manual cleanup, mesh editing. Perfect 3D reconstruction from casual photos vẫn là unsolved problem.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🏃 Chuyện 3: Optical flow ảo giác</div>
+                <p>Hệ thống phát hiện fall detection cho người già. Dùng optical flow detect sudden downward motion. Hoạt động tốt trong test. Production: false alarm mỗi khi TV bật — optical flow detect motion TRONG video trên TV và classify là "người ngã."</p>
+                <p>Fix: combine optical flow + depth estimation (TV flat, người 3D) + ROI exclusion (ignore TV area). False alarm giảm từ 20/ngày xuống 1/tuần.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Single modality (optical flow, depth, RGB) thường không đủ. Multimodal fusion (flow + depth + appearance) robust hơn nhiều. Và luôn test trong actual deployment environment — lab conditions hide edge cases.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Process mọi frame ở full resolution:</strong> 4K × 30FPS = massive compute. Downsample, skip frames, use motion detection.
+            </div>
+            <div class="mistake">
+                <strong>❌ 3D reconstruction trên reflective surfaces:</strong> Mirrors, glass, water → artifacts. Prepare scene hoặc mask these surfaces.
+            </div>
+            <div class="mistake">
+                <strong>❌ Tracking mà không handle occlusion:</strong> Object bị che → ID lost → new ID when reappear. Kalman filter + Re-ID features.
+            </div>
+            <div class="mistake">
+                <strong>❌ NeRF cho real-time application:</strong> NeRF render chậm. Dùng Gaussian Splatting cho real-time.
+            </div>
+            <div class="mistake">
+                <strong>❌ Ignore temporal consistency:</strong> Per-frame detection → flickering results. Add temporal smoothing hoặc tracking.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🎬 Video & 3D Đại Sư — "2D là phẳng, 3D là sâu, 4D (video) là sâu theo thời gian. Budget cũng sâu theo."</p>
+            <p>Section 3: AI & Machine Learning · Expert #67</p>
+        </div>
+    </div>
+</body>
+</html>

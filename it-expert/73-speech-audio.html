@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Âm Thanh Đại Sư - Speech & Audio Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(103,58,183,0.12) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #b39ddb; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(179,157,219,0.3); }
+        .header .title { font-size: 1.2em; color: #d1c4e9; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(103,58,183,0.1); }
+        .card h2 { color: #b39ddb; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(103,58,183,0.3), rgba(80,40,150,0.2)); border: 1px solid rgba(179,157,219,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #d1c4e9; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(103,58,183,0.5), rgba(80,40,150,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(103,58,183,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #673ab7, #b39ddb); border-radius: 50%; color: white; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #673ab7; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">🎙️</span>
+            <h1>Âm Thanh Đại Sư</h1>
+            <div class="title">TTS, STT, Speaker Diarization Expert</div>
+            <div class="quote">"Máy nghe tiếng người rõ hơn vợ/chồng nghe chúng ta — ít nhất là khi không có background noise."</div>
+            <div class="badge-container">
+                <span class="badge">🗣️ TTS</span>
+                <span class="badge">👂 STT/ASR</span>
+                <span class="badge">👥 Speaker Diarization</span>
+                <span class="badge">🎵 Mel Spectrogram</span>
+                <span class="badge">⚡ Real-time</span>
+                <span class="badge">🌐 Whisper</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Âm Thanh Đại Sư tên thật là <strong>Thanh Âm Vỹ</strong>, kỹ sư âm thanh studio chuyển sang AI speech. "Tôi mix nhạc 8 năm, tai tôi phân biệt được 0.5dB difference. Rồi tôi gặp Whisper — nó nghe tiếng người tốt hơn tôi. Trong noise. Bằng 30 ngôn ngữ."</p>
+            <p>Anh build hệ thống STT cho call center tiếng Việt — "ngôn ngữ có 6 tones, giọng Bắc khác giọng Nam, khách hàng nói nhanh + giận dữ + background noise. Mỗi cuộc gọi là một thử thách mới." WER (Word Error Rate) ban đầu: 35%. Sau fine-tuning: 12%. "Vẫn tệ hơn con người, nhưng con người không transcribe 10,000 cuộc gọi mỗi ngày."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Âm Thanh</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Speech-to-Text — Whisper và alternatives</h3>
+                    <p><strong>Whisper</strong> (OpenAI): multilingual, robust, open-source. Sizes: tiny → large-v3. <strong>Faster-Whisper</strong>: CTranslate2 optimization, 4x faster. <strong>Distil-Whisper</strong>: distilled, 6x faster với ~1% quality loss. Tiếng Việt: Whisper large-v3 hoặc fine-tuned medium. <strong>Streaming</strong>: Whisper không native streaming. Dùng VAD (Voice Activity Detection) + chunked processing cho pseudo-streaming. Real streaming: dùng Conformer-based models.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Text-to-Speech — Từ text thành giọng nói</h3>
+                    <p><strong>XTTS</strong> (Coqui): multilingual, voice cloning, open-source. <strong>Bark</strong>: expressive TTS + music + sound effects. <strong>ElevenLabs</strong>: best quality (commercial). <strong>Edge-TTS</strong>: free, Microsoft voices, good quality. Tiếng Việt: limited options. XTTS fine-tune hoặc Edge-TTS (vi-VN voices). Voice cloning: cần 5-30 giây reference audio. Quality depends on reference quality. Ethical concern: voice cloning cho fraud → cần consent + watermarking.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Speaker Diarization — Ai nói khi nào?</h3>
+                    <p>"Who spoke when?" <strong>pyannote.audio</strong>: best open-source diarization. Pipeline: VAD → speaker embedding → clustering. <strong>NeMo MSDD</strong> (NVIDIA): multi-scale diarization decoder. Combine với STT: (1) Diarize audio → segments per speaker. (2) STT mỗi segment. (3) Combine → transcript với speaker labels. Accuracy: DER (Diarization Error Rate) ~10-15% cho meeting recordings, higher cho noisy environments.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Audio Preprocessing — Nền tảng của quality</h3>
+                    <p>(1) <strong>Sample rate</strong>: 16kHz cho speech (Whisper expects this). (2) <strong>Noise reduction</strong>: spectral subtraction, neural denoising (DeepFilterNet). (3) <strong>VAD</strong>: remove silence, reduce processing time. <code>silero-vad</code>: lightweight, accurate. (4) <strong>Normalization</strong>: peak normalization, loudness normalization (LUFS). (5) <strong>Mel spectrogram</strong>: convert waveform → frequency-time representation. 80 mel bands standard cho speech.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Real-time Transcription Pipeline</h3>
+                    <p>Streaming STT: (1) Capture audio chunks (1-3 seconds). (2) VAD filter silence. (3) Buffer until speech segment complete. (4) Send to STT model. (5) Display result. Latency target: < 2 seconds. Tools: <code>faster-whisper</code> + <code>silero-vad</code> + WebSocket. Trick: overlap chunks 0.5s để không miss words ở boundaries. Endpointing: detect speech end → finalize transcript.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">😂 Chuyện 1: TTS đọc abbreviation literally</div>
+                <p>TTS cho hệ thống thông báo: "Giao hàng đến số 42 Nguyễn Văn Cừ, Q.5, TP.HCM." TTS đọc: "Giao hàng đến số bốn mươi hai Nguyễn Văn Cừ, kiu dot năm, ti pi dot hát xê ém." Khách hàng confused.</p>
+                <p>Fix: text normalization trước TTS — expand abbreviations ("Q.5" → "Quận 5", "TP.HCM" → "Thành phố Hồ Chí Minh"), normalize numbers, handle special cases. Text normalization chiếm 40% effort trong TTS pipeline.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> TTS reads text literally. Cần text normalization pipeline: expand abbreviations, spell out numbers/dates, handle special characters, currency, units. Vietnamese particularly tricky: "100.000đ" → "một trăm nghìn đồng", "20/03/2026" → "hai mươi tháng ba năm hai nghìn không trăm hai mươi sáu."</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🗣️ Chuyện 2: Accent recognition fail</div>
+                <p>STT cho call center. Training data: giọng Hà Nội standard. Production: 40% khách hàng giọng miền Nam, 20% giọng miền Trung. WER giọng Bắc: 10%. WER giọng Nam: 28%. WER giọng Trung: 45%.</p>
+                <p>Giọng miền Trung: "anh" nghe như "eng", "ăn" nghe như "ăng." Model trained chủ yếu giọng Bắc → fail trên variations. Fix: thu thập data đa giọng, fine-tune Whisper trên balanced dataset. WER average giảm từ 25% xuống 14%.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Speech models biased towards training data accent. Vietnamese đặc biệt diverse: Bắc/Trung/Nam, rural/urban, young/old. Training data phải representative cho actual users. Test trên diverse accent groups riêng — average WER che giấu accent-specific failures.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">📞 Chuyện 3: Background noise destroys everything</div>
+                <p>STT hoạt động perfect trong office yên tĩnh. Deploy cho field agents gọi từ construction sites, đường phố, quán cà phê. WER từ 12% lên 55%. Model nghe tiếng ồn nhiều hơn tiếng người.</p>
+                <p>Fix pipeline: (1) DeepFilterNet noise reduction, (2) Enhanced VAD ignore non-speech segments, (3) Augmentation training data với noise backgrounds. WER noise environment: 20%. "Acceptable," anh nói. "Và tốt hơn con người cố nghe qua tiếng máy khoan."</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Test speech AI trong ACTUAL deployment conditions. Office ≠ field. Noise reduction là preprocessing step bắt buộc. Augment training data với realistic noise: street, factory, cafe, wind. VAD quality ảnh hưởng trực tiếp đến STT quality.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Không text normalization cho TTS:</strong> TTS đọc "km/h" thành "kém slash hát". Normalize text trước.
+            </div>
+            <div class="mistake">
+                <strong>❌ Training STT chỉ trên clean audio:</strong> Production audio có noise. Augment training data với noise.
+            </div>
+            <div class="mistake">
+                <strong>❌ Bỏ qua accent diversity:</strong> Single accent model fails trên diverse user base. Collect diverse data.
+            </div>
+            <div class="mistake">
+                <strong>❌ Whisper cho real-time streaming:</strong> Whisper designed cho batch. Dùng chunked processing + VAD cho pseudo-streaming.
+            </div>
+            <div class="mistake">
+                <strong>❌ Voice cloning mà không có consent:</strong> Ethical + legal issues. Luôn có consent và watermark synthetic voice.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🎙️ Âm Thanh Đại Sư — "Nghe mọi thứ, hiểu mọi giọng. Trừ khi background noise quá lớn."</p>
+            <p>Section 3: AI & Machine Learning · Expert #73</p>
+        </div>
+    </div>
+</body>
+</html>

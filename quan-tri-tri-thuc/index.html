@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản Trị Dựa Vào Tri Thức — Trang Chủ</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #312E81; --indigo-light: #4338CA; --indigo-pale: #EEF2FF;
+    --emerald: #059669; --emerald-light: #10B981; --emerald-pale: #ECFDF5;
+    --cyan: #0891B2; --cyan-light: #06B6D4; --cyan-pale: #ECFEFF;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FFFBEB;
+    --gray: #6B7280; --gray-light: #F9FAFB; --gray-border: #E5E7EB;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10); --shadow-hover: 0 8px 32px rgba(0,0,0,0.16);
+    --radius: 12px; --radius-lg: 20px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #F8FAFF; color: #1F2937; line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 40%, #1E40AF 70%, #0891B2 100%);
+    color: white; padding: 80px 24px 60px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(6,182,212,0.2) 0%, transparent 50%);
+  }
+  .hero-inner { position: relative; max-width: 860px; margin: 0 auto; }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 6px 18px; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(1.9rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; margin-bottom: 12px; text-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .hero-sub { font-size: 1.1rem; opacity: 0.85; margin-bottom: 8px; }
+  .hero-authors { margin: 16px 0; opacity: 0.9; }
+  .hero-authors span { display: inline-block; background: rgba(255,255,255,0.12); border-radius: 999px; padding: 4px 14px; margin: 3px; font-size: 0.9rem; }
+  .hero-tagline { margin-top: 24px; font-size: 1.15rem; font-weight: 600; background: linear-gradient(90deg, #FCD34D, #F0ABFC); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  /* QUOTE HERO */
+  .quote-hero { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-left: 5px solid var(--amber); padding: 28px 36px; max-width: 860px; margin: -28px auto 0; border-radius: var(--radius-lg); box-shadow: var(--shadow); position: relative; z-index: 10; }
+  .quote-hero::before { content: '"'; font-size: 5rem; color: var(--amber-light); position: absolute; top: -10px; left: 20px; line-height: 1; opacity: 0.4; }
+  .quote-hero p { font-size: 1.1rem; font-style: italic; color: #92400E; font-weight: 500; padding-left: 20px; }
+  .quote-hero cite { display: block; margin-top: 8px; font-size: 0.85rem; color: var(--amber); font-style: normal; padding-left: 20px; }
+
+  /* CONTAINER */
+  .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+  .section-title { font-size: 1.6rem; font-weight: 800; color: var(--indigo); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .section-desc { color: var(--gray); margin-bottom: 32px; font-size: 0.95rem; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--indigo), var(--cyan), var(--emerald)); border-radius: 99px; margin-bottom: 12px; width: 60px; }
+
+  /* SECI DIAGRAM */
+  .seci-section { background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow); margin-bottom: 48px; }
+  .seci-title { text-align: center; font-size: 1.5rem; font-weight: 800; color: var(--indigo); margin-bottom: 8px; }
+  .seci-subtitle { text-align: center; color: var(--gray); margin-bottom: 32px; font-size: 0.95rem; }
+  .seci-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0; max-width: 600px; margin: 0 auto;
+    border-radius: 16px; overflow: hidden; border: 3px solid var(--indigo-pale);
+  }
+  .seci-cell { padding: 28px 24px; position: relative; }
+  .seci-cell-s { background: linear-gradient(135deg, #EEF2FF, #DDD6FE); border-right: 2px solid white; border-bottom: 2px solid white; }
+  .seci-cell-e { background: linear-gradient(135deg, #ECFDF5, #A7F3D0); border-bottom: 2px solid white; }
+  .seci-cell-i { background: linear-gradient(135deg, #FFFBEB, #FDE68A); border-right: 2px solid white; }
+  .seci-cell-c { background: linear-gradient(135deg, #ECFEFF, #A5F3FC); }
+  .seci-letter { font-size: 2.5rem; font-weight: 900; margin-bottom: 4px; }
+  .seci-cell-s .seci-letter { color: var(--indigo); }
+  .seci-cell-e .seci-letter { color: var(--emerald); }
+  .seci-cell-i .seci-letter { color: var(--amber); }
+  .seci-cell-c .seci-letter { color: var(--cyan); }
+  .seci-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+  .seci-flow { font-size: 0.78rem; background: rgba(0,0,0,0.08); border-radius: 99px; display: inline-block; padding: 2px 10px; margin-bottom: 8px; font-weight: 600; }
+  .seci-desc { font-size: 0.83rem; color: #4B5563; line-height: 1.5; }
+  .seci-arrow-wrap { text-align: center; margin-top: 16px; color: var(--gray); font-size: 0.85rem; }
+  .seci-arrow { font-size: 1.5rem; color: var(--indigo); }
+  .seci-axis { display: flex; justify-content: space-between; max-width: 600px; margin: 12px auto 0; font-size: 0.8rem; color: var(--gray); font-weight: 600; }
+
+  /* THEMES */
+  .themes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 48px; }
+  .theme-card { background: white; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); border-top: 4px solid; transition: transform 0.2s, box-shadow 0.2s; cursor: default; }
+  .theme-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+  .theme-card:nth-child(1) { border-color: var(--indigo); }
+  .theme-card:nth-child(2) { border-color: var(--emerald); }
+  .theme-card:nth-child(3) { border-color: var(--cyan); }
+  .theme-card:nth-child(4) { border-color: var(--amber); }
+  .theme-emoji { font-size: 2rem; margin-bottom: 12px; }
+  .theme-title { font-weight: 700; font-size: 1rem; color: var(--indigo); margin-bottom: 6px; }
+  .theme-chap { font-size: 0.8rem; color: var(--gray); margin-bottom: 8px; }
+  .theme-desc { font-size: 0.88rem; color: #4B5563; line-height: 1.5; }
+
+  /* TOC */
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .toc-card { background: white; border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); display: flex; align-items: flex-start; gap: 16px; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid var(--gray-border); }
+  .toc-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--indigo-light); }
+  .toc-emoji { font-size: 1.8rem; flex-shrink: 0; }
+  .toc-content {}
+  .toc-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); font-weight: 600; margin-bottom: 3px; }
+  .toc-name { font-weight: 700; font-size: 0.97rem; color: var(--indigo); margin-bottom: 4px; }
+  .toc-hook { font-size: 0.83rem; color: #4B5563; }
+
+  /* FOOTER */
+  footer { background: var(--indigo); color: rgba(255,255,255,0.8); padding: 40px 24px; text-align: center; margin-top: 60px; }
+  footer strong { color: white; }
+  footer .footer-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-top: 20px; }
+  footer .footer-item { font-size: 0.9rem; }
+  footer .footer-item span { display: block; color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-bottom: 2px; }
+
+  @media (max-width: 640px) {
+    .seci-grid { grid-template-columns: 1fr; }
+    .seci-cell { border-right: none !important; border-bottom: 2px solid white !important; }
+    .quote-hero { margin: -16px 16px 0; padding: 20px 24px; }
+    .container { padding: 32px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">📚 Quản Trị Kinh Doanh • Tri Thức & Đổi Mới</div>
+    <h1>Quản Trị Dựa Vào Tri Thức</h1>
+    <p class="hero-sub">Managing Flow: A Process Theory of the Knowledge-Based Firm</p>
+    <div class="hero-authors">
+      <span>✍️ Ikujiro Nonaka</span>
+      <span>✍️ Ryoko Toyama</span>
+      <span>✍️ Toru Hirata</span>
+    </div>
+    <div class="hero-authors">
+      <span>🌐 Dịch: Võ Kiều Linh</span>
+      <span>📖 NXB Thời Đại • 504 trang</span>
+    </div>
+    <p class="hero-tagline">✨ Đâu là mô hình doanh nghiệp của tương lai? ✨</p>
+  </div>
+</section>
+
+<!-- QUOTE HERO -->
+<div style="max-width:1100px; margin:0 auto; padding:0 24px;">
+  <div class="quote-hero">
+    <p>"Lợi nhuận là kết quả của quá trình tạo ra giá trị, chứ bản thân lợi nhuận không phải là mục đích. Doanh nghiệp khác nhau vì họ muốn và nỗ lực để trở nên khác biệt."</p>
+    <cite>— Ikujiro Nonaka</cite>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- SECI DIAGRAM -->
+  <section class="seci-section">
+    <div class="seci-title">🔄 Mô Hình SECI — Trái Tim Của Lý Thuyết</div>
+    <div class="seci-subtitle">Vòng xoáy tạo ra tri thức liên tục của Nonaka — từ ẩn sang hiện và ngược lại</div>
+    <div style="text-align:center; margin-bottom:12px; font-size:0.82rem; color:var(--gray); font-weight:600;">
+      ⬆️ TRI THỨC ẨN (Tacit Knowledge)
+    </div>
+    <div class="seci-grid">
+      <div class="seci-cell seci-cell-s">
+        <div class="seci-letter">S</div>
+        <div class="seci-name">Xã Hội Hóa</div>
+        <div class="seci-flow">ẩn → ẩn</div>
+        <div class="seci-desc">Chia sẻ tri thức qua trải nghiệm trực tiếp, quan sát, bắt chước. Honda cử nhóm sang Châu Âu "sống cùng" người dùng.</div>
+      </div>
+      <div class="seci-cell seci-cell-e">
+        <div class="seci-letter">E</div>
+        <div class="seci-name">Ngoại Hóa</div>
+        <div class="seci-flow">ẩn → hiện</div>
+        <div class="seci-desc">Chuyển tri thức ẩn thành ngôn ngữ, ẩn dụ, khái niệm. Honda dùng hình ảnh "chim ưng" để hình dung thiết kế Accord.</div>
+      </div>
+      <div class="seci-cell seci-cell-i">
+        <div class="seci-letter">I</div>
+        <div class="seci-name">Tiếp Thu / Nội Hóa</div>
+        <div class="seci-flow">hiện → ẩn</div>
+        <div class="seci-desc">Tri thức hiện được thực hành và trở thành tri thức ẩn mới. "Nếu tri thức ẩn không phát triển thì tri thức hiện cũng không phát triển." — CEO Toyota</div>
+      </div>
+      <div class="seci-cell seci-cell-c">
+        <div class="seci-letter">C</div>
+        <div class="seci-name">Kết Hợp</div>
+        <div class="seci-flow">hiện → hiện</div>
+        <div class="seci-desc">Tổng hợp các tri thức hiện khác nhau thành hệ thống tri thức mới. Linux là ví dụ kinh điển của tri thức cộng đồng.</div>
+      </div>
+    </div>
+    <div class="seci-axis">
+      <span>⬅️ TRI THỨC ẨN</span>
+      <span>TRI THỨC HIỆN ➡️</span>
+    </div>
+    <div class="seci-arrow-wrap">
+      <div class="seci-arrow" style="margin-top:16px;">S → E → C → I → S → ...</div>
+      <div style="font-size:0.82rem; color:var(--gray); margin-top:6px;">Vòng xoáy tri thức không ngừng mở rộng theo thời gian ↗</div>
+    </div>
+  </section>
+
+  <!-- THEMES -->
+  <div class="divider"></div>
+  <h2 class="section-title">🗺️ Bốn Chủ Đề Lớn</h2>
+  <p class="section-desc">Toàn bộ cuốn sách xoay quanh bốn luồng tư tưởng cốt lõi sau đây</p>
+  <div class="themes-grid">
+    <div class="theme-card">
+      <div class="theme-emoji">🧠</div>
+      <div class="theme-title">Bản Chất Tri Thức</div>
+      <div class="theme-chap">Chương 1</div>
+      <div class="theme-desc">Tri thức không phải thông tin tĩnh. Nó mang tính chủ quan, tính quá trình, tính thẩm mỹ và tính thực hành — chỉ tồn tại trong hoạt động của con người.</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">🔄</div>
+      <div class="theme-title">Mô Hình SECI & Ba</div>
+      <div class="theme-chap">Chương 2, 5, 6</div>
+      <div class="theme-desc">Vòng xoáy SECI chuyển hóa tri thức ẩn thành tri thức hiện và ngược lại. Ba là bối cảnh chia sẻ — không gian vật lý, ảo và tinh thần — nơi tri thức nảy sinh.</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">🦉</div>
+      <div class="theme-title">Lãnh Đạo Phronesis</div>
+      <div class="theme-chap">Chương 3, 8</div>
+      <div class="theme-desc">Phronesis (trí tuệ thực tiễn của Aristotle) là năng lực phán đoán "cái tốt" trong từng tình huống cụ thể — vừa là khoa học, vừa là nghệ thuật lãnh đạo.</div>
+    </div>
+    <div class="theme-card">
+      <div class="theme-emoji">🔭</div>
+      <div class="theme-title">Tầm Nhìn & Chiến Lược</div>
+      <div class="theme-chap">Chương 4, 7, 9</div>
+      <div class="theme-desc">Tầm nhìn tri thức định hướng toàn bộ tổ chức. Tài sản tri thức — kinh nghiệm, thói quen, quy trình — là lợi thế cạnh tranh bền vững nhất.</div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="divider"></div>
+  <h2 class="section-title">📋 Mục Lục Đầy Đủ</h2>
+  <p class="section-desc">Nhấn vào từng chương để khám phá nội dung chi tiết</p>
+  <div class="toc-grid">
+    <a href="gioi-thieu.html" class="toc-card">
+      <div class="toc-emoji">🌅</div>
+      <div class="toc-content">
+        <div class="toc-label">Phần mở đầu</div>
+        <div class="toc-name">Giới Thiệu & Lời Nói Đầu</div>
+        <div class="toc-hook">Nonaka — "Peter Drucker mới" và 40 năm hành trình từ R&D đến quản trị tri thức</div>
+      </div>
+    </a>
+    <a href="chuong-01.html" class="toc-card">
+      <div class="toc-emoji">🧠</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 1</div>
+        <div class="toc-name">Đặc Điểm Của Tri Thức</div>
+        <div class="toc-hook">4 tính chất cốt lõi: chủ quan, quá trình, thẩm mỹ, thực hành — và triết học Phronesis</div>
+      </div>
+    </a>
+    <a href="chuong-02.html" class="toc-card">
+      <div class="toc-emoji">🔄</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 2</div>
+        <div class="toc-name">Khuôn Khổ Lý Thuyết — Mô Hình SECI</div>
+        <div class="toc-hook">Vòng xoáy SECI và 7 thành phần của công ty dựa vào tri thức</div>
+      </div>
+    </a>
+    <a href="chuong-03.html" class="toc-card">
+      <div class="toc-emoji">🦉</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 3</div>
+        <div class="toc-name">Lãnh Đạo Phronesis</div>
+        <div class="toc-hook">6 khả năng phronesis — và câu chuyện kỹ sư Honda từ chối nhà sáng lập</div>
+      </div>
+    </a>
+    <a href="chuong-04.html" class="toc-card">
+      <div class="toc-emoji">🔭</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 4</div>
+        <div class="toc-name">Tầm Nhìn và Mục Tiêu Định Hướng</div>
+        <div class="toc-hook">Eisai & Honda: tầm nhìn không phải là con số tài chính mà là sứ mệnh con người</div>
+      </div>
+    </a>
+    <a href="chuong-05.html" class="toc-card">
+      <div class="toc-emoji">🏠</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 5</div>
+        <div class="toc-name">Ba (場) — Bối Cảnh Chia Sẻ</div>
+        <div class="toc-hook">Mayekawa & KUMON: nơi tri thức nảy sinh không chỉ là không gian vật lý</div>
+      </div>
+    </a>
+    <a href="chuong-06.html" class="toc-card">
+      <div class="toc-emoji">💬</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 6</div>
+        <div class="toc-name">Đối Thoại và Thực Hành</div>
+        <div class="toc-hook">Seven-Eleven Nhật: "hàng chục ngàn đôi mắt" — sức mạnh của đối thoại phân tán</div>
+      </div>
+    </a>
+    <a href="chuong-07.html" class="toc-card">
+      <div class="toc-emoji">💎</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 7</div>
+        <div class="toc-name">Tài Sản Tri Thức</div>
+        <div class="toc-hook">YKK & JFE: tri thức ẩn tích lũy trong sản xuất là lợi thế không thể sao chép</div>
+      </div>
+    </a>
+    <a href="chuong-08.html" class="toc-card">
+      <div class="toc-emoji">🚀</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 8</div>
+        <div class="toc-name">Vai Trò Lãnh Đạo</div>
+        <div class="toc-hook">Canon & Toyota Prius: CEO phronesis và lãnh đạo phân bổ tạo nên kỳ tích</div>
+      </div>
+    </a>
+    <a href="chuong-09.html" class="toc-card">
+      <div class="toc-emoji">🌟</div>
+      <div class="toc-content">
+        <div class="toc-label">Chương 9</div>
+        <div class="toc-name">Kết Luận — Quản Trị Là Một Cách Sống</div>
+        <div class="toc-hook">3 luận điểm cốt lõi và tầm nhìn về tương lai của quản trị dựa vào phronesis</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Quản Trị Dựa Vào Tri Thức</strong>
+  <div class="footer-grid">
+    <div class="footer-item">
+      <span>Tác giả</span>
+      Ikujiro Nonaka, Ryoko Toyama, Toru Hirata
+    </div>
+    <div class="footer-item">
+      <span>Người dịch</span>
+      Võ Kiều Linh
+    </div>
+    <div class="footer-item">
+      <span>Nhà xuất bản</span>
+      NXB Thời Đại — 2011
+    </div>
+    <div class="footer-item">
+      <span>Số trang</span>
+      504 trang
+    </div>
+  </div>
+  <p style="margin-top:24px; font-size:0.8rem; opacity:0.5;">Tóm tắt & thiết kế học tập — không thay thế tác phẩm gốc</p>
+</footer>
+</body>
+</html>

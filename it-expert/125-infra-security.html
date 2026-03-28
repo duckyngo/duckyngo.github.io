@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hạ Tầng Bảo Mật Đại Sư - Infrastructure Security</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0d2e 25%, #0d1b3e 50%, #1a0d2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(59,130,246,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #818cf8, #60a5fa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #a5b4fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(59,130,246,0.2)); border: 1px solid rgba(99,102,241,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #a5b4fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; } .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(99,102,241,0.4), rgba(59,130,246,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(99,102,241,0.2); box-shadow: 0 8px 40px rgba(99,102,241,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #a5b4fc; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(99,102,241,0.06); border-left: 3px solid #818cf8; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #a5b4fc; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(59,130,246,0.06)); border: 1px solid rgba(99,102,241,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #60a5fa; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #a5b4fc; font-weight: 600; }
+        code { background: rgba(99,102,241,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #a5b4fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🏰</span>
+            <h1>Hạ Tầng Bảo Mật Đại Sư</h1>
+            <p class="subtitle">Trần Văn Thành Trì — Kiến Trúc Sư Phòng Thủ</p>
+            <p class="quote">"Encryption không phải optional — nó là oxy của hạ tầng. Thiếu nó, mọi thứ chết dần."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">TLS/mTLS</span>
+            <span class="skill-tag">PKI & Certificates</span>
+            <span class="skill-tag">Zero Trust Architecture</span>
+            <span class="skill-tag">WAF</span>
+            <span class="skill-tag">Encryption at Rest</span>
+            <span class="skill-tag">Network Segmentation</span>
+            <span class="skill-tag">VPN/WireGuard</span>
+            <span class="skill-tag">DDoS Mitigation</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Trần Văn Thành Trì lớn lên trong một ngôi làng mà cổng nhà nào cũng khóa ba lớp, chó giữ nhà hai con, và hàng rào dây thép gai quấn thêm giây leo để "ngụy trang". Tính cách cẩn thận đến mức paranoid của ông bắt nguồn từ thuở nhỏ — khi anh trai ông đọc trộm nhật ký của ông mặc dù đã giấu dưới gối và khóa bằng ổ khóa đồ chơi.</p>
+            <p>Vào ngành IT, ông ngay lập tức bị cuốn hút bởi thế giới mật mã và phòng thủ. Kiếp nạn đầu: "HTTP is fine" — khi ông phải giải thích cho CEO rằng website không có HTTPS nghĩa là password khách hàng bay trên mạng như bưu thiếp không phong bì. Kiếp hai: "Certificate Apocalypse" — khi Let's Encrypt certificate expire lúc 3 giờ sáng và toàn bộ microservices mTLS ngưng hoạt động. Kiếp ba: "Zero Trust Enlightenment" — khi ông nhận ra rằng "tin tưởng mạng nội bộ" là ảo tưởng lớn nhất trong security.</p>
+            <p>Châm ngôn sống của ông: "Castle-and-moat đã chết. Mọi packet đều là kẻ thù tiềm tàng cho đến khi chứng minh ngược lại."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: TLS Configuration — Đừng Để Bị Đánh Giá F</h3>
+                <p>TLS 1.2 là minimum, TLS 1.3 là recommended. Disable TLS 1.0, 1.1, SSLv3 hoàn toàn. Cipher suites: ưu tiên AEAD ciphers (AES-GCM, ChaCha20-Poly1305), loại bỏ CBC mode ciphers. HSTS header với <code>max-age=31536000; includeSubDomains; preload</code>. Test với <code>testssl.sh</code> hoặc SSL Labs — mục tiêu A+. OCSP stapling enabled để giảm latency. Certificate Transparency logs để detect rogue certificates.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: PKI & Certificate Management</h3>
+                <p>Xây dựng internal PKI cho mTLS: Root CA (offline, air-gapped), Intermediate CA (online, auto-sign). Dùng <code>cert-manager</code> trong Kubernetes để auto-issue và auto-renew certificates. Let's Encrypt cho public-facing services, internal CA cho service-to-service. Certificate lifecycle: monitor expiry (minimum 30 ngày trước), automate renewal, có runbook cho emergency rotation. NEVER ignore certificate warnings — chúng tồn tại vì lý do.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Zero Trust Architecture</h3>
+                <p>Zero Trust = "never trust, always verify". Principles: verify explicitly (authenticate + authorize mọi request), least privilege access, assume breach. Implementation: identity-based access (không phải network-based), micro-segmentation, continuous verification. BeyondCorp model: access decisions dựa trên user identity + device health + context, không phải "đang ở trong VPN". Tools: SPIFFE/SPIRE cho workload identity, service mesh (Istio/Linkerd) cho mTLS automatic.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: WAF — Web Application Firewall</h3>
+                <p>WAF là lớp phòng thủ trước application — filter malicious requests trước khi chúng đến code. ModSecurity với OWASP Core Rule Set (CRS) là nền tảng. Cloud WAF: AWS WAF, Cloudflare WAF, Azure Front Door. Key: bắt đầu ở detection mode (log only), tune rules để giảm false positives, rồi mới chuyển sang blocking mode. Custom rules cho business logic attacks. Rate limiting để chống brute force và credential stuffing. Và nhớ: WAF là lớp phòng thủ bổ sung, không thay thế secure coding.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Encryption At Rest</h3>
+                <p>Mọi data at rest phải encrypted: database (TDE — Transparent Data Encryption), filesystem (LUKS, dm-crypt), object storage (SSE-S3, SSE-KMS). Key management: dùng KMS (AWS KMS, HashiCorp Vault Transit), không tự implement crypto. Envelope encryption: data encrypted bằng DEK (Data Encryption Key), DEK encrypted bằng KEK (Key Encryption Key) trong KMS. Key rotation: rotate KEK định kỳ, re-encrypt DEKs. Và tuyệt đối: ĐỪNG TỰ VIẾT CRYPTO ALGORITHM.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Network Segmentation & Micro-Segmentation</h3>
+                <p>Flat network = one breach = total compromise. Segment theo: environment (prod/staging/dev), tier (web/app/db), sensitivity (PCI zone, PII zone). Micro-segmentation với network policies (Kubernetes NetworkPolicy, Calico, Cilium) — mỗi pod chỉ được talk với pods nó cần. East-west traffic monitoring quan trọng không kém north-south. Và VPN không phải access control — VPN + Zero Trust mới là đúng.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: Certificate Expire Lúc 3 Giờ Sáng</h3>
+                <p>3 giờ sáng Chủ Nhật, PagerDuty reo như chuông báo cháy. Mọi service trả về 502. Investigation: internal CA intermediate certificate đã expire. Tất cả mTLS connections giữa microservices bị reject. 200+ services down đồng loạt.</p>
+                <p>Certificate này có validity 1 năm, được tạo bởi engineer đã nghỉ việc 11 tháng trước. Không ai monitor expiry date. Không có runbook. Renewal process mất 2 giờ vì phải tìm Root CA private key (trong safe deposit box ở office, lúc 3 giờ sáng Chủ Nhật). Total downtime: 4 giờ. Revenue impact: không nhỏ.</p>
+                <div class="lesson">💡 Bài học: Certificate monitoring là non-negotiable. Alert 90, 60, 30, 7, 1 ngày trước expiry. Automate renewal với cert-manager. Và document mọi thứ — đặc biệt là "Root CA key ở đâu".</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: WAF Blocks Legitimate Traffic</h3>
+                <p>Sales team deploy promotion campaign, khách hàng nhập coupon code vào form. WAF detect coupon code <code>SELECT20OFF</code> là SQL injection attempt (vì bắt đầu bằng "SELECT") và block 100% requests. Revenue drop 80% trong 2 giờ trước khi ai đó nhận ra.</p>
+                <p>Root cause: WAF rule quá aggressive, không có allowlisting cho specific endpoints. Fix: tune WAF rules, add exceptions cho promotion endpoint, implement better testing before rule changes. Từ đó, mọi WAF rule change phải qua staging environment với real traffic replay trước.</p>
+                <div class="lesson">💡 Bài học: Security controls có thể gây harm nếu không tuned properly. WAF false positives = lost revenue. Luôn test với real-world traffic patterns. Detection mode trước, blocking mode sau.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: Zero Trust Ngăn Chặn Lateral Movement</h3>
+                <p>Red team exercise: pentester compromise được một container trong dev namespace qua vulnerable dependency. Từ đó, thử lateral movement sang production — FAIL. Mọi service-to-service communication yêu cầu mTLS với SPIFFE identity. Network policies block cross-namespace traffic by default. Service mesh enforce authorization policies.</p>
+                <p>Pentester bị "nhốt" trong compromised container, không thể reach bất kỳ service nào khác. Alert trigger, SOC team detect, container isolated. Zero Trust architecture đã biến potential catastrophe thành contained incident.</p>
+                <div class="lesson">💡 Bài học: Zero Trust không phải marketing buzzword — nó thực sự works. Assume breach, contain blast radius. Micro-segmentation + mTLS + authorization policies = attacker bị nhốt trong sandbox dù đã vào được network.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: "Mạng nội bộ an toàn, không cần encrypt"</h3>
+                <p>Internal traffic không encrypted = anyone on the network can sniff. ARP spoofing, rogue devices, compromised hosts — internal network KHÔNG phải trusted zone. Encrypt everything, everywhere.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Self-signed certificates everywhere, ignore warnings</h3>
+                <p>Training users và developers để "click through certificate warnings" tạo ra văn hóa bỏ qua security alerts. Dùng internal CA properly — certificates phải trusted, không phải ignored.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: WAF = application security</h3>
+                <p>WAF là một LỚP phòng thủ, không phải toàn bộ strategy. WAF có thể bị bypass. Application vẫn phải secure by design. Defense in depth, không phải defense by WAF.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: VPN = Zero Trust</h3>
+                <p>VPN chỉ encrypt tunnel, không verify identity per request. User VPN vào = trusted? Không. VPN + per-request authentication + authorization + device posture check = Zero Trust.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Tự implement crypto algorithms</h3>
+                <p>Don't roll your own crypto. Dùng well-tested libraries (libsodium, OpenSSL). Custom encryption = guaranteed vulnerabilities. Crypto is hard — để chuyên gia làm.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Wildcard certificates cho mọi thứ</h3>
+                <p>Wildcard cert bị compromise = TẤT CẢ subdomains bị compromise. Dùng specific certificates cho critical services. Wildcard chỉ cho non-sensitive services nếu cần.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trần Văn Thành Trì</span> — Hạ Tầng Bảo Mật Đại Sư</p>
+            <p>🏰 "Encrypt everything. Trust nothing. Verify always." 🏰</p>
+        </div>
+    </div>
+</body>
+</html>

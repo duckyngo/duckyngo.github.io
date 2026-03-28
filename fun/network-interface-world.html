@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Network Interface - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-signal 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-signal {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.85; }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is NIC */
+  .rt-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .rt-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .rt-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4), var(--accent5));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Tech Cards */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .tech-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tech-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .tech-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .tech-card .tech-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .tech-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .tech-card .tech-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .tech-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .tech-card.physical::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .tech-card.virtual::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .tech-card.wireless::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .tech-card.fiber::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .tech-card.veth::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .tech-card.bridge::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .tech-card.bond::before { background: linear-gradient(90deg, #14b8a6, #0d9488); }
+  .tech-card.vlan::before { background: linear-gradient(90deg, #f97316, #ea580c); }
+  .tech-card.macvlan::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+  .tech-card.tuntap::before { background: linear-gradient(90deg, #a855f7, #9333ea); }
+  .tech-card.loopback::before { background: linear-gradient(90deg, #64748b, #475569); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Myth/Misconception cards */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Topology */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  .topo-visual {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  /* Flow Box */
+  .flow-box {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .flow-box .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Mindset */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Bonding Mode Cards */
+  .bond-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .bond-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bond-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+
+  .bond-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .bond-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+  .bond-card .bond-mode { color: var(--accent4); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; }
+  .bond-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 0.5rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .rt-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .tech-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .bond-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Network Interface World</a>
+  <a href="#what">NIC l&agrave; g&igrave;?</a>
+  <a href="#history">L&#7883;ch s&#7917;</a>
+  <a href="#types">Lo&#7841;i NIC</a>
+  <a href="#bonding">Bonding</a>
+  <a href="#vlan">VLAN</a>
+  <a href="#bridging">Bridging</a>
+  <a href="#namespaces">Namespaces</a>
+  <a href="#ip-config">IP Config</a>
+  <a href="#performance">Performance</a>
+  <a href="#troubleshooting">Troubleshoot</a>
+  <a href="#comparison">So s&aacute;nh</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#x1F50C;</div>
+  <h1>Th&#7871; Gi&#7899;i Network Interface</h1>
+  <p class="subtitle">T&#7915; card m&#7841;ng v&#7853;t l&yacute; &#273;&#7871;n virtual NIC, t&#7915; Ethernet 10BASE-T &#273;&#7871;n 100GbE, t&#7915; bonding &#273;&#7871;n VLAN tagging. T&#7845;t c&#7843; ki&#7871;n th&#7913;c b&#7841;n c&#7847;n &#273;&#7875; l&agrave;m ch&#7911; network interface trong homelab v&agrave; production &mdash; n&#417;i m&#7895;i packet &#273;&#7873;u &#273;i qua.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS NETWORK INTERFACE -->
+<section id="what">
+  <div class="rt-what">
+    <h2 class="section-title">Network Interface l&agrave; g&igrave; th&#7921;c s&#7921;?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Network Interface (NIC &mdash; Network Interface Card/Controller)</strong> l&agrave; &#273;i&#7875;m giao ti&#7871;p gi&#7919;a m&aacute;y t&iacute;nh v&agrave; m&#7841;ng. N&oacute; ho&#7841;t &#273;&#7897;ng &#7903; <strong>Layer 1 (Physical)</strong> v&agrave; <strong>Layer 2 (Data Link)</strong> c&#7911;a m&ocirc; h&igrave;nh OSI. M&#7895;i NIC c&oacute; m&#7897;t &#273;&#7883;a ch&#7881; MAC duy nh&#7845;t (48-bit), &#273;&oacute;ng vai tr&ograve; nh&#432; &ldquo;s&#7889; ch&#7913;ng minh th&#432;&rdquo; c&#7911;a thi&#7871;t b&#7883; tr&ecirc;n m&#7841;ng LAN.
+    </p>
+
+    <div class="rt-analogy">
+      <div class="analogy-box">
+        <div class="icon">&#x1F4E6;</div>
+        <h3>Physical NIC</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Card m&#7841;ng g&#7855;n v&agrave;o PCIe/USB<br>C&oacute; c&#7893;ng RJ45, SFP+, antenna<br>T&#7889;c &#273;&#7897;: <strong style="color: var(--accent3);">1G &ndash; 100G</strong></p>
+      </div>
+      <div class="analogy-arrow">&harr;</div>
+      <div class="analogy-box">
+        <div class="icon">&#x1F4BB;</div>
+        <h3>Virtual NIC</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">T&#7891;n t&#7841;i ho&agrave;n to&agrave;n trong kernel<br>veth, TAP, TUN, bridge, bond<br>T&#7889;c &#273;&#7897;: <strong style="color: var(--accent3);">Ph&#7909; thu&#7897;c host</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>&#272;i&#7875;m m&#7845;u ch&#7889;t</h4>
+      <p>Trong Linux, <strong>m&#7885;i th&#7913; &#273;&#7873;u l&agrave; interface</strong>. D&ugrave; l&agrave; card m&#7841;ng v&#7853;t l&yacute;, c&#7847;u n&#7889;i &#7843;o, VLAN sub-interface hay VPN tunnel &mdash; kernel &#273;&#7873;u bi&#7875;u di&#7877;n ch&uacute;ng d&#432;&#7899;i d&#7841;ng network interface. Hi&#7875;u c&aacute;ch kernel qu&#7843;n l&yacute; interface l&agrave; ch&igrave;a kh&oacute;a &#273;&#7875; l&agrave;m ch&#7911; networking tr&ecirc;n Linux. L&#7879;nh <code style="color: var(--accent3);">ip link show</code> cho b&#7841;n th&#7845;y t&#7845;t c&#7843;.</p>
+    </div>
+
+    <div class="insight-box" style="border-left-color: var(--accent3);">
+      <h4>OSI Layer 1 &amp; 2 &mdash; N&#7873;n t&#7843;ng</h4>
+      <p><strong>Layer 1 (Physical):</strong> T&iacute;n hi&#7879;u &#273;i&#7879;n/quang, t&#7889;c &#273;&#7897; truy&#7873;n, lo&#7841;i c&aacute;p (Cat5e, Cat6, fiber OM3/OM4), c&#7893;ng k&#7871;t n&#7889;i (RJ45, SFP+, QSFP28). NIC chuy&#7875;n &#273;&#7893;i gi&#7919;a t&iacute;n hi&#7879;u v&#7853;t l&yacute; v&agrave; frame s&#7889;.<br>
+      <strong>Layer 2 (Data Link):</strong> &#272;&#7883;a ch&#7881; MAC, Ethernet frame (preamble + header + payload + FCS), ARP resolution, VLAN tagging (802.1Q). &#272;&acirc;y l&agrave; n&#417;i NIC &ldquo;s&#7889;ng&rdquo; &mdash; n&oacute; &#273;&#7885;c v&agrave; ghi Ethernet frames.</p>
+    </div>
+
+    <div class="insight-box" style="border-left-color: var(--accent4);">
+      <h4>Homelab Insight</h4>
+      <p>Trong homelab, b&#7841;n s&#7869; g&#7863;p c&#7843; physical l&#7851;n virtual NIC. M&#7897;t server Proxmox &#273;i&#7875;n h&igrave;nh c&oacute; th&#7875; c&oacute; 2 NIC v&#7853;t l&yacute; (enp3s0, enp4s0) nh&#432;ng ch&#7841;y h&agrave;ng ch&#7909;c veth pairs cho containers, nhi&#7873;u bridge cho VMs, v&agrave; VLAN sub-interfaces. <strong>N&#7855;m v&#7919;ng c&#7843; hai th&#7871; gi&#7899;i l&agrave; b&#7855;t bu&#7897;c.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">D&ograve;ng Th&#7901;i Gian Network Interface</h2>
+  <p class="section-subtitle">T&#7915; s&#7907;i c&aacute;p &#273;&#7891;ng tr&#7909;c &#273;&#7847;u ti&ecirc;n &#273;&#7871;n 800GbE v&agrave; WiFi 7 &mdash; h&#417;n 50 n&#259;m ti&#7871;n h&oacute;a kh&ocirc;ng ng&#7915;ng c&#7911;a network interface</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1973&ndash;1980</span>
+        <h3>Ethernet ra &#273;&#7901;i</h3>
+        <p>Robert Metcalfe ph&aacute;t minh Ethernet t&#7841;i Xerox PARC (1973). C&aacute;p &#273;&#7891;ng tr&#7909;c (coax), t&ocirc; p&ocirc; bus, t&#7889;c &#273;&#7897; 2.94 Mbps. N&#259;m 1980, DEC-Intel-Xerox (DIX) xu&#7845;t b&#7843;n chu&#7849;n Ethernet II. &#272;&acirc;y l&agrave; n&#7873;n t&#7843;ng c&#7911;a m&#7885;i m&#7841;ng LAN hi&#7879;n &#273;&#7841;i.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1983&ndash;1990</span>
+        <h3>IEEE 802.3 v&agrave; 10BASE-T</h3>
+        <p>IEEE chu&#7849;n h&oacute;a Ethernet th&agrave;nh 802.3 (1983). 10BASE-T (1990) mang Ethernet l&ecirc;n c&aacute;p xo&#7855;n &#273;&ocirc;i RJ45, thay th&#7871; c&aacute;p &#273;&#7891;ng tr&#7909;c. T&#7889;c &#273;&#7897; 10 Mbps. Star topology v&#7899;i hub trung t&acirc;m. NIC tr&#7903; th&agrave;nh card m&#7903; r&#7897;ng ISA/PCI ph&#7893; bi&#7871;n nh&#7845;t.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1995&ndash;1999</span>
+        <h3>Fast Ethernet &amp; Wi-Fi</h3>
+        <p>100BASE-TX (Fast Ethernet, 1995) &mdash; t&#259;ng 10x t&#7889;c &#273;&#7897; v&#7899;i c&ugrave;ng c&aacute;p Cat5. IEEE 802.11 (1997) &mdash; Wi-Fi ra &#273;&#7901;i v&#7899;i 2 Mbps. 802.11b (1999) &#273;&#7841;t 11 Mbps, wireless NIC b&#7855;t &#273;&#7847;u ph&#7893; bi&#7871;n. Switch thay th&#7871; hub. Full-duplex tr&#7903; th&agrave;nh chu&#7849;n.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1999&ndash;2006</span>
+        <h3>Gigabit Ethernet &amp; VLAN</h3>
+        <p>1000BASE-T (1999) &mdash; 1 Gbps tr&ecirc;n c&aacute;p Cat5e/Cat6. IEEE 802.1Q (1998) &mdash; chu&#7849;n VLAN tagging. Linux bonding module xu&#7845;t hi&#7879;n. NIC b&#7855;t &#273;&#7847;u h&#7895; tr&#7907; offloading (checksum, TSO). Server NIC c&oacute; nhi&#7873;u port (dual/quad). &#272;&acirc;y l&agrave; k&#7927; nguy&ecirc;n &ldquo;v&agrave;ng&rdquo; c&#7911;a enterprise networking.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2007&ndash;2016</span>
+        <h3>10GbE, SR-IOV &amp; Virtualization</h3>
+        <p>10GBASE-T (2006) v&agrave; SFP+ modules. SR-IOV cho ph&eacute;p chia NIC v&#7853;t l&yacute; th&agrave;nh nhi&#7873;u virtual functions. Open vSwitch (OVS, 2009) cho SDN. Wi-Fi 802.11ac (2013) &#273;&#7841;t 1.3 Gbps. Container networking (Docker, 2013) t&#7841;o b&ugrave;ng n&#7893; veth pairs v&agrave; bridge. DPDK (2010) bypass kernel cho throughput c&#7921;c cao.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2017&ndash;nay</span>
+        <h3>25/40/100/400GbE &amp; SmartNIC</h3>
+        <p>25GbE tr&#7903; th&agrave;nh chu&#7849;n server m&#7899;i (thay 10G). 100GbE trong datacenter. 400GbE v&agrave; 800GbE cho spine/core. SmartNIC (DPU) v&#7899;i ARM CPU t&iacute;ch h&#7907;p (NVIDIA BlueField, AMD Pensando). Wi-Fi 6E (2020) v&agrave; Wi-Fi 7 (2024). XDP/eBPF cho programmable networking. &#272;&acirc;y l&agrave; k&#7927; nguy&ecirc;n c&#7911;a &ldquo;NIC th&ocirc;ng minh&rdquo;.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPES OF NICs -->
+<section id="types">
+  <h2 class="section-title" style="color: var(--accent2);">C&aacute;c Lo&#7841;i Network Interface</h2>
+  <p class="section-subtitle">T&#7915; card m&#7841;ng v&#7853;t l&yacute; &#273;&#7871;n h&agrave;ng ch&#7909;c lo&#7841;i virtual interface trong Linux kernel &mdash; m&#7895;i lo&#7841;i c&oacute; m&#7909;c &#273;&iacute;ch ri&ecirc;ng</p>
+
+  <h3 style="margin: 2rem 0 1rem; color: var(--accent);">Physical Interfaces</h3>
+  <div class="tech-grid">
+    <!-- Ethernet NIC -->
+    <div class="tech-card physical">
+      <div class="tech-logo">&#x1F4E1;</div>
+      <h3>Ethernet NIC (RJ45)</h3>
+      <div class="tech-type">Physical / Wired / Layer 1-2</div>
+      <p>Card m&#7841;ng ph&#7893; bi&#7871;n nh&#7845;t. C&#7893;ng RJ45 k&#7871;t n&#7889;i c&aacute;p xo&#7855;n &#273;&ocirc;i Cat5e/Cat6/Cat6a. T&#7889;c &#273;&#7897; 1G (ph&#7893; bi&#7871;n), 2.5G, 5G, 10G. Chip ph&#7893; bi&#7871;n: Intel I225-V/I226-V (2.5G), Realtek RTL8125 (2.5G), Intel X550 (10G). Trong Linux hi&#7879;n th&#7883; d&#7841;ng: eth0, enp3s0, eno1.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1&ndash;10G</div><div class="label">Speed</div></div>
+        <div class="stat"><div class="num">RJ45</div><div class="label">Connector</div></div>
+        <div class="stat"><div class="num">100m</div><div class="label">Max distance</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Ph&#7893; bi&#7871;n nh&#7845;t</span>
+        <span class="tag good">D&#7877; c&agrave;i</span>
+        <span class="tag">Cat5e/Cat6</span>
+        <span class="tag warn">100m max</span>
+      </div>
+    </div>
+
+    <!-- WiFi NIC -->
+    <div class="tech-card wireless">
+      <div class="tech-logo">&#x1F4F6;</div>
+      <h3>Wi-Fi NIC (Wireless)</h3>
+      <div class="tech-type">Physical / Wireless / 802.11</div>
+      <p>Card m&#7841;ng kh&ocirc;ng d&acirc;y d&ugrave;ng s&oacute;ng radio. Chu&#7849;n hi&#7879;n &#273;&#7841;i: Wi-Fi 6 (802.11ax), Wi-Fi 6E (6GHz), Wi-Fi 7 (802.11be). Chip: Intel AX210/AX211, MediaTek MT7921. Trong Linux: wlan0, wlp2s0. D&ugrave;ng iw v&agrave; wpa_supplicant &#273;&#7875; qu&#7843;n l&yacute;. Kh&ocirc;ng l&yacute; t&#432;&#7903;ng cho server &mdash; ch&#7881; d&ugrave;ng khi kh&ocirc;ng th&#7875; c&oacute; d&acirc;y.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">WiFi 6</div><div class="label">Standard</div></div>
+        <div class="stat"><div class="num">9.6 Gbps</div><div class="label">Max theory</div></div>
+        <div class="stat"><div class="num">MIMO</div><div class="label">Antenna</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Kh&ocirc;ng d&acirc;y</span>
+        <span class="tag warn">Latency cao h&#417;n</span>
+        <span class="tag warn">Driver Linux kh&oacute;</span>
+        <span class="tag hot">Kh&ocirc;ng cho server</span>
+      </div>
+    </div>
+
+    <!-- Fiber NIC -->
+    <div class="tech-card fiber">
+      <div class="tech-logo">&#x1F4A1;</div>
+      <h3>Fiber NIC (SFP+/QSFP)</h3>
+      <div class="tech-type">Physical / Optical / High-Speed</div>
+      <p>Card m&#7841;ng quang h&#7885;c d&ugrave;ng SFP+ (10G), SFP28 (25G), QSFP28 (100G) modules. Kho&#7843;ng c&aacute;ch &#273;&#7871;n 10km+ (single-mode) ho&#7863;c 300m (multi-mode OM3/OM4). Chip: Mellanox ConnectX-5/6, Intel X710. Chu&#7849;n cho datacenter v&agrave; storage network (iSCSI, NFS). D&ugrave;ng DAC (Direct Attach Cable) cho kho&#7843;ng c&aacute;ch ng&#7855;n &#273;&#7875; ti&#7871;t ki&#7879;m chi ph&iacute;.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">10&ndash;100G</div><div class="label">Speed</div></div>
+        <div class="stat"><div class="num">SFP+</div><div class="label">Connector</div></div>
+        <div class="stat"><div class="num">10km+</div><div class="label">Max distance</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">T&#7889;c &#273;&#7897; cao</span>
+        <span class="tag good">Kho&#7843;ng c&aacute;ch xa</span>
+        <span class="tag warn">&#272;&#7855;t h&#417;n RJ45</span>
+        <span class="tag">Datacenter</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem; border-left-color: var(--accent4);">
+    <h4>Homelab Insight: Ch&#7885;n NIC cho homelab</h4>
+    <p><strong>Ng&acirc;n s&aacute;ch th&#7845;p:</strong> Intel I225-V 2.5GbE onboard l&agrave; &#273;&#7911; cho h&#7847;u h&#7871;t. <strong>T&#7847;m trung:</strong> Intel X520-DA2 10G SFP+ (c&#361;, r&#7867;) + DAC cable. <strong>Ngh&iacute; l&#7899;n:</strong> Mellanox ConnectX-3/4 25G (eBay gi&aacute; r&#7867; b&#7845;t ng&#7901;). <strong>L&#432;u &yacute;:</strong> Tr&aacute;nh Realtek cho server &mdash; driver kh&ocirc;ng &#7893;n &#273;&#7883;nh b&#7857;ng Intel/Mellanox. Ki&#7875;m tra IOMMU support n&#7871;u d&ugrave;ng PCI passthrough.</p>
+  </div>
+
+  <h3 style="margin: 3rem 0 1rem; color: var(--accent3);">Virtual Interfaces (Linux Kernel)</h3>
+  <div class="tech-grid">
+    <!-- Loopback -->
+    <div class="tech-card loopback">
+      <div class="tech-logo">&#x1F504;</div>
+      <h3>Loopback (lo)</h3>
+      <div class="tech-type">Virtual / Local / Always Up</div>
+      <p>Interface &#273;&#7863;c bi&#7879;t lu&ocirc;n t&#7891;n t&#7841;i, &#273;&#7883;a ch&#7881; 127.0.0.1/8 (v&agrave; ::1/128 cho IPv6). Traffic g&#7917;i &#273;&#7871;n lo kh&ocirc;ng bao gi&#7901; r&#7901;i kh&#7887;i m&aacute;y. D&ugrave;ng cho inter-process communication, testing, v&agrave; c&aacute;c service bind local. M&#7885;i network namespace &#273;&#7873;u c&oacute; lo ri&ecirc;ng.</p>
+      <div class="tag-row">
+        <span class="tag good">Lu&ocirc;n c&oacute; s&#7861;n</span>
+        <span class="tag">127.0.0.1</span>
+        <span class="tag">Local only</span>
+      </div>
+    </div>
+
+    <!-- veth -->
+    <div class="tech-card veth">
+      <div class="tech-logo">&#x1F517;</div>
+      <h3>veth (Virtual Ethernet Pair)</h3>
+      <div class="tech-type">Virtual / Pair / Container Networking</div>
+      <p>Lu&ocirc;n t&#7841;o th&agrave;nh <strong>c&#7863;p &#273;&ocirc;i</strong> &mdash; packet v&agrave;o &#273;&#7847;u n&agrave;y s&#7869; ra &#273;&#7847;u kia. N&#7873;n t&#7843;ng c&#7911;a container networking: m&#7897;t &#273;&#7847;u trong container (eth0), &#273;&#7847;u kia g&#7855;n v&agrave;o bridge tr&ecirc;n host. Docker v&agrave; Kubernetes d&ugrave;ng veth pairs cho m&#7885;i container/pod. Hi&#7875;u veth l&agrave; hi&#7875;u 80% container networking.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Pair</div><div class="label">Always</div></div>
+        <div class="stat"><div class="num">L2</div><div class="label">Layer</div></div>
+        <div class="stat"><div class="num">Docker</div><div class="label">Primary use</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Container c&#417; b&#7843;n</span>
+        <span class="tag good">Namespace crossing</span>
+        <span class="tag">Ethernet-level</span>
+      </div>
+    </div>
+
+    <!-- TAP/TUN -->
+    <div class="tech-card tuntap">
+      <div class="tech-logo">&#x1F6E0;</div>
+      <h3>TAP / TUN</h3>
+      <div class="tech-type">Virtual / Userspace / VPN</div>
+      <p><strong>TUN (Layer 3):</strong> Nh&#7853;n/g&#7917;i IP packets. D&ugrave;ng cho VPN routing (WireGuard, OpenVPN tun mode). <strong>TAP (Layer 2):</strong> Nh&#7853;n/g&#7917;i Ethernet frames. D&ugrave;ng cho VM bridging (QEMU/KVM), OpenVPN tap mode. C&#7843; hai cho ph&eacute;p userspace programs x&#7917; l&yacute; network traffic &mdash; c&#7847;u n&#7889;i gi&#7919;a kernel networking v&agrave; &#7913;ng d&#7909;ng.</p>
+      <div class="tag-row">
+        <span class="tag good">VPN</span>
+        <span class="tag good">VM networking</span>
+        <span class="tag">TUN = L3</span>
+        <span class="tag">TAP = L2</span>
+      </div>
+    </div>
+
+    <!-- Bridge -->
+    <div class="tech-card bridge">
+      <div class="tech-logo">&#x1F309;</div>
+      <h3>Bridge Interface</h3>
+      <div class="tech-type">Virtual / Switch / L2 Forwarding</div>
+      <p>Software switch trong kernel &mdash; k&#7871;t n&#7889;i nhi&#7873;u interface l&#7841;i nh&#432; m&#7897;t switch v&#7853;t l&yacute;. Forwarding d&#7921;a tr&ecirc;n MAC address table. N&#7873;n t&#7843;ng c&#7911;a VM/container networking: vmbr0 trong Proxmox, docker0 trong Docker, br0 cho KVM. H&#7895; tr&#7907; STP, VLAN filtering, v&agrave; nhi&#7873;u t&iacute;nh n&#259;ng switch.</p>
+      <div class="tag-row">
+        <span class="tag good">VM/Container c&#417; b&#7843;n</span>
+        <span class="tag good">VLAN-aware</span>
+        <span class="tag">L2 switch</span>
+        <span class="tag">STP support</span>
+      </div>
+    </div>
+
+    <!-- Bond -->
+    <div class="tech-card bond">
+      <div class="tech-logo">&#x1F91D;</div>
+      <h3>Bond Interface</h3>
+      <div class="tech-type">Virtual / Aggregation / Redundancy</div>
+      <p>G&#7897;p nhi&#7873;u NIC v&#7853;t l&yacute; th&agrave;nh m&#7897;t interface logic. M&#7909;c &#273;&iacute;ch: <strong>t&#259;ng bandwidth</strong> (link aggregation) ho&#7863;c <strong>t&#259;ng &#273;&#7897; tin c&#7853;y</strong> (failover). 7 mode kh&aacute;c nhau (balance-rr, active-backup, balance-xor, broadcast, 802.3ad, balance-tlb, balance-alb). 802.3ad (LACP) l&agrave; chu&#7849;n enterprise. Chi ti&#7871;t &#7903; ph&#7847;n Bonding b&ecirc;n d&#432;&#7899;i.</p>
+      <div class="tag-row">
+        <span class="tag good">Redundancy</span>
+        <span class="tag good">Bandwidth x2+</span>
+        <span class="tag">7 modes</span>
+        <span class="tag warn">C&#7847;n switch h&#7895; tr&#7907; (LACP)</span>
+      </div>
+    </div>
+
+    <!-- VLAN Interface -->
+    <div class="tech-card vlan">
+      <div class="tech-logo">&#x1F3F7;</div>
+      <h3>VLAN Sub-Interface</h3>
+      <div class="tech-type">Virtual / Tagged / 802.1Q</div>
+      <p>Interface con c&#7911;a physical/bridge interface, th&ecirc;m VLAN tag (802.1Q) v&agrave;o m&#7895;i frame. T&#234;n d&#7841;ng: eth0.10, enp3s0.100, vmbr0v20. Cho ph&eacute;p m&#7897;t NIC v&#7853;t l&yacute; tham gia nhi&#7873;u VLAN kh&aacute;c nhau. Trong Proxmox VLAN-aware bridge, config &#273;&#417;n gi&#7843;n h&#417;n nhi&#7873;u. Chi ti&#7871;t &#7903; ph&#7847;n VLAN.</p>
+      <div class="tag-row">
+        <span class="tag good">Network segmentation</span>
+        <span class="tag">802.1Q</span>
+        <span class="tag">Trunk port</span>
+      </div>
+    </div>
+
+    <!-- macvlan -->
+    <div class="tech-card macvlan">
+      <div class="tech-logo">&#x1F4CB;</div>
+      <h3>macvlan / ipvlan</h3>
+      <div class="tech-type">Virtual / Sub-Interface / Container</div>
+      <p><strong>macvlan:</strong> T&#7841;o interface con v&#7899;i MAC address ri&ecirc;ng. Container/VM nh&igrave;n nh&#432; thi&#7871;t b&#7883; th&#7853;t tr&ecirc;n m&#7841;ng (c&oacute; IP ri&ecirc;ng, MAC ri&ecirc;ng). 4 mode: bridge, vepa, private, passthru. <strong>ipvlan:</strong> T&#432;&#417;ng t&#7921; nh&#432;ng d&ugrave;ng chung MAC, kh&aacute;c IP. T&#7889;t h&#417;n khi switch gi&#7899;i h&#7841;n s&#7889; MAC. Nh&#7865; h&#417;n bridge cho container networking.</p>
+      <div class="tag-row">
+        <span class="tag good">Nh&#7865; h&#417;n bridge</span>
+        <span class="tag">macvlan = MAC ri&ecirc;ng</span>
+        <span class="tag">ipvlan = MAC chung</span>
+        <span class="tag warn">Parent kh&ocirc;ng giao ti&#7871;p &#273;c child</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BONDING / TEAMING -->
+<section id="bonding">
+  <h2 class="section-title" style="color: var(--accent3);">Bonding / Teaming</h2>
+  <p class="section-subtitle">G&#7897;p nhi&#7873;u NIC th&agrave;nh m&#7897;t &mdash; 7 mode v&#7899;i &#273;&#7863;c &#273;i&#7875;m ho&agrave;n to&agrave;n kh&aacute;c nhau. Ch&#7885;n sai mode = kh&ocirc;ng &#273;&#7841;t &#273;&#432;&#7907;c g&igrave;</p>
+
+  <div class="bond-grid">
+    <div class="bond-card">
+      <h3>Mode 0: balance-rr</h3>
+      <div class="bond-mode">Round-Robin</div>
+      <p>G&#7917;i packet lu&acirc;n phi&ecirc;n qua t&#7915;ng slave. T&#259;ng bandwidth th&#7921;c s&#7921; cho 1 connection. Nh&#432;ng d&#7877; g&acirc;y <strong>out-of-order packets</strong> (v&igrave; &#273;i nhi&#7873;u &#273;&#432;&#7901;ng kh&aacute;c nhau). C&#7847;n switch h&#7895; tr&#7907; EtherChannel/port-channel. &Iacute;t d&ugrave;ng trong production v&igrave; TCP kh&ocirc;ng th&iacute;ch out-of-order.</p>
+      <div class="tag-row">
+        <span class="tag good">T&#259;ng BW th&#7921;c</span>
+        <span class="tag hot">Out-of-order</span>
+        <span class="tag warn">C&#7847;n switch config</span>
+      </div>
+    </div>
+
+    <div class="bond-card">
+      <h3>Mode 1: active-backup</h3>
+      <div class="bond-mode">Failover</div>
+      <p>Ch&#7881; 1 slave active, c&aacute;c slave c&ograve;n l&#7841;i standby. Khi active ch&#7871;t, backup l&ecirc;n thay. <strong>Kh&ocirc;ng t&#259;ng bandwidth</strong> nh&#432;ng <strong>&#273;&#7897; tin c&#7853;y cao nh&#7845;t</strong>. Kh&ocirc;ng c&#7847;n switch h&#7895; tr&#7907; g&igrave; &#273;&#7863;c bi&#7879;t. L&#7921;a ch&#7885;n s&#7889; 1 cho homelab v&agrave; production &#273;&#417;n gi&#7843;n.</p>
+      <div class="tag-row">
+        <span class="tag good">Kh&ocirc;ng c&#7847;n switch &#273;b</span>
+        <span class="tag good">&#272;&#7897; tin c&#7853;y cao</span>
+        <span class="tag warn">Kh&ocirc;ng t&#259;ng BW</span>
+      </div>
+    </div>
+
+    <div class="bond-card">
+      <h3>Mode 2: balance-xor</h3>
+      <div class="bond-mode">XOR Hash</div>
+      <p>D&ugrave;ng hash (src MAC XOR dst MAC) &#273;&#7875; ch&#7885;n slave. M&#7895;i &ldquo;flow&rdquo; lu&ocirc;n &#273;i qua c&ugrave;ng slave &rarr; kh&ocirc;ng out-of-order. T&#259;ng aggregate bandwidth (nhi&#7873;u flow kh&aacute;c nhau &#273;i nhi&#7873;u &#273;&#432;&#7901;ng). C&#7847;n switch h&#7895; tr&#7907;. T&#432;&#417;ng t&#7921; LACP nh&#432;ng kh&ocirc;ng c&oacute; protocol negotiation.</p>
+      <div class="tag-row">
+        <span class="tag good">Kh&ocirc;ng out-of-order</span>
+        <span class="tag">Hash-based</span>
+        <span class="tag warn">C&#7847;n switch config</span>
+      </div>
+    </div>
+
+    <div class="bond-card">
+      <h3>Mode 3: broadcast</h3>
+      <div class="bond-mode">Broadcast</div>
+      <p>G&#7917;i m&#7895;i packet tr&ecirc;n <strong>T&#7844;T C&#7842;</strong> slaves. Fault tolerance t&#7889;i &#273;a nh&#432;ng <strong>kh&ocirc;ng t&#259;ng bandwidth</strong> (th&#7921;c ra gi&#7843;m v&igrave; dupplicate). Use case c&#7921;c k&#7923; h&#7841;n ch&#7871; &mdash; ch&#7881; khi c&#7847;n &#273;&#7843;m b&#7843;o packet &#273;&#7871;n &#273;&#432;&#7907;c &#273;&iacute;ch b&#7857;ng m&#7885;i gi&aacute;.</p>
+      <div class="tag-row">
+        <span class="tag good">Max fault tolerance</span>
+        <span class="tag hot">L&atilde;ng ph&iacute; BW</span>
+        <span class="tag hot">R&#7845;t &iacute;t d&ugrave;ng</span>
+      </div>
+    </div>
+
+    <div class="bond-card">
+      <h3>Mode 4: 802.3ad (LACP)</h3>
+      <div class="bond-mode">Link Aggregation Control Protocol</div>
+      <p><strong>Chu&#7849;n v&agrave;ng c&#7911;a bonding.</strong> C&#7843; hai b&ecirc;n (host v&agrave; switch) &#273;&#7873;u ch&#7841;y LACP protocol &#273;&#7875; t&#7921; &#273;&#7897;ng negotiation. T&#259;ng bandwidth + fault tolerance. Hash-based distribution (L2, L3, L3+4). C&#7847;n switch h&#7895; tr&#7907; LACP (h&#7847;u h&#7871;t managed switch). <strong>N&#7871;u c&oacute; managed switch, d&ugrave;ng mode n&agrave;y.</strong></p>
+      <div class="tag-row">
+        <span class="tag good">Chu&#7849;n enterprise</span>
+        <span class="tag good">Auto negotiation</span>
+        <span class="tag good">BW + Failover</span>
+        <span class="tag warn">C&#7847;n managed switch</span>
+      </div>
+    </div>
+
+    <div class="bond-card">
+      <h3>Mode 5: balance-tlb</h3>
+      <div class="bond-mode">Adaptive Transmit Load Balancing</div>
+      <p>C&acirc;n b&#7857;ng t&#7843;i outgoing traffic d&#7921;a tr&ecirc;n t&#7843;i c&#7911;a t&#7915;ng slave. Incoming v&#7851;n &#273;i qua 1 slave (active). <strong>Kh&ocirc;ng c&#7847;n switch h&#7895; tr&#7907;</strong> &mdash; ch&#7881; c&#7847;n driver NIC h&#7895; tr&#7907; thay &#273;&#7893;i MAC. T&#259;ng outgoing bandwidth m&agrave; kh&ocirc;ng c&#7847;n config switch. L&yacute; t&#432;&#7903;ng cho homelab v&#7899;i unmanaged switch.</p>
+      <div class="tag-row">
+        <span class="tag good">Kh&ocirc;ng c&#7847;n switch &#273;b</span>
+        <span class="tag good">T&#259;ng outgoing BW</span>
+        <span class="tag warn">Incoming kh&ocirc;ng balance</span>
+      </div>
+    </div>
+
+    <div class="bond-card">
+      <h3>Mode 6: balance-alb</h3>
+      <div class="bond-mode">Adaptive Load Balancing</div>
+      <p>Bao g&#7891;m balance-tlb + c&acirc;n b&#7857;ng c&#7843; incoming (b&#7857;ng ARP negotiation). <strong>Kh&ocirc;ng c&#7847;n switch h&#7895; tr&#7907; g&igrave;.</strong> T&#259;ng c&#7843; incoming l&#7851;n outgoing bandwidth. L&yacute; t&#432;&#7903;ng cho homelab kh&ocirc;ng c&oacute; managed switch. Nh&#432;&#7907;c &#273;i&#7875;m: ch&#7881; ho&#7841;t &#273;&#7897;ng v&#7899;i IPv4 (ARP-based). <strong>Best choice cho homelab unmanaged.</strong></p>
+      <div class="tag-row">
+        <span class="tag good">Kh&ocirc;ng c&#7847;n switch &#273;b</span>
+        <span class="tag good">T&#259;ng c&#7843; 2 chi&#7873;u</span>
+        <span class="tag warn">IPv4 only (ALB)</span>
+        <span class="tag good">Best cho homelab</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>LACP Deep Dive</h4>
+    <p><strong>802.3ad LACP</strong> ho&#7841;t &#273;&#7897;ng b&#7857;ng LACPDU (LACP Data Unit) &mdash; c&aacute;c g&oacute;i tin trao &#273;&#7893;i m&#7895;i 1 gi&acirc;y (fast) ho&#7863;c 30 gi&acirc;y (slow). C&#7843; switch v&agrave; host &#273;&#7873;u th&#7889;ng nh&#7845;t: port n&agrave;o thu&#7897;c group n&agrave;o, tr&#7841;ng th&aacute;i active/standby. Hash policy quy&#7871;t &#273;&#7883;nh c&aacute;ch ph&acirc;n b&#7893; traffic: <code style="color: var(--accent3);">xmit_hash_policy=layer3+4</code> (hash src/dst IP + port) cho ph&acirc;n b&#7893; t&#7889;t nh&#7845;t. L&#432;u &yacute;: 1 TCP connection v&#7851;n ch&#7881; &#273;i qua 1 link &mdash; LACP t&#259;ng aggregate bandwidth, kh&ocirc;ng t&#259;ng single-flow bandwidth.</p>
+  </div>
+
+  <div class="insight-box" style="border-left-color: var(--accent4);">
+    <h4>Homelab Insight: Ch&#7885;n bonding mode</h4>
+    <p><strong>C&oacute; managed switch (MikroTik, UniFi Pro, Cisco)?</strong> &rarr; Mode 4 (LACP). <strong>Ch&#7881; c&oacute; unmanaged switch?</strong> &rarr; Mode 6 (balance-alb) ho&#7863;c Mode 1 (active-backup). <strong>Ch&#7881; c&#7847;n failover?</strong> &rarr; Mode 1. <strong>Proxmox cluster?</strong> &rarr; LACP cho storage network, active-backup cho management. &#272;&#7915;ng ph&#7913;c t&#7841;p h&oacute;a n&#7871;u kh&ocirc;ng c&#7847;n thi&#7871;t.</p>
+  </div>
+</section>
+
+<!-- VLAN -->
+<section id="vlan">
+  <h2 class="section-title" style="color: var(--accent4);">VLAN &mdash; Ph&acirc;n &#272;o&#7841;n M&#7841;ng</h2>
+  <p class="section-subtitle">IEEE 802.1Q &mdash; c&aacute;ch chia m&#7897;t m&#7841;ng v&#7853;t l&yacute; th&agrave;nh nhi&#7873;u m&#7841;ng logic, c&ocirc; l&#7853;p traffic, t&#259;ng b&#7843;o m&#7853;t</p>
+
+  <div class="rt-what">
+    <h2 style="color: var(--accent4); font-size: 1.5rem; margin-bottom: 1rem;">802.1Q VLAN Tagging</h2>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      VLAN tag l&agrave; 4 bytes &#273;&#432;&#7907;c ch&egrave;n v&agrave;o Ethernet frame header: <strong>TPID</strong> (0x8100, 2 bytes) + <strong>TCI</strong> (2 bytes ch&#7913;a Priority, DEI, v&agrave; <strong>VLAN ID 12-bit</strong> = 4094 VLANs t&#7889;i &#273;a). Frame c&oacute; tag g&#7885;i l&agrave; <strong>tagged frame</strong>, kh&ocirc;ng c&oacute; tag l&agrave; <strong>untagged frame</strong>.
+    </p>
+
+    <div class="flow-box" style="margin: 1.5rem 0;">
+      <div class="flow-title">C&#7845;u tr&uacute;c Ethernet Frame v&#7899;i 802.1Q Tag</div>
+      <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  +----------+----------+------+------+------+---------+-----+
+  | Dst MAC  | Src MAC  | TPID | PCP  | VLAN | EthType | ... |
+  | 6 bytes  | 6 bytes  |0x8100| 3bit |  ID  | 2 bytes |Payload
+  |          |          |      | +DEI | 12bit|         |     |
+  +----------+----------+------+------+------+---------+-----+
+                         |<span style="color:var(--accent4);">--- 802.1Q Tag (4 bytes) ---</span>|
+
+  <span style="color:var(--accent3);">Trunk port:</span>  G&#7917;i/nh&#7853;n tagged frames (nhi&#7873;u VLAN tr&ecirc;n 1 link)
+  <span style="color:var(--accent);">Access port:</span> Strip tag khi ra, th&ecirc;m tag khi v&agrave;o (1 VLAN)
+  <span style="color:var(--accent4);">Native VLAN:</span> VLAN m&#7863;c &#273;&#7883;nh cho untagged traffic tr&ecirc;n trunk</pre>
+    </div>
+
+    <div class="insight-box" style="border-left-color: var(--accent3);">
+      <h4>VLAN trong Linux</h4>
+      <p>T&#7841;o VLAN sub-interface: <code style="color: var(--accent3);">ip link add link eth0 name eth0.100 type vlan id 100</code>. Kernel s&#7869; t&#7921; &#273;&#7897;ng th&ecirc;m/g&#7905; 802.1Q tag. M&#7895;i VLAN sub-interface ho&#7841;t &#273;&#7897;ng nh&#432; m&#7897;t interface &#273;&#7897;c l&#7853;p &mdash; c&oacute; IP ri&ecirc;ng, routing ri&ecirc;ng. C&#7847;n NIC parent &#7903; ch&#7871; &#273;&#7897; trunk (nh&#7853;n tagged frames t&#7915; switch).</p>
+    </div>
+
+    <div class="insight-box" style="border-left-color: var(--accent4);">
+      <h4>Proxmox VLAN-Aware Bridge</h4>
+      <p>Proxmox h&#7895; tr&#7907; <strong>VLAN-aware bridge</strong> &mdash; thay v&igrave; t&#7841;o nhi&#7873;u bridge/sub-interface, ch&#7881; c&#7847;n 1 bridge v&#7899;i <code style="color: var(--accent3);">bridge-vlan-aware yes</code>. VM/CT ch&#7881; c&#7847;n ch&#7881; &#273;&#7883;nh VLAN tag trong config. &#272;&#417;n gi&#7843;n h&#417;n, s&#7841;ch h&#417;n. Config trong <code style="color: var(--accent3);">/etc/network/interfaces</code>:
+      <br><code style="color: var(--accent3);">auto vmbr0</code>
+      <br><code style="color: var(--accent3);">iface vmbr0 inet static</code>
+      <br><code style="color: var(--accent3);">  bridge-ports enp3s0</code>
+      <br><code style="color: var(--accent3);">  bridge-stp off</code>
+      <br><code style="color: var(--accent3);">  bridge-vlan-aware yes</code>
+      <br><code style="color: var(--accent3);">  bridge-vids 2-4094</code></p>
+    </div>
+  </div>
+
+  <h3 style="margin: 2rem 0 1rem; color: var(--text-dim);">VLAN Use Cases trong Homelab</h3>
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> VLAN 10: Management</h4>
+      <p>Proxmox host, router admin, switch admin, iDRAC/IPMI. Ch&#7881; c&aacute;c thi&#7871;t b&#7883; qu&#7843;n tr&#7883; m&#7899;i v&agrave;o &#273;&#432;&#7907;c. Firewall ch&#7863;n t&#7845;t c&#7843; t&#7915; VLAN kh&aacute;c. &#272;&acirc;y l&agrave; VLAN quan tr&#7885;ng nh&#7845;t &mdash; m&#7845;t n&oacute; l&agrave; m&#7845;t quy&#7873;n ki&#7875;m so&aacute;t.</p>
+      <div class="tag-row"><span class="tag good">B&#7843;o m&#7853;t cao</span><span class="tag">Admin only</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> VLAN 20: Servers/Services</h4>
+      <p>VMs v&agrave; containers ch&#7841;y services (web, database, media). Cho ph&eacute;p giao ti&#7871;p n&#7897;i b&#7897; nh&#432;ng firewall ki&#7875;m so&aacute;t truy c&#7853;p t&#7915; ngo&agrave;i. T&aacute;ch bi&#7879;t kh&#7887;i user network &#273;&#7875; h&#7841;n ch&#7871; attack surface.</p>
+      <div class="tag-row"><span class="tag good">Service isolation</span><span class="tag">Inter-VLAN routing</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> VLAN 30: IoT / Untrusted</h4>
+      <p>Smart home devices, camera IP, thi&#7871;t b&#7883; IoT &mdash; nh&#7919;ng th&#7913; kh&ocirc;ng tin t&#432;&#7903;ng &#273;&#432;&#7907;c. Firewall ch&#7863;n truy c&#7853;p v&agrave;o VLAN kh&aacute;c, ch&#7881; cho ph&eacute;p internet. Nhi&#7873;u thi&#7871;t b&#7883; IoT c&oacute; firmware k&eacute;m b&#7843;o m&#7853;t &mdash; c&ocirc; l&#7853;p ch&uacute;ng.</p>
+      <div class="tag-row"><span class="tag hot">Untrusted devices</span><span class="tag warn">Internet only</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> VLAN 50: Storage</h4>
+      <p>iSCSI, NFS, Ceph traffic. Dedicated network cho storage &#273;&#7875; kh&ocirc;ng b&#7883; &#7843;nh h&#432;&#7903;ng b&#7903;i traffic kh&aacute;c. Th&#432;&#7901;ng d&ugrave;ng Jumbo frames (MTU 9000) tr&ecirc;n VLAN n&agrave;y. Kh&ocirc;ng c&#7847;n internet access.</p>
+      <div class="tag-row"><span class="tag good">Dedicated BW</span><span class="tag good">Jumbo frames</span><span class="tag">No internet</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIDGING -->
+<section id="bridging">
+  <h2 class="section-title" style="color: var(--accent5);">Bridging &mdash; Software Switch</h2>
+  <p class="section-subtitle">T&#7915; Linux bridge &#273;&#417;n gi&#7843;n &#273;&#7871;n Open vSwitch &mdash; n&#7873;n t&#7843;ng c&#7911;a virtualization v&agrave; container networking</p>
+
+  <div class="topology-container">
+    <div class="topo-card">
+      <h4>Linux Bridge (brctl/bridge)</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="40" y="55" width="120" height="35" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          <text x="100" y="77" text-anchor="middle" fill="#3b82f6" font-size="11" font-weight="bold">Linux Bridge</text>
+          <circle cx="40" cy="20" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="24" text-anchor="middle" fill="#10b981" font-size="9">eth0</text>
+          <circle cx="100" cy="20" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="24" text-anchor="middle" fill="#10b981" font-size="9">veth1</text>
+          <circle cx="160" cy="20" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="24" text-anchor="middle" fill="#10b981" font-size="9">tap0</text>
+          <line x1="40" y1="34" x2="40" y2="55" stroke="#8b5cf6" stroke-width="1.5"/>
+          <line x1="100" y1="34" x2="100" y2="55" stroke="#8b5cf6" stroke-width="1.5"/>
+          <line x1="160" y1="34" x2="160" y2="55" stroke="#8b5cf6" stroke-width="1.5"/>
+          <circle cx="70" cy="130" r="14" fill="none" stroke="#f59e0b" stroke-width="2"/>
+          <text x="70" y="134" text-anchor="middle" fill="#f59e0b" font-size="9">VM1</text>
+          <circle cx="130" cy="130" r="14" fill="none" stroke="#f59e0b" stroke-width="2"/>
+          <text x="130" y="134" text-anchor="middle" fill="#f59e0b" font-size="9">CT1</text>
+          <line x1="100" y1="90" x2="70" y2="116" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="100" y1="90" x2="130" y2="116" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4"/>
+        </svg>
+      </div>
+      <p>Kernel module, &#273;&#417;n gi&#7843;n, &#7893;n &#273;&#7883;nh. H&#7885;c MAC addresses t&#7921; &#273;&#7897;ng. H&#7895; tr&#7907; STP, VLAN filtering. M&#7863;c &#273;&#7883;nh trong Proxmox (vmbr0), Docker (docker0). &#272;&#7911; cho 99% homelab.</p>
+      <div class="tag-row" style="justify-content: center; margin-top: 0.5rem;">
+        <span class="tag good">&#272;&#417;n gi&#7843;n</span>
+        <span class="tag good">&#7892;n &#273;&#7883;nh</span>
+        <span class="tag">M&#7863;c &#273;&#7883;nh</span>
+      </div>
+    </div>
+
+    <div class="topo-card">
+      <h4>Open vSwitch (OVS)</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="30" y="50" width="140" height="40" rx="8" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+          <text x="100" y="65" text-anchor="middle" fill="#8b5cf6" font-size="10" font-weight="bold">Open vSwitch</text>
+          <text x="100" y="80" text-anchor="middle" fill="#94a3b8" font-size="8">OpenFlow + OVSDB</text>
+          <rect x="20" y="115" width="50" height="25" rx="5" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="45" y="131" text-anchor="middle" fill="#f59e0b" font-size="8">SDN Ctrl</text>
+          <rect x="80" y="115" width="40" height="25" rx="5" fill="none" stroke="#10b981" stroke-width="1.5"/>
+          <text x="100" y="131" text-anchor="middle" fill="#10b981" font-size="8">VM</text>
+          <rect x="130" y="115" width="50" height="25" rx="5" fill="none" stroke="#10b981" stroke-width="1.5"/>
+          <text x="155" y="131" text-anchor="middle" fill="#10b981" font-size="8">Tunnel</text>
+          <line x1="45" y1="115" x2="55" y2="90" stroke="#94a3b8" stroke-width="1"/>
+          <line x1="100" y1="115" x2="100" y2="90" stroke="#94a3b8" stroke-width="1"/>
+          <line x1="155" y1="115" x2="145" y2="90" stroke="#94a3b8" stroke-width="1"/>
+          <circle cx="60" cy="20" r="12" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="60" y="24" text-anchor="middle" fill="#3b82f6" font-size="8">NIC1</text>
+          <circle cx="140" cy="20" r="12" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+          <text x="140" y="24" text-anchor="middle" fill="#3b82f6" font-size="8">NIC2</text>
+          <line x1="60" y1="32" x2="70" y2="50" stroke="#8b5cf6" stroke-width="1.5"/>
+          <line x1="140" y1="32" x2="130" y2="50" stroke="#8b5cf6" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <p>Software switch m&#7841;nh m&#7869;, h&#7895; tr&#7907; OpenFlow, tunneling (VXLAN, GRE, Geneve), QoS, mirroring. D&ugrave;ng trong OpenStack, Kubernetes (OVN). Ph&#7913;c t&#7841;p h&#417;n Linux bridge nhi&#7873;u.</p>
+      <div class="tag-row" style="justify-content: center; margin-top: 0.5rem;">
+        <span class="tag good">SDN/OpenFlow</span>
+        <span class="tag good">Tunneling</span>
+        <span class="tag warn">Ph&#7913;c t&#7841;p</span>
+      </div>
+    </div>
+
+    <div class="topo-card">
+      <h4>macvlan (Bridge mode)</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="60" y="10" width="80" height="30" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          <text x="100" y="29" text-anchor="middle" fill="#3b82f6" font-size="10" font-weight="bold">Physical NIC</text>
+          <line x1="80" y1="40" x2="50" y2="70" stroke="#10b981" stroke-width="1.5"/>
+          <line x1="100" y1="40" x2="100" y2="70" stroke="#10b981" stroke-width="1.5"/>
+          <line x1="120" y1="40" x2="150" y2="70" stroke="#10b981" stroke-width="1.5"/>
+          <rect x="25" y="70" width="50" height="30" rx="6" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="50" y="89" text-anchor="middle" fill="#f59e0b" font-size="8">MAC: aa:01</text>
+          <rect x="75" y="70" width="50" height="30" rx="6" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="100" y="89" text-anchor="middle" fill="#f59e0b" font-size="8">MAC: aa:02</text>
+          <rect x="125" y="70" width="50" height="30" rx="6" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+          <text x="150" y="89" text-anchor="middle" fill="#f59e0b" font-size="8">MAC: aa:03</text>
+          <text x="100" y="125" text-anchor="middle" fill="#94a3b8" font-size="9">M&#7895;i container c&oacute; MAC ri&ecirc;ng</text>
+          <text x="100" y="145" text-anchor="middle" fill="#94a3b8" font-size="8">Kh&ocirc;ng c&#7847;n bridge, nh&#7865; h&#417;n</text>
+        </svg>
+      </div>
+      <p>T&#7841;o sub-interface v&#7899;i MAC ri&ecirc;ng tr&#7921;c ti&#7871;p tr&ecirc;n physical NIC. Kh&ocirc;ng c&#7847;n bridge, performance t&#7889;t h&#417;n. Nh&#432;ng parent kh&ocirc;ng giao ti&#7871;p &#273;&#432;&#7907;c v&#7899;i child. D&ugrave;ng cho Docker macvlan networks.</p>
+      <div class="tag-row" style="justify-content: center; margin-top: 0.5rem;">
+        <span class="tag good">Hi&#7879;u su&#7845;t cao</span>
+        <span class="tag good">MAC ri&ecirc;ng</span>
+        <span class="tag warn">Parent isolation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Linux Bridge vs OVS &mdash; Khi n&agrave;o ch&#7885;n g&igrave;?</h4>
+    <p><strong>Linux Bridge:</strong> Homelab, Proxmox, &#273;&#417;n gi&#7843;n, &iacute;t config, &#7893;n &#273;&#7883;nh. <strong>OVS:</strong> Khi c&#7847;n SDN, overlay networking (VXLAN), OpenFlow rules, ho&#7863;c d&ugrave;ng v&#7899;i OpenStack/OVN. Rule of thumb: <strong>N&#7871;u kh&ocirc;ng bi&#7871;t c&#7847;n OVS &#273;&#7875; l&agrave;m g&igrave;, b&#7841;n kh&ocirc;ng c&#7847;n n&oacute;.</strong> Linux bridge + VLAN-aware l&agrave; &#273;&#7911; cho 99% tr&#432;&#7901;ng h&#7907;p homelab.</p>
+  </div>
+</section>
+
+<!-- NETWORK NAMESPACES -->
+<section id="namespaces">
+  <h2 class="section-title" style="color: var(--accent2);">Network Namespaces</h2>
+  <p class="section-subtitle">C&ocirc; l&#7853;p ho&agrave;n to&agrave;n network stack &mdash; n&#7873;n t&#7843;ng c&#7911;a container networking, m&#7895;i namespace l&agrave; m&#7897;t &ldquo;m&aacute;y t&iacute;nh m&#7841;ng&rdquo; ri&ecirc;ng</p>
+
+  <div class="rt-what">
+    <h2 style="color: var(--accent2); font-size: 1.5rem; margin-bottom: 1rem;">Namespace = Isolation</h2>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      M&#7895;i <strong>network namespace</strong> c&oacute; ri&ecirc;ng: interfaces, routing table, iptables rules, ARP table, /proc/net. M&#7863;c &#273;&#7883;nh, t&#7845;t c&#7843; process ch&#7841;y trong namespace &ldquo;default&rdquo;. Docker/Kubernetes t&#7841;o namespace ri&ecirc;ng cho m&#7895;i container/pod. V&agrave; <strong>veth pair</strong> l&agrave; &ldquo;&#7889;ng d&#7851;n&rdquo; n&#7889;i gi&#7919;a c&aacute;c namespace.
+    </p>
+
+    <div class="flow-box" style="margin: 1.5rem 0;">
+      <div class="flow-title">Container Networking Internals &mdash; &#272;i&#7873;u g&igrave; x&#7843;y ra b&ecirc;n trong Docker?</div>
+      <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  <span style="color:var(--accent);">Host Namespace (default)</span>          <span style="color:var(--accent3);">Container Namespace</span>
+  +-----------------------+          +---------------------+
+  | eth0 (physical NIC)   |          | eth0 (veth-inside)  |
+  | IP: 192.168.1.100     |          | IP: 172.17.0.2      |
+  |                       |          |                     |
+  | docker0 (bridge)      |          | lo (127.0.0.1)      |
+  | IP: 172.17.0.1        |          |                     |
+  |   |                   |          | routing table ri&ecirc;ng  |
+  |   +-- <span style="color:var(--accent4);">veth-outside</span> ---+----- <span style="color:var(--accent4);">veth pair</span> -----+  iptables ri&ecirc;ng    |
+  |                       |          |                     |
+  | iptables NAT          |          +---------------------+
+  | (MASQUERADE)          |
+  +-----------------------+
+
+  <span style="color:var(--accent4);">Container g&#7917;i packet ra internet:</span>
+  eth0 (container) &rarr; veth pair &rarr; docker0 bridge &rarr; iptables NAT &rarr; eth0 (host) &rarr; Internet</pre>
+    </div>
+
+    <div class="insight-box">
+      <h4>Hands-on: T&#7841;o namespace th&#7911; c&ocirc;ng</h4>
+      <p>B&#7841;n c&oacute; th&#7875; t&#7921; t&#7841;o namespace v&agrave; k&#7871;t n&#7889;i ch&uacute;ng &mdash; &#273;&acirc;y ch&iacute;nh x&aacute;c l&agrave; nh&#7919;ng g&igrave; Docker l&agrave;m b&ecirc;n trong:
+      <br><code style="color: var(--accent3);">ip netns add ns1</code> &mdash; t&#7841;o namespace
+      <br><code style="color: var(--accent3);">ip link add veth0 type veth peer name veth1</code> &mdash; t&#7841;o veth pair
+      <br><code style="color: var(--accent3);">ip link set veth1 netns ns1</code> &mdash; chuy&#7875;n 1 &#273;&#7847;u v&agrave;o namespace
+      <br><code style="color: var(--accent3);">ip netns exec ns1 ip addr add 10.0.0.2/24 dev veth1</code> &mdash; c&#7845;u h&igrave;nh IP
+      <br><code style="color: var(--accent3);">ip netns exec ns1 ip link set veth1 up</code> &mdash; b&#7853;t interface
+      <br>Hi&#7875;u flow n&agrave;y l&agrave; hi&#7875;u 80% container networking.</p>
+    </div>
+  </div>
+</section>
+
+<!-- IP CONFIGURATION -->
+<section id="ip-config">
+  <h2 class="section-title" style="color: var(--accent);">IP Configuration Deep Dive</h2>
+  <p class="section-subtitle">L&#7879;nh ip &mdash; c&ocirc;ng c&#7909; s&#7889; 1 &#273;&#7875; qu&#7843;n l&yacute; network interface, &#273;&#7883;a ch&#7881; IP, routing trong Linux hi&#7879;n &#273;&#7841;i</p>
+
+  <div class="arch-container">
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4E6;</div>
+        <h4>ip link</h4>
+        <p>Qu&#7843;n l&yacute; interface<br>up/down, MTU, MAC</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F3F7;</div>
+        <h4>ip addr</h4>
+        <p>Qu&#7843;n l&yacute; IP<br>add/del/show</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F6E4;</div>
+        <h4>ip route</h4>
+        <p>Qu&#7843;n l&yacute; routing<br>default gw, static</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F504;</div>
+        <h4>ip neigh</h4>
+        <p>ARP table<br>MAC &harr; IP mapping</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F4CB;</div>
+        <h4>ip rule</h4>
+        <p>Policy routing<br>Multiple tables</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="myth-grid" style="margin-top: 2rem;">
+    <div class="myth-card">
+      <div class="myth-label wrong">&#272;&#7915;ng d&ugrave;ng</div>
+      <h4>ifconfig, route, arp, netstat</h4>
+      <p>C&aacute;c l&#7879;nh thu&#7897;c g&oacute;i <strong>net-tools</strong> &mdash; &#273;&atilde; deprecated t&#7915; l&acirc;u. Kh&ocirc;ng h&#7895; tr&#7907; &#273;&#7847;y &#273;&#7911; IPv6, network namespace, nhi&#7873;u t&iacute;nh n&#259;ng m&#7899;i. Nhi&#7873;u distro m&#7899;i kh&ocirc;ng c&agrave;i s&#7861;n.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">D&ugrave;ng thay th&#7871;</div>
+      <h4>ip, ss, bridge, nft</h4>
+      <p>G&oacute;i <strong>iproute2</strong> &mdash; lu&ocirc;n c&oacute; s&#7861;n, h&#7895; tr&#7907; &#273;&#7847;y &#273;&#7911; m&#7885;i t&iacute;nh n&#259;ng m&#7899;i. <code style="color: var(--accent3);">ip a</code> thay ifconfig, <code style="color: var(--accent3);">ss</code> thay netstat, <code style="color: var(--accent3);">ip r</code> thay route.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai l&#7847;m ph&#7893; bi&#7871;n</div>
+      <h4>&ldquo;Ch&#7881; c&#7847;n 1 IP tr&ecirc;n m&#7895;i interface&rdquo;</h4>
+      <p>Sai! M&#7897;t interface c&oacute; th&#7875; c&oacute; <strong>nhi&#7873;u IP</strong> (secondary addresses). R&#7845;t h&#7919;u &iacute;ch cho: multi-homing, migration, service binding.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Th&#7921;c t&#7871;</div>
+      <h4>Multiple IPs tr&ecirc;n 1 NIC</h4>
+      <p><code style="color: var(--accent3);">ip addr add 192.168.1.100/24 dev eth0</code><br>
+      <code style="color: var(--accent3);">ip addr add 192.168.1.101/24 dev eth0</code><br>
+      <code style="color: var(--accent3);">ip addr add 10.0.0.1/24 dev eth0</code><br>
+      C&#7843; 3 IP &#273;&#7873;u ho&#7841;t &#273;&#7897;ng &#273;&#7891;ng th&#7901;i. Kh&ocirc;ng c&#7847;n &ldquo;eth0:1&rdquo; ki&#7875;u c&#361;.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem; border-left-color: var(--accent4);">
+    <h4>DHCP vs Static &mdash; Khi n&agrave;o d&ugrave;ng g&igrave;?</h4>
+    <p><strong>DHCP:</strong> Client devices, laptops, IoT. Ti&#7879;n l&#7907;i, t&#7921; &#273;&#7897;ng. <strong>Static:</strong> Servers, hypervisors, routers, switches, DNS/DHCP server. B&#7855;t bu&#7897;c cho infrastructure. <strong>DHCP Reservation:</strong> Gi&#7843;i ph&aacute;p trung gian &mdash; device lu&ocirc;n nh&#7853;n c&ugrave;ng IP t&#7915; DHCP server d&#7921;a tr&ecirc;n MAC address. T&#7889;t cho homelab devices c&#7847;n IP c&#7889; &#273;&#7883;nh nh&#432;ng kh&ocirc;ng mu&#7889;n config static.</p>
+  </div>
+
+  <div class="insight-box" style="border-left-color: var(--accent3);">
+    <h4>Persistent Configuration</h4>
+    <p>L&#7879;nh <code style="color: var(--accent3);">ip</code> ch&#7881; l&agrave; <strong>runtime</strong> &mdash; m&#7845;t khi reboot. &#272;&#7875; persistent:
+    <br><strong>Debian/Ubuntu:</strong> <code style="color: var(--accent3);">/etc/network/interfaces</code> ho&#7863;c Netplan (<code style="color: var(--accent3);">/etc/netplan/*.yaml</code>)
+    <br><strong>RHEL/Rocky:</strong> NetworkManager + nmcli ho&#7863;c <code style="color: var(--accent3);">/etc/NetworkManager/system-connections/</code>
+    <br><strong>Proxmox:</strong> <code style="color: var(--accent3);">/etc/network/interfaces</code> (ifupdown2)
+    <br><strong>systemd-networkd:</strong> <code style="color: var(--accent3);">/etc/systemd/network/*.network</code>
+    <br>Lu&ocirc;n test b&#7857;ng l&#7879;nh <code style="color: var(--accent3);">ip</code> tr&#432;&#7899;c, r&#7891;i m&#7899;i ghi v&agrave;o config file.</p>
+  </div>
+</section>
+
+<!-- PERFORMANCE TUNING -->
+<section id="performance">
+  <h2 class="section-title" style="color: var(--accent3);">Performance Tuning</h2>
+  <p class="section-subtitle">T&#7889;i &#432;u h&oacute;a NIC &mdash; t&#7915; ring buffer, offloading, RSS/RPS &#273;&#7871;n Jumbo frames. Bi&#7871;n 10G th&agrave;nh th&#7853;t s&#7921; 10G</p>
+
+  <div class="tech-grid">
+    <div class="tech-card physical">
+      <div class="tech-logo">&#x1F4E6;</div>
+      <h3>Ring Buffers</h3>
+      <div class="tech-type">NIC Hardware / Packet Queue</div>
+      <p>NIC l&#432;u packets v&agrave;o ring buffer (h&agrave;ng &#273;&#7907;i v&ograve;ng) tr&#432;&#7899;c khi kernel x&#7917; l&yacute;. N&#7871;u kernel ch&#7853;m h&#417;n NIC &rarr; buffer &#273;&#7847;y &rarr; <strong>packet drop</strong>. T&#259;ng ring buffer size gi&#7843;m drop nh&#432;ng t&#259;ng latency. Ki&#7875;m tra: <code style="color: var(--accent3); font-size: 0.8rem;">ethtool -g eth0</code>. Set: <code style="color: var(--accent3); font-size: 0.8rem;">ethtool -G eth0 rx 4096 tx 4096</code>.</p>
+      <div class="tag-row">
+        <span class="tag good">Gi&#7843;m packet drop</span>
+        <span class="tag warn">T&#259;ng latency n&#7871;u qu&aacute; l&#7899;n</span>
+      </div>
+    </div>
+
+    <div class="tech-card virtual">
+      <div class="tech-logo">&#x2699;</div>
+      <h3>Offloading (TSO/GSO/GRO)</h3>
+      <div class="tech-type">NIC/Kernel / CPU Reduction</div>
+      <p><strong>TSO (TCP Segmentation Offload):</strong> NIC t&#7921; chia packet l&#7899;n th&agrave;nh MTU-sized segments, gi&#7843;m t&#7843;i CPU. <strong>GSO (Generic Segmentation Offload):</strong> T&#432;&#417;ng t&#7921; TSO nh&#432;ng trong kernel. <strong>GRO (Generic Receive Offload):</strong> G&#7897;p nhi&#7873;u small packets th&agrave;nh 1 l&#7899;n tr&#432;&#7899;c khi &#273;&#432;a l&ecirc;n stack. <strong>Checksum offload:</strong> NIC t&iacute;nh checksum thay CPU. Ki&#7875;m tra: <code style="color: var(--accent3); font-size: 0.8rem;">ethtool -k eth0</code>.</p>
+      <div class="tag-row">
+        <span class="tag good">Gi&#7843;m CPU usage</span>
+        <span class="tag good">T&#259;ng throughput</span>
+        <span class="tag warn">T&#7855;t n&#7871;u debug packet</span>
+      </div>
+    </div>
+
+    <div class="tech-card wireless">
+      <div class="tech-logo">&#x1F500;</div>
+      <h3>RSS / RPS / RFS</h3>
+      <div class="tech-type">Multi-Queue / CPU Distribution</div>
+      <p><strong>RSS (Receive Side Scaling):</strong> NIC ph&acirc;n ph&#7889;i packets v&agrave;o nhi&#7873;u RX queues &rarr; nhi&#7873;u CPU cores x&#7917; l&yacute; song song. C&#7847;n NIC h&#7895; tr&#7907; (multi-queue). <strong>RPS (Receive Packet Steering):</strong> Software RSS &mdash; khi NIC kh&ocirc;ng h&#7895; tr&#7907; multi-queue. <strong>RFS (Receive Flow Steering):</strong> G&#7917;i packet &#273;&#7871;n CPU core &#273;ang ch&#7841;y app x&#7917; l&yacute; &rarr; gi&#7843;m cache miss.</p>
+      <div class="tag-row">
+        <span class="tag good">Multi-core scaling</span>
+        <span class="tag">RSS = hardware</span>
+        <span class="tag">RPS = software</span>
+      </div>
+    </div>
+
+    <div class="tech-card fiber">
+      <div class="tech-logo">&#x1F4CF;</div>
+      <h3>MTU / Jumbo Frames</h3>
+      <div class="tech-type">Frame Size / Efficiency</div>
+      <p>MTU m&#7863;c &#273;&#7883;nh: <strong>1500 bytes</strong>. Jumbo frames: <strong>9000 bytes</strong>. Gi&#7843;m overhead (header ratio nh&#7887; h&#417;n), gi&#7843;m s&#7889; packets, gi&#7843;m interrupts. L&yacute; t&#432;&#7903;ng cho storage network (iSCSI, NFS), Ceph. <strong>B&#7855;t bu&#7897;c T&#7844;T C&#7842; thi&#7871;t b&#7883; tr&ecirc;n path &#273;&#7873;u h&#7895; tr&#7907;</strong> (NIC, switch, router). Set: <code style="color: var(--accent3); font-size: 0.8rem;">ip link set eth0 mtu 9000</code>.</p>
+      <div class="tag-row">
+        <span class="tag good">T&#259;ng 10-20% throughput</span>
+        <span class="tag good">Gi&#7843;m CPU</span>
+        <span class="tag hot">T&#7845;t c&#7843; ph&#7843;i h&#7895; tr&#7907;</span>
+        <span class="tag warn">Kh&ocirc;ng d&ugrave;ng cho internet</span>
+      </div>
+    </div>
+
+    <div class="tech-card veth">
+      <div class="tech-logo">&#x26A1;</div>
+      <h3>Interrupt Coalescing</h3>
+      <div class="tech-type">NIC / Latency vs Throughput</div>
+      <p>M&#7895;i packet &#273;&#7871;n, NIC t&#7841;o 1 interrupt &rarr; nhi&#7873;u packets = nhi&#7873;u interrupts = CPU b&#7853;n. <strong>Coalescing:</strong> NIC ch&#7901; g&#7897;p nhi&#7873;u packets r&#7891;i m&#7899;i t&#7841;o 1 interrupt. Gi&#7843;m CPU nh&#432;ng t&#259;ng latency. Cho throughput workload (storage, backup): t&#259;ng coalescing. Cho latency workload (VoIP, trading): gi&#7843;m coalescing. Set: <code style="color: var(--accent3); font-size: 0.8rem;">ethtool -C eth0 rx-usecs 100</code>.</p>
+      <div class="tag-row">
+        <span class="tag good">Gi&#7843;m interrupts</span>
+        <span class="tag warn">T&#259;ng latency</span>
+        <span class="tag">Trade-off</span>
+      </div>
+    </div>
+
+    <div class="tech-card bridge">
+      <div class="tech-logo">&#x1F680;</div>
+      <h3>XDP / DPDK / eBPF</h3>
+      <div class="tech-type">Kernel Bypass / Programmable</div>
+      <p><strong>XDP (eXpress Data Path):</strong> X&#7917; l&yacute; packet ngay t&#7841;i driver level, tr&#432;&#7899;c khi v&agrave;o kernel stack. C&#7921;c nhanh (millions pps). <strong>DPDK:</strong> Bypass kernel ho&agrave;n to&agrave;n, userspace networking. D&ugrave;ng cho router, firewall, load balancer hi&#7879;u su&#7845;t cao. <strong>eBPF:</strong> Programmable hook trong kernel. D&ugrave;ng b&#7903;i Cilium (Kubernetes CNI).</p>
+      <div class="tag-row">
+        <span class="tag good">Millions pps</span>
+        <span class="tag">XDP = in-kernel</span>
+        <span class="tag">DPDK = userspace</span>
+        <span class="tag warn">Ph&#7913;c t&#7841;p</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem; border-left-color: var(--accent4);">
+    <h4>Homelab Insight: Performance Tuning Checklist</h4>
+    <p><strong>1.</strong> Ki&#7875;m tra link speed: <code style="color: var(--accent3);">ethtool eth0 | grep Speed</code>
+    <br><strong>2.</strong> Ki&#7875;m tra drops: <code style="color: var(--accent3);">ethtool -S eth0 | grep -i drop</code>
+    <br><strong>3.</strong> T&#259;ng ring buffer n&#7871;u c&oacute; drops: <code style="color: var(--accent3);">ethtool -G eth0 rx 4096</code>
+    <br><strong>4.</strong> B&#7853;t Jumbo frames cho storage VLAN: <code style="color: var(--accent3);">ip link set eth0 mtu 9000</code>
+    <br><strong>5.</strong> Ki&#7875;m tra offloading: <code style="color: var(--accent3);">ethtool -k eth0</code> (TSO, GRO n&ecirc;n on)
+    <br><strong>6.</strong> Ki&#7875;m tra multi-queue: <code style="color: var(--accent3);">ethtool -l eth0</code>
+    <br>L&agrave;m t&#7915;ng b&#432;&#7899;c, &#273;o l&#432;&#7901;ng sau m&#7895;i thay &#273;&#7893;i v&#7899;i <code style="color: var(--accent3);">iperf3</code>.</p>
+  </div>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section id="troubleshooting">
+  <h2 class="section-title" style="color: var(--accent5);">Troubleshooting</h2>
+  <p class="section-subtitle">C&aacute;c c&ocirc;ng c&#7909; v&agrave; quy tr&igrave;nh debug network interface &mdash; t&#7915; Layer 1 l&ecirc;n Layer 4</p>
+
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>Layer 1: Link v&#7853;t l&yacute;</h4>
+      <p><strong>ethtool eth0:</strong> Ki&#7875;m tra speed, duplex, link detected. N&#7871;u &ldquo;Link detected: no&rdquo; &rarr; ki&#7875;m tra c&aacute;p, SFP module, switch port. <strong>ip link show:</strong> state UP/DOWN. <strong>dmesg | grep eth:</strong> L&#7895;i driver, firmware. NIC LED: xanh = link, nh&#7845;p nh&aacute;y = traffic, t&#7855;t = kh&ocirc;ng link.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>Layer 2: MAC &amp; Switch</h4>
+      <p><strong>ip neigh show:</strong> ARP table &mdash; c&oacute; th&#7845;y MAC c&#7911;a gateway kh&ocirc;ng? N&#7871;u INCOMPLETE/FAILED &rarr; L2 c&oacute; v&#7845;n &#273;&#7873;. <strong>bridge fdb show:</strong> MAC table c&#7911;a bridge. <strong>arping:</strong> Test ARP level. Ki&#7875;m tra VLAN tag &#273;&uacute;ng kh&ocirc;ng, trunk port &#273;&uacute;ng kh&ocirc;ng.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>Layer 3: IP &amp; Routing</h4>
+      <p><strong>ip addr show:</strong> IP &#273;&uacute;ng kh&ocirc;ng, subnet mask &#273;&uacute;ng kh&ocirc;ng? <strong>ip route show:</strong> Default gateway c&oacute; kh&ocirc;ng? Route &#273;&#7871;n &#273;&iacute;ch &#273;&uacute;ng interface kh&ocirc;ng? <strong>ping gateway:</strong> Reach &#273;&#432;&#7907;c gateway kh&ocirc;ng? <strong>traceroute:</strong> Packet &#273;i &#273;&#432;&#7901;ng n&agrave;o, k&#7865;t &#7903; &#273;&acirc;u?</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">4</div>
+      <h4>Layer 4: Port &amp; Connection</h4>
+      <p><strong>ss -tlnp:</strong> Service c&oacute; &#273;ang listen kh&ocirc;ng? Tr&ecirc;n port n&agrave;o? Bind 0.0.0.0 hay 127.0.0.1? <strong>ss -tnp:</strong> K&#7871;t n&#7889;i &#273;ang active. <strong>nft list ruleset / iptables -L:</strong> Firewall c&oacute; &#273;ang ch&#7863;n kh&ocirc;ng? <strong>tcpdump -i eth0 port 80:</strong> Xem th&#7921;c t&#7871; packet c&oacute; &#273;&#7871;n kh&ocirc;ng.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">5</div>
+      <h4>NIC Statistics</h4>
+      <p><strong>ethtool -S eth0:</strong> Th&#7889;ng k&ecirc; chi ti&#7871;t t&#7915; NIC &mdash; rx/tx errors, drops, CRC errors, collisions. <strong>ip -s link show eth0:</strong> Th&#7889;ng k&ecirc; t&#7915; kernel. <strong>cat /proc/interrupts | grep eth:</strong> Interrupt distribution across CPUs. S&#7889; li&#7879;u n&agrave;y cho bi&#7871;t NIC c&oacute; &#273;ang &ldquo;kh&#7887;e&rdquo; kh&ocirc;ng.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">6</div>
+      <h4>tcpdump &mdash; V&#361; kh&iacute; cu&#7889;i c&ugrave;ng</h4>
+      <p>Khi t&#7845;t c&#7843; c&aacute;c c&ocirc;ng c&#7909; kh&aacute;c kh&ocirc;ng cho &#273;&#7911; th&ocirc;ng tin, d&ugrave;ng tcpdump. <strong>tcpdump -i eth0 -nn:</strong> Xem t&#7845;t c&#7843; traffic. <strong>tcpdump -i eth0 host 10.0.0.1:</strong> L&#7885;c theo IP. <strong>tcpdump -w capture.pcap:</strong> L&#432;u ra file, m&#7903; b&#7857;ng Wireshark &#273;&#7875; ph&acirc;n t&iacute;ch s&acirc;u. N&#7871;u packet &#273;&#7871;n NIC nh&#432;ng app kh&ocirc;ng th&#7845;y &rarr; firewall/routing. N&#7871;u packet kh&ocirc;ng &#273;&#7871;n NIC &rarr; v&#7845;n &#273;&#7873; L1/L2/switch.</p>
+    </div>
+  </div>
+
+  <div class="flow-box" style="margin-top: 2rem;">
+    <div class="flow-title">Troubleshooting Flow &mdash; Khi m&#7841;ng kh&ocirc;ng ho&#7841;t &#273;&#7897;ng</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  <span style="color:var(--accent5);">M&#7841;ng kh&ocirc;ng ho&#7841;t &#273;&#7897;ng!</span>
+       |
+       v
+  <span style="color:var(--accent);">ip link show</span> &rarr; Interface UP? &rarr; No &rarr; <span style="color:var(--accent3);">ip link set eth0 up</span>
+       |                                          |
+       v Yes                                 Ki&#7875;m tra c&aacute;p/driver
+  <span style="color:var(--accent);">ip addr show</span> &rarr; C&oacute; IP? &rarr; No &rarr; <span style="color:var(--accent3);">dhclient eth0</span> ho&#7863;c set static
+       |
+       v Yes
+  <span style="color:var(--accent);">ping gateway</span> &rarr; OK? &rarr; No &rarr; Ki&#7875;m tra <span style="color:var(--accent4);">ARP, VLAN, switch</span>
+       |
+       v Yes
+  <span style="color:var(--accent);">ping 8.8.8.8</span> &rarr; OK? &rarr; No &rarr; Ki&#7875;m tra <span style="color:var(--accent4);">routing, NAT, firewall</span>
+       |
+       v Yes
+  <span style="color:var(--accent);">ping google.com</span> &rarr; OK? &rarr; No &rarr; <span style="color:var(--accent4);">DNS problem</span> (/etc/resolv.conf)
+       |
+       v Yes
+  <span style="color:var(--accent3);">M&#7841;ng ho&#7841;t &#273;&#7897;ng b&igrave;nh th&#432;&#7901;ng &#x2714;</span></pre>
+  </div>
+
+  <div class="insight-box" style="border-left-color: var(--accent5);">
+    <h4>Common Issues trong Homelab</h4>
+    <p><strong>1. &ldquo;NIC kh&ocirc;ng nh&#7853;n&rdquo;:</strong> Ki&#7875;m tra driver (<code style="color: var(--accent3);">lspci -v | grep -i net</code>), c&agrave;i firmware (<code style="color: var(--accent3);">apt install firmware-linux-nonfree</code>).
+    <br><strong>2. &ldquo;Link 1G thay v&igrave; 10G&rdquo;:</strong> C&aacute;p Cat5e ch&#7881; h&#7895; tr&#7907; 1G. C&#7847;n Cat6a cho 10GBASE-T. Ho&#7863;c SFP+ module kh&ocirc;ng t&#432;&#417;ng th&iacute;ch.
+    <br><strong>3. &ldquo;VLAN kh&ocirc;ng th&ocirc;ng&rdquo;:</strong> Switch port ch&#432;a config trunk, ho&#7863;c ch&#432;a cho ph&eacute;p VLAN ID &#273;&oacute;.
+    <br><strong>4. &ldquo;Bond kh&ocirc;ng t&#259;ng speed&rdquo;:</strong> LACP ch&#432;a config tr&ecirc;n switch, ho&#7863;c ch&#7881; test 1 flow (1 flow = 1 link).
+    <br><strong>5. &ldquo;Container kh&ocirc;ng ra internet&rdquo;:</strong> iptables MASQUERADE ch&#432;a b&#7853;t, ho&#7863;c ip_forward = 0.</p>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="comparison">
+  <h2 class="section-title" style="color: var(--accent4);">So S&aacute;nh C&aacute;c Lo&#7841;i Interface</h2>
+  <p class="section-subtitle">B&#7843;ng t&#7893;ng h&#7907;p &#273;&#7863;c &#273;i&#7875;m c&aacute;c lo&#7841;i network interface &mdash; ch&#7885;n &#273;&uacute;ng lo&#7841;i cho &#273;&uacute;ng vi&#7879;c</p>
+
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Interface</th>
+          <th>Lo&#7841;i</th>
+          <th>Layer</th>
+          <th>Use Case</th>
+          <th>Nh&#432;&#7907;c &#273;i&#7875;m</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ethernet (eth0)</td>
+          <td>Physical</td>
+          <td>L1-L2</td>
+          <td style="color: var(--accent3);">M&#7885;i th&#7913;</td>
+          <td>C&#7847;n c&aacute;p, gi&#7899;i h&#7841;n 100m</td>
+        </tr>
+        <tr>
+          <td>Wi-Fi (wlan0)</td>
+          <td>Physical</td>
+          <td>L1-L2</td>
+          <td style="color: var(--accent4);">Client, di &#273;&#7897;ng</td>
+          <td>Latency, bandwidth th&#7845;p h&#417;n, b&#7843;o m&#7853;t</td>
+        </tr>
+        <tr>
+          <td>Fiber (SFP+)</td>
+          <td>Physical</td>
+          <td>L1-L2</td>
+          <td style="color: var(--accent3);">Datacenter, storage</td>
+          <td>Chi ph&iacute; cao h&#417;n</td>
+        </tr>
+        <tr>
+          <td>Loopback (lo)</td>
+          <td>Virtual</td>
+          <td>L3</td>
+          <td>Local IPC, testing</td>
+          <td>Ch&#7881; local</td>
+        </tr>
+        <tr>
+          <td>veth pair</td>
+          <td>Virtual</td>
+          <td>L2</td>
+          <td style="color: var(--accent);">Container networking</td>
+          <td>Lu&ocirc;n c&#7847;n c&#7863;p &#273;&ocirc;i</td>
+        </tr>
+        <tr>
+          <td>TUN</td>
+          <td>Virtual</td>
+          <td style="color: var(--accent);">L3</td>
+          <td>VPN (WireGuard)</td>
+          <td>Kh&ocirc;ng c&oacute; MAC/Ethernet</td>
+        </tr>
+        <tr>
+          <td>TAP</td>
+          <td>Virtual</td>
+          <td style="color: var(--accent);">L2</td>
+          <td>VM networking, VPN bridge</td>
+          <td>Ch&#7853;m h&#417;n virtio</td>
+        </tr>
+        <tr>
+          <td>Bridge</td>
+          <td>Virtual</td>
+          <td>L2</td>
+          <td style="color: var(--accent3);">VM/CT switch</td>
+          <td>Overhead nh&#7887;</td>
+        </tr>
+        <tr>
+          <td>Bond</td>
+          <td>Virtual</td>
+          <td>L2</td>
+          <td style="color: var(--accent3);">HA, bandwidth</td>
+          <td>C&#7847;n nhi&#7873;u NIC, m&#7897;t s&#7889; mode c&#7847;n switch</td>
+        </tr>
+        <tr>
+          <td>VLAN (802.1Q)</td>
+          <td>Virtual</td>
+          <td>L2</td>
+          <td style="color: var(--accent4);">Network segmentation</td>
+          <td>C&#7847;n switch h&#7895; tr&#7907; VLAN</td>
+        </tr>
+        <tr>
+          <td>macvlan</td>
+          <td>Virtual</td>
+          <td>L2</td>
+          <td>Container v&#7899;i MAC ri&ecirc;ng</td>
+          <td>Parent kh&ocirc;ng n&oacute;i chuy&#7879;n v&#7899;i child</td>
+        </tr>
+        <tr>
+          <td>ipvlan</td>
+          <td>Virtual</td>
+          <td>L2/L3</td>
+          <td>Container khi gi&#7899;i h&#7841;n MAC</td>
+          <td>Kh&ocirc;ng c&oacute; MAC ri&ecirc;ng</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bonding Mode Comparison -->
+  <h3 style="margin: 3rem 0 1rem; color: var(--text-dim);">So s&aacute;nh Bonding Modes</h3>
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th>T&#259;ng BW?</th>
+          <th>Failover?</th>
+          <th>C&#7847;n Switch?</th>
+          <th>&#272;&aacute;nh gi&aacute;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0: balance-rr</td>
+          <td style="color: var(--accent3);">C&oacute; (per-packet)</td>
+          <td style="color: var(--accent3);">C&oacute;</td>
+          <td style="color: var(--accent5);">C&oacute;</td>
+          <td style="color: var(--accent4);">Out-of-order, &iacute;t d&ugrave;ng</td>
+        </tr>
+        <tr>
+          <td>1: active-backup</td>
+          <td style="color: var(--accent5);">Kh&ocirc;ng</td>
+          <td style="color: var(--accent3);">C&oacute; (t&#7889;t nh&#7845;t)</td>
+          <td style="color: var(--accent3);">Kh&ocirc;ng</td>
+          <td style="color: var(--accent3);">&#272;&#417;n gi&#7843;n, tin c&#7853;y</td>
+        </tr>
+        <tr>
+          <td>2: balance-xor</td>
+          <td style="color: var(--accent3);">C&oacute; (per-flow)</td>
+          <td style="color: var(--accent3);">C&oacute;</td>
+          <td style="color: var(--accent5);">C&oacute;</td>
+          <td style="color: var(--accent4);">T&#432;&#417;ng t&#7921; LACP kh&ocirc;ng protocol</td>
+        </tr>
+        <tr>
+          <td>3: broadcast</td>
+          <td style="color: var(--accent5);">Kh&ocirc;ng</td>
+          <td style="color: var(--accent3);">T&#7889;i &#273;a</td>
+          <td style="color: var(--accent5);">C&oacute;</td>
+          <td style="color: var(--accent5);">R&#7845;t &iacute;t d&ugrave;ng</td>
+        </tr>
+        <tr>
+          <td>4: 802.3ad LACP</td>
+          <td style="color: var(--accent3);">C&oacute; (per-flow)</td>
+          <td style="color: var(--accent3);">C&oacute;</td>
+          <td style="color: var(--accent5);">C&oacute; (LACP)</td>
+          <td style="color: var(--accent3);">Chu&#7849;n v&agrave;ng enterprise</td>
+        </tr>
+        <tr>
+          <td>5: balance-tlb</td>
+          <td style="color: var(--accent4);">C&oacute; (TX only)</td>
+          <td style="color: var(--accent3);">C&oacute;</td>
+          <td style="color: var(--accent3);">Kh&ocirc;ng</td>
+          <td style="color: var(--accent3);">T&#7889;t cho unmanaged switch</td>
+        </tr>
+        <tr>
+          <td>6: balance-alb</td>
+          <td style="color: var(--accent3);">C&oacute; (TX+RX)</td>
+          <td style="color: var(--accent3);">C&oacute;</td>
+          <td style="color: var(--accent3);">Kh&ocirc;ng</td>
+          <td style="color: var(--accent3);">Best cho homelab</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent);">Cheat Sheet</h2>
+  <p class="section-subtitle">Copy-paste commands cho m&#7885;i t&igrave;nh hu&#7889;ng &mdash; t&#7915; c&#417; b&#7843;n &#273;&#7871;n n&acirc;ng cao</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Xem t&#7845;t c&#7843; interfaces</h4>
+      <p>Li&#7879;t k&ecirc; v&agrave; ki&#7875;m tra tr&#7841;ng th&aacute;i</p>
+      <code># T&#7845;t c&#7843; interfaces
+ip link show
+ip -br link show
+
+# Chi ti&#7871;t v&#7899;i IP
+ip -br addr show
+
+# Ch&#7881; UP interfaces
+ip link show up
+
+# Interface c&#7909; th&#7875;
+ip addr show dev eth0
+
+# Th&#7889;ng k&ecirc; traffic
+ip -s link show eth0</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>C&#7845;u h&igrave;nh IP</h4>
+      <p>Th&ecirc;m/x&oacute;a IP, b&#7853;t/t&#7855;t interface</p>
+      <code># B&#7853;t interface
+ip link set eth0 up
+
+# Th&ecirc;m IP
+ip addr add 192.168.1.100/24 dev eth0
+
+# X&oacute;a IP
+ip addr del 192.168.1.100/24 dev eth0
+
+# Th&ecirc;m default gateway
+ip route add default via 192.168.1.1
+
+# Thay &#273;&#7893;i MTU
+ip link set eth0 mtu 9000
+
+# Thay &#273;&#7893;i MAC
+ip link set eth0 address aa:bb:cc:dd:ee:ff</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>T&#7841;o VLAN interface</h4>
+      <p>802.1Q sub-interface</p>
+      <code># T&#7841;o VLAN 100 tr&ecirc;n eth0
+ip link add link eth0 \
+  name eth0.100 type vlan id 100
+ip addr add 10.100.0.1/24 dev eth0.100
+ip link set eth0.100 up
+
+# Xem VLAN info
+cat /proc/net/vlan/eth0.100
+
+# X&oacute;a VLAN interface
+ip link del eth0.100</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>T&#7841;o Bridge</h4>
+      <p>Software switch cho VM/CT</p>
+      <code># T&#7841;o bridge
+ip link add br0 type bridge
+ip link set br0 up
+
+# Th&ecirc;m interface v&agrave;o bridge
+ip link set eth0 master br0
+ip link set veth0 master br0
+
+# VLAN-aware bridge
+ip link add br0 type bridge \
+  vlan_filtering 1
+
+# G&aacute;n IP cho bridge
+ip addr add 192.168.1.1/24 dev br0
+
+# Xem bridge members
+bridge link show</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>T&#7841;o Bond (LACP)</h4>
+      <p>Link aggregation v&#7899;i 802.3ad</p>
+      <code># T&#7841;o bond
+ip link add bond0 type bond \
+  mode 802.3ad
+
+# Th&ecirc;m slaves
+ip link set eth0 down
+ip link set eth0 master bond0
+ip link set eth1 down
+ip link set eth1 master bond0
+
+# B&#7853;t bond
+ip link set bond0 up
+ip addr add 192.168.1.100/24 dev bond0
+
+# Xem tr&#7841;ng th&aacute;i bond
+cat /proc/net/bonding/bond0</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>T&#7841;o veth pair + namespace</h4>
+      <p>Container networking th&#7911; c&ocirc;ng</p>
+      <code># T&#7841;o namespace
+ip netns add myns
+
+# T&#7841;o veth pair
+ip link add veth0 type veth \
+  peer name veth1
+
+# Chuy&#7875;n 1 &#273;&#7847;u v&agrave;o namespace
+ip link set veth1 netns myns
+
+# Config trong namespace
+ip netns exec myns \
+  ip addr add 10.0.0.2/24 dev veth1
+ip netns exec myns \
+  ip link set veth1 up
+ip netns exec myns \
+  ip link set lo up
+
+# Config &#273;&#7847;u host
+ip addr add 10.0.0.1/24 dev veth0
+ip link set veth0 up</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>ethtool &mdash; NIC Diagnostics</h4>
+      <p>Ki&#7875;m tra s&#7913;c kh&#7887;e NIC</p>
+      <code># Th&ocirc;ng tin c&#417; b&#7843;n
+ethtool eth0
+
+# Th&#7889;ng k&ecirc; chi ti&#7871;t
+ethtool -S eth0
+
+# Ring buffer
+ethtool -g eth0
+
+# Offload settings
+ethtool -k eth0
+
+# Driver info
+ethtool -i eth0
+
+# Nh&#7845;p nh&aacute;y LED (t&igrave;m port)
+ethtool -p eth0 5
+
+# Test NIC
+ethtool -t eth0</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>tcpdump &mdash; B&#7855;t packet</h4>
+      <p>Debug m&#7841;ng &#7903; m&#7885;i level</p>
+      <code># T&#7845;t c&#7843; traffic
+tcpdump -i eth0 -nn
+
+# Ch&#7881; 1 host
+tcpdump -i eth0 host 10.0.0.1
+
+# Ch&#7881; 1 port
+tcpdump -i eth0 port 443
+
+# VLAN traffic
+tcpdump -i eth0 vlan 100
+
+# L&#432;u ra file
+tcpdump -i eth0 -w /tmp/cap.pcap
+
+# ARP packets
+tcpdump -i eth0 arp
+
+# ICMP (ping)
+tcpdump -i eth0 icmp</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>ss &mdash; Socket Statistics</h4>
+      <p>Thay th&#7871; netstat, nhanh h&#417;n nhi&#7873;u</p>
+      <code># TCP listening
+ss -tlnp
+
+# T&#7845;t c&#7843; connections
+ss -tnp
+
+# UDP
+ss -ulnp
+
+# K&#7871;t n&#7889;i &#273;&#7871;n port 443
+ss -tnp dst :443
+
+# &#272;&#7871;m connections theo state
+ss -s
+
+# Chi ti&#7871;t TCP info
+ss -ti</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Routing &amp; Policy</h4>
+      <p>Qu&#7843;n l&yacute; b&#7843;ng &#273;&#7883;nh tuy&#7871;n</p>
+      <code># Xem routing table
+ip route show
+
+# Xem route &#273;&#7871;n &#273;&iacute;ch c&#7909; th&#7875;
+ip route get 8.8.8.8
+
+# Th&ecirc;m static route
+ip route add 10.10.0.0/16 \
+  via 192.168.1.1 dev eth0
+
+# Policy routing
+ip rule add from 10.0.0.0/8 \
+  table 100
+ip route add default \
+  via 10.0.0.1 table 100
+
+# B&#7853;t IP forwarding
+sysctl -w net.ipv4.ip_forward=1</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Performance Testing</h4>
+      <p>&#272;o t&#7889;c &#273;&#7897; m&#7841;ng th&#7921;c t&#7871;</p>
+      <code># iperf3 server
+iperf3 -s
+
+# iperf3 client
+iperf3 -c 192.168.1.100
+
+# Test v&#7899;i nhi&#7873;u streams
+iperf3 -c 192.168.1.100 -P 4
+
+# UDP test
+iperf3 -c 192.168.1.100 -u -b 10G
+
+# Bi-directional
+iperf3 -c 192.168.1.100 --bidir
+
+# Jumbo frame test
+ping -M do -s 8972 192.168.1.1</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Proxmox Network Config</h4>
+      <p>/etc/network/interfaces m&#7851;u</p>
+      <code># LACP Bond + VLAN-aware Bridge
+auto enp3s0
+iface enp3s0 inet manual
+
+auto enp4s0
+iface enp4s0 inet manual
+
+auto bond0
+iface bond0 inet manual
+  bond-slaves enp3s0 enp4s0
+  bond-mode 802.3ad
+  bond-miimon 100
+  bond-xmit-hash-policy layer3+4
+
+auto vmbr0
+iface vmbr0 inet static
+  address 192.168.1.100/24
+  gateway 192.168.1.1
+  bridge-ports bond0
+  bridge-stp off
+  bridge-vlan-aware yes
+  bridge-vids 2-4094</code>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">&#x1F50C;</p>
+  <p>Th&#7871; Gi&#7899;i Network Interface &mdash; T&#7893;ng h&#7907;p ki&#7871;n th&#7913;c network interface cho IT professionals</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-dim);">
+    T&#7915; Ethernet &#273;&#7871;n 100GbE, t&#7915; physical &#273;&#7871;n virtual, t&#7915; bonding &#273;&#7871;n VLAN.
+    <br>M&#7895;i packet &#273;&#7873;u &#273;i qua m&#7897;t interface &mdash; hi&#7875;u n&oacute; l&agrave; hi&#7875;u m&#7841;ng.
+  </p>
+  <p style="margin-top: 1rem; font-size: 0.75rem;">Homelab Knowledge Base &middot; 2026</p>
+</footer>
+
+</body>
+</html>

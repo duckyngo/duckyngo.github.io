@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 8: Luật Pháp và Luật Sư – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #374151 0%, #4B5563 50%, #1F2937 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #374151; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid #4B5563; transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--teal); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--rose); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--amber); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .cost-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 20px 0; }
+  .cost-card h3 { color: #374151; font-size: 1.05rem; margin-bottom: 16px; }
+  .cost-item { display: flex; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid #F3F4F6; }
+  .cost-item:last-child { border-bottom: none; }
+  .cost-icon { font-size: 1.5rem; }
+  .cost-text { flex: 1; font-size: 0.95rem; color: var(--gray-700); }
+  .cost-price { font-weight: 800; color: var(--rose); white-space: nowrap; }
+  .quote-box { background: linear-gradient(135deg, #F9FAFB, #F3F4F6); border-left: 5px solid #4B5563; border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: #9CA3AF; opacity: 0.2; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: #374151; font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .jurisdiction-box { background: linear-gradient(135deg, #F5F3FF, #EDE9FE); border: 1px solid #DDD6FE; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .jurisdiction-box h3 { color: var(--purple); font-size: 1.05rem; margin-bottom: 16px; }
+  .juris-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .juris-item { background: white; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .juris-flag { font-size: 1.8rem; margin-bottom: 6px; }
+  .juris-name { font-weight: 700; font-size: 0.85rem; color: var(--gray-800); }
+  .juris-note { font-size: 0.75rem; color: #6B7280; margin-top: 4px; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-rose { background: #FFF1F2; border: 1px solid #FECDD3; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-rose .callout-body strong { color: var(--rose); }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #111827, #1F2937); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #D1D5DB; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">⚖️ Chương 8</div>
+  <div class="hero-emoji">⚖️</div>
+  <h1>Luật Pháp và Luật Sư – Bạn Của Chúng Ta?</h1>
+  <div class="subtitle">Người bảo vệ bạn hay chỉ bảo vệ hóa đơn của họ? Hiểu rõ để dùng đúng.</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">💰 Luật Sư Mỹ – Tính Tiền Từng Phút</div>
+
+  <div class="cost-card">
+    <h3>🕐 Câu Chuyện Về Tiền Theo Giờ</h3>
+    <div class="cost-item">
+      <div class="cost-icon">📞</div>
+      <div class="cost-text">Gọi điện hỏi lịch hẹn</div>
+      <div class="cost-price">Tính tiền</div>
+    </div>
+    <div class="cost-item">
+      <div class="cost-icon">📧</div>
+      <div class="cost-text">Email trả lời câu hỏi đơn giản</div>
+      <div class="cost-price">Tính tiền</div>
+    </div>
+    <div class="cost-item">
+      <div class="cost-icon">🤔</div>
+      <div class="cost-text">Thời gian "suy nghĩ" về vụ của bạn</div>
+      <div class="cost-price">Tính tiền</div>
+    </div>
+    <div class="cost-item">
+      <div class="cost-icon">🚕</div>
+      <div class="cost-text">Di chuyển đến tòa án</div>
+      <div class="cost-price">Tính tiền</div>
+    </div>
+    <div class="cost-item">
+      <div class="cost-icon">☕</div>
+      <div class="cost-text">Chờ ngoài phòng hội nghị</div>
+      <div class="cost-price">Tính tiền</div>
+    </div>
+  </div>
+
+  <div class="section-title">🌍 Chọn Địa Điểm Xét Xử – Quyết Định Sống Còn</div>
+
+  <div class="jurisdiction-box">
+    <h3>⚖️ Điều Khoản Pháp Lý Quan Trọng Nhất Trong Hợp Đồng</h3>
+    <div class="juris-grid">
+      <div class="juris-item">
+        <div class="juris-flag">🇬🇧</div>
+        <div class="juris-name">Luật Anh</div>
+        <div class="juris-note">Phổ biến trong HĐ quốc tế, tòa London uy tín</div>
+      </div>
+      <div class="juris-item">
+        <div class="juris-flag">🇺🇸</div>
+        <div class="juris-name">Luật Mỹ</div>
+        <div class="juris-note">Thường có lợi cho công ty Mỹ, chi phí cao</div>
+      </div>
+      <div class="juris-item">
+        <div class="juris-flag">🇸🇬</div>
+        <div class="juris-name">Singapore</div>
+        <div class="juris-note">Trung lập, minh bạch, nhanh gọn cho châu Á</div>
+      </div>
+      <div class="juris-item">
+        <div class="juris-flag">🌐</div>
+        <div class="juris-name">Trọng Tài ICC</div>
+        <div class="juris-note">Quốc tế, thường dùng cho dự án đa quốc gia</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🎯</div>
+      <div class="takeaway-title">Điều khoản pháp lý = chìa khóa</div>
+      <div class="takeaway-text">Địa điểm xét xử và luật áp dụng là điều khoản quan trọng nhất trong hợp đồng. Ký xong mới nhận ra bất lợi thì đã quá muộn.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🤝</div>
+      <div class="takeaway-title">Kinh doanh của họ</div>
+      <div class="takeaway-text">Luật sư làm việc vì kinh doanh của <em>họ</em>. Điều này không có nghĩa xấu – chỉ cần hiểu để quản lý mối quan hệ đúng cách.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">💡</div>
+      <div class="takeaway-title">Dùng luật sư đúng cách</div>
+      <div class="takeaway-text">Hỏi chi tiết nhỏ qua email thay vì điện thoại. Chuẩn bị danh sách câu hỏi trước khi gặp. Giới hạn phạm vi công việc rõ ràng ngay từ đầu.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">⚡</div>
+      <div class="takeaway-title">Luật sư "địa phương"</div>
+      <div class="takeaway-text">Trong đàm phán quốc tế, cần luật sư biết luật địa phương của cả hai nước. Luật sư "quốc tế" không biết luật địa phương là vô dụng.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Họ làm việc vì việc kinh doanh của chính họ – điều đó không sai, chỉ là thực tế bạn cần hiểu khi làm việc với luật sư."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Bẫy của hợp đồng "chuẩn"</strong>
+      <p>Đừng tin rằng hợp đồng "tiêu chuẩn" của đối tác là trung lập. Mọi hợp đồng "chuẩn" đều có lợi cho bên soạn thảo nó. Luật sư của bạn phải đọc từng dòng, đặc biệt các điều khoản nhỏ.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Nguyên tắc chọn luật sư trong thương thuyết quốc tế</strong>
+      <p>① Biết luật của cả hai quốc gia ② Có kinh nghiệm trong ngành của bạn ③ Có mạng lưới địa phương tại quốc gia đối tác ④ Giá cả minh bạch, không tính theo kiểu "hên xui" ⑤ Sẵn sàng giải thích rõ ràng, không dùng thuật ngữ để che giấu.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">✅</div>
+    <div class="callout-body">
+      <strong>Khi nào KHÔNG cần luật sư?</strong>
+      <p>Thương thuyết nhỏ, quen thuộc, rủi ro thấp – có thể tự xử lý. Nhưng khi dự án vượt quá một ngưỡng nhất định (về giá trị, độ phức tạp, tầm quốc tế), chi phí thuê luật sư giỏi nhỏ so với rủi ro không có họ.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 8</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Luật sư Mỹ tính tiền mọi thứ theo giờ – hiểu điều này để quản lý chi phí pháp lý hiệu quả.</li>
+      <li><span class="lesson-num">2</span>Địa điểm xét xử là điều khoản quan trọng nhất trong hợp đồng – đừng bỏ qua hoặc nhượng bộ dễ dàng.</li>
+      <li><span class="lesson-num">3</span>Luật sư làm việc cho kinh doanh của họ – không sai, nhưng bạn phải quản lý mối quan hệ này có ý thức.</li>
+      <li><span class="lesson-num">4</span>Mọi hợp đồng "tiêu chuẩn" đều có lợi cho bên soạn – luôn phải đọc kỹ và thương thuyết lại các điều khoản bất lợi.</li>
+      <li><span class="lesson-num">5</span>Luật sư địa phương không thể thiếu trong đàm phán quốc tế – đừng tiết kiệm ở điểm này.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-07.html" class="nav-btn nav-btn-prev">← Chương 7</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-09.html" class="nav-btn nav-btn-next">Chương 9 →</a>
+  </div>
+
+</div>
+</body>
+</html>

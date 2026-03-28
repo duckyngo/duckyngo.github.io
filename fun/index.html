@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fun Zone - Deep Dive Collection</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .bg-effects {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .bg-effects .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .bg-effects .orb:nth-child(1) {
+    width: 500px; height: 500px;
+    background: var(--accent);
+    top: -10%; left: -5%;
+    animation-delay: 0s;
+  }
+
+  .bg-effects .orb:nth-child(2) {
+    width: 400px; height: 400px;
+    background: var(--accent2);
+    top: 50%; right: -10%;
+    animation-delay: -7s;
+  }
+
+  .bg-effects .orb:nth-child(3) {
+    width: 350px; height: 350px;
+    background: var(--accent3);
+    bottom: -5%; left: 30%;
+    animation-delay: -14s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(30px, -40px) scale(1.05); }
+    50% { transform: translate(-20px, 20px) scale(0.95); }
+    75% { transform: translate(40px, 30px) scale(1.02); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  header h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  header p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .search-bar {
+    max-width: 500px;
+    margin: 30px auto 0;
+    position: relative;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .search-bar input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .search-bar input::placeholder { color: var(--text-dim); }
+
+  .search-bar svg {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    width: 20px;
+    height: 20px;
+  }
+
+  .stats {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+
+  .stats span {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--c1, var(--accent)), var(--c2, var(--accent2)));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    background: var(--card-hover);
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .card-file {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    opacity: 0.7;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+
+  .loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    display: none;
+  }
+
+  .error-box {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--accent5);
+    display: none;
+  }
+
+  .error-box p { margin-bottom: 10px; }
+
+  @media (max-width: 640px) {
+    header h1 { font-size: 2rem; }
+    .grid { grid-template-columns: 1fr; }
+    .container { padding: 24px 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-effects">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+
+<div class="container">
+  <header>
+    <h1>Fun Zone</h1>
+    <p>Bộ sưu tập Deep Dive vào thế giới công nghệ</p>
+    <div class="search-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input type="text" id="search" placeholder="Tìm kiếm..." autocomplete="off">
+    </div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Đang tải danh sách...</p>
+  </div>
+
+  <div class="empty" id="empty">Không tìm thấy kết quả nào.</div>
+  <div class="error-box" id="error"></div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const REPO = 'duckyngo/duckyngo.github.io';
+const DIR = 'static/fun';
+const API = `https://api.github.com/repos/${REPO}/contents/${DIR}`;
+
+const ICONS = {
+  'automation': ['🤖', '#3b82f6', '#8b5cf6'],
+  'backup': ['💾', '#10b981', '#3b82f6'],
+  'cert': ['🔐', '#f59e0b', '#ef4444'],
+  'container': ['📦', '#8b5cf6', '#3b82f6'],
+  'database': ['🗄️', '#10b981', '#059669'],
+  'dns': ['🌐', '#3b82f6', '#06b6d4'],
+  'firewall': ['🛡️', '#ef4444', '#f59e0b'],
+  'agx': ['🧠', '#8b5cf6', '#ec4899'],
+  'outsourcing': ['🏢', '#06b6d4', '#3b82f6'],
+  'korean': ['☕', '#f59e0b', '#ef4444'],
+  'java': ['☕', '#f59e0b', '#ef4444'],
+  'monitoring': ['📊', '#10b981', '#3b82f6'],
+  'network': ['🔒', '#ef4444', '#8b5cf6'],
+  'security': ['🔒', '#ef4444', '#8b5cf6'],
+  'pbx': ['📞', '#8b5cf6', '#3b82f6'],
+  'proxmox': ['🖥️', '#f59e0b', '#10b981'],
+  'proxy': ['🔀', '#06b6d4', '#3b82f6'],
+  'realtime': ['⚡', '#f59e0b', '#ef4444'],
+  'selfhost': ['🏠', '#10b981', '#8b5cf6'],
+  'sip': ['📡', '#3b82f6', '#8b5cf6'],
+  'spring': ['🍃', '#10b981', '#059669'],
+  'storage': ['💿', '#8b5cf6', '#3b82f6'],
+  'vdi': ['🖥️', '#06b6d4', '#3b82f6'],
+  'voip': ['🎙️', '#8b5cf6', '#ef4444'],
+  'vpn': ['🔑', '#10b981', '#3b82f6'],
+};
+
+function getIcon(filename) {
+  const lower = filename.toLowerCase();
+  for (const [key, val] of Object.entries(ICONS)) {
+    if (lower.includes(key)) return val;
+  }
+  return ['📄', '#3b82f6', '#8b5cf6'];
+}
+
+function prettifyName(filename) {
+  return filename
+    .replace(/\.html$/, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function createCard(file) {
+  const [icon, c1, c2] = getIcon(file.name);
+  const a = document.createElement('a');
+  a.href = file.name;
+  a.className = 'card';
+  a.dataset.name = file.name.toLowerCase();
+  a.style.setProperty('--c1', c1);
+  a.style.setProperty('--c2', c2);
+  a.innerHTML = `
+    <div class="card-icon" style="background:${c1}20;color:${c1}">${icon}</div>
+    <div class="card-title">${prettifyName(file.name)}</div>
+    <div class="card-file">${file.name}</div>
+  `;
+  return a;
+}
+
+async function loadFiles() {
+  const loading = document.getElementById('loading');
+  const grid = document.getElementById('grid');
+  const stats = document.getElementById('stats');
+  const errorBox = document.getElementById('error');
+
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+    const data = await res.json();
+
+    const htmlFiles = data
+      .filter(f => f.name.endsWith('.html') && f.name !== 'index.html')
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    loading.style.display = 'none';
+    stats.innerHTML = `Tổng cộng <span>${htmlFiles.length}</span> trang`;
+
+    htmlFiles.forEach(file => grid.appendChild(createCard(file)));
+    setupSearch(htmlFiles.length);
+  } catch (err) {
+    loading.style.display = 'none';
+    errorBox.style.display = 'block';
+    errorBox.innerHTML = `<p>Không thể tải từ GitHub API.</p><p style="font-size:0.85rem;color:var(--text-dim)">Đang hiển thị danh sách offline...</p>`;
+    loadFallback(grid, stats);
+  }
+}
+
+function loadFallback(grid, stats) {
+  // Fallback: hardcoded list, updated at build time
+  const files = [
+    'automation-world.html','backup-world.html','cert-world.html',
+    'container-world.html','database-world.html','dns-world.html',
+    'firewall-world.html','g-agx-explained.html','it-outsourcing-ai-era.html',
+    'korean-java-expert.html','monitoring-world.html','network-security-world.html',
+    'pbx-world.html','proxmox-world.html','proxy-world.html',
+    'realtime-world.html','selfhost-world.html','sip-world.html',
+    'springboot-world.html','storage-world.html','vdi-world.html',
+    'voip-security-world.html','vpn-world.html'
+  ];
+
+  document.getElementById('error').style.display = 'none';
+  stats.innerHTML = `Tổng cộng <span>${files.length}</span> trang`;
+  files.forEach(name => grid.appendChild(createCard({ name })));
+  setupSearch(files.length);
+}
+
+function setupSearch(total) {
+  const input = document.getElementById('search');
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const stats = document.getElementById('stats');
+
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    let visible = 0;
+    grid.querySelectorAll('.card').forEach(card => {
+      const match = !q || card.dataset.name.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    empty.style.display = visible === 0 ? 'block' : 'none';
+    stats.innerHTML = q
+      ? `Hiển thị <span>${visible}</span> / ${total} trang`
+      : `Tổng cộng <span>${total}</span> trang`;
+  });
+}
+
+loadFiles();
+</script>
+
+</body>
+</html>

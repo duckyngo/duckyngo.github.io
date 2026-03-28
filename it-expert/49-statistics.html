@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống Kê Quân Sư — Statistics & A/B Testing Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root { --bg: #0a0c1a; --card-bg: rgba(12, 18, 38, 0.85); --card-border: rgba(233, 30, 99, 0.2); --accent: #e91e63; --accent2: #f48fb1; --accent3: #7e57c2; --text: #fce4ec; --text-muted: #bb8899; --glow: rgba(233, 30, 99, 0.3); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 30% 40%, rgba(233,30,99,0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(126,87,194,0.06) 0%, transparent 50%); z-index: -1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 5s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote { margin-top: 1.5rem; padding: 1rem 2rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; backdrop-filter: blur(10px); font-style: italic; color: var(--accent2); display: inline-block; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--card-border); background: var(--card-bg); backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default; }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip { padding: 1rem 1.5rem; margin: 1rem 0; border-left: 3px solid var(--accent); background: rgba(233,30,99,0.05); border-radius: 0 8px 8px 0; }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story { padding: 1.5rem; margin: 1rem 0; background: rgba(126,87,194,0.05); border-radius: 12px; border: 1px solid rgba(126,87,194,0.1); }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(233,30,99,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake { padding: 1rem 1.5rem; margin: 0.75rem 0; background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757; border-radius: 0 8px 8px 0; }
+        .mistake strong { color: #ff6b81; }
+        .footer { text-align: center; padding: 3rem 2rem; margin-top: 2rem; color: var(--text-muted); border-top: 1px solid var(--card-border); }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">🎲</span>
+        <h1>Thống Kê Quân Sư</h1>
+        <p class="subtitle">Người Tìm Sự Thật Giữa Biển Nhiễu Loạn</p>
+        <div class="quote">"p < 0.05 không có nghĩa là bạn đúng. Nó chỉ có nghĩa là bạn chưa đủ bằng chứng để nói bạn sai."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge">📊 Hypothesis Testing</span>
+        <span class="badge">🎯 p-values</span>
+        <span class="badge">📏 Confidence Intervals</span>
+        <span class="badge">🧪 A/B Testing</span>
+        <span class="badge">📐 Sample Size</span>
+        <span class="badge">🔬 Statistical Power</span>
+        <span class="badge">📈 Bayesian</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Thống Kê Quân Sư, tên thật là <strong>Xác Suất Tĩnh</strong>, là con người kỳ lạ. Khi bạn hỏi: <em>"Hôm nay trời có mưa không?"</em>, lão trả lời: <em>"Xác suất mưa 73% với confidence interval 65%-81%, dựa trên 30 năm dữ liệu thời tiết khu vực này."</em> Không ai mời lão đi picnic.</p>
+        <p>Hồi đại học, lão là sinh viên duy nhất hào hứng khi giáo sư dạy Bayes' Theorem. Trong khi cả lớp ngủ gật, lão giơ tay hỏi: <em>"Thầy ơi, frequentist hay Bayesian đúng hơn ạ?"</em> Cuộc chiến kéo dài đến giờ.</p>
+        <p>Vào nghề tech, lão trở thành "người gác cổng" A/B testing. Không ai được ship feature mà không qua tay lão. PM nào kêu <em>"Nhìn mà, metrics tăng rõ ràng!"</em> là lão lắc đầu: <em>"Sample size bao nhiêu? Statistical power? Multiple testing correction? Novelty effect?"</em></p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>p-value — Hiểu Đúng Rồi Mới Dùng</strong>
+            <p>p-value = xác suất thấy kết quả extreme như vậy (hoặc hơn) NẾU null hypothesis đúng. p = 0.03 KHÔNG có nghĩa "xác suất 97% rằng treatment có effect". p-value không cho biết effect size (lớn hay nhỏ), chỉ cho biết unlikely hay không. Effect có thể statistically significant nhưng practically insignificant.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Sample Size Calculation — Trước Khi Test, Tính Trước</strong>
+            <p>Cần bao nhiêu users? Phụ thuộc: baseline conversion rate, minimum detectable effect (MDE), significance level (alpha, thường 0.05), statistical power (1-beta, thường 0.8). MDE 1% absolute change cần nhiều users hơn MDE 10%. Tính trước bằng power analysis. Không tính = chạy test vô nghĩa.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>A/B Test Setup — Randomization Là Tất Cả</strong>
+            <p>Random assignment: mỗi user có equal probability vào group A hoặc B. Stratified randomization cho balanced groups (country, device type). Hash-based bucketing: <code>hash(user_id) % 100</code> = stable assignment. Không random = confounded results = wrong conclusions.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Confidence Intervals — Hữu Ích Hơn p-value</strong>
+            <p>CI cho biết range of plausible values cho true effect. "Conversion rate tăng 2.3%, 95% CI [0.5%, 4.1%]" → có ý nghĩa hơn "p = 0.02". CI chứa 0 = not significant. Narrow CI = precise estimate. Wide CI = cần more data. Always report CI alongside p-value.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Multiple Testing Problem — Càng Test Nhiều, Càng Dễ Sai</strong>
+            <p>Test 20 metrics cùng lúc, alpha = 0.05 mỗi metric. Xác suất ít nhất 1 false positive: 1 - 0.95^20 = 64%! Bonferroni correction: alpha/n = 0.05/20 = 0.0025 mỗi metric. Hoặc Benjamini-Hochberg FDR control. Hoặc: chọn 1-2 primary metrics, còn lại là secondary/exploratory.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Bayesian A/B Testing — Alternative Approach</strong>
+            <p>Frequentist: "reject or fail to reject H0". Bayesian: "probability that B is better than A = 95%". Dễ hiểu hơn cho stakeholders. Có thể stop early khi evidence đủ mạnh. No fixed sample size required. Nhưng: prior specification matters, computationally heavier. Tools: PyMC, Stan, VWO Bayesian engine.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">🎪 Chuyện 1: A/B Test Với Wrong Sample Size</div>
+            <p>PM muốn test new checkout flow. Current conversion: 3%. Expected improvement: 0.1% (3.0% → 3.1%). Cần sample size: ~1.5 triệu users per group (3 triệu total). Nhưng PM nói: <em>"2 tuần là đủ."</em> 2 tuần = 50,000 users per group.</p>
+            <p>Kết quả: conversion 3.2% vs 3.0%. PM hét: <em>"Tăng 0.2%! Ship ngay!"</em> Lão check: p = 0.38. Completely not significant. Statistical power: 8% (cần 80%). Test này vô nghĩa — nếu có effect thật, test không đủ power để detect. PM buồn nhưng lão giải thích: <em>"Chạy test ngắn với effect nhỏ giống như tìm kim trong đại dương bằng cần câu."</em></p>
+            <div class="lesson">💡 Bài học: LUÔN calculate sample size TRƯỚC KHI chạy test. Nếu cần quá nhiều users → increase MDE (accept only larger effects) hoặc improve conversion funnel trước. Under-powered tests = waste of time.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔗 Chuyện 2: Correlation vs Causation — Câu Chuyện Kinh Điển</div>
+            <p>Data team phát hiện: users dùng feature "Dark Mode" có retention cao hơn 40%. PM kết luận: <em>"Dark Mode tăng retention! Push mặc định cho tất cả users!"</em></p>
+            <p>Lão hỏi: <em>"Hay là users engaged hơn thì explore settings nhiều hơn → tìm thấy Dark Mode? Correlation: Dark Mode usage ↔ retention. Nhưng causation có thể ngược: high retention → discover Dark Mode, không phải Dark Mode → high retention."</em></p>
+            <p>Lão chạy A/B test: force Dark Mode cho random 50% users mới. Kết quả: retention KHÔNG KHÁC BIỆT. Dark Mode không cause retention. Engaged users chỉ tình cờ dùng Dark Mode nhiều hơn.</p>
+            <div class="lesson">💡 Bài học: Correlation ≠ Causation. Observational data chỉ cho correlation. Muốn prove causation → cần experiment (A/B test) hoặc quasi-experimental methods (instrumental variables, regression discontinuity). ĐỪNG make causal claims từ correlational data.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">👀 Chuyện 3: Peeking Problem — Nhìn Trộm Kết Quả Sớm</div>
+            <p>A/B test planned 4 tuần. Sau ngày 3, PM mở dashboard: <em>"Wow, treatment tốt hơn 5%, p = 0.04! Ship!"</em> Lão phản đối nhưng bị overrule. Ship. 2 tuần sau: metric trở về baseline. <em>"False positive"</em> — lão nói.</p>
+            <p>Vấn đề: peeking at results repeatedly inflates false positive rate. Nếu check mỗi ngày trong 30 ngày với alpha 0.05, false positive rate lên ~15-25%. Giải pháp: group sequential analysis (planned interim looks), hoặc Bayesian (okay to peek), hoặc kỷ luật: chỉ check khi sample size đạt target.</p>
+            <div class="lesson">💡 Bài học: "Peeking" at A/B test results inflates false positive rate. Solutions: pre-commit to sample size, use sequential testing methods, hoặc Bayesian framework. ĐỪNG stop early khi "looks good" — trừ khi dùng proper sequential method.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake"><strong>❌ "p < 0.05 = truth"</strong><p>p-value depends on sample size. With enough data, even trivial differences become "significant". Report effect size + CI, not just p-value.</p></div>
+        <div class="mistake"><strong>❌ No guardrail metrics</strong><p>Test tăng conversion nhưng decrease revenue per user? Tăng clicks nhưng increase bounce rate? Set guardrail metrics: thứ phải KHÔNG giảm.</p></div>
+        <div class="mistake"><strong>❌ Test too many variants</strong><p>A/B/C/D/E/F testing = split traffic 6 ways. Each variant gets 1/6 traffic. Need 6x longer. And multiple comparison penalty. A/B hoặc max A/B/C.</p></div>
+        <div class="mistake"><strong>❌ Novelty effect / Primacy effect</strong><p>New design looks "better" first week vì users curious. Wait > 2 weeks, compare same cohort. Filter out returning users cho cleaner signal.</p></div>
+        <div class="mistake"><strong>❌ Wrong randomization unit</strong><p>Randomize by page view (same user sees different variants on different visits) = contaminated experiment. Randomize by user ID = consistent experience.</p></div>
+    </div>
+
+    <div class="footer">
+        <div class="name">🎲 Thống Kê Quân Sư — Xác Suất Tĩnh</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Trong thế giới đầy noise, nhiệm vụ của tôi là tìm ra signal — và chắc chắn nó không phải noise giả dạng."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

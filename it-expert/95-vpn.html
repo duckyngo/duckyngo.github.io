@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đường Hầm Bảo Mật Đại Sư - Chuyên Gia WireGuard, OpenVPN & IPSec</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a2a 30%, #1a1a3a 60%, #2a2a4a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #818cf8; text-shadow: 0 0 20px #818cf840; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #818cf8; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #818cf8; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #818cf8; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #818cf830; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #818cf8; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #818cf8; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🔒</span>
+            <h1>Đường Hầm Bảo Mật Đại Sư</h1>
+            <div class="title">Chuyên Gia WireGuard, OpenVPN & IPSec</div>
+            <div class="quote">"VPN giống như đường hầm bí mật: giúp bạn đi qua vùng nguy hiểm (internet) an toàn. Nhưng nếu đào hầm sai, bạn lộ ra giữa đường."</div>
+        </div>
+        <div class="badges">            <span class="badge">🔒 WireGuard Expert</span>
+            <span class="badge">🌐 OpenVPN Master</span>
+            <span class="badge">🔐 IPSec/IKEv2</span>
+            <span class="badge">🔀 Split Tunneling</span>
+            <span class="badge">🌍 SD-WAN</span>
+            <span class="badge">☁️ SASE</span>
+            <span class="badge">📱 Remote Access</span>
+            <span class="badge">🏢 Site-to-Site</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư nhớ thời IPSec là lựa chọn duy nhất — 47 parameters để configure, 3 ngày để setup site-to-site tunnel, và mỗi lần debug phải đọc 500 dòng log. "Phase 1 negotiation failed" — câu này ám ảnh chàng ta suốt 10 năm.</p><p>Rồi OpenVPN xuất hiện — đơn giản hơn, UDP hoặc TCP, certificate-based. Chàng ta setup OpenVPN cho công ty: 200 remote users, split tunneling, MFA. Cuộc sống đẹp hơn.</p><p>Nhưng khi WireGuard ra đời, chàng ta phải lòng: 4000 dòng code (vs OpenVPN 100K dòng), modern cryptography, built vào Linux kernel, setup trong 5 phút. "Đây mới là VPN," chàng ta tuyên bố. Giờ chàng ta evangelizes WireGuard cho mọi người — từ enterprise đến homelab.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. WireGuard — Simple & Fast:</strong> Built vào Linux kernel (5.6+). Modern cryptography: Curve25519, ChaCha20, Poly1305. Config đơn giản: peer public key + allowed IPs. Performance: throughput gần line-rate, latency thấp. Roaming: seamless khi đổi network. Ideal cho: site-to-site, remote access, homelab.</div>
+            <div class="tip"><strong>2. OpenVPN — Battle-Tested:</strong> Mature, feature-rich, mọi platform. UDP hoặc TCP (TCP cho restrictive firewalls). Certificate-based authentication + MFA. Plugin ecosystem. Access Server cho management GUI. Nhược: slower than WireGuard, complex config. Dùng khi: cần compatibility, existing deployment, TCP tunneling.</div>
+            <div class="tip"><strong>3. IPSec/IKEv2 — Enterprise Standard:</strong> IKEv2 cho mobile devices (seamless roaming). StrongSwan cho Linux IPSec. Tích hợp tốt với cloud VPN gateways (AWS VPN, Azure VPN Gateway). Complex nhưng well-understood by enterprise firewalls. Dùng khi: enterprise requirements, cloud VPN connectivity, Windows built-in VPN client.</div>
+            <div class="tip"><strong>4. Split Tunneling:</strong> Full tunnel: ALL traffic qua VPN. Split tunnel: chỉ corporate traffic qua VPN, internet traffic direct. Trade-off: split tunnel = better performance, nhưng security risk nếu user machine compromised. Inverse split tunnel: default route qua VPN, specific IPs direct. Choose based on security requirements.</div>
+            <div class="tip"><strong>5. SD-WAN & SASE:</strong> SD-WAN: overlay network qua multiple WAN links (MPLS, broadband, LTE). Intelligent path selection. SASE (Secure Access Service Edge): SD-WAN + security (FWaaS, CASB, ZTNA) as cloud service. Vendors: Zscaler, Cloudflare, Palo Alto Prisma. Enterprise trend: replace traditional VPN with ZTNA (Zero Trust Network Access).</div>
+            <div class="tip"><strong>6. VPN Best Practices:</strong> MFA bắt buộc cho VPN access. Certificate-based auth > password auth. Log all VPN connections. Monitor concurrent connections. Bandwidth planning cho remote workforce. Kill switch cho client (đảm bảo traffic không leak ngoài VPN). Regular key rotation.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📶 Chuyện VPN MTU Issues</h3><p>Remote users complain: 'Một số websites không load được qua VPN!' Debug: VPN tunnel MTU 1500, nhưng VPN overhead 80 bytes → effective MTU 1420. Large packets fragmented → fragmentation blocked bởi some firewalls → connection hangs. Websites with large responses (images, downloads) affected.</p><p>Chỉ phát hiện khi tcpdump trên VPN server thấy ICMP 'Fragmentation needed' messages bị dropped. Fix: set VPN interface MTU 1420. MSS clamping: iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu.</p><div class="lesson">💡 Bài học: VPN tunnel giảm effective MTU. Set interface MTU = underlying MTU - VPN overhead. MSS clamping cho TCP traffic. Test large file downloads qua VPN. MTU issues âm thầm gây problems — hard to diagnose nếu không biết look for.</div></div>
+            <div class="story"><h3>🔓 Chuyện Split Tunnel Security Risk</h3><p>Company cho phép split tunneling để reduce VPN bandwidth. Employee's laptop infected with malware. Malware communicate qua direct internet (không qua VPN) → bypass corporate firewall, IDS, DLP. Exfiltrate data undetected 3 tháng.</p><p>Discovery: SIEM detect unusual data patterns từ employee's account, nhưng traffic không đi qua corporate network nên logs incomplete. Investigation mất 2 tuần vì thiếu network visibility.</p><div class="lesson">💡 Bài học: Split tunneling = reduced security visibility. Nếu dùng split tunnel: endpoint protection (EDR) mandatory, DNS filtering (DoH cho corporate DNS), SASE cho cloud-delivered security regardless of network path. Full tunnel cho high-security environments.</div></div>
+            <div class="story"><h3>🌍 Chuyện WireGuard Homelab VPN Trong 5 Phút</h3><p>Đại Sư challenge: setup VPN cho homelab access từ anywhere trong 5 phút. WireGuard server: wg genkey, config file 10 dòng. Client: scan QR code. Connected. Latency thêm 2ms. Throughput: 800Mbps trên Gigabit connection. Total time: 4 phút 30 giây.</p><p>So sánh: OpenVPN setup cùng scenario: generate CA, server cert, client cert, config file, tls-auth key — 45 phút. IPSec: 2 giờ nếu may mắn. WireGuard simplicity là game-changer cho homelab và small teams.</p><div class="lesson">💡 Bài học: WireGuard tuyệt vời cho simple VPN needs. Performance gần native. Config đơn giản = ít lỗi. Nhưng: thiếu advanced features (LDAP auth, fine-grained ACLs). Cho enterprise: WireGuard + management layer (Tailscale, Netmaker, Headscale).</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. VPN credentials shared between employees:</strong> 1 account dùng chung = no accountability, no audit trail. Individual accounts + MFA cho mỗi user.</div>
+            <div class="mistake"><strong>2. No kill switch:</strong> VPN disconnect → traffic đi direct qua internet → expose private data. Client-side kill switch block non-VPN traffic.</div>
+            <div class="mistake"><strong>3. VPN server exposed directly:</strong> VPN server public IP scannable. DDoS target. Put behind DDoS protection. Use non-standard ports. Port knocking cho extra layer.</div>
+            <div class="mistake"><strong>4. Không monitor VPN usage:</strong> Ai connected? Bao lâu? Bandwidth bao nhiêu? Unusual login times? VPN logs essential cho security monitoring.</div>
+            <div class="mistake"><strong>5. PSK (Pre-Shared Key) cho nhiều users:</strong> 1 PSK compromise = tất cả users compromised. Certificate-based authentication hoặc WireGuard per-peer keys.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #95</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

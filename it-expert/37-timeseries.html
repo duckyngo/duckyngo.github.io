@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thời Gian Sử Gia — Time-Series Database Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #0a0a18;
+            --card-bg: rgba(15, 15, 38, 0.85);
+            --card-border: rgba(52, 152, 219, 0.2);
+            --accent: #3498db;
+            --accent2: #5dade2;
+            --accent3: #1abc9c;
+            --text: #e0eaf5;
+            --text-muted: #8899bb;
+            --glow: rgba(52, 152, 219, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 25% 40%, rgba(52,152,219,0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 75% 60%, rgba(26,188,156,0.06) 0%, transparent 50%);
+            z-index: -1;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote {
+            margin-top: 1.5rem; padding: 1rem 2rem;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; backdrop-filter: blur(10px);
+            font-style: italic; color: var(--accent2); display: inline-block;
+        }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge {
+            padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--card-border); background: var(--card-bg);
+            backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default;
+        }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent2); }
+        .tip {
+            padding: 1rem 1.5rem; margin: 1rem 0;
+            border-left: 3px solid var(--accent);
+            background: rgba(52,152,219,0.05); border-radius: 0 8px 8px 0;
+        }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        .story {
+            padding: 1.5rem; margin: 1rem 0;
+            background: rgba(26,188,156,0.05); border-radius: 12px;
+            border: 1px solid rgba(26,188,156,0.1);
+        }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(52,152,219,0.1); border-radius: 8px; font-weight: 600; color: var(--accent2); }
+        .mistake {
+            padding: 1rem 1.5rem; margin: 0.75rem 0;
+            background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757;
+            border-radius: 0 8px 8px 0;
+        }
+        .mistake strong { color: #ff6b81; }
+        .footer {
+            text-align: center; padding: 3rem 2rem; margin-top: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--card-border);
+        }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">⏰</span>
+        <h1>Thời Gian Sử Gia</h1>
+        <p class="subtitle">Người Ghi Chép Mọi Khoảnh Khắc Của Hệ Thống</p>
+        <div class="quote">"Nếu bạn không đo lường, bạn không biết. Nếu bạn không lưu trữ, bạn sẽ quên. Và khi quên, bạn sẽ lặp lại sai lầm."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge" style="color:#22ADF6;border-color:#22ADF6;">📊 InfluxDB</span>
+        <span class="badge" style="color:#FDB515;border-color:#FDB515;">🐘 TimescaleDB</span>
+        <span class="badge" style="color:#E6522C;border-color:#E6522C;">🔥 Prometheus</span>
+        <span class="badge" style="color:#A855F7;border-color:#A855F7;">⚡ QuestDB</span>
+        <span class="badge">📈 Retention Policies</span>
+        <span class="badge">📉 Downsampling</span>
+        <span class="badge">🏷️ Cardinality</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>Thời Gian Sử Gia, tên thật là <strong>Đinh Mỗi Giây</strong>, là con người kỳ lạ. Ông ghi chép mọi thứ: nhiệt độ phòng mỗi 5 phút, nhịp tim mỗi giây, số ly cà phê uống mỗi ngày (trung bình 7, max 12 vào ngày on-call). Vợ ông than: <em>"Anh có cần ghi lại mỗi lần em thở dài không?"</em></p>
+        <p>Năm 2013, khi IoT bắt đầu bùng nổ, lão được giao lưu trữ dữ liệu sensor từ 10,000 thiết bị, mỗi thiết bị gửi metrics mỗi giây. 10,000 data points/giây. MySQL "khóc" sau 1 tuần. PostgreSQL "ho" sau 1 tháng. Lão tìm đến InfluxDB và biết đời mình sẽ gắn liền với timestamps.</p>
+        <p>Hiện tại, lão quản lý hệ thống monitoring cho cụm 5000 servers, mỗi server xuất 500 metrics, interval 15 giây. Tổng: ~167,000 data points/giây. Và lão vẫn uống 7 ly cà phê/ngày.</p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>Chọn Time-Series Database Phù Hợp</strong>
+            <p><strong>Prometheus</strong>: pull-based, tuyệt vời cho infrastructure monitoring, tích hợp sẵn alerting. <strong>InfluxDB</strong>: push-based, flexible schema, SQL-like query (Flux/InfluxQL). <strong>TimescaleDB</strong>: PostgreSQL extension, full SQL power, nếu đã biết PostgreSQL. <strong>QuestDB</strong>: tối ưu cho speed, SQL interface, tốt cho financial data.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Retention Policies — Đừng Lưu Mãi Mãi</strong>
+            <p>Data 1 giây resolution × 1 năm = khổng lồ. Chiến lược: raw data giữ 7 ngày, 1-phút aggregation giữ 30 ngày, 1-giờ aggregation giữ 1 năm, 1-ngày aggregation giữ mãi mãi. InfluxDB có Continuous Queries hoặc Tasks. TimescaleDB có Continuous Aggregates. Automate downsampling!</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Cardinality — Kẻ Thù Số 1</strong>
+            <p>Cardinality = số lượng unique time series. Mỗi combination của metric name + label values = 1 series. <code>http_requests{method="GET", path="/api/users", status="200", server="web-01"}</code> — 4 labels, mỗi label nhiều values = combinatorial explosion. 100 endpoints × 5 methods × 10 status codes × 100 servers = 500,000 series. Prometheus sẽ OOM.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Downsampling — Nghệ Thuật Nén Thời Gian</strong>
+            <p>Raw data 1s → aggregate thành min/max/avg/count mỗi 1 phút. Mất chi tiết nhưng giảm storage 60x. Dùng <code>avg</code> cho trends, <code>max</code> cho peak detection, <code>min</code> cho lows, <code>count</code> cho throughput. Đừng chỉ lưu avg — mất max spike = mất insight quan trọng nhất.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>Prometheus — PromQL Là Sức Mạnh</strong>
+            <p><code>rate(http_requests_total[5m])</code> — request rate trong 5 phút. <code>histogram_quantile(0.99, rate(http_duration_seconds_bucket[5m]))</code> — P99 latency. <code>predict_linear(disk_free_bytes[1h], 4*3600)</code> — dự đoán disk sẽ đầy sau 4 tiếng. PromQL powerful nhưng learning curve dốc.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>Long-term Storage — Prometheus Không Phải Kho Dài Hạn</strong>
+            <p>Prometheus local storage giữ 15 ngày mặc định. Cần long-term? Dùng remote write đến: Thanos, Cortex, hoặc VictoriaMetrics. Thanos sidecar + S3 = lưu trữ vô hạn với chi phí thấp. VictoriaMetrics đơn giản hơn, performance tốt, single binary.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">💥 Chuyện 1: Cardinality Explosion — Prometheus OOM Vì 1 Label</div>
+            <p>Dev thêm label <code>user_id</code> vào metric <code>http_requests_total</code>. <em>"Để biết mỗi user request bao nhiêu lần"</em> — anh giải thích. Hệ thống có 2 triệu users. Mỗi user tạo 1 time series. Prometheus memory tăng từ 4GB lên 60GB trong 2 giờ. OOM kill. Monitoring system... chết. Không ai biết gì đang xảy ra với hệ thống.</p>
+            <p>Khi monitoring chết, mọi thứ mù. Lão phải restart Prometheus với flag <code>--storage.tsdb.wal-compression</code>, xóa old data, và remove cái label user_id. Từ đó, lão có câu thần chú: <em>"KHÔNG BAO GIỜ dùng high-cardinality value làm label."</em></p>
+            <div class="lesson">💡 Bài học: Labels trong Prometheus phải có bounded cardinality. user_id, email, request_id, session_id = KHÔNG BAO GIỜ dùng làm label. Dùng logs hoặc tracing cho per-user tracking. Monitor cardinality bằng <code>prometheus_tsdb_head_series</code>.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">📈 Chuyện 2: Storage Costs Xoắn Ốc</div>
+            <p>IoT platform, 50,000 devices gửi data mỗi giây. InfluxDB trên SSD 1TB. Tháng đầu: dùng 50GB. Tháng 2: 150GB. Tháng 3: 300GB. Tháng 4: <em>"Ủa, disk sắp hết rồi?"</em></p>
+            <p>Điều tra: không set retention policy. Mọi data point từ ngày đầu vẫn còn nguyên ở raw resolution (1 second). 50,000 × 1/s × 86,400 = 4.3 tỷ data points/ngày. Lão setup retention: raw data 7 ngày, 1-min avg 90 ngày, 1-hour avg 2 năm. Storage giảm từ 300GB xuống 40GB. Disk usage ổn định.</p>
+            <div class="lesson">💡 Bài học: Time-series data tăng trưởng tuyến tính theo thời gian. PHẢI có retention policy và downsampling strategy từ ngày đầu. Tính trước storage needed: data_points/second × bytes_per_point × seconds_to_retain.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔍 Chuyện 3: Prometheus vs InfluxDB — Cuộc Chiến Triết Học</div>
+            <p>Team DevOps muốn Prometheus (pull model, Kubernetes-native). Team IoT muốn InfluxDB (push model, flexible schema). Meeting kéo dài 3 giờ. Cuối cùng lão phải đứng lên: <em>"Cả hai đều đúng, vì use case khác nhau!"</em></p>
+            <p>Prometheus cho infrastructure monitoring: pull model tự nhiên với service discovery, PromQL mạnh, Alertmanager tích hợp. InfluxDB cho IoT/application metrics: push model phù hợp khi devices behind NAT, schema flexible hơn, SQL-like query dễ học hơn.</p>
+            <p>Kết quả: dùng cả hai. Prometheus cho infra, InfluxDB cho IoT. Grafana dashboard gộp cả hai data sources. Mọi người hạnh phúc. Trừ lão — phải maintain 2 systems.</p>
+            <div class="lesson">💡 Bài học: Pull vs Push không phải đúng vs sai — là phù hợp vs không phù hợp. Prometheus pull tốt cho infra monitoring. Push tốt cho IoT/edge devices. Có thể dùng cả hai với Grafana unified dashboards.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake">
+            <strong>❌ Dùng RDBMS cho time-series data</strong>
+            <p>INSERT 100,000 rows/giây vào PostgreSQL không có partitioning hay TimescaleDB extension? Database sẽ chậm dần, index bloat, vacuum chạy mãi. Dùng đúng tool cho đúng việc.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ High-cardinality labels trong Prometheus</strong>
+            <p>user_id, pod_id (ephemeral), trace_id làm labels. Series count tăng vô tận. Prometheus OOM. Quy tắc: nếu label có > 100 unique values, không nên là label.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không set retention policy</strong>
+            <p>"Lưu hết, biết đâu cần" — rồi disk đầy, không tiền mua thêm. Raw data 1-second resolution giữ 3 năm = tốn tiền vô lý khi không ai query data cũ hơn 1 tuần ở raw resolution.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Query toàn bộ time range</strong>
+            <p>Dashboard mặc định hiển thị "All time" thay vì "Last 1 hour". Mỗi lần mở dashboard = scan 1 năm data = chậm kinh hoàng. Set reasonable default time range.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Chỉ lưu average, bỏ qua percentiles</strong>
+            <p>Average latency 50ms nghe ổn. Nhưng P99 là 5 giây — 1% users chờ 100x lâu hơn. Luôn track P50, P90, P99. Histograms trong Prometheus, percentile functions trong InfluxDB.</p>
+        </div>
+        <div class="mistake">
+            <strong>❌ Không backup time-series database</strong>
+            <p>"Monitoring data mất thì thôi, không quan trọng" — cho đến khi cần chứng minh SLA uptime cho khách hàng, hoặc investigate incident xảy ra 2 tuần trước. Backup matter.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="name">⏰ Thời Gian Sử Gia — Đinh Mỗi Giây</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"Thời gian không chờ ai, nhưng time-series database ghi lại mọi khoảnh khắc nó đi qua."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

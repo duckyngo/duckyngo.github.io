@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 4: "Đố Ai?" — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#F39C12 0%,var(--navy) 50%,#27AE60 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #F39C12;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0;}
+  .col-card{background:white;border-radius:14px;padding:28px;box-shadow:var(--shadow);}
+  .col-card.measurable{border-top:5px solid var(--orange);}
+  .col-card.immeasurable{border-top:5px solid var(--navy);}
+  .col-card h3{font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .col-card ul{list-style:none;}
+  .col-card li{padding:7px 0;font-size:0.9rem;color:#555;display:flex;gap:8px;border-bottom:1px solid #EEE;}
+  .col-card li:last-child{border-bottom:none;}
+  .col-card li::before{content:'→';color:var(--orange);font-weight:700;}
+  .col-card.immeasurable li::before{content:'→';color:var(--navy);}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .story-box{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:16px;padding:32px;margin:32px 0;border:2px solid var(--gold);}
+  .story-box h3{color:var(--navy);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .story-box p{font-size:0.95rem;line-height:1.8;color:#444;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-03.html" class="nav-btn">← Chương 3</a>
+    <a href="chuong-05.html" class="nav-btn">Chương 5 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🎵 Chương 4</div>
+  <span class="hero-emoji">🎭</span>
+  <h1>"Đố Ai?" — <span>Ca Dao và Triết Lý</span></h1>
+  <p class="hero-sub">Có thứ đo được. Có thứ không đo được. Nhưng cả hai đều quan trọng — và đây là điều KPI không bao giờ nói cho bạn biết.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Chương này lấy cảm hứng từ câu ca dao "Đố ai đếm được lá rừng..." — có những thứ không đo đếm được nhưng lại là linh hồn của mọi tổ chức. GS. Phan Văn Trường phê phán văn hóa lạm dụng KPI và chỉ ra rằng quản trị đích thực đòi hỏi sự khôn ngoan, không chỉ con số.
+  </div>
+
+  <div class="cards-title">⚖️ Có Thể Đo vs Không Thể Đo</div>
+  <div class="two-col">
+    <div class="col-card measurable">
+      <h3>📊 Đo được (Quản lý)</h3>
+      <ul>
+        <li>Doanh thu, lợi nhuận</li>
+        <li>Số lượng sản phẩm</li>
+        <li>Tỷ lệ lỗi, năng suất</li>
+        <li>Điểm KPI cá nhân</li>
+        <li>Thời gian hoàn thành</li>
+        <li>Chi phí vận hành</li>
+      </ul>
+    </div>
+    <div class="col-card immeasurable">
+      <h3>🌟 Không đo được (Quản trị)</h3>
+      <ul>
+        <li>Lòng trung thành của nhân viên</li>
+        <li>Niềm tin của khách hàng</li>
+        <li>Văn hóa doanh nghiệp</li>
+        <li>Uy tín thương hiệu</li>
+        <li>Tinh thần đội ngũ</li>
+        <li>Khả năng đổi mới sáng tạo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>📖 Câu Chuyện: "Monsieur Claude" và Bẫy KPI</h3>
+    <p>
+      GS. Phan Văn Trường kể về "Monsieur Claude" — một giám đốc giỏi tối ưu hóa mọi chỉ số KPI.
+      Doanh thu tăng, chi phí giảm, báo cáo đẹp như mơ. Nhưng điều gì đó trong công ty đang chết dần.
+      Những nhân viên giỏi nhất lần lượt ra đi. Khách hàng trung thành dần thưa vắng. Văn hóa sáng tạo
+      biến mất. KPI đẹp — nhưng tổ chức đang <em>rỗng ruột</em>. Monsieur Claude đang quản lý rất giỏi
+      nhưng quản trị rất tệ.
+    </p>
+  </div>
+
+  <div class="cards-title">🔑 Những Điểm Cốt Lõi</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">📏</div>
+      <div class="card-num">01</div>
+      <h3>KPI không phải thần thánh</h3>
+      <p>KPI là công cụ, không phải mục tiêu. Khi bạn tối ưu hóa chỉ số đo được, bạn có thể đang phá hủy những gì không đo được.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🎵</div>
+      <div class="card-num">02</div>
+      <h3>Trí tuệ Ca dao Việt Nam</h3>
+      <p>"Đố ai đếm được lá rừng" — dân gian đã biết từ lâu rằng có những thứ quan trọng nhất lại là những thứ không đếm được.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🧠</div>
+      <div class="card-num">03</div>
+      <h3>Quản trị cần sự khôn ngoan</h3>
+      <p>Không thể quản trị chỉ bằng dữ liệu. Cần phán đoán, kinh nghiệm, và khả năng nhận biết những tín hiệu mà số liệu không nói được.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">⚠️</div>
+      <div class="card-num">04</div>
+      <h3>Nguy hiểm của "đo được = quan trọng"</h3>
+      <p>Tư duy chỉ chú ý đến những gì đo được sẽ dần dần xói mòn những giá trị vô hình nhưng thiết yếu của tổ chức.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Không phải cứ đo được thì quan trọng,<br>và không phải không đo được thì không quan trọng."</p>
+    <cite>— Nguyên tắc quản trị của GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Cạm bẫy phổ biến nhất ở Việt Nam hiện nay:</strong> Các công ty đổ tiền vào hệ thống đánh giá KPI phức tạp, nhưng bỏ qua sự gắn kết của nhân viên, niềm tin của khách hàng, và văn hóa đổi mới. Kết quả: báo cáo đẹp, nhưng tổ chức trì trệ.
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Albert Einstein đã nói:</strong> "Not everything that counts can be counted, and not everything that can be counted counts." Đây là một trong những câu nói kinh điển nhất về giới hạn của tư duy định lượng trong quản trị.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>KPI là công cụ hữu ích nhưng nguy hiểm nếu trở thành mục tiêu thay vì phương tiện đo lường.</li>
+      <li>Những thứ quan trọng nhất trong tổ chức — văn hóa, niềm tin, sáng tạo — thường không thể đo được.</li>
+      <li>Lãnh đạo giỏi cần cân bằng giữa dữ liệu định lượng và phán đoán định tính.</li>
+      <li>Câu chuyện "Monsieur Claude" là lời cảnh báo: đừng để KPI đẹp che khuất sự rỗng ruột bên trong.</li>
+      <li>Ca dao và triết học dân gian Việt Nam chứa đựng trí tuệ quản trị sâu sắc — đừng xem thường.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-03.html" class="bnav-btn">← Chương 3</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-05.html" class="bnav-btn next">Chương 5: Văn hóa doanh nghiệp →</a>
+  </div>
+</div>
+
+</body>
+</html>

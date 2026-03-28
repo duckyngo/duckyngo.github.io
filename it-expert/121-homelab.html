@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Phòng Thí Nghiệm Tại Gia Đại Sư - Chuyên Gia TrueNAS, Unraid & Self-Hosted</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a0a0a 30%, #1a0a0a 60%, #1a1a0a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #f59e0b; text-shadow: 0 0 20px #f59e0b40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #f59e0b; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #f59e0b; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #f59e0b; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f59e0b30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #f59e0b; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #f59e0b; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🏠</span><h1>Phòng Thí Nghiệm Tại Gia Đại Sư</h1><div class="title">Chuyên Gia TrueNAS, Unraid & Self-Hosted</div><div class="quote">"Homelab: nơi bạn chi $5000 cho phần cứng để host services mà bạn có thể dùng miễn phí trên cloud. Nhưng QUYỀN RIÊNG TƯ và niềm vui thì vô giá."</div></div>
+        <div class="badges">            <span class="badge">🏠 Homelab Builder</span>
+            <span class="badge">🗄️ TrueNAS/ZFS</span>
+            <span class="badge">🟠 Unraid</span>
+            <span class="badge">🐳 Self-Hosted</span>
+            <span class="badge">🔒 Privacy</span>
+            <span class="badge">⚡ Low Power</span>
+            <span class="badge">📡 Networking</span>
+            <span class="badge">🔄 Automation</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Phòng Thí Nghiệm Tại Gia Đại Sư bắt đầu với 1 Raspberry Pi chạy Pi-hole. "Wow, tôi block ads cho cả nhà!" Rồi chàng ta thêm Pi thứ 2 cho Home Assistant. Rồi mua Dell Optiplex mini PC cho Docker. Rồi tìm được Dell R720 trên eBay giá $200. Rồi rack server. Rồi UPS. Rồi managed switch. Rồi 10Gbps networking.</p><p>Vợ hỏi: "Tại sao phòng chứa đồ giờ nóng như lò nướng và tiền điện tăng gấp đôi?" Chàng ta trả lời: "Em ơi, đó là lab — nơi anh học hỏi, phát triển, và tự host mọi thứ thay vì phụ thuộc big tech." Vợ: "Vậy tại sao Netflix vẫn buffer?"</p><p>Giờ chàng ta chạy: Proxmox cluster 5 nodes (phần vì học, phần vì bệnh), TrueNAS cho storage, 50+ Docker containers, VPN, monitoring, media server, và smart home automation. Tiền điện tháng: $150. Niềm vui: vô giá. Knowledge gained: invaluable cho career.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Hardware Selection:</strong> Mini PCs (Intel NUC, Dell Optiplex Micro): low power (15-35W), quiet, affordable. Used enterprise servers (Dell R720, HP DL380): powerful, cheap, LOUD, power-hungry. Raspberry Pi: $35-80, perfect cho lightweight services. Build philosophy: start small (Pi + old PC), grow as needed. Power consumption matters: 200W server × 24/7 × $0.12/kWh = $210/năm.</div>
+            <div class="tip"><strong>2. ZFS — Data Integrity:</strong> Copy-on-write filesystem. Checksums detect silent data corruption (bit rot). Snapshots: instant, space-efficient. Compression: LZ4 (fast), ZSTD (better ratio). RAID levels: mirror (RAID 1), RAIDZ1 (RAID 5), RAIDZ2 (RAID 6). ECC RAM recommended (not required but helps). ARC cache in RAM. Pool degraded? Replace drive ASAP. NEVER use RAIDZ1 with drives > 4TB.</div>
+            <div class="tip"><strong>3. Self-Hosted Services:</strong> Media: Jellyfin/Plex, *arr stack (Sonarr, Radarr, Prowlarr). Productivity: Nextcloud, Paperless-ngx, Bookstack. Smart Home: Home Assistant, Node-RED. Network: Pi-hole/AdGuard, WireGuard VPN. Monitoring: Grafana + Prometheus. Reverse proxy: Traefik/Nginx Proxy Manager. Docker Compose cho deployment.</div>
+            <div class="tip"><strong>4. Backup Strategy 3-2-1:</strong> 3 copies: original + 2 backups. 2 different media: SSD + HDD, or HDD + cloud. 1 offsite: cloud backup (Backblaze B2, rclone to GCS/S3). Test restore regularly. ZFS snapshots cho quick recovery. Proxmox Backup Server cho VM backups. Duplicati/Restic cho file backups.</div>
+            <div class="tip"><strong>5. Networking:</strong> VLAN separation: management, servers, IoT, guests. Firewall rules between VLANs. DNS: Pi-hole/AdGuard Home cho ad blocking. Reverse proxy: SSL termination, domain routing. WireGuard/Tailscale cho remote access. 10Gbps between storage and compute nếu budget allows.</div>
+            <div class="tip"><strong>6. Power & Cooling:</strong> UPS bắt buộc: protect against power outages + power surges. APC, CyberPower popular cho homelab. NUT (Network UPS Tools) cho graceful shutdown. Cooling: rack fans, room ventilation. Monitor temps: IPMI, lm-sensors. Heat output substantial cho rack servers — plan accordingly.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔋 Chuyện ZFS Pool Degraded Lúc 2 Giờ Sáng</h3><p>ZFS monitoring alert: pool status DEGRADED. Drive failed. RAIDZ1 pool với 4 × 4TB drives. One drive dead. Data still accessible nhưng NO redundancy — another drive failure = total data loss. 12TB data: family photos 15 năm, documents, media library.</p><p>2am Amazon order: replacement drive, next-day delivery. 24 giờ anxiety: mỗi click sound từ remaining drives = heart attack. Drive arrives, resilver takes 18 giờ. Pool healthy again. Immediately order cold spare drive. Setup Backblaze B2 cloud backup. Never again.</p><div class="lesson">💡 Bài học: RAIDZ1 với large drives = risky (resilver time long, URE during resilver possible). RAIDZ2 cho drives > 4TB. Cold spare drives ready. Offsite backup BEFORE you need it. ZFS monitoring alerts essential. 3-2-1 backup: ZFS snapshots + local backup + cloud backup.</div></div>
+            <div class="story"><h3>⚡ Chuyện Power Outage Kills Array</h3><p>Power outage midnight. No UPS. Rack server, NAS, networking — all hard shutdown. Power returns 2 giờ later. NAS boots: 1 drive không spin up. BTRFS array degraded. Another drive: filesystem errors. Data recovery: partially successful. Some files corrupted.</p><p>Đại Sư buy UPS same week: APC 1500VA. NUT configured: low battery → graceful shutdown all VMs → shutdown NAS → shutdown hosts. Power outage next month: UPS kicks in, 15 phút battery, graceful shutdown at 5 phút remaining. Zero data loss.</p><div class="lesson">💡 Bài học: UPS is NOT optional cho homelab với important data. Hard power loss = filesystem corruption risk, drive failure risk. APC/CyberPower 1500VA sufficient cho most homelabs. NUT cho automated graceful shutdown. Test UPS regularly (NUT: upsmon). Battery replacement every 3-5 years.</div></div>
+            <div class="story"><h3>🐳 Chuyện Self-Hosted Stack</h3><p>Đại Sư self-host: Nextcloud (Google Drive replacement), Bitwarden/Vaultwarden (password manager), Immich (Google Photos replacement), Paperless-ngx (document management), Jellyfin (Netflix replacement). Total cloud cost replaced: $50/tháng. Homelab power cost: $30/tháng. Net savings: $20/tháng.</p><p>But real value: DATA OWNERSHIP. No Google scanning photos. No cloud provider locking account. No subscription price increases. Full control. 'My data, my rules,' Đại Sư tuyên bố.</p><div class="lesson">💡 Bài học: Self-hosting saves money AND provides privacy/control. BUT requires maintenance time và knowledge. Start with easy services: Pi-hole, Nextcloud. Docker Compose cho deployment consistency. Backup CRITICAL cho self-hosted — you are the SRE now. Community support (r/selfhosted, r/homelab) invaluable.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. No backup:</strong> Self-hosted data without backup. Drive dies = data gone forever. 3-2-1 backup rule. Cloud backup cho offsite.</div>
+            <div class="mistake"><strong>2. No UPS:</strong> Power outage = hard shutdown = data corruption risk. UPS + NUT = graceful shutdown. Non-negotiable.</div>
+            <div class="mistake"><strong>3. Enterprise server as first homelab:</strong> Dell R720: 500W idle, jet engine noise. Start with mini PCs or Raspberry Pi. Enterprise servers for dedicated space only.</div>
+            <div class="mistake"><strong>4. Exposing services to internet:</strong> Port forwarding without firewall, VPN, or reverse proxy. Use Cloudflare Tunnel, WireGuard, Tailscale for safe remote access.</div>
+            <div class="mistake"><strong>5. RAID without backup:</strong> RAID ≠ backup. RAID protects against drive failure. Backup protects against: user error, ransomware, fire, theft. Both needed.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #121</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

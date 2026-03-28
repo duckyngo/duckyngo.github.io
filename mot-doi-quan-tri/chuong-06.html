@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 6: Khám và chữa bệnh DN — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#C0392B 0%,var(--navy) 50%,#8E44AD 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #C0392B;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .diseases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:28px 0;}
+  .disease-card{background:white;border-radius:12px;padding:22px;box-shadow:var(--shadow);border-left:5px solid #C0392B;transition:transform 0.2s;}
+  .disease-card:nth-child(2){border-left-color:#E67E22;}
+  .disease-card:nth-child(3){border-left-color:#F39C12;}
+  .disease-card:nth-child(4){border-left-color:#8E44AD;}
+  .disease-card:nth-child(5){border-left-color:#2980B9;}
+  .disease-card:nth-child(6){border-left-color:#C0392B;}
+  .disease-card:nth-child(7){border-left-color:#27AE60;}
+  .disease-card:hover{transform:translateY(-4px);}
+  .disease-icon{font-size:1.8rem;margin-bottom:8px;}
+  .disease-name{font-size:0.95rem;font-weight:800;color:var(--navy);margin-bottom:6px;}
+  .disease-desc{font-size:0.82rem;color:#666;line-height:1.5;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-05.html" class="nav-btn">← Chương 5</a>
+    <a href="chuong-07.html" class="nav-btn">Chương 7 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🏥 Chương 6</div>
+  <span class="hero-emoji">🩺</span>
+  <h1>Khám và Chữa Bệnh <span>Trong Doanh Nghiệp</span></h1>
+  <p class="hero-sub">Mỗi công ty đều có bệnh. Lãnh đạo giỏi là bác sĩ — chẩn đoán đúng trước khi kê đơn.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Doanh nghiệp cũng như cơ thể người — có thể bệnh nhẹ, bệnh nặng, bệnh mãn tính hay bệnh cấp tính. GS. Phan Văn Trường phân tích 7 căn bệnh phổ biến nhất trong tổ chức và đề ra nguyên tắc: lãnh đạo phải như bác sĩ giỏi — chẩn đoán chính xác trước khi điều trị.
+  </div>
+
+  <div class="cards-title">🦠 7 Căn Bệnh Nguy Hiểm Của Tổ Chức</div>
+  <div class="diseases-grid">
+    <div class="disease-card">
+      <div class="disease-icon">😴</div>
+      <div class="disease-name">1. Thiếu động lực</div>
+      <div class="disease-desc">Nhân viên đến làm vì lương, không vì đam mê. Tổ chức chạy nhưng không có lửa.</div>
+    </div>
+    <div class="disease-card">
+      <div class="disease-icon">⚔️</div>
+      <div class="disease-name">2. Nội loạn</div>
+      <div class="disease-desc">Xung đột nội bộ ngầm, không bao giờ được giải quyết thẳng thắn.</div>
+    </div>
+    <div class="disease-card">
+      <div class="disease-icon">👥</div>
+      <div class="disease-name">3. Bè phái</div>
+      <div class="disease-desc">Nhóm này chống nhóm kia, quyền lợi cá nhân trên quyền lợi tổ chức.</div>
+    </div>
+    <div class="disease-card">
+      <div class="disease-icon">💰</div>
+      <div class="disease-name">4. Tham nhũng nội bộ</div>
+      <div class="disease-desc">Lạm dụng quyền lực, mua bán ảnh hưởng trong nội bộ tổ chức.</div>
+    </div>
+    <div class="disease-card">
+      <div class="disease-icon">🙈</div>
+      <div class="disease-name">5. Thiếu minh bạch</div>
+      <div class="disease-desc">Thông tin bị giữ lại, quyết định trong bóng tối, nhân viên không hiểu tại sao.</div>
+    </div>
+    <div class="disease-card">
+      <div class="disease-icon">🔄</div>
+      <div class="disease-name">6. Tư duy ngắn hạn</div>
+      <div class="disease-desc">Chạy theo quý, chạy theo năm — quên mất hướng đi dài hạn của tổ chức.</div>
+    </div>
+    <div class="disease-card">
+      <div class="disease-icon">🚫</div>
+      <div class="disease-name">7. Sợ thay đổi</div>
+      <div class="disease-desc">Tổ chức bảo thủ, không dám đổi mới, chống lại mọi sự thay đổi cần thiết.</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Triết Lý Chẩn Đoán và Điều Trị</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🩺</div>
+      <div class="card-num">01</div>
+      <h3>Chẩn đoán trước — điều trị sau</h3>
+      <p>Bác sĩ giỏi không kê đơn trước khi khám. Lãnh đạo giỏi cũng không đưa ra giải pháp trước khi hiểu rõ bệnh.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🔍</div>
+      <div class="card-num">02</div>
+      <h3>Triệu chứng ≠ Nguyên nhân</h3>
+      <p>Năng suất thấp là triệu chứng. Nguyên nhân có thể là văn hóa, lãnh đạo, hay hệ thống — đừng chữa nhầm chỗ.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">⏱️</div>
+      <div class="card-num">03</div>
+      <h3>Bệnh nặng cần điều trị mạnh</h3>
+      <p>Không phải mọi bệnh đều chữa được bằng "nhẹ nhàng". Đôi khi cần quyết định khó khăn và dứt khoát.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🤝</div>
+      <div class="card-num">04</div>
+      <h3>Tư vấn cần kinh nghiệm thực chiến</h3>
+      <p>Người tư vấn chưa từng lãnh đạo tổ chức thật sự chỉ có lý thuyết. Thực tế đòi hỏi nhiều hơn thế.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Nhà tư vấn giỏi phải có vết thương trên tay —<br>không phải chỉ có slide PowerPoint."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Cạm bẫy tư vấn quản trị:</strong> Nhiều consultant lấy framework từ Harvard Business Review áp vào thực tế Việt Nam mà không điều chỉnh. Kết quả là giải pháp đẹp trên giấy nhưng không hiệu quả trong thực tế văn hóa và con người cụ thể.
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Phòng bệnh hơn chữa bệnh:</strong> Xây dựng văn hóa minh bạch, tạo môi trường nói thẳng, và xử lý sớm các dấu hiệu bất ổn — đây là cách tốt nhất để không bao giờ phải "chữa bệnh" lớn.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>7 căn bệnh phổ biến: thiếu động lực, nội loạn, bè phái, tham nhũng, thiếu minh bạch, tư duy ngắn hạn, sợ thay đổi.</li>
+      <li>Chẩn đoán chính xác là bước quan trọng nhất — chữa sai bệnh có thể còn tệ hơn không chữa.</li>
+      <li>Lãnh đạo là bác sĩ, không phải nhà thuốc — cần hiểu sâu trước khi kê đơn.</li>
+      <li>Tư vấn giỏi cần kinh nghiệm thực chiến, không chỉ lý thuyết từ sách vở.</li>
+      <li>Phòng bệnh (xây văn hóa tốt) luôn tốt hơn chữa bệnh (can thiệp khi đã trầm trọng).</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-05.html" class="bnav-btn">← Chương 5</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-07.html" class="bnav-btn next">Chương 7: Gia nhập và chia tay →</a>
+  </div>
+</div>
+
+</body>
+</html>

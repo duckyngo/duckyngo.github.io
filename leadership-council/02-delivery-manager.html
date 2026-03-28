@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarah "Nhạc Trưởng" Kim — Cố Vấn Lãnh Đạo</title>
+    <style>
+        :root {
+            --dark: #1a1a2e;
+            --gold: #f6c744;
+            --teal: #00b4d8;
+            --sage: #52b788;
+            --rose: #e63946;
+            --agent-gradient: linear-gradient(135deg, #f72585, #7209b7);
+            --agent-primary: #f72585;
+            --agent-dark: #7209b7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(246, 199, 68, 0.15);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.3s;
+        }
+
+        .nav-back:hover { opacity: 0.7; }
+
+        .nav-agents {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-agents a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .nav-agents a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .nav-agents a.active {
+            background: var(--agent-gradient);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* HERO */
+        .hero {
+            margin-top: 60px;
+            padding: 4rem 2rem 3rem;
+            background: var(--agent-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--dark));
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero .role {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0,0,0,0.3);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            max-width: 700px;
+            margin: 0 auto;
+            font-style: italic;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-quote::before { content: '\201C'; font-size: 3rem; color: var(--gold); position: absolute; left: -25px; top: -15px; }
+
+        /* MAIN CONTENT */
+        .content {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* EXPANDABLE SECTIONS */
+        .section {
+            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            padding: 1.3rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .section-header:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        .section-header .toggle {
+            font-size: 1.5rem;
+            color: var(--gold);
+            transition: transform 0.3s;
+        }
+
+        .section.open .toggle {
+            transform: rotate(45deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .section.open .section-body {
+            max-height: 4000px;
+        }
+
+        .section-inner {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        /* STORY BUBBLES */
+        .story-bubble {
+            border-left: 4px solid var(--agent-primary);
+            background: rgba(247, 37, 133, 0.08);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1rem 0;
+        }
+
+        .story-bubble.gold { border-left-color: var(--gold); background: rgba(246, 199, 68, 0.08); }
+        .story-bubble.rose { border-left-color: var(--rose); background: rgba(230, 57, 70, 0.08); }
+        .story-bubble.teal { border-left-color: var(--teal); background: rgba(0, 180, 216, 0.08); }
+        .story-bubble.sage { border-left-color: var(--sage); background: rgba(82, 183, 136, 0.08); }
+
+        .story-bubble .speaker {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .story-bubble p {
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+
+        /* TYPOGRAPHY */
+        .section-inner h3 {
+            color: var(--gold);
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.6rem;
+        }
+
+        .section-inner h3:first-child { margin-top: 0; }
+
+        .section-inner p {
+            color: #bbb;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .section-inner strong { color: #fff; }
+
+        .section-inner ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section-inner ul li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        .section-inner ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--agent-primary);
+            font-weight: bold;
+        }
+
+        .mistake-card {
+            background: rgba(230, 57, 70, 0.08);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .mistake-card .mistake-title {
+            color: var(--rose);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .mistake-card p { color: #bbb; font-size: 0.95rem; }
+
+        .highlight-box {
+            background: rgba(246, 199, 68, 0.08);
+            border: 1px solid rgba(246, 199, 68, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .highlight-box p { color: #ddd; }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .signal-card {
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .signal-card.green {
+            background: rgba(82, 183, 136, 0.12);
+            border: 1px solid rgba(82, 183, 136, 0.3);
+        }
+
+        .signal-card.yellow {
+            background: rgba(246, 199, 68, 0.12);
+            border: 1px solid rgba(246, 199, 68, 0.3);
+        }
+
+        .signal-card.red {
+            background: rgba(230, 57, 70, 0.12);
+            border: 1px solid rgba(230, 57, 70, 0.3);
+        }
+
+        .signal-card .signal-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .signal-card h4 { color: #fff; font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .signal-card p { color: #bbb; font-size: 0.82rem; }
+
+        /* DELEGATION LEVELS */
+        .delegation-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .d-level {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .d-level .level-tag {
+            background: var(--agent-gradient);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .d-level .level-text { color: #ccc; font-size: 0.92rem; }
+
+        /* VN-KR LENS */
+        .lens-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .lens-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .lens-card .flag {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lens-card h4 {
+            color: var(--teal);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lens-card p { color: #bbb; font-size: 0.9rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            .hero { padding: 3rem 1.2rem 2.5rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .hero-quote { font-size: 1rem; }
+            .content { padding: 1.5rem 1rem 3rem; }
+            .section-header h2 { font-size: 1.1rem; }
+            .lens-grid { grid-template-columns: 1fr; }
+            .dashboard { grid-template-columns: 1fr; }
+            .nav-agents a { font-size: 0.75rem; padding: 0.25rem 0.6rem; }
+            .top-nav { padding: 0.6rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+    <a href="index.html" class="nav-back">← Về Trang Chính</a>
+    <div class="nav-agents">
+        <a href="01-team-lead.html">Minh</a>
+        <a href="02-delivery-manager.html" class="active">Sarah</a>
+        <a href="03-department-head.html">James</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="avatar">👩‍💼</div>
+    <h1>Sarah "Nhạc Trưởng" Kim</h1>
+    <p class="role">Quản lý Delivery & Engineering · 25 người · 10 năm, 3 quốc gia</p>
+    <div class="badge">🎯 Chiến Lược Gia Dựa Trên Số Liệu</div>
+    <p class="hero-quote">
+        Tôi không tin cảm xúc khi ra quyết định. Tôi tin số liệu. Nhưng đằng sau mỗi con số là một con người — và nếu bạn quên điều đó, số liệu sẽ nói dối bạn.
+    </p>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- 1. BÀI HỌC XƯƠNG MÁU -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>💔 Bài Học Xương Máu</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Cuộc Gọi 10 Giờ Đêm Từ Seoul</h3>
+                <p>Tôi đang quản lý team 25 người giữa Seoul và Đà Nẵng. Client là ngân hàng Hàn Quốc. Một đêm thứ Ba, 10 giờ tối, điện thoại reo. Phó Giám đốc CNTT bên client gọi, giọng lạnh như đá:</p>
+
+                <div class="story-bubble rose">
+                    <div class="speaker">Client nói:</div>
+                    <p>"Tôi vừa xem report. 47 bug chưa fix. Đội của cô đang làm gì vậy?"</p>
+                </div>
+
+                <p>47 bug — nghe khủng khiếp. Nhưng tôi biết 44 trong số đó là cosmetic: font sai, icon lệch 2 pixel, tooltip thiếu dấu chấm. 3 cái thật sự critical đã được ưu tiên.</p>
+
+                <p>Nhưng đó không phải vấn đề. <strong>Vấn đề là tôi đã không kiểm soát narrative.</strong> Tôi để client tự đọc report và tự diễn giải. Với người Hàn Quốc, 47 bug = hỗn loạn.</p>
+
+                <div class="story-bubble gold">
+                    <div class="speaker">Bài học Sarah rút ra:</div>
+                    <p><strong>Stakeholder Hàn Quốc không phản ứng với snapshot — họ phản ứng với trajectory.</strong> Nếu tôi đã gửi trước: "47 bug tổng, 3 critical (sẽ xong thứ 5), 44 cosmetic (plan clear tuần sau), xu hướng giảm 30% so với sprint trước" — cuộc gọi đó đã không xảy ra.</p>
+                </div>
+
+                <h3>Team Việt Nam Và Cái Jira Bị Bỏ Quên</h3>
+                <p>Khi tôi nhận team Đà Nẵng, tôi bắt mọi người dùng Jira. Đúng quy trình. Đúng workflow. 2 tuần sau, Jira trống không. Team vẫn dùng Google Sheet cũ của họ.</p>
+
+                <p>Tôi tức giận. Tôi gọi meeting. Tôi giải thích tại sao Jira tốt hơn. Họ gật đầu. Tuần sau: Jira vẫn trống.</p>
+
+                <div class="story-bubble teal">
+                    <div class="speaker">Sarah nhận ra:</div>
+                    <p>Hệ thống tốt nhất là hệ thống mà người ta thật sự dùng. Tôi đã cố ép một công cụ mà team không thấy giá trị. Cuối cùng tôi thỏa hiệp: giữ Google Sheet, nhưng thêm 3 cột mà tôi cần (status, blocker, ETA). Team happy, tôi có data. <strong>Đôi khi thắng không phải là đúng — mà là hiệu quả.</strong></p>
+                </div>
+
+                <h3>"Bận Rộn" vs "Hiệu Quả" — Cái Tát Từ Sếp Cũ</h3>
+                <p>Tôi từng làm việc 14 tiếng/ngày. Tự hào vì điều đó. Cho đến khi sếp tôi nói một câu mà tôi nhớ đến giờ:</p>
+
+                <div class="story-bubble rose">
+                    <div class="speaker">Sếp cũ của Sarah:</div>
+                    <p><em>"Tôi thấy em làm việc chăm chỉ. Tôi không thấy em làm đúng việc."</em></p>
+                </div>
+
+                <p>Tôi đang làm mọi thứ — review code, viết report, join standup, fix escalation, trả lời Slack — nhưng <strong>không có thứ gì tôi làm mà chỉ tôi mới có thể làm</strong>. Tôi đang bận, nhưng tôi không đang lead.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ĐIỀU BẠN CẦN NGHE NGAY -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🎯 Điều Bạn Cần Nghe Ngay</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Dashboard 3 Tín Hiệu</h3>
+                <p>Anh/chị giờ quản lý tổ chức merged. Không thể nhìn hết mọi thứ. Cần hệ thống tín hiệu sớm:</p>
+
+                <div class="dashboard">
+                    <div class="signal-card green">
+                        <div class="signal-icon">🟢</div>
+                        <h4>Xanh Lá</h4>
+                        <p><strong>Proactive Risk Flagging:</strong> Team lead có chủ động báo risk trước khi thành issue không? Nếu không ai báo risk = không phải không có risk, mà là văn hóa im lặng.</p>
+                    </div>
+                    <div class="signal-card yellow">
+                        <div class="signal-icon">🟡</div>
+                        <h4>Vàng</h4>
+                        <p><strong>Sprint Commitment ±10%:</strong> Team commit 20 points, deliver 18-22 = healthy. Deliver 12 = có vấn đề estimation hoặc blocker ẩn.</p>
+                    </div>
+                    <div class="signal-card red">
+                        <div class="signal-icon">🔴</div>
+                        <h4>Đỏ</h4>
+                        <p><strong>Single-Person Bottleneck:</strong> Nếu một người nghỉ phép và team đứng hình = đang có bus factor = 1. Cực kỳ nguy hiểm.</p>
+                    </div>
+                </div>
+
+                <h3>4 Cấp Độ Ủy Quyền</h3>
+                <p>Không phải mọi task đều cần cùng một mức kiểm soát. Hãy nói rõ cho team biết anh/chị đang giao ở level nào:</p>
+
+                <div class="delegation-levels">
+                    <div class="d-level">
+                        <span class="level-tag">L1</span>
+                        <span class="level-text"><strong>"Làm đúng thế này"</strong> — Tôi chỉ chính xác cách làm. Dùng cho task critical, team mới, risk cao.</span>
+                    </div>
+                    <div class="d-level">
+                        <span class="level-tag">L2</span>
+                        <span class="level-text"><strong>"Nghiên cứu và đề xuất"</strong> — Em tìm hiểu, đưa 2-3 options, tôi quyết. Dùng khi cần input nhưng tôi giữ quyền quyết.</span>
+                    </div>
+                    <div class="d-level">
+                        <span class="level-tag">L3</span>
+                        <span class="level-text"><strong>"Quyết và báo lại"</strong> — Em tự quyết, chỉ cần cho tôi biết. Dùng cho người tôi tin, task medium risk.</span>
+                    </div>
+                    <div class="d-level">
+                        <span class="level-tag">L4</span>
+                        <span class="level-text"><strong>"Tự xử, báo khi cháy"</strong> — Full autonomy. Chỉ escalate khi vượt ngoài tầm kiểm soát. Dùng cho senior lead đã chứng minh.</span>
+                    </div>
+                </div>
+
+                <h3>Sau Sáp Nhập: Đừng Ép Thống Nhất Công Cụ</h3>
+                <div class="highlight-box">
+                    <p><strong>Team cũ dùng Jira, team của WICHO dùng Azure DevOps?</strong> Đừng vội ép một bên đổi. Align trên outcome — mỗi tuần tôi cần: tiến độ, risk, blocker, ETA. Công cụ nào đạt được điều đó thì dùng. Ép đổi tool trong tháng đầu merger = tạo thêm kẻ thù không cần thiết.</p>
+                </div>
+
+                <h3>Xây "Bộ Não Thứ Hai"</h3>
+                <p>Anh/chị cần 2-3 người tin tưởng rải khắp tổ chức merged — không phải để spy, mà để có góc nhìn thật:</p>
+                <ul>
+                    <li>1 người từ team cũ — biết văn hóa và lịch sử anh/chị</li>
+                    <li>1 người từ team WICHO — cho anh/chị perspective bên kia</li>
+                    <li>1 người ở level khác (PM, QA, ops) — nhìn blind spots anh/chị không có</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SAI LẦM CẦN TRÁNH -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>⚠️ Sai Lầm Cần Tránh</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #1: Giữ Người Toxic Quá Lâu</div>
+                    <p>Tôi từng có một senior dev — giỏi kỹ thuật nhưng toxic. Phá hoại meeting, chê đồng nghiệp, tạo bầu không khí sợ hãi. Tôi giữ anh ta 8 tháng vì "anh ta giỏi quá, không thể mất." Khi cuối cùng anh ta ra đi, team velocity <strong>tăng 20% trong sprint đầu tiên</strong>. Tôi đã tốn 8 tháng để hiểu: <em>một người giỏi mà phá team morale thì đang làm team yếu đi, không phải mạnh lên.</em></p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #2: Báo Cáo Không Có Narrative</div>
+                    <p>Số liệu mà không có câu chuyện = client tự viết câu chuyện. Và câu chuyện họ tự viết luôn tệ hơn thực tế. Mỗi khi gửi report cho stakeholder Hàn Quốc, <strong>luôn theo format: Tình trạng → Rủi ro → Kế hoạch → Đề xuất</strong> (Status → Risk → Plan → Ask). Đừng bao giờ gửi số liệu trơn.</p>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-title">Sai Lầm #3: Bypass Team Lead</div>
+                    <p>Khi tôi mới lên Delivery Manager, tôi vẫn hay nhắn trực tiếp dev để hỏi status. Nhanh hơn, chính xác hơn — tôi nghĩ vậy. Nhưng điều tôi thật sự làm là: <strong>phá uy tín team lead trước mặt team của họ</strong>. Dev nghĩ: "Lead mình không quan trọng, sếp lớn hỏi thẳng mình." Lead nghĩ: "Sếp không tin mình." Từ đó tôi chỉ đi qua team lead, kể cả khi chậm hơn. Đó là đầu tư vào con người, không phải lãng phí thời gian.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. CÂU CHUYỆN THỰC TẾ -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>📖 Câu Chuyện Thực Tế</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <h3>Khi Dev Giỏi Nhất Trở Thành Nút Thắt Cổ Chai</h3>
+
+                <p>Team Đà Nẵng có Tuấn — senior dev, 7 năm kinh nghiệm, viết code đẹp như thơ. Mọi người hỏi ý kiến Tuấn trước khi code. Mọi PR phải qua Tuấn review. Tuấn là "single source of truth."</p>
+
+                <div class="story-bubble">
+                    <div class="speaker">Vấn đề:</div>
+                    <p>Tuấn nghỉ phép 1 tuần đi Đà Lạt. Team đứng hình. 14 PR pending review. 3 dev ngồi chờ vì "không chắc technical direction." Sprint fail.</p>
+                </div>
+
+                <p>Khi Tuấn quay lại, tôi không trách Tuấn. Tôi trách mình. <strong>Tôi đã để một người trở thành single point of failure</strong> — và gọi đó là "expert ownership."</p>
+
+                <div class="story-bubble gold">
+                    <div class="speaker">Cách Sarah sửa:</div>
+                    <p>Tôi tạo "buddy system": mỗi module phải có ít nhất 2 người hiểu sâu. Tuấn ghét — anh ấy thấy đang bị "loãng" quyền lực. Nhưng sau 2 tháng, anh ấy nhận ra: bây giờ anh ấy có thể nghỉ phép thật sự mà không bị gọi. Và điều đó — tự do — giá trị hơn quyền lực.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Cho anh/chị:</strong> Sau merger, kiểm tra ngay: có ai là single point of failure ở cả hai team không? Đó là quả bom hẹn giờ. Một người giỏi nghỉ việc = cả mảng sụp đổ. Xây backup plan trước khi cần nó.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GÓC NHÌN VN-HQ -->
+    <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>🌏 Góc Nhìn Việt Nam - Hàn Quốc</h2>
+            <span class="toggle">+</span>
+        </div>
+        <div class="section-body">
+            <div class="section-inner">
+                <div class="lens-grid">
+                    <div class="lens-card">
+                        <div class="flag">🇻🇳</div>
+                        <h4>Quản Lý Team Việt Nam</h4>
+                        <p><strong>Đầu tư vào relationship với team lead.</strong> Ở Việt Nam, team lead là cầu nối duy nhất giữa anh/chị và thực tế. Nếu team lead không tin anh/chị, họ sẽ filter thông tin — không phải để hại, mà vì họ sợ.</p>
+                        <p style="margin-top: 0.8rem;">Mỗi tuần, dành 30 phút 1-on-1 với mỗi team lead. Không hỏi status — hỏi: <em>"Em đang lo gì nhất?"</em> và <em>"Có gì anh/chị cần biết mà chưa biết?"</em></p>
+                    </div>
+                    <div class="lens-card">
+                        <div class="flag">🇰🇷</div>
+                        <h4>Quản Lý Stakeholder Hàn Quốc</h4>
+                        <p><strong>Luôn có số.</strong> Người Hàn Quốc tôn trọng sự chuẩn bị. Đi vào meeting mà không có data = bạn không nghiêm túc.</p>
+                        <p style="margin-top: 0.8rem;">Format báo cáo chuẩn:</p>
+                        <ul style="margin-top: 0.5rem; padding-left: 1rem;">
+                            <li style="color: #bbb; font-size: 0.9rem;"><strong>Status:</strong> Đang ở đâu (số liệu)</li>
+                            <li style="color: #bbb; font-size: 0.9rem;"><strong>Risk:</strong> Rủi ro gì (cụ thể)</li>
+                            <li style="color: #bbb; font-size: 0.9rem;"><strong>Plan:</strong> Kế hoạch xử lý (timeline)</li>
+                            <li style="color: #bbb; font-size: 0.9rem;"><strong>Ask:</strong> Cần gì từ họ (rõ ràng)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="story-bubble sage">
+                    <div class="speaker">Sarah gửi lời cuối:</div>
+                    <p>Anh/chị đang ở giao điểm giữa kỹ thuật và lãnh đạo. Tôi từng ở đó. Điều khó nhất không phải là học kỹ năng mới — mà là buông bỏ thứ đã khiến mình thành công. Code giỏi đưa anh/chị đến đây. Nhưng nó sẽ không đưa anh/chị đến bước tiếp theo. Hãy để người khác code. Việc của anh/chị bây giờ là: nhìn xa, xây hệ thống, và phát triển con người. Đo lường mọi thứ. Tin vào data. Nhưng đừng quên — phía sau mỗi data point là một con người đang cố gắng hết sức.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleSection(header) {
+        const section = header.parentElement;
+        section.classList.toggle('open');
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.section').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

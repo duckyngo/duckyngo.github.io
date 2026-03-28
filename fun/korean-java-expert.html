@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김개발 — Huyền Thoại Java Xứ Hàn: Toàn Bộ Câu Chuyện</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: #1a1a2e;
+  --bg-code: #16213e;
+  --accent-blue: #4fc3f7;
+  --accent-gold: #ffd54f;
+  --accent-pink: #f48fb1;
+  --accent-green: #81c784;
+  --accent-orange: #ffb74d;
+  --accent-red: #ef5350;
+  --accent-purple: #b39ddb;
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6a6a82;
+  --border: #2a2a3e;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg-primary); color: var(--text-primary);
+  font-family: 'Noto Sans KR', sans-serif; line-height:1.9; font-size:17px;
+  overflow-x:hidden;
+}
+
+/* ── Progress ── */
+.progress-bar {
+  position:fixed; top:0; left:0; height:3px; z-index:9999;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-pink), var(--accent-gold));
+  width:0%; transition:width 0.15s;
+}
+
+/* ── Nav ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(10,10,15,0.88); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border); padding:0.8rem 2rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+nav .logo { font-family:'Noto Serif KR',serif; font-weight:900; font-size:1.15rem; color:var(--accent-gold); }
+nav .nav-links { display:flex; gap:1.2rem; list-style:none; flex-wrap:wrap; }
+nav .nav-links a {
+  color:var(--text-secondary); text-decoration:none; font-size:0.8rem;
+  letter-spacing:0.5px; transition:color 0.3s;
+}
+nav .nav-links a:hover { color:var(--accent-blue); }
+
+/* ── Hero ── */
+.hero {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 40%, #16213e 100%);
+  position:relative; overflow:hidden; padding:6rem 2rem 4rem;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 600px 600px at 20% 50%, rgba(79,195,247,0.07), transparent),
+    radial-gradient(ellipse 400px 400px at 80% 30%, rgba(244,143,177,0.05), transparent),
+    radial-gradient(ellipse 500px 500px at 60% 80%, rgba(255,213,79,0.04), transparent);
+}
+.hero-content { position:relative; text-align:center; max-width:900px; }
+.hero-badge {
+  display:inline-block; padding:0.4rem 1.2rem; border-radius:50px;
+  background:rgba(79,195,247,0.1); border:1px solid rgba(79,195,247,0.3);
+  color:var(--accent-blue); font-size:0.78rem; letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:2rem;
+  animation:pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.hero h1 {
+  font-family:'Noto Serif KR',serif; font-size:clamp(2.4rem,6vw,4.2rem);
+  font-weight:900; line-height:1.2; margin-bottom:1.5rem;
+  background:linear-gradient(135deg,#fff 0%,var(--accent-blue) 50%,var(--accent-gold) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero .subtitle {
+  font-size:1.2rem; color:var(--text-secondary); max-width:680px;
+  margin:0 auto 2.5rem; font-weight:300;
+}
+.hero .korean-title {
+  font-family:'Noto Serif KR',serif; font-size:1.5rem;
+  color:var(--accent-gold); margin-bottom:0.5rem; opacity:0.8;
+}
+.scroll-ind {
+  position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+  color:var(--text-muted); font-size:0.75rem; text-align:center;
+  animation:bounce 2s ease-in-out infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+/* ── Stats ── */
+.stats-bar {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1px; background:var(--border);
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+}
+.stat-item { background:var(--bg-secondary); padding:1.8rem; text-align:center; }
+.stat-number {
+  font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700;
+  color:var(--accent-blue); display:block;
+}
+.stat-label { font-size:0.75rem; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-top:0.3rem; }
+
+/* ── Article ── */
+article { max-width:800px; margin:0 auto; padding:4rem 2rem; }
+.chapter-marker {
+  display:flex; align-items:center; gap:1rem; margin:5rem 0 2rem; padding-top:2rem;
+}
+.chapter-number {
+  font-family:'JetBrains Mono',monospace; font-size:0.72rem;
+  color:var(--accent-gold); letter-spacing:2px; text-transform:uppercase; white-space:nowrap;
+}
+.chapter-line { flex:1; height:1px; background:linear-gradient(90deg,var(--accent-gold),transparent); }
+article h2 {
+  font-family:'Noto Serif KR',serif; font-size:2rem; font-weight:900;
+  line-height:1.3; margin-bottom:1.5rem; color:#fff;
+}
+article h3 {
+  font-family:'Noto Serif KR',serif; font-size:1.35rem; font-weight:700;
+  color:var(--accent-blue); margin:2.5rem 0 1rem;
+}
+article h4 {
+  font-size:1.1rem; font-weight:700; color:var(--accent-orange); margin:2rem 0 0.8rem;
+}
+article p { margin-bottom:1.5rem; color:var(--text-primary); font-weight:300; }
+article strong { color:#fff; font-weight:700; }
+article em { color:var(--accent-pink); }
+article ul, article ol {
+  margin:0 0 1.5rem 1.5rem; color:var(--text-primary); font-weight:300;
+}
+article li { margin-bottom:0.5rem; }
+
+.drop-cap::first-letter {
+  font-family:'Noto Serif KR',serif; float:left; font-size:4.5rem;
+  line-height:0.8; padding-right:0.6rem; padding-top:0.1rem;
+  color:var(--accent-gold); font-weight:900;
+}
+blockquote {
+  border-left:3px solid var(--accent-gold); margin:2rem 0; padding:1.5rem 2rem;
+  background:rgba(255,213,79,0.03); border-radius:0 8px 8px 0;
+  font-family:'Noto Serif KR',serif; font-style:italic;
+  color:var(--text-secondary); font-size:1.05rem;
+}
+blockquote cite {
+  display:block; margin-top:0.8rem; font-size:0.83rem;
+  color:var(--accent-gold); font-style:normal;
+}
+pre {
+  background:var(--bg-code); border:1px solid var(--border); border-radius:10px;
+  padding:1.5rem; margin:2rem 0; overflow-x:auto;
+  font-family:'JetBrains Mono',monospace; font-size:0.83rem;
+  line-height:1.7; color:var(--accent-green);
+}
+code {
+  font-family:'JetBrains Mono',monospace; background:rgba(79,195,247,0.1);
+  padding:0.15rem 0.4rem; border-radius:4px; font-size:0.88em;
+  color:var(--accent-blue);
+}
+pre code { background:none; padding:0; color:inherit; }
+
+/* ── Callouts ── */
+.callout {
+  border-radius:10px; padding:1.5rem 2rem; margin:2rem 0;
+  border:1px solid; position:relative;
+}
+.callout-war { background:rgba(239,83,80,0.05); border-color:rgba(239,83,80,0.3); }
+.callout-tip { background:rgba(129,199,132,0.05); border-color:rgba(129,199,132,0.3); }
+.callout-story { background:rgba(244,143,177,0.05); border-color:rgba(244,143,177,0.3); }
+.callout-korea { background:rgba(255,183,77,0.05); border-color:rgba(255,183,77,0.3); }
+.callout-insight { background:rgba(179,157,219,0.05); border-color:rgba(179,157,219,0.3); }
+.callout-mindset { background:rgba(79,195,247,0.05); border-color:rgba(79,195,247,0.3); }
+.callout::before {
+  position:absolute; top:-0.7rem; left:1.5rem; font-size:0.68rem;
+  letter-spacing:1.5px; text-transform:uppercase; padding:0.15rem 0.6rem;
+  border-radius:4px;
+}
+.callout-war::before { content:'실전 경험 — Bài học xương máu'; background:rgba(239,83,80,0.15); color:var(--accent-red); }
+.callout-tip::before { content:'꿀팁 — Mẹo hay'; background:rgba(129,199,132,0.15); color:var(--accent-green); }
+.callout-story::before { content:'에피소드 — Chuyện kể'; background:rgba(244,143,177,0.15); color:var(--accent-pink); }
+.callout-korea::before { content:'한국 문화 — Văn hoá Hàn'; background:rgba(255,183,77,0.15); color:var(--accent-orange); }
+.callout-insight::before { content:'통찰 — Insight sâu'; background:rgba(179,157,219,0.15); color:var(--accent-purple); }
+.callout-mindset::before { content:'마인드셋 — Tư duy'; background:rgba(79,195,247,0.15); color:var(--accent-blue); }
+
+/* ── Conversation ── */
+.convo { margin:2rem 0; }
+.bubble {
+  max-width:85%; padding:1rem 1.3rem; border-radius:16px;
+  margin-bottom:0.8rem; position:relative; font-size:0.93rem;
+}
+.bubble-left {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-bottom-left-radius:4px; margin-right:auto;
+}
+.bubble-right {
+  background:rgba(79,195,247,0.1); border:1px solid rgba(79,195,247,0.2);
+  border-bottom-right-radius:4px; margin-left:auto;
+}
+.bubble-name { font-size:0.73rem; font-weight:700; margin-bottom:0.3rem; letter-spacing:0.5px; }
+.bubble-left .bubble-name { color:var(--accent-pink); }
+.bubble-right .bubble-name { color:var(--accent-blue); }
+
+/* ── Highlight box ── */
+.highlight-box {
+  background:linear-gradient(135deg,rgba(79,195,247,0.08),rgba(255,213,79,0.05));
+  border:1px solid var(--border); border-radius:12px;
+  padding:2rem; margin:2rem 0;
+}
+
+/* ── Skill grid ── */
+.skill-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:1rem; margin:2rem 0;
+}
+.skill-card {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:10px;
+  padding:1.2rem; transition:all 0.3s;
+}
+.skill-card:hover { border-color:var(--accent-blue); transform:translateY(-2px); }
+.skill-name { font-weight:700; color:#fff; font-size:0.88rem; }
+.skill-bar { height:4px; background:var(--border); border-radius:2px; margin-top:0.6rem; overflow:hidden; }
+.skill-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--accent-blue),var(--accent-gold)); }
+
+/* ── Timeline ── */
+.timeline { position:relative; margin:3rem 0; padding-left:2.5rem; }
+.timeline::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:linear-gradient(to bottom,var(--accent-blue),var(--accent-gold),var(--accent-pink),var(--accent-green));
+}
+.timeline-item { position:relative; margin-bottom:2.5rem; }
+.timeline-item::before {
+  content:''; position:absolute; left:-2.85rem; top:0.3rem;
+  width:12px; height:12px; border-radius:50%;
+  background:var(--accent-blue); border:3px solid var(--bg-primary);
+}
+.timeline-year {
+  font-family:'JetBrains Mono',monospace; font-size:0.78rem;
+  color:var(--accent-gold); letter-spacing:1px;
+}
+.timeline-title { font-weight:700; color:#fff; margin:0.3rem 0; }
+
+/* ── Table ── */
+.info-table { width:100%; border-collapse:collapse; font-size:0.93rem; margin:1rem 0; }
+.info-table td { padding:0.8rem; border-bottom:1px solid var(--border); }
+.info-table tr:last-child td { border-bottom:none; }
+
+/* ── Separator ── */
+.section-sep {
+  text-align:center; margin:4rem 0; color:var(--text-muted); font-size:1.5rem;
+  letter-spacing:1rem;
+}
+
+/* ── Footer ── */
+footer {
+  border-top:1px solid var(--border); padding:3rem 2rem;
+  text-align:center; color:var(--text-muted); font-size:0.85rem;
+}
+footer .footer-quote {
+  font-family:'Noto Serif KR',serif; font-size:1.15rem;
+  color:var(--text-secondary); margin-bottom:1rem;
+}
+
+/* ── Responsive ── */
+@media (max-width:768px) {
+  nav .nav-links { display:none; }
+  article { padding:2rem 1.2rem; }
+  .hero h1 { font-size:2rem; }
+  .bubble { max-width:95%; }
+  .highlight-box { padding:1.2rem; }
+}
+
+/* ── Animations ── */
+.fade-in {
+  opacity:0; transform:translateY(25px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+}
+.fade-in.visible { opacity:1; transform:translateY(0); }
+
+.kr-accent {
+  display:inline; color:var(--accent-gold);
+  font-family:'Noto Serif KR',serif; font-weight:900;
+}
+.numbered-insight {
+  display:flex; gap:1.2rem; margin:2rem 0; align-items:flex-start;
+}
+.numbered-insight .num {
+  font-family:'JetBrains Mono',monospace; font-size:2.5rem; font-weight:700;
+  color:var(--accent-blue); opacity:0.3; line-height:1; flex-shrink:0; min-width:50px;
+}
+.numbered-insight .content { flex:1; }
+
+.two-col {
+  display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin:2rem 0;
+}
+@media(max-width:768px) { .two-col { grid-template-columns:1fr; } }
+.two-col > div {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:10px; padding:1.5rem;
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<nav>
+  <div class="logo">김개발 KIM GAE-BAL</div>
+  <ul class="nav-links">
+    <li><a href="#origin">Khởi nguồn</a></li>
+    <li><a href="#culture">Văn hoá</a></li>
+    <li><a href="#samsung">Samsung</a></li>
+    <li><a href="#spring">Spring</a></li>
+    <li><a href="#gov">Gov</a></li>
+    <li><a href="#db">Database</a></li>
+    <li><a href="#communication">Giao tiếp</a></li>
+    <li><a href="#trust">Sự tin tưởng</a></li>
+    <li><a href="#projects">Dự án</a></li>
+    <li><a href="#mindset">Tư duy</a></li>
+    <li><a href="#foreign">Dev nước ngoài</a></li>
+    <li><a href="#insights">Insights</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="korean-title">대한민국 최고의 자바 개발자 — 그의 모든 이야기</div>
+    <div class="hero-badge">Deep-Dive Editorial &bull; 50,000+ words of insight</div>
+    <h1>Từ PC방 Gangnam Đến Kiến Trúc Sư Quốc Gia — Toàn Bộ Câu Chuyện</h1>
+    <p class="subtitle">
+      Không chỉ là code. Đây là câu chuyện về cách suy nghĩ, cách giao tiếp,
+      cách sinh tồn và thành công trong thế giới IT Hàn Quốc —
+      nơi 눈치 (đọc không khí) quan trọng hơn bất kỳ design pattern nào.
+    </p>
+  </div>
+  <div class="scroll-ind">Hành trình bắt đầu<br>&#9660;</div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-number">18+</span><span class="stat-label">Năm kinh nghiệm</span></div>
+  <div class="stat-item"><span class="stat-number">200+</span><span class="stat-label">Dự án</span></div>
+  <div class="stat-item"><span class="stat-number">50+</span><span class="stat-label">Gov Systems</span></div>
+  <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">Chaebol đã qua</span></div>
+  <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">Cốc Americano</span></div>
+  <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">Deploy Friday thành công</span></div>
+</div>
+
+<article>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 01 — KHỞI NGUỒN
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="origin">
+  <span class="chapter-number">Chapter 01 — 시작: Khởi Nguồn</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Thằng Nhóc PC방 Và Khoảnh Khắc Thay Đổi Mọi Thứ</h2>
+
+<p class="drop-cap fade-in">
+  Năm 2003, Bundang — thành phố vệ tinh phía nam Seoul. Một PC방 (phòng net) đông nghẹt mùi mì cay và tiếng keyboard cơ. Thằng nhóc 19 tuổi tên 김개발 đang chơi StarCraft, Protoss main, đang cannon rush đối thủ. Nhưng hôm đó anh thua — thua vì mải nhìn sang màn hình thằng bạn.
+</p>
+
+<p class="fade-in">
+  Thằng bạn không chơi game. Nó đang mở một cái gì đó tên Eclipse — cửa sổ đen xì với chữ màu xanh lá. Nó gõ vài dòng, nhấn nút gì đó, rồi mở Internet Explorer. Trên trình duyệt hiện dòng chữ: <strong>"안녕하세요, 세상!"</strong> (Xin chào, thế giới!). Mắt nó sáng lên. Không phải sáng kiểu clear map — mà sáng kiểu <em>sáng tạo</em>. Kiểu "tao vừa tạo ra cái gì đó từ hư không".
+</p>
+
+<p class="fade-in">
+  김개발 hỏi: "야, 그게 뭐야?" (Ê, cái gì đó?). Thằng bạn nói: "자바. 서블릿이라는 거야. 이거 배우면 취직 가능해." (Java. Gọi là Servlet. Học cái này thì kiếm việc được.) Hai từ cuối — <strong>"취직 가능"</strong> (kiếm việc được) — đó mới là trigger thực sự. Không phải đam mê code. Không phải yêu công nghệ. Mà là một thằng nhóc Hàn Quốc muốn có việc làm ổn định, muốn mua nhà ở Seoul, muốn ba mẹ tự hào.
+</p>
+
+<div class="callout callout-korea fade-in">
+  <p>
+    <strong>Hiểu context Hàn Quốc 2003:</strong> Đây là thời hậu khủng hoảng tài chính châu Á 1997 (IMF 위기). Cha mẹ của 김개발 đã trải qua giai đoạn đó — mất việc, phá sản, xếp hàng nhận trợ cấp. Ký ức đó ám ảnh cả một thế hệ. Vì vậy, đối với thanh niên Hàn Quốc đầu 2000s, "việc làm ổn định" không phải luxury — nó là <strong>생존</strong> (sinh tồn). IT ngành mới, lương tốt, tuyển nhiều. Đó là lý do cả một thế hệ đổ vào học Java — không phải vì yêu, mà vì cần. Tình yêu đến sau.
+  </p>
+</div>
+
+<p class="fade-in">
+  김개발 đăng ký <strong>학원 (hagwon)</strong> — trung tâm đào tạo tư nhân, loại intensive 6 tháng, học từ 9h sáng đến 10h tối. Ở Hàn Quốc, hệ thống 학원 cho IT cực kỳ phát triển. Không như đại học dạy lý thuyết 4 năm — 학원 dạy bạn đúng thứ doanh nghiệp cần: JSP, Servlet, Oracle, HTML, JavaScript. Ra 학원 là có thể đi làm ngay. Nhiều legend của ngành Java Hàn Quốc xuất thân từ 학원.
+</p>
+
+<p class="fade-in">
+  Nhưng 김개발 khác. Anh không chỉ học ở 학원. Ban ngày học, tối về phòng trọ 원룸 (one-room) ở 신림동 (Sillim-dong) — khu trọ rẻ nhất Seoul cho sinh viên — anh đọc thêm. Đọc blog của <strong>토비 (Toby)</strong> — bút danh của 이일민, người viết cuốn sách Java/Spring kinh điển nhất Hàn Quốc: <span class="kr-accent">"토비의 스프링"</span>. Đọc source code của framework. Đọc javadoc. Anh có thói quen mà sau này anh nói là bí quyết thành công: <strong>"남들이 API를 쓸 때, 나는 API의 소스코드를 읽었다"</strong> (Khi người ta dùng API, tôi đọc source code của API).
+</p>
+
+<blockquote>
+  "학원에서 MyBatis 쓰는 법을 배웠어. 근데 난 MyBatis 소스코드를 열어봤어.
+  왜 이렇게 동작하는지 알고 싶었거든. 그때부터 남들보다 한 발 앞서기 시작한 거 같아."<br>
+  (Ở 학원 tôi học cách dùng MyBatis. Nhưng tôi mở source code MyBatis ra đọc.
+  Vì muốn biết tại sao nó hoạt động như vậy. Từ đó tôi bắt đầu đi trước người khác một bước.)
+  <cite>— 김개발</cite>
+</blockquote>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #1 — Đi sâu hơn một tầng:</strong> Đây là điều phân biệt developer tốt và developer xuất sắc ở Hàn Quốc. Developer tốt biết dùng Spring. Developer xuất sắc đọc source code của Spring, hiểu cách <code>BeanFactory</code> tạo bean, hiểu lifecycle của ApplicationContext, hiểu tại sao <code>@Transactional</code> dùng proxy. Khi bạn hiểu một tầng sâu hơn, bạn debug nhanh gấp 10 lần, và quan trọng hơn — <strong>người Hàn sẽ tôn trọng bạn</strong> vì bạn không chỉ "dùng" mà còn "hiểu".
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 02 — VĂN HOÁ IT HÀN QUỐC
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="culture">
+  <span class="chapter-number">Chapter 02 — 한국 IT 문화: Văn Hoá IT Hàn Quốc</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Bạn Không Thể Hiểu Code Hàn Nếu Không Hiểu Văn Hoá Hàn</h2>
+
+<p class="drop-cap fade-in">
+  Trước khi nói về Spring hay Oracle, bạn phải hiểu: <strong>IT Hàn Quốc không chỉ là công nghệ — nó là một hệ sinh thái văn hoá</strong>. Mọi quyết định kỹ thuật đều bị ảnh hưởng bởi văn hoá doanh nghiệp, cấu trúc xã hội, và cách người Hàn tương tác với nhau. Nếu bạn không hiểu điều này, bạn sẽ luôn là "người ngoài" dù code giỏi đến mấy.
+</p>
+
+<h3>빨리빨리 (Ppalli Ppalli) — DNA Của Ngành IT Hàn</h3>
+
+<p class="fade-in">
+  <strong>빨리빨리</strong> nghĩa là "nhanh nhanh". Đây không chỉ là câu nói — đây là <em>triết lý sống</em> của Hàn Quốc. Đất nước này đi từ đống đổ nát chiến tranh 1953 đến nền kinh tế top 10 thế giới trong 40 năm. Tốc độ đó ăn vào DNA.
+</p>
+
+<p class="fade-in">
+  Trong IT, 빨리빨리 thể hiện ở mọi nơi:
+</p>
+
+<ul class="fade-in">
+  <li><strong>Deadline cực ngắn:</strong> Dự án mà ở Mỹ mất 12 tháng, ở Hàn phải xong trong 6 tháng. Không negotiate.</li>
+  <li><strong>야근 (overtime) là default:</strong> 9 to 6 chỉ là giờ "chính thức". Giờ thực tế là 9 to 10, 11, hoặc hơn.</li>
+  <li><strong>Prototype trước, architecture sau:</strong> "일단 돌아가게 해" (Làm cho nó chạy trước đã) là câu bạn sẽ nghe nhiều nhất.</li>
+  <li><strong>Meeting cũng nhanh:</strong> Không có "brainstorming 2 tiếng". Họp, quyết, xong. 15-30 phút.</li>
+</ul>
+
+<div class="callout callout-mindset fade-in">
+  <p>
+    <strong>Cách sống sót với 빨리빨리:</strong> Đừng chống lại nó — hãy <em>chơi cùng</em> nó. 김개발 phát triển kỹ năng mà anh gọi là <strong>"80% solution"</strong>: deliver 80% hoàn thiện rất nhanh, rồi polish 20% còn lại. Người Hàn thích thấy progress sớm hơn là chờ đợi perfect. Nếu bạn nói "em cần 2 tuần để thiết kế hoàn chỉnh", sếp sẽ lo lắng. Nếu bạn nói "em có prototype ngày mai, tuần sau sẽ hoàn thiện", sếp sẽ yên tâm.
+  </p>
+</div>
+
+<h3>서열 (Thứ Bậc) — Hệ Thống Cấp Bậc Trong Team</h3>
+
+<p class="fade-in">
+  Hàn Quốc có hệ thống cấp bậc rất rõ ràng. Trong công ty IT, nó thể hiện qua chức danh:
+</p>
+
+<div class="highlight-box fade-in">
+  <table class="info-table">
+    <tr>
+      <td style="color:var(--accent-gold);font-weight:700;width:30%">사원 (Sawon)</td>
+      <td>Nhân viên mới — 1-3 năm. Làm theo lệnh, không hỏi nhiều, học hỏi là chính.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent-gold);font-weight:700">대리 (Daeri)</td>
+      <td>Senior staff — 4-7 năm. Bắt đầu có quyền đưa ý kiến. Lead phần nhỏ.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent-gold);font-weight:700">과장 (Gwajang)</td>
+      <td>Manager — 8-12 năm. Lead team nhỏ. Chịu trách nhiệm delivery.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent-gold);font-weight:700">차장 (Chajang)</td>
+      <td>Deputy GM — 12-16 năm. Cầu nối giữa team và management.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent-gold);font-weight:700">부장 (Bujang)</td>
+      <td>General Manager — 16+ năm. Quyền lực lớn. Quyết định kỹ thuật cuối cùng.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent-gold);font-weight:700">이사/상무/전무 (Isa/Sangmu/Jeonmu)</td>
+      <td>Director/VP — Thế giới khác. Ít khi gặp. Khi gặp thì nghiêm trang.</td>
+    </tr>
+  </table>
+</div>
+
+<p class="fade-in">
+  <strong>Tại sao điều này quan trọng cho developer?</strong> Vì cách bạn nói chuyện, cách bạn báo cáo, cách bạn đề xuất ý kiến — tất cả phụ thuộc vào bạn đang nói với ai. 사원 nói với 부장 khác hoàn toàn với 과장 nói với 과장. Sai cấp bậc trong giao tiếp = mất điểm, dù code bạn đẹp đến mấy.
+</p>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "Cái ngày 김개발 suýt bị đuổi vì 반말"</strong><br>
+    Năm 2007, dự án ở Samsung SDS. 김개발 (대리) đang code review và phát hiện bug nghiêm trọng trong code của 이과장 (과장 — cấp trên). Anh hứng chí viết email:
+  </p>
+  <p>
+    <em>"과장님, 이 코드 버그 있어요. 이렇게 고치면 됩니다."</em><br>
+    (Anh, code này có bug. Sửa thế này là được.)
+  </p>
+  <p>
+    Email gửi cho cả team, CC 부장님. 이과장 đỏ mặt. Không phải vì bug — mà vì bị <strong>chỉ ra lỗi trước mặt mọi người</strong>. Ở Hàn Quốc, đây là 체면 (thể diện) — và bạn KHÔNG BAO GIỜ để người khác mất 체면 trước đám đông, đặc biệt là cấp trên.
+  </p>
+  <p>
+    김개발 bị 부장님 gọi vào phòng: <em>"개발아, 네가 맞아. 근데 방법이 틀렸어."</em> (Gaebal, mày đúng. Nhưng cách làm sai rồi.)
+  </p>
+  <p style="margin-bottom:0">
+    <strong>Bài học:</strong> Từ đó, khi phát hiện bug trong code cấp trên, 김개발 luôn nói riêng 1-1, dùng KakaoTalk, với tone: <em>"과장님, 제가 이 부분 보다가 궁금한 게 있는데 혹시 같이 봐주실 수 있으세요?"</em> (Anh ơi, em đang xem phần này có chỗ thắc mắc, anh có thể cùng xem giúp em được không?). Biến "chỉ ra lỗi" thành "xin được hướng dẫn". Kết quả giống nhau — bug được fix — nhưng không ai mất mặt.
+  </p>
+</div>
+
+<h3>눈치 (Nunchi) — Siêu Năng Lực Mà Không Trường Nào Dạy</h3>
+
+<p class="fade-in">
+  <strong>눈치</strong> — đọc là "nunchi" — nghĩa đen là "đo bằng mắt". Nghĩa bóng: <strong>khả năng đọc không khí, đoán ý người khác mà không cần họ nói ra</strong>. Đây là kỹ năng xã hội #1 ở Hàn Quốc, và trong môi trường IT, nó quyết định career của bạn.
+</p>
+
+<p class="fade-in">Ví dụ 눈치 trong team dev:</p>
+
+<ul class="fade-in">
+  <li>Đang họp, PM hỏi "이거 가능해요?" (Cái này được không?). Sếp im lặng, nhìn xuống. <strong>눈치:</strong> Sếp nghĩ không được, nhưng không muốn nói trước mặt PM. Bạn cũng nên im, để sếp tìm cách nói.</li>
+  <li>Đồng nghiệp cùng level thở dài, uống cà phê nhiều hơn bình thường, ít nói chuyện. <strong>눈치:</strong> Họ đang stress. Đừng hỏi "sao thế?" trước mặt mọi người. Rủ đi hút thuốc hoặc uống cà phê riêng rồi hỏi.</li>
+  <li>Sếp nói "이거 하면 좋겠는데..." (Cái này làm thì tốt nhỉ...) với tone nhẹ nhàng. <strong>눈치:</strong> Đây KHÔNG phải gợi ý — đây là <em>mệnh lệnh</em>. "좋겠는데" = "hãy làm đi".</li>
+  <li>Review meeting, bạn trình bày, sếp liên tục nói "네, 네" (vâng, vâng) nhưng mắt không nhìn màn hình. <strong>눈치:</strong> Sếp không quan tâm phần này. Chuyển sang phần quan trọng hơn.</li>
+</ul>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #2 — 눈치 cho developer nước ngoài:</strong> Bạn không cần 눈치 hoàn hảo ngay (người Hàn cũng mất cả đời để rèn). Nhưng <strong>có ý thức về 눈치</strong> đã là khác biệt lớn. Nó cho thấy bạn tôn trọng văn hoá của họ. Cách rèn: quan sát nhiều hơn nói. Khi không chắc phản ứng của người khác, chờ 3 giây trước khi đáp. 3 giây đó cho bạn thời gian đọc không khí.
+  </p>
+</div>
+
+<h3>회식 (Hoeshik) — Bàn Nhậu Quyết Định Dự Án</h3>
+
+<p class="fade-in">
+  <strong>회식</strong> — team dinner — là institution trong doanh nghiệp Hàn Quốc. Nó không chỉ là ăn uống. Nó là nơi:
+</p>
+
+<ul class="fade-in">
+  <li>Sếp thật sự nói những gì họ nghĩ (rượu = truth serum)</li>
+  <li>Đồng nghiệp xây dựng 정 (jeong — tình cảm, bond) với nhau</li>
+  <li>Quyết định không chính thức được đưa ra</li>
+  <li>Bạn chứng minh mình là "part of the team" chứ không chỉ là "coder"</li>
+</ul>
+
+<div class="highlight-box fade-in">
+  <h3 style="margin-top:0">회식 Survival Guide — by 김개발</h3>
+
+  <p><strong>1차 (Round 1) — Nhà hàng:</strong></p>
+  <ul>
+    <li>Ngồi đúng chỗ: junior ngồi gần 막내 (em út) — gần cửa, xa sếp lớn nhất</li>
+    <li>Rót rượu cho người bên cạnh trước khi tự rót. Dùng 2 tay khi rót cho sếp</li>
+    <li>Khi sếp rót cho bạn: đỡ ly bằng 2 tay, hơi nghiêng người</li>
+    <li>Uống soju quay mặt sang bên, không uống trực diện với sếp</li>
+    <li>Đừng nói chuyện công việc ở round 1. Nói về 축구, 드라마, 맛집 (quán ngon)</li>
+  </ul>
+
+  <p><strong>2차 (Round 2) — Quán bar/노래방 (karaoke):</strong></p>
+  <ul>
+    <li>Đây là lúc bắt đầu có thể nói chuyện công việc — nhưng nhẹ nhàng</li>
+    <li>Nếu sếp hát karaoke, vỗ tay nhiệt tình dù hát dở cỡ nào</li>
+    <li>Nếu bạn hát, hát bài Hàn = điểm cộng cực lớn. "사랑합니다" (I Love You) của 김범수 luôn an toàn</li>
+    <li>Đây là lúc sếp có thể nói: "아, 다음 프로젝트 너 PM 해봐" (À, dự án sau mày thử làm PM đi). Nghe đúng, nhưng đợi sáng mai xác nhận lại — soju nói nhiều thứ lắm</li>
+  </ul>
+
+  <p><strong>3차 (Round 3) — Đồ ăn đêm:</strong></p>
+  <ul>
+    <li>Chỉ những người "core" còn lại. Nếu bạn ở đến round 3 = bạn được trust</li>
+    <li>Thường ăn 라면 (ramyeon) ở 편의점 (convenience store) hoặc 포장마차 (quán vỉa hè)</li>
+    <li>Đây là lúc nói chuyện thật nhất. Cũng là lúc 김개발 nhận được nhiều insight nhất về dự án</li>
+  </ul>
+</div>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "Cái đêm round 3 cứu cả dự án"</strong><br>
+    Năm 2013, dự án chính phủ đang delay nghiêm trọng. PM và dev team mâu thuẫn ngầm. PM nghĩ dev chậm, dev nghĩ requirement thay đổi liên tục. Không ai nói thẳng trong meeting. 김개발 rủ PM đi 회식.
+  </p>
+  <p>
+    Round 1: ăn 삼겹살 (ba chỉ nướng), nói chuyện con cái.<br>
+    Round 2: 소주 chai thứ 3, PM bắt đầu than: "솔직히 나도 위에서 계속 바뀌는 거 알아. 근데 어떡해..." (Thật ra tao cũng biết trên thay đổi liên tục. Nhưng biết sao giờ...).<br>
+    Round 3: 편의점, ăn 라면. 김개발 nói: "형, 우리 변경 건 한 번 정리하고, 위에 같이 보고하면 어때요? 개발팀이 느린 게 아니라 스코프가 계속 바뀌는 거라는 걸 보여줘야죠." (Anh, hay mình tổng hợp các thay đổi rồi cùng báo cáo lên trên? Phải cho họ thấy không phải dev chậm mà scope thay đổi liên tục.)
+  </p>
+  <p style="margin-bottom:0">
+    Kết quả: PM và 김개발 cùng làm một báo cáo change log, trình lên 본부장 (Director). Scope được freeze, timeline được adjust. Dự án about-turn thành công. <strong>Tất cả bắt đầu từ round 3 lúc 1 giờ sáng.</strong>
+  </p>
+</div>
+
+<h3>정 (Jeong) — Sợi Dây Vô Hình Giữ Team Lại Với Nhau</h3>
+
+<p class="fade-in">
+  <strong>정</strong> là concept Hàn Quốc rất khó dịch. Nó là tình cảm, nhưng không phải tình yêu. Nó là attachment, nhưng không phải dependency. Nó là cảm giác "chúng ta đã cùng nhau trải qua", cùng cực khổ, cùng vui — và bond đó không dễ phá vỡ.
+</p>
+
+<p class="fade-in">
+  Trong team dev, 정 hình thành qua:
+</p>
+
+<ul class="fade-in">
+  <li>Cùng 야근 (overtime) nhiều đêm — cùng khổ thì thân</li>
+  <li>Cùng fix bug production lúc 3h sáng — "chiến hữu" feeling</li>
+  <li>Cùng ăn 점심 (bữa trưa) mỗi ngày — đừng ăn một mình, ở Hàn ăn một mình = cô đơn</li>
+  <li>Nhớ sinh nhật đồng nghiệp, mua cà phê cho team</li>
+</ul>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #3 — Xây dựng 정 là cách nhanh nhất để được tin tưởng:</strong> Developer nước ngoài thường chỉ focus vào "deliver code tốt". Nhưng ở Hàn Quốc, trust không đến từ code — nó đến từ <strong>정</strong>. Khi team có 정 với bạn, họ sẽ: cover cho bạn khi bạn sai, giúp bạn khi bạn kẹt, giới thiệu bạn cho dự án tốt. Cách xây: đi ăn trưa cùng team EVERY DAY, tham gia 회식, nhớ tên vợ/chồng/con đồng nghiệp, mua 아메리카노 cho team buổi chiều khi mọi người mệt.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 03 — SAMSUNG ERA
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="samsung">
+  <span class="chapter-number">Chapter 03 — 삼성 시대: Đại Học Thực Chiến</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Samsung SDS: Nơi Boys Trở Thành Men</h2>
+
+<p class="drop-cap fade-in">
+  Năm 2006, 김개발 vào Samsung SDS — công ty IT lớn nhất Hàn Quốc, thuộc tập đoàn Samsung. Đây không chỉ là một công ty — đây là <strong>군대 (quân đội)</strong> phiên bản IT. Kỷ luật, quy trình, cấp bậc — tất cả như quân đội. Và như quân đội, nó rèn bạn thành thép.
+</p>
+
+<p class="fade-in">
+  Ngày đầu tiên, 김개발 nhận được <strong>사원증 (thẻ nhân viên)</strong> và một tập tài liệu dày 200 trang về quy trình công ty. Anh phải học: coding convention (Samsung có standard riêng), review process, documentation template, và quan trọng nhất — <strong>보고 문화 (văn hoá báo cáo)</strong>.
+</p>
+
+<h3>Coding Convention Samsung — Strict Hơn Cả Compiler</h3>
+
+<pre class="fade-in"><code>// Samsung SDS Java Coding Convention (2006-era)
+// Nghiêm ngặt đến từng dấu cách
+
+/**
+ * 고객 계좌 관리 서비스
+ * (Dịch vụ quản lý tài khoản khách hàng)
+ *
+ * @author 김개발 (사번: 20060325) — Luôn ghi mã nhân viên
+ * @since 2006.04.15               — Format ngày: YYYY.MM.DD
+ * @version 1.0
+ *
+ * <pre>
+ * 수정일        수정자       수정내용
+ * ----------  --------  ---------------------------
+ * 2006.04.15  김개발      최초 생성
+ * 2006.04.20  김개발      입금 로직 추가
+ * </pre>
+ *
+ * — Mọi class PHẢI có bảng change log trong javadoc
+ * — Thiếu = code review FAIL = quay về viết lại
+ */
+public class CustAcctMgmtService {
+
+    // Biến: camelCase, nhưng viết tắt theo convention Samsung
+    // Cust = Customer, Acct = Account, Mgmt = Management
+    // Convention viết tắt này PHẢI theo bảng từ viết tắt chung
+
+    private static final String ACCT_STATUS_ACTIVE = "01";  // 활성
+    private static final String ACCT_STATUS_DORMANT = "02"; // 휴면
+    private static final String ACCT_STATUS_CLOSED = "03";  // 해지
+
+    /**
+     * 계좌 잔액 조회
+     * @param acctNo 계좌번호
+     * @return 잔액 (BigDecimal — NEVER double for money!)
+     * @throws BizException 계좌 미존재 시
+     */
+    public BigDecimal getAcctBalance(String acctNo) throws BizException {
+        // Mỗi method: javadoc bắt buộc
+        // Exception: dùng BizException (custom), không RuntimeException
+        // Log: đầu method và cuối method
+        log.debug(">>> getAcctBalance START | acctNo={}", acctNo);
+
+        // Business logic...
+
+        log.debug("<<< getAcctBalance END | balance={}", balance);
+        return balance;
+    }
+}</code></pre>
+
+<div class="callout callout-war fade-in">
+  <p>
+    <strong>Bài học từ Samsung Convention:</strong> Lúc đầu 김개발 ghét convention này — quá nhiều boilerplate, quá nhiều javadoc. Nhưng sau 2 năm, khi phải maintain code của 50 người khác, anh hiểu: <strong>trong team lớn, convention không phải gánh nặng — nó là cứu cánh</strong>. Khi mọi người viết code cùng style, bạn đọc code bất kỳ ai cũng hiểu ngay. Mà ở Hàn Quốc, team 50-100 dev là bình thường.
+  </p>
+</div>
+
+<h3>SI (System Integration) — Ngành Công Nghiệp Khổng Lồ</h3>
+
+<p class="fade-in">
+  Ở Hàn Quốc, ngành IT có một nhánh rất lớn mà developer phương Tây ít biết: <strong>SI (System Integration)</strong>. Đây là ngành xây dựng hệ thống IT cho doanh nghiệp và chính phủ. Những ông lớn SI:
+</p>
+
+<div class="two-col fade-in">
+  <div>
+    <h4 style="margin-top:0;color:var(--accent-blue)">Big 3 SI Companies</h4>
+    <ul>
+      <li><strong>Samsung SDS</strong> — Hệ sinh thái Samsung</li>
+      <li><strong>LG CNS</strong> — Hệ sinh thái LG</li>
+      <li><strong>SK C&C (nay SK Inc.)</strong> — Hệ sinh thái SK</li>
+    </ul>
+    <p style="font-size:0.85rem;color:var(--text-secondary)">
+      Đây là 원청 (prime contractor). Họ nhận dự án từ khách hàng,
+      rồi phân chia cho các 하청 (subcontractor).
+    </p>
+  </div>
+  <div>
+    <h4 style="margin-top:0;color:var(--accent-orange)">Cấu trúc "đa tầng"</h4>
+    <ul>
+      <li><strong>발주처</strong> (Khách hàng) — ra tiền</li>
+      <li><strong>원청</strong> (Nhà thầu chính) — quản lý</li>
+      <li><strong>1차 하청</strong> (Thầu phụ tầng 1) — code core</li>
+      <li><strong>2차 하청</strong> (Thầu phụ tầng 2) — code phụ</li>
+      <li><strong>프리랜서</strong> (Freelancer) — lấp lỗ hổng</li>
+    </ul>
+  </div>
+</div>
+
+<p class="fade-in">
+  김개발 ở Samsung SDS — tầng 원청 — nên anh thấy toàn cảnh. Anh nhận ra: <strong>developer ở 하청 thường giỏi hơn 원청 về code</strong>, vì họ code nhiều hơn. Nhưng developer ở 원청 giỏi hơn về quản lý, architecture, và giao tiếp — vì đó là công việc của họ.
+</p>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #4 — Hiểu vị trí của bạn trong food chain:</strong> Khi bạn vào một dự án Hàn Quốc, điều đầu tiên phải hiểu là: bạn ở tầng nào? 원청 hay 하청? Vì nó quyết định: bạn report cho ai, bạn có quyền quyết định gì, budget bạn được dùng. Nhiều developer giỏi bị frustrated vì không hiểu cấu trúc này. Bạn code đẹp nhưng ở 2차 하청 thì PM ở 원청 không care — PM care là deadline, deliverable, và cost.
+  </p>
+</div>
+
+<h3>야근 — Về Sự Khổ Cực Và Vinh Quang Của Overtime</h3>
+
+<p class="fade-in">
+  Hãy để tôi honest: <strong>야근 (overtime) là thực tế nghiệt ngã nhất của IT Hàn Quốc</strong>. Không phải occasionally — mà regularly. Đặc biệt ở dự án SI, giai đoạn trước deadline (통합테스트 — integration test, 오픈 — go-live), 야근 gần như là default.
+</p>
+
+<div class="convo fade-in">
+  <div class="bubble bubble-right">
+    <div class="bubble-name">김개발 (năm 2008)</div>
+    오늘 야근이요? 벌써 이번 주 4일째인데...<br>
+    <em>(Hôm nay cũng overtime ạ? Tuần này đã 4 ngày rồi...)</em>
+  </div>
+  <div class="bubble bubble-left">
+    <div class="bubble-name">팀장 (Team lead)</div>
+    다음 주 오픈인데 어떡해. 다 같이 고생하는 거지 뭐.<br>
+    <em>(Tuần sau go-live thì biết sao. Cùng nhau cố gắng thôi.)</em>
+  </div>
+  <div class="bubble bubble-right">
+    <div class="bubble-name">김개발</div>
+    ...네. (내일 퇴사 각인가...)<br>
+    <em>(...Vâng. (Ngày mai nghỉ việc thôi...))</em>
+  </div>
+</div>
+
+<p class="fade-in">
+  Nhưng 김개발 cũng nhận ra một thứ: <strong>야근 là nơi 정 được hình thành mạnh nhất</strong>. Khi bạn và 5 đồng nghiệp cùng ngồi code lúc 11 giờ đêm, chia nhau gà rán giao tận nơi, cùng debug một bug khó, rồi khi fix xong cùng hét lên "오예!" — đó là khoảnh khắc bạn trở thành "가족" (gia đình). Và ở Hàn Quốc, khi bạn là 가족, người ta sẽ đi ra đi vào vì bạn.
+</p>
+
+<div class="callout callout-mindset fade-in">
+  <p>
+    <strong>Mindset quan trọng:</strong> 야근 đang thay đổi. Luật lao động Hàn Quốc giờ giới hạn 52 giờ/tuần (주 52시간제, áp dụng từ 2018-2021 tuỳ quy mô công ty). Các công ty internet (네이버, 카카오, 쿠팡) có văn hoá khác với SI truyền thống. Nhưng trong dự án chính phủ, giai đoạn go-live, "문화" (văn hoá) vẫn mạnh hơn "법" (luật). Nếu bạn từ chối 야근 trong giai đoạn critical, bạn đúng về pháp lý nhưng sai về 눈치 — và team sẽ nhớ.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 04 — SPRING
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="spring">
+  <span class="chapter-number">Chapter 04 — 스프링의 길: Con Đường Spring</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Từ EJB Hell Qua XML Purgatory Đến Boot Paradise</h2>
+
+<p class="drop-cap fade-in">
+  Để hiểu vì sao Spring thống trị Hàn Quốc, bạn phải hiểu cái nó thay thế. Năm 2006-2007, enterprise Java ở Hàn nghĩa là <strong>EJB 2.1</strong>. Nếu bạn chưa từng viết EJB 2.1, hãy tưởng tượng: bạn muốn nấu mì gói, nhưng phải viết 47 trang đơn xin phép, đăng ký 5 loại XML descriptor, implement 3 interface, deploy lên server mất 3 phút, và cuối cùng mì vẫn nguội.
+</p>
+
+<pre class="fade-in"><code>// EJB 2.1 — Để tạo MỘT entity đơn giản:
+// Files cần: Home Interface, Remote Interface, Local Interface,
+//            Local Home Interface, Bean Class,
+//            ejb-jar.xml, jboss.xml, jboss-cmp-jdbc.xml
+// ...và lời cầu nguyện
+
+public interface ProductHome extends EJBHome {
+    Product create(String name, int price)
+        throws CreateException, RemoteException;  // RemoteException MỌI NƠI
+    Product findByPrimaryKey(Long id)
+        throws FinderException, RemoteException;
+}
+
+// 김개발 lần đầu nhìn đống này:
+// "이걸 왜 이렇게 복잡하게 만든 거야??"
+// (Tại sao phải phức tạp thế này??)
+//
+// Câu trả lời: không ai biết. Kể cả Sun Microsystems.</code></pre>
+
+<p class="fade-in">
+  Rồi <strong>Rod Johnson</strong> xuất hiện với cuốn <em>"Expert One-on-One J2EE Development without EJB"</em>. Spring Framework ra đời. 김개발 đọc cuốn đó trong 3 đêm ở 편의점. Thế giới thay đổi.
+</p>
+
+<h3>Spring Trong Bối Cảnh Hàn Quốc — Tại Sao Nó Thắng Tuyệt Đối</h3>
+
+<p class="fade-in">
+  Ở phương Tây, Spring cạnh tranh với nhiều framework (Play, Dropwizard, Quarkus...). Ở Hàn Quốc, Spring <strong>thắng tuyệt đối</strong> vì 3 lý do:
+</p>
+
+<div class="numbered-insight fade-in">
+  <div class="num">01</div>
+  <div class="content">
+    <p><strong>전자정부프레임워크 (eGovFrame) chọn Spring làm nền tảng.</strong> Khi chính phủ "chỉ định" Spring, mọi dự án chính phủ phải dùng Spring. Mà dự án chính phủ chiếm ~40% thị trường IT Hàn Quốc. Game over.</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">02</div>
+  <div class="content">
+    <p><strong>토비의 스프링 (Toby's Spring).</strong> Cuốn sách của 이일민 (Toby) dạy Spring theo cách mà developer Hàn Quốc hiểu. 1,200 trang, bằng tiếng Hàn, với ví dụ phù hợp context Hàn. Cuốn này có tầm ảnh hưởng tương đương "Effective Java" trong cộng đồng Hàn. Gần như mọi senior Java dev Hàn Quốc đều đã đọc nó.</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">03</div>
+  <div class="content">
+    <p><strong>생태계 효과 (Ecosystem effect).</strong> Khi mọi người dùng Spring, mọi 학원 dạy Spring, mọi tài liệu viết cho Spring, mọi developer biết Spring. Chuyển sang framework khác = không tuyển được người = risk = không ai chọn.</p>
+  </div>
+</div>
+
+<h3>Spring Integration — Giải Thích Bằng Quán 치맥</h3>
+
+<p class="fade-in">
+  김개발 trở thành expert <strong>Spring Integration (SI)</strong> vì ở Hàn Quốc, mọi hệ thống phải "nói chuyện" với nhau. Hệ thống thuế nói với ngân hàng, bảo hiểm nói với bệnh viện, tất cả qua <strong>연계 시스템</strong> (hệ thống liên kết).
+</p>
+
+<div class="highlight-box fade-in">
+  <h3 style="margin-top:0">Spring Integration — Giải Thích Bằng Quán 치맥 (Gà Rán + Bia)</h3>
+  <p>Bạn đang ở quán 치맥:</p>
+  <ul>
+    <li><code>MessageChannel</code> = Bàn của bạn. Nơi order đi và đồ đến.</li>
+    <li><code>Message</code> = Order của bạn. Header = số bàn, loại thanh toán. Payload = "gà sốt tỏi 1 con, 카스 2 chai".</li>
+    <li><code>Gateway</code> = Cô phục vụ. Nhận order từ bàn, chuyển vào bếp. Bạn không cần biết bếp hoạt động thế nào.</li>
+    <li><code>ServiceActivator</code> = Đầu bếp. Nhận order, nấu, trả kết quả.</li>
+    <li><code>Splitter</code> = Khi bạn gọi combo gà + bia, order tách thành 2: gà → bếp, bia → bar.</li>
+    <li><code>Aggregator</code> = Khi cả gà và bia xong, gom lại một khay rồi mang ra bàn.</li>
+    <li><code>Filter</code> = Check CMND khi gọi bia. Dưới 19 tuổi (Hàn) → message bị reject.</li>
+    <li><code>Transformer</code> = Bạn gọi Coca nhưng hết → đổi sang Pepsi. Vẫn có nước ngọt, nhưng dạng khác.</li>
+    <li><code>Router</code> = Order VIP đi kênh riêng, order thường đi kênh thường.</li>
+    <li><code>ErrorChannel</code> = Khi bếp cháy, order lỗi chuyển sang đây. Quản lý xử lý.</li>
+  </ul>
+</div>
+
+<pre class="fade-in"><code>// Spring Integration — Hệ thống liên kết Bệnh viện-Bảo hiểm
+// 김개발 xây cho 건강보험공단 (NHIS) năm 2012
+
+@Configuration
+@EnableIntegration
+public class InsuranceIntegrationConfig {
+
+    @Bean
+    public MessageChannel hospitalRequestChannel() {
+        // DirectChannel: đồng bộ, 1-1 — dùng khi cần response ngay
+        return new DirectChannel();
+    }
+
+    @Bean
+    public MessageChannel asyncProcessingChannel() {
+        // QueueChannel: bất đồng bộ, buffered
+        // Dùng khi bệnh viện gửi batch claims (수십 건 한꺼번에)
+        return new QueueChannel(500);
+    }
+
+    // Bệnh viện gửi format khác nhau — cần Adapter cho từng loại
+    @Bean
+    @InboundChannelAdapter(channel = "hospitalRequestChannel",
+        poller = @Poller(fixedDelay = "5000"))
+    public MessageSource<File> ftpInboundAdapter() {
+        // Vâng, năm 2012 vẫn có bệnh viện gửi file qua FTP 😭
+        FileReadingMessageSource source = new FileReadingMessageSource();
+        source.setDirectory(new File("/data/hospital/inbound"));
+        source.setFilter(new SimplePatternFileListFilter("*.dat"));
+        return source;
+    }
+
+    // Validate: bệnh nhân có bảo hiểm không?
+    @Filter(inputChannel = "hospitalRequestChannel",
+            outputChannel = "validRequestChannel",
+            discardChannel = "rejectedChannel")
+    public boolean validateInsurance(ClaimRequest request) {
+        // 건강보험공단 API 호출 — timeout 3초, retry 2회
+        return nhisApiClient.verifyInsurance(request.getPatientRrn());
+    }
+
+    // Transform: format bệnh viện → format bảo hiểm quốc gia
+    @Transformer(inputChannel = "validRequestChannel",
+                 outputChannel = "insuranceFormatChannel")
+    public InsuranceClaim transformToNhisFormat(ClaimRequest req) {
+        // 여기서 진짜 머리 아팠음
+        // (Chỗ này mới thật sự đau đầu)
+        //
+        // Mỗi bệnh viện dùng HIS khác nhau:
+        // - 대형병원: HL7 FHIR format
+        // - 중소병원: 자체 XML
+        // - 의원: CSV hoặc fixed-length text
+        // - 가끔: Excel 파일 (네, 진짜로... Vâng, thật đấy...)
+        return InsuranceClaim.builder()
+            .claimId(generateClaimId())
+            .patientRrn(maskRrn(req.getPatientRrn()))
+            .diagnosisCode(mapToKcdCode(req.getDiagnosis()))
+            .treatmentDate(req.getTreatmentDate())
+            .totalAmount(req.getAmount())
+            .coveredAmount(calculateCoverage(req))
+            .hospitalYkiho(req.getHospitalCode())
+            .build();
+    }
+
+    // Rejected claims → alert channel
+    @ServiceActivator(inputChannel = "rejectedChannel")
+    public void handleRejection(Message<ClaimRequest> message) {
+        ClaimRequest req = message.getPayload();
+        log.warn("보험 미가입 환자 청구 거부 | hospital={} patient={}",
+            req.getHospitalCode(), maskRrn(req.getPatientRrn()));
+        alertService.sendToHospital(req.getHospitalCode(),
+            "환자 보험 확인 필요"); // Cần xác nhận bảo hiểm bệnh nhân
+    }
+}</code></pre>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "500 bệnh viện, 500 format — Và cái đêm adapter thứ 347"</strong><br>
+    Năm 2012, 김개발 lead dự án liên kết dữ liệu 500 bệnh viện với NHIS.
+    Mỗi bệnh viện dùng HIS khác nhau. Có nơi gửi XML chuẩn. Có nơi gửi fixed-length text từ thời 90s.
+    Có nơi gửi CSV qua FTP. Có bệnh viện nhỏ ở 제주도 (đảo Jeju) gửi <em>Excel qua email</em>.
+  </p>
+  <p>
+    Adapter thứ 347 — một phòng khám ở 부산 (Busan) — gửi data encoding EUC-KR (không phải UTF-8),
+    với date format MM/DD/YYYY (kiểu Mỹ, không phải YYYY-MM-DD kiểu Hàn).
+    김개발 gọi cho phòng khám: "원장님, 혹시 날짜 형식 좀 바꿔주실 수 있으세요?"
+    (Bác sĩ, có thể đổi format ngày được không?).
+    Trả lời: "그게 뭔데요?" (Cái gì vậy?). Bác sĩ không biết date format là gì.
+  </p>
+  <p style="margin-bottom:0">
+    김개발 viết thêm một adapter nữa. Adapter #347. Anh gọi nó là
+    <span class="kr-accent">"부산 스페셜"</span> (Busan Special).
+    Tổng cộng hệ thống có 23 loại adapter, cover mọi format có thể tưởng tượng.
+    Deploy xong, anh ngủ 36 tiếng.
+  </p>
+</div>
+
+<h3>Spring Boot — Khi Mùa Xuân Thật Sự Đến</h3>
+
+<p class="fade-in">
+  Spring Boot 1.0 (2014) đối với developer Java Hàn Quốc giống như ngày giải phóng. Hàng trăm dòng XML config biến thành <code>@SpringBootApplication</code>. 김개발 suýt khóc — thật sự.
+</p>
+
+<p class="fade-in">
+  Nhưng adoption ở Hàn không đơn giản. Hai thế giới song song:
+</p>
+
+<div class="two-col fade-in">
+  <div>
+    <h4 style="margin-top:0;color:var(--accent-red)">Thế giới cũ — SI/Gov</h4>
+    <ul>
+      <li>eGovFrame 2.x (Spring 3.x)</li>
+      <li>XML config đầy ắp</li>
+      <li>JSP + jQuery</li>
+      <li>Oracle + MyBatis</li>
+      <li>JEUS hoặc Tomcat</li>
+      <li>SVN (không phải Git)</li>
+      <li>HWP documentation</li>
+    </ul>
+    <p style="font-size:0.85rem;color:var(--accent-red)">"잘 돌아가는데 왜 바꿔요?"<br>(Đang chạy tốt sao phải đổi?)</p>
+  </div>
+  <div>
+    <h4 style="margin-top:0;color:var(--accent-green)">Thế giới mới — Internet Companies</h4>
+    <ul>
+      <li>Spring Boot 2.x/3.x</li>
+      <li>Java Config + Auto Configuration</li>
+      <li>React/Vue frontend</li>
+      <li>MySQL/PostgreSQL + JPA</li>
+      <li>Docker + Kubernetes</li>
+      <li>Git + GitHub/GitLab</li>
+      <li>Confluence/Notion</li>
+    </ul>
+    <p style="font-size:0.85rem;color:var(--accent-green)">"레거시는 죄악이다!"<br>(Legacy là tội ác!)</p>
+  </div>
+</div>
+
+<p class="fade-in">
+  김개발 sống ở cả hai thế giới — anh gọi là <span class="kr-accent">"이중생활"</span> (cuộc sống hai mặt).
+  Sáng thứ Hai: mở Eclipse, viết XML config cho dự án chính phủ.
+  Chiều thứ Hai: mở IntelliJ, viết Spring Boot cho dự án startup tư vấn.
+  Não phải context-switch liên tục.
+</p>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 05 — GOV FRAMEWORK
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="gov">
+  <span class="chapter-number">Chapter 05 — 전자정부: Gov Framework</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>전자정부프레임워크: Khi Chính Phủ Viết Framework</h2>
+
+<p class="drop-cap fade-in">
+  <strong>전자정부표준프레임워크 (eGovFrame)</strong> — framework chuẩn do 한국정보화진흥원 (NIA) phát triển. Nếu bạn muốn làm bất kỳ dự án IT chính phủ nào ở Hàn Quốc, bạn dùng eGovFrame. Không có lựa chọn thứ hai. Đây là <em>pháp lệnh</em>, không phải recommendation.
+</p>
+
+<h3>Architecture chuẩn mà bạn PHẢI thuộc</h3>
+
+<pre class="fade-in"><code>전자정부프레임워크 Architecture
+═══════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────┐
+│                   Presentation                       │
+│  ┌─────────┐  ┌──────────┐  ┌───────────────────┐  │
+│  │   JSP   │  │ Tiles/   │  │  TagLib (공통UI)   │  │
+│  │ (View)  │  │ Sitemesh │  │  (Common UI)      │  │
+│  └─────────┘  └──────────┘  └───────────────────┘  │
+├─────────────────────────────────────────────────────┤
+│                    Business                          │
+│  ┌─────────┐  ┌──────────┐  ┌───────────────────┐  │
+│  │ Service │  │   VO/DTO │  │  Exception        │  │
+│  │ (Impl)  │  │          │  │  Handling         │  │
+│  └─────────┘  └──────────┘  └───────────────────┘  │
+├─────────────────────────────────────────────────────┤
+│                  Persistence                         │
+│  ┌─────────┐  ┌──────────┐  ┌───────────────────┐  │
+│  │ MyBatis │  │  iBATIS  │  │  EgovAbstract     │  │
+│  │ (DAO)   │  │ (legacy) │  │  DAO              │  │
+│  └─────────┘  └──────────┘  └───────────────────┘  │
+├─────────────────────────────────────────────────────┤
+│                   공통 (Common)                      │
+│  ┌────┐ ┌────┐ ┌─────┐ ┌──────┐ ┌──────┐ ┌─────┐  │
+│  │인증│ │권한│ │로깅 │ │다국어│ │파일  │ │기타 │  │
+│  │Auth│ │Perm│ │Log  │ │i18n  │ │File  │ │Etc  │  │
+│  └────┘ └────┘ └─────┘ └──────┘ └──────┘ └─────┘  │
+├─────────────────────────────────────────────────────┤
+│         연계 (Integration/Interface)                 │
+│  ┌─────────────┐  ┌──────────────────────────────┐  │
+│  │  웹서비스    │  │    연계 솔루션 (EAI/ESB)      │  │
+│  │ Web Service │  │    Integration Solution       │  │
+│  └─────────────┘  └──────────────────────────────┘  │
+└─────────────────────────────────────────────────────┘
+
+DB: Oracle / Tibero / MySQL / PostgreSQL (최근)
+WAS: JEUS / Tomcat / WebLogic
+Web: Apache HTTP Server / nginx (최근)</code></pre>
+
+<h3>Bộ Sản Phẩm Nội Địa Mà Bạn Phải Biết</h3>
+
+<div class="callout callout-korea fade-in">
+  <p>
+    <strong>Hệ sinh thái TmaxSoft — "Samsung của phần mềm hạ tầng":</strong>
+  </p>
+  <ul>
+    <li><strong>JEUS</strong> — WAS thay thế WebLogic/WebSphere. Config khác Tomcat. ClassLoader khác. Session management khác. Bug report bằng tiếng Hàn. Google không giúp được — gọi hotline TmaxSoft.</li>
+    <li><strong>Tibero</strong> — RDBMS thay Oracle. Compatible ~95%. Cái 5% còn lại sẽ làm bạn khóc. Đặc biệt: PL/SQL syntax hơi khác, performance hint khác, backup tool khác.</li>
+    <li><strong>ProFrame</strong> — Application framework cho ngân hàng. Transaction processing engine. Nếu bạn làm core banking ở Hàn, bạn sẽ gặp nó.</li>
+    <li><strong>Tmax (TP Monitor)</strong> — Giống CICS trên mainframe. Vẫn chạy ở nhiều ngân hàng.</li>
+  </ul>
+</div>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "Bug chỉ xảy ra trên JEUS — 3 ngày ám ảnh"</strong><br>
+    Dự án 국세청 (Cơ quan Thuế), 2014. Một REST API chạy perfect trên Tomcat dev environment. Deploy lên JEUS staging → 500 Internal Server Error. Log nói: <code>ClassNotFoundException: com.sun.xml.internal.ws.spi.ProviderImpl</code>.
+  </p>
+  <p>
+    김개발 mất 3 ngày để tìm ra: JEUS bundle JDK module khác với Tomcat. Class <code>com.sun.xml</code> bị JEUS hide vì security policy. Fix: thêm dependency <code>jaxws-rt</code> explicit vào pom.xml và config JEUS classloader policy.
+  </p>
+  <p>
+    Google tiếng Anh? 0 kết quả. Google tiếng Hàn? 3 bài blog, cả 3 viết <em>"저도 같은 문제입니다"</em> (Tôi cũng gặp vấn đề giống vậy) không có solution. 김개발 viết bài blog thứ 4 — <strong>có solution</strong>. Bài đó có 50,000 views.
+  </p>
+  <p style="margin-bottom:0">
+    <strong>Bài học:</strong> Khi làm với tech nội địa Hàn Quốc (JEUS, Tibero, 한글...), <strong>Google tiếng Anh vô dụng</strong>. Bạn cần: (1) Naver Blog/Cafe tiếng Hàn, (2) TmaxSoft support hotline, (3) Mạng lưới developer bạn bè. Đây là lý do 인맥 (network) quan trọng.
+  </p>
+</div>
+
+<h3>산출물 (Deliverables) — Boss Cuối Thực Sự</h3>
+
+<p class="fade-in">
+  Ở dự án chính phủ Hàn Quốc, code chỉ là <em>một phần nhỏ</em>. Phần còn lại:
+</p>
+
+<div class="highlight-box fade-in">
+  <p><strong>Tài liệu bắt buộc cho dự án chính phủ:</strong></p>
+  <ol>
+    <li><strong>사업수행계획서</strong> (Kế hoạch thực hiện) — 100+ trang</li>
+    <li><strong>요구사항정의서</strong> (Tài liệu yêu cầu) — Mỗi requirement một trang</li>
+    <li><strong>아키텍처정의서</strong> (Architecture Document)</li>
+    <li><strong>DB설계서</strong> (Thiết kế DB) — ERD + bảng mô tả từng column</li>
+    <li><strong>화면설계서</strong> (UI Design) — Wireframe mọi màn hình</li>
+    <li><strong>인터페이스설계서</strong> (Interface Design) — Mọi API endpoint</li>
+    <li><strong>프로그램명세서</strong> (Program Spec) — Mô tả từng function</li>
+    <li><strong>단위테스트결과서</strong> (Unit Test Report) — Screenshot JUnit + PMD</li>
+    <li><strong>통합테스트결과서</strong> (Integration Test Report)</li>
+    <li><strong>사용자매뉴얼</strong> (User Manual)</li>
+    <li><strong>운영자매뉴얼</strong> (Ops Manual)</li>
+    <li><strong>완료보고서</strong> (Final Report)</li>
+  </ol>
+  <p style="margin-bottom:0;color:var(--accent-red)">
+    Tất cả viết bằng <strong>HWP</strong> (한글 — word processor quốc dân Hàn Quốc).
+    Không phải Word. Không phải Google Docs. <strong>HWP.</strong>
+    Nếu bạn dùng Mac — chúc may mắn.
+  </p>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #5 — Developer giỏi ở Hàn = code + tài liệu + giao tiếp:</strong> Ở phương Tây, bạn có thể là "rockstar developer" chỉ bằng code. Ở Hàn Quốc, developer được đánh giá bởi: (1) Code chạy đúng, (2) Tài liệu đầy đủ, (3) Giao tiếp trơn tru với PM và khách hàng. Thiếu một trong ba = bạn chỉ là "코더" (coder), không phải "개발자" (developer). Và ở Hàn, sự phân biệt đó rất rõ ràng.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 06 — DATABASE
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="db">
+  <span class="chapter-number">Chapter 06 — 데이터베이스: Database Wars</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Oracle Là Tôn Giáo, DBA Là Giáo Chủ</h2>
+
+<p class="drop-cap fade-in">
+  Ở Hàn Quốc, mối quan hệ giữa Java developer và DBA giống như mối quan hệ giữa samurai và shogun — bạn có thể giỏi chiến đấu, nhưng shogun quyết định bạn chiến đấu ở đâu. DBA quyết định schema, index, partition strategy. Developer viết SQL nhưng DBA review và có quyền reject. <strong>Đừng bao giờ coi nhẹ DBA ở Hàn Quốc.</strong>
+</p>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "DELETE không WHERE — Giây phút tim ngừng đập"</strong><br>
+    Năm 2009, dự án ngân hàng. 김개발 cần xoá vài dòng test data trên staging:
+  </p>
+  <pre><code>DELETE FROM CUSTOMER_ACCOUNT
+-- WHERE ACCOUNT_ID IN ('TEST001', 'TEST002', 'TEST003')</code></pre>
+  <p>
+    Nhìn thấy không? <strong>WHERE bị comment.</strong> Ngón tay đã nhấn Execute.
+    Tim dừng 5 giây. Mặt trắng bệch. Nhìn sang DBA — DBA đang uống cà phê, chưa biết.
+  </p>
+  <p>
+    May mắn: DBA đã set auto-rollback cho session timeout, và 김개발 chưa COMMIT.
+    Anh gõ <code>ROLLBACK;</code> với tay run. Từ đó, quy tắc vàng:
+  </p>
+  <ol>
+    <li><strong>Luôn viết SELECT trước DELETE</strong> — xem có bao nhiêu dòng sẽ bị ảnh hưởng</li>
+    <li><strong>Viết WHERE trước, DELETE sau</strong></li>
+    <li><strong>Trên production: KHÔNG BAO GIỜ chạy trực tiếp</strong> — viết script, DBA review, DBA chạy</li>
+  </ol>
+</div>
+
+<h3>SQL Patterns Đặc Trưng Hàn Quốc</h3>
+
+<pre class="fade-in"><code>-- 주민등록번호 (RRN — Resident Registration Number) handling
+-- Format: YYMMDD-GNNNNNN (6 digits birthday + 1 gender + 6 random)
+-- 개인정보보호법 (Personal Info Protection Act) BẮT BUỘC masking
+
+-- Pattern 1: Masking RRN — bạn PHẢI biết cái này
+SELECT
+    고객명 AS customer_name,
+    SUBSTR(주민등록번호, 1, 6) || '-' ||
+    SUBSTR(주민등록번호, 7, 1) || '******' AS masked_rrn,
+    계좌번호 AS account_no
+FROM 고객정보
+WHERE 지역코드 = '11'; -- 서울 (Seoul)
+
+-- Pattern 2: Hierarchical query cho 조직도 (org chart)
+-- Mọi công ty/cơ quan Hàn đều cần cái này
+SELECT
+    LEVEL,
+    LPAD(' ', (LEVEL-1)*4) || 부서명 AS org_tree,
+    부서장명 AS dept_head
+FROM 부서정보
+START WITH 상위부서코드 IS NULL
+CONNECT BY PRIOR 부서코드 = 상위부서코드
+ORDER SIBLINGS BY 정렬순서;
+
+-- Pattern 3: 만 나이 (tuổi thật) — Hàn Quốc đổi sang tuổi thật từ 2023
+-- Trước đó dùng 한국 나이 (tuổi Hàn = tuổi thật + 1 hoặc 2)
+SELECT
+    고객명,
+    TRUNC(MONTHS_BETWEEN(SYSDATE,
+        TO_DATE(SUBSTR(주민등록번호, 1, 6), 'RRMMDD')) / 12) AS 만나이
+FROM 고객정보;
+
+-- Pattern 4: Partition by 년월 — BẮT BUỘC cho bảng giao dịch
+-- Bảng 거래내역 (transaction history) có thể có hàng TỶ dòng
+CREATE TABLE 거래내역 (
+    거래일자    VARCHAR2(8),
+    계좌번호    VARCHAR2(20),
+    거래금액    NUMBER(15,0),
+    거래후잔액   NUMBER(15,0),
+    적요       VARCHAR2(100)
+)
+PARTITION BY RANGE (거래일자) (
+    PARTITION P_202401 VALUES LESS THAN ('20240201'),
+    PARTITION P_202402 VALUES LESS THAN ('20240301'),
+    -- ... mỗi tháng một partition
+    PARTITION P_MAX VALUES LESS THAN (MAXVALUE)
+);
+
+-- Pattern 5: 한글 정렬 (Korean sorting) — QUAN TRỌNG
+-- Nếu NLS_SORT sai, 가나다 order sẽ loạn
+ALTER SESSION SET NLS_SORT = KOREAN_M;
+ALTER SESSION SET NLS_COMP = LINGUISTIC;
+SELECT * FROM 고객정보 ORDER BY 고객명; -- Giờ mới sort đúng 가나다 order</code></pre>
+
+<div class="callout callout-tip fade-in">
+  <p>
+    <strong>김개발's DB Golden Rules cho Hàn Quốc:</strong>
+  </p>
+  <ol>
+    <li><code>NLS_LANG = KOREAN_KOREA.AL32UTF8</code> — sai = 한글 thành ????</li>
+    <li>Stored Procedure ở ngân hàng Hàn dài <strong>hàng nghìn dòng</strong> — đừng shock, đọc từ từ</li>
+    <li>Luôn dùng <code>BigDecimal</code> cho tiền — <code>double</code> = mất tiền = đi tù</li>
+    <li><code>VARCHAR2(N BYTE)</code> vs <code>VARCHAR2(N CHAR)</code> — 한글 chiếm 3 bytes UTF-8, dùng BYTE sẽ cắt chữ</li>
+    <li>Backup/Recovery là việc của DBA — nhưng bạn phải hiểu RMAN đủ để nói chuyện với DBA</li>
+    <li>Oracle RAC (Real Application Cluster) — gần như mọi hệ thống critical Hàn Quốc dùng RAC. Hiểu GC (Global Cache) wait events sẽ giúp bạn debug performance</li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 07 — GIAO TIẾP
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="communication">
+  <span class="chapter-number">Chapter 07 — 소통의 기술: Nghệ Thuật Giao Tiếp</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Kỹ Năng Khó Nhất Không Nằm Trong Code</h2>
+
+<p class="drop-cap fade-in">
+  김개발 nói: nếu chỉ được chọn MỘT kỹ năng để sống sót trong IT Hàn Quốc, anh chọn <strong>소통 (giao tiếp)</strong>. Không phải Java. Không phải Spring. Không phải SQL. Mà là khả năng nói đúng thứ, với đúng người, ở đúng thời điểm, bằng đúng tone.
+</p>
+
+<h3>Hệ Thống 존댓말 (Kính Ngữ) — Cách Nói Quyết Định Career</h3>
+
+<p class="fade-in">
+  Tiếng Hàn có 7 level kính ngữ (speech levels). Trong office, bạn cần biết 3 level chính:
+</p>
+
+<div class="convo fade-in">
+  <div class="bubble bubble-left">
+    <div class="bubble-name">신입 사원 (Junior, 1 năm) → 김개발 (대리, 6 năm)</div>
+    개발님, 이 코드 리뷰 부탁드려도 될까요? 바쁘시면 나중에 해주셔도 됩니다...<br>
+    <em>(Anh Gaebal, em có thể nhờ anh review code được không ạ? Nếu anh bận thì để sau cũng được ạ...)</em>
+    <br><br>
+    <span style="color:var(--accent-green);font-size:0.8rem">✓ Level: 합쇼체 (formal polite) — đúng</span>
+  </div>
+</div>
+
+<div class="convo fade-in">
+  <div class="bubble bubble-right">
+    <div class="bubble-name">김개발 (대리) → 부장님 (GM, 18 năm)</div>
+    부장님, 이번 릴리즈 일정 관련해서 말씀드릴 게 있는데요.
+    혹시 잠시 시간 괜찮으실까요?<br>
+    <em>(Thưa trưởng phòng, em có việc muốn thưa về lịch release. Không biết anh có rảnh chút không ạ?)</em>
+    <br><br>
+    <span style="color:var(--accent-green);font-size:0.8rem">✓ 말씀드리다 (nói — dạng khiêm nhường) — chuẩn</span>
+  </div>
+</div>
+
+<div class="convo fade-in">
+  <div class="bubble bubble-right">
+    <div class="bubble-name">김개발 → 동기 (đồng nghiệp cùng năm vào)</div>
+    야, 이 코드 뭐야? ㅋㅋㅋ 니가 짠 거 맞아?<br>
+    <em>(Ê, code gì vậy mày? kkk Mày viết thật hả?)</em>
+    <br><br>
+    <span style="color:var(--accent-green);font-size:0.8rem">✓ 반말 (informal) — chỉ dùng với bạn bè cùng level/tuổi</span>
+  </div>
+</div>
+
+<p class="fade-in">
+  Ba đoạn trên, cùng một người — nhưng 3 level ngôn ngữ hoàn toàn khác.
+  <strong>Sai level = career risk nghiêm trọng.</strong>
+</p>
+
+<h3>Nghệ Thuật Nói "Không" Mà Không Nói "Không"</h3>
+
+<p class="fade-in">
+  Ở Hàn Quốc, <strong>직접적인 거절 (từ chối trực tiếp) là taboo</strong>. Bạn không bao giờ nói "안 됩니다" (không được) thẳng với khách hàng hoặc cấp trên. Thay vào đó:
+</p>
+
+<div class="highlight-box fade-in">
+  <table class="info-table">
+    <tr>
+      <td style="color:var(--accent-red);font-weight:700;width:25%">Ý thật</td>
+      <td style="color:var(--accent-green);width:35%">Cách nói (Việt)</td>
+      <td style="color:var(--accent-blue)">Tiếng Hàn</td>
+    </tr>
+    <tr>
+      <td>Không thể</td>
+      <td>"Hơi khó ạ"</td>
+      <td>좀 어려울 것 같습니다</td>
+    </tr>
+    <tr>
+      <td>Deadline phi thực tế</td>
+      <td>"Cần xem xét thêm ạ"</td>
+      <td>검토가 좀 필요할 것 같습니다</td>
+    </tr>
+    <tr>
+      <td>Yêu cầu vô lý</td>
+      <td>"Em sẽ tìm phương án"</td>
+      <td>방법을 찾아보겠습니다</td>
+    </tr>
+    <tr>
+      <td>Spec sai</td>
+      <td>"Em muốn xác nhận lại"</td>
+      <td>한 가지 확인드리고 싶은 게 있는데요</td>
+    </tr>
+    <tr>
+      <td>Code cấp trên tệ</td>
+      <td>"Thế này thì sao ạ?"</td>
+      <td>이렇게 하면 어떨까요?</td>
+    </tr>
+    <tr>
+      <td>Hoàn toàn bất khả thi</td>
+      <td>"Nếu có thêm resource/thời gian thì có thể"</td>
+      <td>리소스가 좀 더 있으면 가능할 것 같습니다</td>
+    </tr>
+    <tr>
+      <td>Ý tưởng tệ</td>
+      <td>"Cách này cũng hay, nhưng cách kia thì sao?"</td>
+      <td>이것도 좋은데, 이 방법은 어떨까요?</td>
+    </tr>
+  </table>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #6 — Decode ngôn ngữ ẩn:</strong> Khi đồng nghiệp Hàn nói "좀 어려울 것 같습니다" (hơi khó), họ đang nói "KHÔNG". Khi sếp nói "한번 생각해 봐" (suy nghĩ thử đi), nghĩa là "đừng làm". Khi PM nói "일정이 촉박하긴 한데..." (deadline hơi gấp nhỉ...) với dấu "...", nghĩa là "deadline này bất khả thi nhưng tôi không thể nói thẳng vì khách hàng đang ngồi đây".
+  </p>
+  <p style="margin-bottom:0">
+    <strong>Cách để người Hàn tôn trọng bạn:</strong> Không phải nói tiếng Hàn giỏi. Mà là <strong>hiểu được những gì họ KHÔNG nói</strong>. Khi bạn đáp lại đúng ý mà họ ẩn đi, họ sẽ nghĩ: "이 사람 눈치 있네" (Người này có 눈치 đấy). Đó là compliment cao nhất.
+  </p>
+</div>
+
+<h3>보고 (Báo Cáo) — Kỹ Năng Số 1 Mà Trường Không Dạy</h3>
+
+<p class="fade-in">
+  Trong doanh nghiệp Hàn, cách bạn báo cáo quan trọng không kém nội dung. 김개발 dùng công thức:
+</p>
+
+<div class="highlight-box fade-in">
+  <h3 style="margin-top:0">두괄식 보고법 (Phương pháp báo cáo đầu-kết)</h3>
+
+  <p><strong>1. 결론 먼저 (Kết luận trước)</strong> — Sếp bận. Nói kết quả ngay dòng đầu.</p>
+  <p><strong>2. 근거 (Căn cứ)</strong> — Data, số liệu, evidence. "Em nghĩ" = yếu. "Data cho thấy" = mạnh.</p>
+  <p><strong>3. 대안 (Phương án)</strong> — Luôn mang 2-3 lựa chọn. Đừng đến tay không.</p>
+  <p><strong>4. 일정 (Lịch trình)</strong> — Khi nào xong. Con số cụ thể.</p>
+  <br>
+  <p style="color:var(--accent-gold)"><strong>Ví dụ — Bug production (SAI):</strong></p>
+  <p style="color:var(--accent-red)">
+    "부장님, 어제 밤에 장애가 발생했는데요, 처음에는 네트워크 문제인 줄 알았는데,
+    확인해보니 DB 커넥션풀 문제였고, 로그를 분석해보니..."
+    (dài dòng, sếp mất kiên nhẫn ở câu thứ 2)
+  </p>
+  <br>
+  <p style="color:var(--accent-gold)"><strong>Ví dụ — Bug production (ĐÚNG):</strong></p>
+  <p style="color:var(--accent-green)">
+    "부장님, <strong>결제 모듈 장애 발생 → 현재 복구 완료</strong>했습니다.
+    원인은 DB 커넥션풀 부족이었고, 재발방지를 위해 두 가지 방안을 준비했습니다.
+    1안: 커넥션풀 증설 (오늘 적용 가능), 2안: 커넥션 누수 로직 수정 (2일 소요).
+    1안 우선 적용하고, 2안은 병행하는 게 좋을 것 같습니다."
+  </p>
+  <p style="font-size:0.85rem;color:var(--text-secondary)">
+    Dịch: "Trưởng phòng, module thanh toán bị lỗi → hiện đã khôi phục.
+    Nguyên nhân: connection pool thiếu. Để ngăn tái phát, em chuẩn bị 2 phương án:
+    PA1: tăng pool (áp dụng hôm nay), PA2: fix logic leak (2 ngày).
+    Áp dụng PA1 trước, PA2 song song."
+  </p>
+</div>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "3 giờ họp, không ai nói không — và cách 김개발 xoay chuyển"</strong><br>
+    Buổi review với 발주처 (khách hàng chính phủ). Khách yêu cầu thêm 47 tính năng mới.
+    Deadline không đổi. Budget không đổi. Cả phòng ngồi im. 원청 PM im. 하청 PM im.
+    Ai cũng biết không thể, nhưng không ai dám nói.
+  </p>
+  <p>
+    김개발 đứng lên, không nói "불가능합니다" (bất khả thi). Anh nói:
+  </p>
+  <p>
+    <em>"고객님, 말씀하신 기능들 정말 좋은 아이디어입니다.
+    전체적으로 품질을 높이기 위해서, 우선순위를 정해서 단계적으로 진행하면
+    더 안정적인 시스템을 만들 수 있을 것 같습니다.
+    1단계에 핵심 기능 10개를 먼저 납품하고,
+    나머지는 유지보수 단계에서 추가하는 건 어떨까요?
+    여기 기능별 영향도 분석 자료 준비했습니다."</em>
+  </p>
+  <p>
+    Dịch: "Các tính năng anh chị đề xuất rất hay.
+    Để nâng chất lượng tổng thể, nếu chia ưu tiên và làm theo giai đoạn
+    sẽ có hệ thống ổn định hơn.
+    Giai đoạn 1 deliver 10 tính năng core,
+    còn lại thêm trong giai đoạn bảo trì.
+    Em đã chuẩn bị tài liệu phân tích impact theo từng tính năng."
+  </p>
+  <p style="margin-bottom:0">
+    Key points: (1) Khen ý tưởng trước. (2) Đề xuất phương án thay thế. (3) <strong>Có tài liệu sẵn</strong> — điều này cho thấy bạn đã chuẩn bị, không phải phản đối ngẫu hứng. Khách đồng ý. PM thở phào. 김개발 không nói "không" — anh nói "có, nhưng theo cách tốt hơn".
+  </p>
+</div>
+
+<h3>Email / 메신저 (Messenger) — Văn Hoá Viết</h3>
+
+<p class="fade-in">
+  Ở Hàn Quốc, KakaoTalk (카카오톡) là messaging app quốc dân — kể cả trong công việc.
+  Nhiều dự án dùng KakaoTalk group thay vì Slack. Quy tắc:
+</p>
+
+<ul class="fade-in">
+  <li><strong>Trả lời nhanh:</strong> Nếu sếp gửi message, trả lời trong 5-10 phút. Không trả lời = "vô lễ" hoặc "đang ngủ trong giờ làm".</li>
+  <li><strong>"네" (vâng) reply:</strong> Dù sếp chỉ gửi thông báo, reply "네 알겠습니다" (vâng em hiểu) để confirm đã đọc.</li>
+  <li><strong>Sticker/emoticon:</strong> Với đồng nghiệp cùng level thì OK. Với sếp — chỉ dùng sticker "chuyên nghiệp" (gấu cúi đầu chào, không phải meme).</li>
+  <li><strong>Đừng gửi voice message cho sếp:</strong> Sếp đang họp, không nghe được. Text luôn safe hơn.</li>
+  <li><strong>Email cho việc chính thức, KakaoTalk cho việc nhanh:</strong> Nếu cần "bằng chứng" (ví dụ: confirm requirement), dùng email. KakaoTalk nói gì cũng có thể "quên".</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 08 — SỰ TIN TƯỞNG
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="trust">
+  <span class="chapter-number">Chapter 08 — 신뢰: Xây Dựng Sự Tin Tưởng</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Làm Thế Nào Để Người Hàn Quốc Tôn Trọng Và Tin Tưởng Bạn</h2>
+
+<p class="drop-cap fade-in">
+  Đây có lẽ là chương quan trọng nhất. Bạn có thể giỏi Java, giỏi Spring, giỏi Oracle. Nhưng nếu team Hàn không <strong>신뢰 (tin tưởng)</strong> bạn, bạn sẽ luôn là "외부인" (người ngoài). 김개발 đã làm việc với rất nhiều developer nước ngoài — có người thành công, có người thất bại. Sự khác biệt không nằm ở code.
+</p>
+
+<h3>5 Cấp Độ Tin Tưởng Trong Team Hàn Quốc</h3>
+
+<div class="numbered-insight fade-in">
+  <div class="num">L1</div>
+  <div class="content">
+    <h4 style="margin-top:0">일 잘하는 사람 (Người làm việc giỏi)</h4>
+    <p>Level cơ bản nhất. Bạn deliver đúng hạn, code chạy đúng, ít bug. Team acknowledge bạn có năng lực. Nhưng họ chưa "trust" — họ chỉ "recognize". Cách đạt: <strong>làm đúng những gì được giao, không sai, không chậm</strong>.</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">L2</div>
+  <div class="content">
+    <h4 style="margin-top:0">믿을 수 있는 사람 (Người đáng tin cậy)</h4>
+    <p>Bạn không chỉ làm đúng — bạn còn <strong>báo trước khi có vấn đề</strong>. Sếp giao task, bạn nhận ra có risk, bạn nói sớm thay vì đợi đến deadline rồi mới báo. Ở Hàn Quốc, <strong>sớm báo = tốt, muộn báo = tội</strong>. Dù tin xấu, nói sớm luôn được đánh giá cao hơn im lặng rồi bùng nổ.</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">L3</div>
+  <div class="content">
+    <h4 style="margin-top:0">같이 일하고 싶은 사람 (Người muốn làm việc cùng)</h4>
+    <p>Level này không chỉ về kỹ năng — nó về <strong>인성 (nhân cách)</strong>. Bạn giúp đồng nghiệp khi họ kẹt mà không cần được nhờ. Bạn chia credit khi team thắng. Bạn nhận blame khi team thua (nhưng không đổ lỗi). Bạn đi ăn trưa cùng team, tham gia 회식, nhớ tên con đồng nghiệp. Đây là level mà team bắt đầu có <strong>정 (jeong)</strong> với bạn.</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">L4</div>
+  <div class="content">
+    <h4 style="margin-top:0">의지할 수 있는 사람 (Người có thể dựa vào)</h4>
+    <p>Khi production sập lúc 3h sáng, bạn là người team gọi đầu tiên — và bạn <strong>nhấc máy</strong>. Khi deadline cháy, bạn ở lại cùng team mà không cần ai yêu cầu. Khi có conflict với khách hàng, bạn đứng ra bảo vệ team. Level này rất ít người nước ngoài đạt được — vì nó đòi hỏi commitment vượt quá "job description".</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">L5</div>
+  <div class="content">
+    <h4 style="margin-top:0">우리 사람 (Người của mình)</h4>
+    <p>Đỉnh cao. Bạn không còn là "developer nước ngoài" — bạn là <strong>"우리 사람"</strong> (one of us). Team giới thiệu bạn cho dự án mới. Sếp recommend bạn cho promotion. Đồng nghiệp giúp bạn khi bạn gặp khó khăn cá nhân. Để đạt level này, bạn cần thời gian (ít nhất 2-3 năm cùng team) và phải trải qua ít nhất một "chiến trận" lớn cùng nhau.</p>
+  </div>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p>
+    <strong>Insight #7 — Shortcut không tồn tại, nhưng có accelerator:</strong>
+    Bạn không thể nhảy từ L1 lên L5. Nhưng có cách tăng tốc:
+  </p>
+  <ul>
+    <li><strong>Học vài câu tiếng Hàn</strong> — không cần giỏi, chỉ cần biết: 수고하셨습니다 (anh chị vất vả rồi), 감사합니다 (cảm ơn), 괜찮습니다 (không sao). Effort đó được appreciate hơn bạn nghĩ.</li>
+    <li><strong>Ăn kimchi không than</strong> — nghĩa đen và nghĩa bóng. Chấp nhận văn hoá không phàn nàn.</li>
+    <li><strong>Biết khi nào cần ở lại</strong> — khi team 야근, bạn không bắt buộc phải ở. Nhưng nếu bạn ở, mua 치킨 (gà rán) cho team, hỏi "뭐 도와드릴까요?" (có gì em giúp được không?) — đó là L2→L3 express lane.</li>
+    <li><strong>Đừng nói xấu hệ thống cũ trước mặt người xây nó</strong> — Rất nhiều developer nước ngoài mắc lỗi này. Legacy code ở Hàn thường được viết bởi 선배 (tiền bối) trong team. Chê code = chê 선배 = mất 정 ngay.</li>
+  </ul>
+</div>
+
+<h3>Khi Có Conflict — Cách Xử Lý Kiểu Hàn</h3>
+
+<p class="fade-in">
+  Conflict kỹ thuật trong team Hàn Quốc giải quyết khác phương Tây:
+</p>
+
+<div class="two-col fade-in">
+  <div>
+    <h4 style="margin-top:0;color:var(--accent-red)">Phương Tây</h4>
+    <ul>
+      <li>Debate mở trong meeting</li>
+      <li>"I disagree because..."</li>
+      <li>Ai có argument mạnh hơn thì thắng</li>
+      <li>Transparent, direct</li>
+    </ul>
+  </div>
+  <div>
+    <h4 style="margin-top:0;color:var(--accent-blue)">Hàn Quốc</h4>
+    <ul>
+      <li>Thảo luận riêng trước meeting</li>
+      <li>"이것도 좋은데..." (Cái này cũng hay, nhưng...)</li>
+      <li>Sếp cao nhất quyết định cuối cùng</li>
+      <li>Harmony > Being right</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "김개발 vs 이과장 — Cuộc chiến Architecture"</strong><br>
+    Năm 2016, dự án mới. 이과장 (senior hơn 김개발 3 năm) muốn dùng monolithic architecture.
+    김개발 tin microservice là đúng. Cả hai đều có lý.
+  </p>
+  <p>
+    Sai lầm mà 김개발 suýt mắc: tranh luận trong meeting. Anh dừng lại — nhờ 눈치.
+    Thay vào đó, anh rủ 이과장 đi uống cà phê:
+  </p>
+  <p>
+    <em>"과장님, 이번 아키텍처 고민이 좀 있는데... 형 경험이 많으시니까 의견 좀 여쭤봐도 될까요?"</em><br>
+    (Anh ơi, em đang suy nghĩ về architecture lần này... anh kinh nghiệm nhiều nên em muốn hỏi ý kiến.)
+  </p>
+  <p>
+    김개발 không "đề xuất microservice" — anh "xin ý kiến" rồi dẫn dắt conversation.
+    Anh đưa data: team size nhỏ (microservice = quá phức tạp), timeline gấp (monolithic faster to deliver),
+    nhưng có thể <strong>thiết kế modular bên trong monolith</strong> để tương lai tách được.
+  </p>
+  <p style="margin-bottom:0">
+    이과장 vui vì được tôn trọng. 김개발 vui vì architecture hợp lý.
+    Meeting sau đó chỉ là "xác nhận" quyết định đã được agree offline.
+    <strong>Ở Hàn, 80% quyết định được đưa ra TRƯỚC meeting. Meeting chỉ là formality.</strong>
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 09 — DỰ ÁN
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="projects">
+  <span class="chapter-number">Chapter 09 — 프로젝트 전쟁기: Ký Sự Chiến Trường</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Những Dự Án Không Bao Giờ Quên — Và Bài Học Từ Mỗi Cuộc Chiến</h2>
+
+<div class="timeline fade-in">
+  <div class="timeline-item">
+    <div class="timeline-year">2006 — Samsung SDS</div>
+    <div class="timeline-title">Hệ thống SCM cho Samsung Electronics</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      50 devs, EJB 2.1, Oracle RAC. Bài học: team lớn cần convention nghiêm ngặt.
+      Lần đầu tiên không ngủ 3 đêm liên tiếp. Lần đầu tiên hiểu "enterprise" là gì.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2009 — KB Kookmin Bank</div>
+    <div class="timeline-title">Core Banking Migration: COBOL → Java</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      Migrate hệ thống 20 năm tuổi. Stored procedures 5,000 dòng. Bài học: đừng coi thường legacy — nó chạy hệ thống phục vụ 30 triệu khách hàng.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2012 — 건강보험공단 (NHIS)</div>
+    <div class="timeline-title">Liên kết 500 bệnh viện</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      Spring Integration, 500 adapter. Dự án để đời. Mỗi lần đi khám bệnh, nhìn hệ thống chạy mà tự hào.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2014 — 국세청 (NTS)</div>
+    <div class="timeline-title">Hệ thống khai thuế điện tử thế hệ mới</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      Spring Batch xử lý triệu tờ khai. Tối ưu batch từ 8 tiếng → 45 phút.
+      Peak tháng 5 (thuế thu nhập): 10 triệu request/ngày.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2016 — 대법원 (Supreme Court)</div>
+    <div class="timeline-title">Hệ thống quản lý án điện tử</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      Bảo mật level cao nhất. Mỗi dòng code qua security review. Không dùng thư viện chưa qua 보안심의.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2018 — Kakao</div>
+    <div class="timeline-title">Monolith → Microservice Migration</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      Culture shock: từ vest → hoodie, từ SVN → Git, từ HWP → Confluence.
+      Spring Boot + Cloud + Kafka. Thế giới mới.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2020 — 코로나 (COVID)</div>
+    <div class="timeline-title">Hệ thống quản lý vaccine quốc gia — Khẩn cấp</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      3 tuần deadline. Team 30 người. 4 giờ ngủ/ngày.
+      Scale từ 0 → 50 triệu user.
+      Bài học: khi cả đất nước cần, bạn sẽ làm được những thứ tưởng bất khả thi.
+    </p>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2021 — Độc lập</div>
+    <div class="timeline-title">Freelance Architect & Consultant</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem">
+      Cuối cùng cũng 독립. Tư vấn startup + enterprise.
+      Blog 50K followers. Dạy 학원 — vòng tròn khép lại.
+    </p>
+  </div>
+</div>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "3 giờ sáng, production sập, và bài học OOM để đời"</strong><br>
+    Dự án ngân hàng, 2010. Hệ thống chuyển khoản liên ngân hàng sập lúc 3h sáng.
+    김개발 phi đến 판교 (Pangyo) trong 20 phút.
+  </p>
+  <p>
+    Log: <code>java.lang.OutOfMemoryError: Java heap space</code>. Kinh điển.
+    Nhưng tại sao đột nhiên?
+  </p>
+  <p>
+    2 tiếng với <code>jmap -histo</code> và Eclipse MAT:
+    batch job chạy đêm load TOÀN BỘ 거래내역 (transaction history) vào ArrayList.
+    Data tăng mỗi ngày. Đêm đó vượt ngưỡng 4GB heap.
+  </p>
+  <pre><code>// SAI — code gốc
+List<Transaction> allTxns = transactionDao.findAll(date);
+// load 5 triệu records vào memory → BOOM
+
+// ĐÚNG — 김개발's fix
+@Transactional(readOnly = true)
+public void processDailyBatch(LocalDate date) {
+    try (Stream<Transaction> txnStream =
+            transactionDao.streamByDate(date)) {
+        txnStream
+            .peek(this::processOne)      // xử lý từng record
+            .count();                      // trigger terminal op
+    }
+    // Memory usage: 4GB → 200MB
+    entityManager.clear(); // flush persistence context
+}</code></pre>
+  <p style="margin-bottom:0">
+    <strong>Golden rule: Batch job PHẢI dùng streaming/cursor. KHÔNG BAO GIỜ findAll() vào List.</strong>
+  </p>
+</div>
+
+<div class="callout callout-story fade-in">
+  <p>
+    <strong>Episode: "Vaccine system — 3 tuần để cứu cả nước"</strong><br>
+    Tháng 2/2021. COVID-19. Chính phủ Hàn cần hệ thống đặt lịch + quản lý vaccine quốc gia. Deadline: 3 tuần. Dân số: 52 triệu.
+  </p>
+  <p>
+    김개발 được gọi vào team tư vấn kiến trúc. Vấn đề lớn nhất không phải code — mà là <strong>scale</strong>. Ngày mở đăng ký vaccine cho người cao tuổi, predict: <strong>5 triệu concurrent users</strong> truy cập cùng lúc. Hệ thống bình thường handle 50K.
+  </p>
+  <p>
+    Architecture quyết định:
+  </p>
+  <ul>
+    <li><strong>대기열 시스템 (Queue system)</strong> — Giống mua vé concert: bạn vào hàng đợi, nhận số, đợi đến lượt. Dùng Redis sorted set.</li>
+    <li><strong>정적 페이지 + CDN</strong> — Trang thông tin vaccine = static HTML cached ở CDN. Giảm 90% load server.</li>
+    <li><strong>비동기 처리 (Async processing)</strong> — Đặt lịch = ghi vào Kafka queue, xử lý background, trả kết quả qua push notification.</li>
+    <li><strong>DB sharding theo 지역 (vùng miền)</strong> — Seoul shard riêng, 경기도 riêng, 부산 riêng. Giảm contention.</li>
+  </ul>
+  <p style="margin-bottom:0">
+    Kết quả: ngày mở đăng ký, 7.6 triệu người truy cập trong 1 giờ đầu. Hệ thống đứng vững.
+    김개발 ngồi trong war room 12 giờ liền, mắt dán vào Grafana dashboard, tay cầm 아메리카노.
+    Khi traffic peak qua đi mà không sập, cả phòng vỗ tay. Có người khóc.
+    <strong>Có những khoảnh khắc code không chỉ là code — nó là trách nhiệm quốc gia.</strong>
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 10 — TƯ DUY
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="mindset">
+  <span class="chapter-number">Chapter 10 — 개발자의 사고방식: Tư Duy Developer</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Cách 김개발 Suy Nghĩ — Và Tại Sao Nó Quan Trọng</h2>
+
+<p class="drop-cap fade-in">
+  Sau 18 năm, 김개발 nói rằng sự khác biệt giữa developer 5 năm và 15 năm không phải kiến thức kỹ thuật — mà là <strong>cách suy nghĩ</strong>. Kiến thức deprecated mỗi 3-5 năm. Nhưng tư duy đúng thì trường tồn.
+</p>
+
+<h3>Tư Duy 1: "문제를 정의하는 게 절반이다" (Định nghĩa vấn đề là một nửa)</h3>
+
+<p class="fade-in">
+  Khi PM nói "이 기능 추가해 주세요" (thêm tính năng này), developer junior bắt đầu code ngay.
+  김개발 hỏi 5 câu trước:
+</p>
+
+<ol class="fade-in">
+  <li><strong>왜? (Tại sao?)</strong> — Tại sao cần tính năng này? Business value là gì?</li>
+  <li><strong>누가? (Ai?)</strong> — Ai dùng? Tần suất dùng? 1000 user/ngày hay 10 user/tháng?</li>
+  <li><strong>없으면? (Nếu không có?)</strong> — Nếu không làm thì sao? Impact thực sự?</li>
+  <li><strong>다른 방법? (Cách khác?)</strong> — Có cách nào đạt mục tiêu mà không cần code?</li>
+  <li><strong>범위? (Phạm vi?)</strong> — Scope chính xác là gì? Edge case nào cần cover?</li>
+</ol>
+
+<div class="callout callout-mindset fade-in">
+  <p>
+    <strong>50% tính năng mà PM yêu cầu, sau khi hỏi 5 câu trên, hoặc bị scope giảm hoặc bị cancel.</strong> Không phải PM sai — mà PM nhìn từ góc business, developer nhìn từ góc implementation. Khi hai góc nhìn gặp nhau, solution thường khác với request ban đầu. Developer giỏi không phải người code nhanh — mà là người <strong>tìm đúng thứ cần code</strong>.
+  </p>
+</div>
+
+<h3>Tư Duy 2: "완벽보다 완성" (Hoàn thành hơn hoàn hảo)</h3>
+
+<p class="fade-in">
+  김개발 từng là perfectionist. Refactor đến khi code "đẹp". Kết quả: miss deadline.
+  Năm 30 tuổi, anh thay đổi: <strong>ship first, polish later</strong>.
+  Nhưng "ship" không có nghĩa "ship rác". Anh có nguyên tắc:
+</p>
+
+<ul class="fade-in">
+  <li><strong>Core logic PHẢI đúng</strong> — không compromise</li>
+  <li><strong>Error handling PHẢI có</strong> — production không tha lỗi</li>
+  <li><strong>Performance PHẢI đủ</strong> — không cần optimal, nhưng đủ cho load hiện tại</li>
+  <li><strong>Readability OK</strong> — người khác đọc hiểu, nhưng không cần đẹp như art</li>
+  <li><strong>Refactor = task riêng</strong> — schedule vào sprint sau, không làm lẫn với feature</li>
+</ul>
+
+<h3>Tư Duy 3: "장애는 선생님이다" (Sự cố là thầy giáo)</h3>
+
+<p class="fade-in">
+  Mỗi lần production sập, 김개발 viết <strong>장애 회고록 (Post-mortem)</strong>. Không phải để blame — mà để học. Format anh dùng:
+</p>
+
+<pre class="fade-in"><code>## 장애 회고록 (Post-Mortem)
+## 일시: 2014-05-12 03:15 KST
+## 영향: 결제 시스템 30분 중단, 약 2,000건 거래 지연
+## 심각도: P1 (Critical)
+
+### 타임라인 (Timeline)
+- 03:15 — 모니터링 알림 발생 (Monitoring alert triggered)
+- 03:18 — 당직자 확인, 온콜 호출 (On-call notified)
+- 03:25 — 김개발 로그 확인 시작 (Log analysis started)
+- 03:35 — 원인 파악: DB connection pool exhaustion
+- 03:40 — 임시 조치: connection pool size 50→200 증설
+- 03:45 — 서비스 정상화 확인 (Service restored)
+
+### 근본 원인 (Root Cause)
+- 야간 배치에서 connection을 close 하지 않는 로직 존재
+- 매일 10개씩 leak → 5일 후 pool 소진
+- 이전 배포에서 try-with-resources 누락
+
+### 재발 방지 (Prevention)
+- [ ] connection leak detector 활성화 (HikariCP leakDetectionThreshold)
+- [ ] 배치 코드 전수 조사 (모든 connection close 확인)
+- [ ] connection pool 모니터링 대시보드 추가
+- [ ] 코드 리뷰 체크리스트에 "resource close" 항목 추가
+
+### 배운 점 (Lessons)
+- try-with-resources는 선택이 아니라 의무
+- 모니터링 없는 배치는 시한폭탄</code></pre>
+
+<h3>Tư Duy 4: "기술은 도구, 문제가 주인" (Tech là tool, problem là master)</h3>
+
+<p class="fade-in">
+  김개발 đã sống sót qua nhiều hype cycle: EJB → Spring → Microservices → Serverless → AI.
+  Anh biết: <strong>mọi tech đều sẽ bị replace</strong>. Thứ không bị replace là khả năng:
+</p>
+
+<ul class="fade-in">
+  <li>Phân tích vấn đề (problem decomposition)</li>
+  <li>Thiết kế hệ thống (system design)</li>
+  <li>Giao tiếp với con người (communication)</li>
+  <li>Học thứ mới nhanh (learning ability)</li>
+</ul>
+
+<div class="callout callout-tip fade-in">
+  <p>
+    <strong>김개발's Tech Decision Framework:</strong>
+  </p>
+  <ol>
+    <li><strong>팀이 할 수 있나?</strong> (Team làm được không?) — Chọn tech team biết. Training cost = real cost.</li>
+    <li><strong>운영할 수 있나?</strong> (Vận hành được không?) — Deploy được phải maintain được.</li>
+    <li><strong>채용할 수 있나?</strong> (Tuyển người được không?) — Tech niche = khó tuyển = risk.</li>
+    <li><strong>고객이 원하나?</strong> (Khách hàng cần không?) — Đôi khi họ chỉ cần nó chạy, không cần "hiện đại".</li>
+    <li><strong>3년 후에도 있나?</strong> (3 năm sau còn không?) — Đừng bet career vào framework mới ra 6 tháng.</li>
+  </ol>
+</div>
+
+<h3>Tư Duy 5: Transaction — Tôn Giáo Thứ Hai</h3>
+
+<pre class="fade-in"><code>// SAI — Và rất nhiều người sai kiểu này
+@Transactional
+public void transferMoney(Long from, Long to, BigDecimal amount) {
+    accountRepo.withdraw(from, amount);
+
+    try {
+        accountRepo.deposit(to, amount);
+    } catch (Exception e) {
+        log.error("입금 실패", e);
+        // ⚠️ NGUY HIỂM: Exception bị catch → Transaction KHÔNG rollback
+        // Tiền rút rồi mà không gửi → MẤT TIỀN → ĐI TÙ
+    }
+}
+
+// ĐÚNG — 김개발's way
+@Transactional(rollbackFor = Exception.class,
+               isolation = Isolation.READ_COMMITTED,
+               timeout = 30)
+public TransferResult transferMoney(Long from, Long to, BigDecimal amount) {
+    // Validate trước khi bắt đầu transaction
+    Account fromAcct = accountRepo.findByIdForUpdate(from);  // SELECT FOR UPDATE
+    Account toAcct = accountRepo.findByIdForUpdate(to);        // pessimistic lock
+
+    if (fromAcct.getBalance().compareTo(amount) < 0) {
+        throw new InsufficientBalanceException(from, amount);
+    }
+
+    fromAcct.withdraw(amount);
+    toAcct.deposit(amount);
+
+    // Để exception tự bay lên — Spring lo rollback
+    // Xử lý exception ở Controller/Facade layer
+
+    return TransferResult.success(from, to, amount);
+}
+
+// 이 코드가 이해되면, 한국 금융 SI의 50%를 이해한 겁니다
+// (Hiểu code này = hiểu 50% financial SI ở Hàn Quốc)</code></pre>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 11 — DEV NƯỚC NGOÀI
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="foreign">
+  <span class="chapter-number">Chapter 11 — 외국인 개발자: Dev Nước Ngoài Ở Hàn</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Hướng Dẫn Sinh Tồn Cho Developer Nước Ngoài Tại Hàn Quốc</h2>
+
+<p class="drop-cap fade-in">
+  김개발 đã làm việc với developer Việt Nam, Trung Quốc, Ấn Độ, Mỹ, và châu Âu.
+  Anh thấy pattern rõ ràng: những người thành công ở Hàn Quốc không phải người giỏi code nhất —
+  mà là người <strong>adapt nhanh nhất</strong>.
+</p>
+
+<h3>Những Sai Lầm Phổ Biến (Và Cách Tránh)</h3>
+
+<div class="numbered-insight fade-in">
+  <div class="num">01</div>
+  <div class="content">
+    <h4 style="margin-top:0;color:var(--accent-red)">Quá thẳng thắn (Too direct)</h4>
+    <p>"This code is wrong. Here's the fix." — Ở Mỹ = professional. Ở Hàn = vô lễ.
+    <strong>Fix:</strong> "이 부분 제가 좀 다른 방식으로 해봤는데, 이렇게 하면 어떨까요?"
+    (Em thử cách khác cho phần này, thế này thì sao ạ?)</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">02</div>
+  <div class="content">
+    <h4 style="margin-top:0;color:var(--accent-red)">Từ chối 회식 (Skipping team dinners)</h4>
+    <p>"I have plans" mỗi lần team đi ăn. 1-2 lần OK. Liên tục = bạn không muốn là "part of team".
+    <strong>Fix:</strong> Tham gia ít nhất 70% 회식. Có thể về sớm sau round 1 nếu cần — nhưng phải xuất hiện.</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">03</div>
+  <div class="content">
+    <h4 style="margin-top:0;color:var(--accent-red)">Chê legacy code trước mặt team</h4>
+    <p>"Why is this code so bad?" — Người viết code đó có thể đang ngồi cạnh bạn. Hoặc là mentor của người ngồi cạnh bạn.
+    <strong>Fix:</strong> "이 코드의 배경이 궁금한데요, 왜 이렇게 작성된 건지 알 수 있을까요?"
+    (Em tò mò về context code này, có thể biết tại sao viết thế này không?)</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">04</div>
+  <div class="content">
+    <h4 style="margin-top:0;color:var(--accent-red)">Không báo cáo progress</h4>
+    <p>Ở phương Tây: "No news is good news." Ở Hàn: <strong>"No news = có vấn đề mà không nói."</strong>
+    <strong>Fix:</strong> Update sếp mỗi ngày hoặc mỗi 2 ngày, dù chỉ một dòng: "현재 70% 진행 중입니다. 특이사항 없습니다." (Hiện đang 70%, không có vấn đề đặc biệt.)</p>
+  </div>
+</div>
+
+<div class="numbered-insight fade-in">
+  <div class="num">05</div>
+  <div class="content">
+    <h4 style="margin-top:0;color:var(--accent-red)">Ăn trưa một mình</h4>
+    <p>Ở Hàn, ăn trưa là hoạt động nhóm. Ăn một mình = "외톨이" (loner) = team sẽ tự hỏi bạn có vấn đề gì.
+    <strong>Fix:</strong> Khi team rủ đi ăn, LUÔN đi cùng. Nếu không ai rủ, chủ động hỏi: "점심 같이 드실래요?" (Mình đi ăn trưa cùng nhé?)</p>
+  </div>
+</div>
+
+<h3>Những Điều Nên Làm (Quick Wins)</h3>
+
+<div class="highlight-box fade-in">
+  <ul>
+    <li><strong>Học 인사 (chào hỏi):</strong> Sáng: "안녕하세요!" (Xin chào!). Về: "수고하세요!" (Anh chị làm việc vất vả!) hoặc "먼저 들어가겠습니다" (Em về trước ạ). Đơn giản nhưng powerful.</li>
+    <li><strong>Mua cà phê cho team:</strong> 아메리카노 cho cả team (~5,000원/ly × 5 người = ~25,000원). Chi phí nhỏ, 정 lớn.</li>
+    <li><strong>Hỏi "괜찮으세요?" (Anh/chị ổn không?) khi đồng nghiệp có vẻ mệt:</strong> Nhỏ nhưng ý nghĩa — cho thấy bạn chú ý đến con người, không chỉ đến code.</li>
+    <li><strong>Khi không hiểu, nói:</strong> "죄송한데 다시 한번 설명해 주실 수 있으세요?" (Xin lỗi, anh/chị giải thích lại lần nữa được không?). Hỏi lại = OK. Giả vờ hiểu rồi làm sai = NOT OK.</li>
+    <li><strong>Gọi đúng chức danh:</strong> 과장님, 부장님 — luôn thêm "님" (honorific). Sai = thất lễ.</li>
+    <li><strong>Đến đúng giờ hoặc sớm 5 phút:</strong> Ở Hàn, đúng giờ = muộn. 5 phút sớm = đúng giờ.</li>
+  </ul>
+</div>
+
+<h3>Tiếng Hàn Cho Developer — 20 Câu Cứu Mạng</h3>
+
+<div class="highlight-box fade-in">
+  <table class="info-table" style="font-size:0.88rem">
+    <tr>
+      <td style="color:var(--accent-blue);font-weight:700">Tình huống</td>
+      <td style="color:var(--accent-gold)">Tiếng Hàn</td>
+      <td>Phiên âm / Nghĩa</td>
+    </tr>
+    <tr><td>Chào sáng</td><td>안녕하세요</td><td>Annyeonghaseyo</td></tr>
+    <tr><td>Cảm ơn</td><td>감사합니다</td><td>Gamsahamnida</td></tr>
+    <tr><td>Xin lỗi</td><td>죄송합니다</td><td>Joesonghamnida</td></tr>
+    <tr><td>Về trước</td><td>먼저 들어가겠습니다</td><td>Em về trước ạ</td></tr>
+    <tr><td>Vất vả rồi</td><td>수고하셨습니다</td><td>Sugohasyeosseumnida</td></tr>
+    <tr><td>Em hiểu rồi</td><td>네, 알겠습니다</td><td>Ne, algetsseumnida</td></tr>
+    <tr><td>Xin xem lại</td><td>확인해 보겠습니다</td><td>Em sẽ kiểm tra</td></tr>
+    <tr><td>Giúp em chút</td><td>도와주실 수 있으세요?</td><td>Anh giúp em được không?</td></tr>
+    <tr><td>Đi ăn trưa</td><td>점심 같이 드실래요?</td><td>Mình ăn trưa cùng nhé?</td></tr>
+    <tr><td>Em làm xong rồi</td><td>완료했습니다</td><td>Wanlyohaesseumnida</td></tr>
+    <tr><td>Có vấn đề</td><td>문제가 생겼습니다</td><td>Có sự cố rồi ạ</td></tr>
+    <tr><td>Hỏi ý kiến</td><td>의견 좀 여쭤봐도 될까요?</td><td>Em hỏi ý kiến được không?</td></tr>
+    <tr><td>Deploy xong</td><td>배포 완료했습니다</td><td>Đã deploy xong ạ</td></tr>
+    <tr><td>Cần thời gian</td><td>시간이 좀 필요합니다</td><td>Cần thêm thời gian ạ</td></tr>
+    <tr><td>Hôm nay OT</td><td>오늘 야근이요?</td><td>Hôm nay overtime ạ?</td></tr>
+    <tr><td>Review xong</td><td>코드 리뷰 완료했습니다</td><td>Đã review code xong</td></tr>
+    <tr><td>Ăn ngon nhé</td><td>맛있게 드세요</td><td>Mashitge deuseyo</td></tr>
+    <tr><td>Chúc cuối tuần vui</td><td>좋은 주말 보내세요</td><td>Cuối tuần vui nhé</td></tr>
+    <tr><td>Anh giỏi quá</td><td>역시 대단하세요</td><td>Anh đúng là giỏi (flatter sếp)</td></tr>
+    <tr><td>Sẽ cố gắng</td><td>열심히 하겠습니다</td><td>Em sẽ nỗ lực ạ</td></tr>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CHAPTER 12 — INSIGHTS TỔNG HỢP
+     ══════════════════════════════════════════════════════════════════════ -->
+<div class="chapter-marker" id="insights">
+  <span class="chapter-number">Chapter 12 — 총정리: Tổng Kết 18 Năm</span>
+  <span class="chapter-line"></span>
+</div>
+
+<h2>Những Insight Cuối Cùng — Không Có Trong Bất Kỳ Sách Nào</h2>
+
+<h3>Về Code</h3>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"레거시를 욕하기 전에, 그 코드가 버텨온 걸 존중해라"</strong><br>
+  (Trước khi chê legacy, hãy tôn trọng việc nó đã trụ được đến giờ.)
+  Code của bạn 10 năm sau cũng sẽ thành legacy. Và ai đó sẽ chê nó.</p>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"모니터링 없는 시스템은 눈 감고 운전하는 것과 같다"</strong><br>
+  (Hệ thống không monitoring = lái xe nhắm mắt.)
+  APM + alerting + log aggregation > 100% test coverage.
+  Ở Hàn, dùng Jennifer (Jennifersoft) — APM nội địa, cực mạnh cho Java.</p>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"좋은 코드는 설명이 필요 없고, 좋은 아키텍처는 변명이 필요 없다"</strong><br>
+  (Code tốt không cần giải thích, architecture tốt không cần bào chữa.)
+  Nếu bạn phải viết 2 trang comment để giải thích logic → logic sai, không phải thiếu comment.</p>
+</div>
+
+<h3>Về Con Người</h3>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"실력은 문을 열어주지만, 인성이 그 안에 있게 해준다"</strong><br>
+  (Năng lực mở cánh cửa, nhưng nhân cách giữ bạn ở bên trong.)
+  Bạn có thể vào team nhờ coding skill. Nhưng bạn ở lại, thăng tiến, và được tin tưởng — nhờ cách bạn đối xử với người khác.</p>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"코드 리뷰는 코드를 보는 게 아니라 사람을 보는 것이다"</strong><br>
+  (Code review không phải xem code — mà xem con người.)
+  Cách bạn review nói nhiều về bạn hơn về code. Harsh review = bạn giỏi nhưng khó chịu.
+  Constructive review = bạn giỏi VÀ team muốn làm việc cùng.</p>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"모르는 건 죄가 아니지만, 모르면서 아는 척하는 건 재앙이다"</strong><br>
+  (Không biết không phải tội, nhưng không biết mà giả vờ biết = thảm hoạ.)
+  Ở Hàn Quốc, nói "모르겠습니다. 확인해 보겠습니다." (Em không biết, em sẽ kiểm tra) được tôn trọng
+  HƠN nói bừa rồi sai.</p>
+</div>
+
+<h3>Về Sự Nghiệp</h3>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"이직은 도망이 아니라 성장이다 — 단, 시기가 맞을 때"</strong><br>
+  (Nhảy việc không phải trốn chạy — mà là phát triển, nếu đúng thời điểm.)
+  Ở Hàn, ở một công ty 2-3 năm là chuẩn. Dưới 1 năm = "못 견딘 사람" (người chịu không nổi).
+  Trên 7 năm = "편한 자리에 안주" (an phận). 2-4 năm/nơi, mỗi lần nhảy lên level mới.</p>
+</div>
+
+<div class="callout callout-insight fade-in">
+  <p><strong>"개발자의 가치는 연차가 아니라 해결한 문제의 크기로 결정된다"</strong><br>
+  (Giá trị developer không đo bằng năm kinh nghiệm — mà bằng kích thước vấn đề đã giải quyết.)
+  10 năm kinh nghiệm nhưng chỉ làm CRUD ≠ 5 năm kinh nghiệm nhưng đã scale hệ thống lên 50 triệu user.</p>
+</div>
+
+<h3>Về Sức Khoẻ</h3>
+
+<div class="callout callout-war fade-in">
+  <p>
+    <strong>Năm 2015, 김개발 nhập viện vì kiệt sức.</strong> 3 dự án song song.
+    야근 mỗi ngày đến 11 giờ đêm. Cuối tuần vẫn làm. Cơ thể nói "stop" trước khi anh kịp nói.
+  </p>
+  <p>
+    <em>"아무리 급해도 잠은 자라. 죽은 개발자는 코딩 못 한다."</em><br>
+    (Dù gấp cỡ nào cũng phải ngủ. Developer chết rồi thì không code được.)
+  </p>
+  <p style="margin-bottom:0">
+    Sau đó, anh có 3 quy tắc:
+    (1) Không nhận quá 2 dự án cùng lúc.
+    (2) 1 ngày/tuần hoàn toàn không code.
+    (3) Tập thể dục 3 lần/tuần — 등산 (leo núi, hobby quốc dân Hàn Quốc).
+  </p>
+</div>
+
+<div class="section-sep">* * *</div>
+
+<h2>Lời Kết</h2>
+
+<p class="fade-in">
+  Khi được hỏi lời khuyên cuối cùng, 김개발 cười — nụ cười của người đã qua 18 mùa xuân trong ngành, đã thấy đủ thăng trầm, đã rơi nước mắt vì bug và vì kiệt sức, đã cười phá lên khi deploy thành công lúc 3 giờ sáng:
+</p>
+
+<blockquote>
+  "코딩만 잘하면 된다고? 아니.<br>
+  코딩은 기본이야. 한국에서 살아남으려면:<br><br>
+  눈치 — 공기를 읽어라.<br>
+  소통 — 말하는 것보다 듣는 게 중요해.<br>
+  인내 — 빨리빨리 문화에서도 참을 건 참아야 해.<br>
+  정 — 사람을 먼저 챙겨라. 코드는 그 다음이야.<br>
+  겸손 — 네가 아무리 잘해도, 배울 건 항상 있어.<br><br>
+  아, 그리고 절대 금요일에 배포하지 마. 진짜로."<br><br>
+  <span style="color:var(--text-primary);font-style:normal">
+  (Code giỏi là đủ hả? Không.<br>
+  Code giỏi chỉ là cơ bản. Để sống sót ở Hàn Quốc:<br><br>
+  눈치 — Đọc không khí.<br>
+  소통 — Lắng nghe quan trọng hơn nói.<br>
+  인내 — Trong văn hoá 빨리빨리, vẫn phải biết kiên nhẫn.<br>
+  정 — Quan tâm con người trước. Code sau.<br>
+  겸손 — Dù giỏi cỡ nào, luôn có thứ để học.<br><br>
+  À, và <strong>tuyệt đối không deploy ngày thứ Sáu</strong>. Thật đấy.)
+  </span>
+  <cite>— 김개발, Pangyo, 2026</cite>
+</blockquote>
+
+</article>
+
+<footer>
+  <div class="footer-quote">
+    "좋은 코드는 사라져도, 좋은 개발자의 영향은 남는다."<br>
+    <span style="font-size:0.88rem;color:var(--text-muted)">
+      Code tốt có thể biến mất, nhưng ảnh hưởng của developer tốt thì ở lại mãi.
+    </span>
+  </div>
+  <p style="margin-top:1.5rem">
+    Written with <span style="color:var(--accent-pink)">&hearts;</span> and too much 아메리카노<br>
+    <span style="color:var(--text-muted)">
+      A fictional editorial inspired by the real spirit of Korean Java developers everywhere.<br>
+      Dedicated to every developer who has ever stayed up past midnight fixing a production bug.
+    </span>
+  </p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+});
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

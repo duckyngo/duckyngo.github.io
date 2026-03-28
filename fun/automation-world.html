@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Th&#x1ebf; Gi&#x1edd;i Automation - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: gearSpin 6s linear infinite;
+  }
+
+  @keyframes gearSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .analogy-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor / Tool Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.ansible::before { background: linear-gradient(90deg, #ef4444, #f97316); }
+  .vendor-card.terraform::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.puppet::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .vendor-card.chef::before { background: linear-gradient(90deg, #f97316, #ea580c); }
+  .vendor-card.salt::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.pulumi::before { background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+  .vendor-card.opentofu::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.cloudinit::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+  .vendor-card.argocd::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.fluxcd::before { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+  .vendor-card.github::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+  .vendor-card.drone::before { background: linear-gradient(90deg, #10b981, #14b8a6); }
+  .vendor-card.woodpecker::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+  .vendor-card.jenkins::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Code / Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Code Block standalone */
+  .code-block {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--border);
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  .code-block .code-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .code-block pre {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: var(--accent3);
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+
+  .code-block pre .comment { color: var(--text-dim); }
+  .code-block pre .keyword { color: var(--accent2); }
+  .code-block pre .string { color: var(--accent4); }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Mindset / Numbered Cards */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .analogy-grid { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Automation World</a>
+  <a href="#iac">IaC l&agrave; g&igrave;?</a>
+  <a href="#history">L&#x1ecb;ch s&#x1eed;</a>
+  <a href="#config-mgmt">Config Mgmt</a>
+  <a href="#provisioning">Provisioning</a>
+  <a href="#gitops">GitOps</a>
+  <a href="#cicd">CI/CD</a>
+  <a href="#proxmox">Proxmox Lab</a>
+  <a href="#myths">Hi&#x1ec3;u nh&#x1ea7;m</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#9881;&#65039;</div>
+  <h1>Th&#x1ebf; Gi&#x1edd;i Automation</h1>
+  <p class="subtitle">T&#x1eeb; shell script vi&#x1ebf;t tay &#x111;&#x1ebf;n Infrastructure as Code - H&agrave;nh tr&igrave;nh 30 n&#x103;m c&#x1ee7;a ng&agrave;nh t&#x1ef1; &#x111;&#x1ed9;ng h&oacute;a h&#x1ea1; t&#x1ea7;ng. M&#x1ecdi; th&#x1ee9; b&#x1ea1;n c&#x1ea7;n bi&#x1ebf;t v&#x1ec1; Ansible, Terraform, GitOps, v&agrave; c&aacute;ch &aacute;p d&#x1ee5;ng cho homelab Proxmox.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- IAC LA GI -->
+<section id="iac">
+  <div class="intro-box">
+    <h2 class="section-title">Infrastructure as Code l&agrave; g&igrave; th&#x1ef1;c s&#x1ef1;?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Infrastructure as Code (IaC)</strong> - N&ocirc;m na l&agrave; b&#x1ea1;n m&ocirc; t&#x1ea3; to&agrave;n b&#x1ed9; h&#x1ea1; t&#x1ea7;ng b&#x1eb1;ng code, thay v&igrave; click chu&#x1ed9;t hay g&otilde; l&#x1ec7;nh th&#x1ee7; c&ocirc;ng. Server, network, firewall, DNS, user - t&#x1ea5;t c&#x1ea3; &#x111;&#x1ec1;u &#x111;&#x1b0;&#x1ee3;c &#x111;&#x1ecb;nh ngh&#x129;a trong file text, l&#x1b0;u tr&#x1eef; trong Git, v&agrave; c&oacute; th&#x1ec3; t&aacute;i t&#x1ea1;o b&#x1ea5;t c&#x1ee9; l&uacute;c n&agrave;o.
+    </p>
+
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="icon">&#x1f42e;</div>
+        <h3>Pets (Th&uacute; c&#x1b0;ng)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">M&#x1ed7;i server c&oacute; t&ecirc;n ri&ecirc;ng, c&#x1ea5;u h&igrave;nh b&#x1eb1;ng tay, ch&#x103;m s&oacute;c t&#x1eeb;ng con m&#x1ed9;t. Ch&#x1ebf;t l&agrave; kh&oacute;c.<br><strong style="color: var(--accent5);">Kh&ocirc;ng scale &#x111;&#x1b0;&#x1ee3;c</strong></p>
+      </div>
+      <div class="analogy-arrow">&#x2192;</div>
+      <div class="analogy-box">
+        <div class="icon">&#x1f404;</div>
+        <h3>Cattle (Gia s&uacute;c)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Server l&agrave; s&#x1ed1;, c&#x1ea5;u h&igrave;nh b&#x1eb1;ng code, h&#x1ecf;ng th&igrave; x&oacute;a t&#x1ea1;o l&#x1ea1;i. Kh&ocirc;ng ai kh&oacute;c.<br><strong style="color: var(--accent3);">Scale v&ocirc; h&#x1ea1;n</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan tr&#x1ecd;ng</h4>
+      <p>IaC kh&ocirc;ng ch&#x1ec9; l&agrave; "vi&#x1ebf;t script &#x111;&#x1ec3; c&agrave;i server". N&oacute; l&agrave; m&#x1ed9;t <strong>tri&#x1ebf;t l&yacute; v&#x1ead;n h&agrave;nh</strong> - m&#x1ecdi; thay &#x111;&#x1ed5;i &#x111;&#x1ec1;u &#x111;&#x1b0;&#x1ee3;c review, version, test, v&agrave; rollback. H&atilde;y ngh&#x129; n&oacute; nh&#x1b0; <strong>Git cho h&#x1ea1; t&#x1ea7;ng</strong> - t&#x1b0;&#x1a1;ng t&#x1ef1; c&aacute;ch developer qu&#x1ea3;n l&yacute; source code, SysAdmin/DevOps qu&#x1ea3;n l&yacute; infrastructure b&#x1eb1;ng code. Kh&ocirc;ng c&ograve;n "&#x1edd;, h&igrave;nh nh&#x1b0; h&ocirc;m tr&#x1b0;&#x1edb;c t&ocirc;i s&#x1eeda; g&igrave; &#x111;&oacute; tr&ecirc;n server n&agrave;y..."</p>
+    </div>
+
+    <h3 style="color: var(--accent3); margin-top: 2rem; margin-bottom: 1rem;">Ba tr&#x1ee5; c&#x1ed9;t c&#x1ee7;a IaC</h3>
+    <div class="vendor-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+      <div style="background: var(--card); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border);">
+        <h4 style="color: var(--accent);">&#x1f4dd; Declarative</h4>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem;">B&#x1ea1;n m&ocirc; t&#x1ea3; tr&#x1ea1;ng th&aacute;i mong mu&#x1ed1;n (desired state), c&ocirc;ng c&#x1ee5; t&#x1ef1; t&igrave;m c&aacute;ch &#x111;&#x1ea1;t &#x111;&#x1b0;&#x1ee3;c. V&iacute; d&#x1ee5;: "T&ocirc;i mu&#x1ed1;n 3 VM ch&#x1ea1;y Ubuntu 22.04" - Terraform s&#x1ebd; t&#x1ef1; t&#x1ea1;o &#x111;&uacute;ng 3 con.</p>
+      </div>
+      <div style="background: var(--card); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border);">
+        <h4 style="color: var(--accent2);">&#x1f504; Idempotent</h4>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem;">Ch&#x1ea1;y 1 l&#x1ea7;n hay 100 l&#x1ea7;n, k&#x1ebf;t qu&#x1ea3; nh&#x1b0; nhau. Kh&ocirc;ng s&#x1ee3; "ch&#x1ea1;y l&#x1ea1;i s&#x1ebd; h&#x1ecf;ng". &#x110;&acirc;y l&agrave; &#x111;i&#x1ec3;m kh&aacute;c bi&#x1ec7;t l&#x1edb;n nh&#x1ea5;t so v&#x1edb;i shell script th&#x1b0;&#x1edd;ng.</p>
+      </div>
+      <div style="background: var(--card); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border);">
+        <h4 style="color: var(--accent3);">&#x1f91d; Version Control</h4>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem;">M&#x1ecdi; thay &#x111;&#x1ed5;i &#x111;&#x1ec1;u &#x111;i qua Git. Ai s&#x1eeda;? S&#x1eeda; g&igrave;? L&uacute;c n&agrave;o? Rollback v&#x1ec1; phi&ecirc;n b&#x1ea3;n tr&#x1b0;&#x1edb;c ch&#x1ec9; c&#x1ea7;n <code style="color: var(--accent4);">git revert</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">D&ograve;ng Th&#x1edd;i Gian Automation</h2>
+  <p class="section-subtitle">30 n&#x103;m ph&aacute;t tri&#x1ec3;n - t&#x1eeb; shell script vi&#x1ebf;t tay &#x111;&#x1ebf;n GitOps t&#x1ef1; &#x111;&#x1ed9;ng ho&agrave;n to&agrave;n</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1990s</span>
+        <h3>K&#x1ef7; nguy&ecirc;n Shell Scripts</h3>
+        <p>M&#x1ecdi; SysAdmin &#x111;&#x1ec1;u c&oacute; b&#x1ed9; s&#x1b0;u t&#x1eadp; shell script ri&ecirc;ng. Bash, Perl, expect - m&#x1ed7;i ng&#x1b0;&#x1edd;i m&#x1ed9;t ki&#x1ec3;u. Kh&ocirc;ng ai hi&#x1ec3;u script c&#x1ee7;a ng&#x1b0;&#x1edd;i kh&aacute;c. "Ch&#x1ea1;y tr&ecirc;n m&aacute;y t&ocirc;i &#x111;&#x1b0;&#x1ee3;c m&agrave;" l&agrave; c&acirc;u n&oacute;i kinh &#x111;i&#x1ec3;n.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1993</span>
+        <h3>CFEngine - &#x110;i Tr&#x1b0;&#x1edb;c Th&#x1edd;i &#x110;&#x1ea1;i</h3>
+        <p>Mark Burgess t&#x1ea1;o ra CFEngine t&#x1ea1;i &#x110;&#x1ea1;i h&#x1ecd;c Oslo. &#x110;&acirc;y l&agrave; c&ocirc;ng c&#x1ee5; Configuration Management &#x111;&#x1ea7;u ti&ecirc;n c&#x1ee7;a nh&acirc;n lo&#x1ea1;i. Kh&aacute;i ni&#x1ec7;m "desired state" v&agrave; "convergence" ra &#x111;&#x1edd;i t&#x1eeb; &#x111;&acirc;y. Qu&aacute; &#x111;i tr&#x1b0;&#x1edb;c th&#x1edd;i &#x111;&#x1ea1;i n&ecirc;n &iacute;t ng&#x1b0;&#x1edd;i hi&#x1ec3;u.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2005</span>
+        <h3>Puppet - Configuration Management cho m&#x1ecdi;i ng&#x1b0;&#x1edd;i</h3>
+        <p>Luke Kanies t&#x1ea1;o Puppet v&#x1edb;i ng&ocirc;n ng&#x1eef; DSL ri&ecirc;ng. Agent-based, master-slave architecture. L&#x1ea7;n &#x111;&#x1ea7;u ti&ecirc;n CM tr&#x1edf; n&ecirc;n d&#x1ec5; ti&#x1ebf;p c&#x1eadn;. Google, Twitter, Spotify &#x111;&#x1ec1;u d&ugrave;ng.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2009</span>
+        <h3>Chef - Ruby cho Infra</h3>
+        <p>Adam Jacob mang Ruby v&agrave;o th&#x1ebf; gi&#x1edb;i infra. "Recipes" v&agrave; "Cookbooks" - &#x111;&#x1eb7;t t&ecirc;n theo &#x1ea9;m th&#x1ef1;c. M&#x1ea1;nh m&#x1ebd; nh&#x1b0;ng learning curve d&#x1ed1;c. Facebook d&ugrave;ng Chef qu&#x1ea3;n l&yacute; h&agrave;ng tri&#x1ec7;u server.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2012</span>
+        <h3>Ansible - C&aacute;ch M&#x1ea1;ng Agentless</h3>
+        <p>Michael DeHaan t&#x1ea1;o Ansible. Kh&ocirc;ng c&#x1ea7;n agent, ch&#x1ec9; c&#x1ea7;n SSH. YAML &#x111;&#x1ecd;c hi&#x1ec3;u nh&#x1b0; ti&#x1ebf;ng Anh. Red Hat mua n&#x103;m 2015 v&#x1edb;i gi&aacute; $150M. Tr&#x1edf; th&agrave;nh c&ocirc;ng c&#x1ee5; CM ph&#x1ed5; bi&#x1ebf;n nh&#x1ea5;t th&#x1ebf; gi&#x1edb;i. &#x110;&acirc;y l&agrave; "iPhone moment" c&#x1ee7;a Configuration Management.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2014</span>
+        <h3>Terraform - Infrastructure Provisioning</h3>
+        <p>HashiCorp ra m&#x1eaf;t Terraform v&#x1edb;i ng&ocirc;n ng&#x1eef; HCL. L&#x1ea7;n &#x111;&#x1ea7;u ti&ecirc;n, b&#x1ea1;n c&oacute; th&#x1ec3; m&ocirc; t&#x1ea3; to&agrave;n b&#x1ed9; infra &#x111;a cloud trong m&#x1ed9;t file. Plan &#x2192; Apply &#x2192; Destroy. State file qu&#x1ea3;n l&yacute; tr&#x1ea1;ng th&aacute;i. Th&#x1ebf; gi&#x1edb;i IaC thay &#x111;&#x1ed5;i m&atilde;i m&atilde;i.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2018-nay</span>
+        <h3>GitOps - Git l&agrave; ngu&#x1ed3;n s&#x1ef1; th&#x1eadt; duy nh&#x1ea5;t</h3>
+        <p>Weaveworks &#x111;&#x1ecb;nh ngh&#x129;a GitOps. ArgoCD, FluxCD ra &#x111;&#x1edd;i. M&#x1ecdi; thay &#x111;&#x1ed5;i infra &#x111;&#x1ec1;u qua Pull Request. Cluster t&#x1ef1; &#x111;&#x1ed3;ng &#x111;&#x1ed3;ng b&#x1ed9; v&#x1edb;i Git. Kh&ocirc;ng ai SSH v&agrave;o server n&#x1eef;a. &#x110;&acirc;y l&agrave; &#x111;&#x1ec9;nh cao c&#x1ee7;a IaC.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONFIGURATION MANAGEMENT -->
+<section id="config-mgmt">
+  <h2 class="section-title" style="color: var(--accent2);">Configuration Management</h2>
+  <p class="section-subtitle">&#x110;&#x1ea3;m b&#x1ea3;o m&#x1ecdi; server lu&ocirc;n &#x1edf; tr&#x1ea1;ng th&aacute;i mong mu&#x1ed1;n - t&#x1eeb; package &#x111;&#x1ebf;n config file</p>
+
+  <div class="vendor-grid">
+    <!-- Ansible -->
+    <div class="vendor-card ansible">
+      <div class="vendor-logo">&#x1f680;</div>
+      <h3>Ansible</h3>
+      <div class="vendor-type">Agentless / YAML / Python</div>
+      <p>&#x110;&#x1b0;&#x1ee3;c t&#x1ea1;o b&#x1edf;i Michael DeHaan n&#x103;m 2012, mua b&#x1edf;i Red Hat n&#x103;m 2015. Tri&#x1ebf;t l&yacute;: <strong>&#x111;&#x1a1;n gi&#x1ea3;n l&agrave; v&#x1eef;a</strong>. Kh&ocirc;ng c&#x1ea7;n c&agrave;i agent l&ecirc;n server - ch&#x1ec9; c&#x1ea7;n SSH v&agrave; Python. YAML d&#x1ec5; &#x111;&#x1ecd;c nh&#x1b0; ti&#x1ebf;ng Anh. B&#x1ea5;t k&#x1ef3; ai bi&#x1ebf;t Linux &#x111;&#x1ec1;u c&oacute; th&#x1ec3; h&#x1ecd;c Ansible trong 1 tu&#x1ea7;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2012</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">60K+</div><div class="label">GitHub Stars</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">CM Tool</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Agentless</span>
+        <span class="tag">YAML</span>
+        <span class="tag good">Idempotent</span>
+        <span class="tag">SSH</span>
+        <span class="tag warn">Ch&#x1eadm v&#x1edb;i 500+ host</span>
+      </div>
+    </div>
+
+    <!-- Puppet -->
+    <div class="vendor-card puppet">
+      <div class="vendor-logo">&#x1f3ad;</div>
+      <h3>Puppet</h3>
+      <div class="vendor-type">Agent-based / DSL / Ruby</div>
+      <p>"&#x1ed4;ng t&#x1ed5;" c&#x1ee7;a CM hi&#x1ec7;n &#x111;&#x1ea1;i. Agent ch&#x1ea1;y tr&ecirc;n m&#x1ed7;i node, k&#x1ebf;t n&#x1ed1;i v&#x1ec1; Puppet Master. Ng&ocirc;n ng&#x1eef; DSL ri&ecirc;ng (kh&ocirc;ng ph&#x1ea3;i YAML). Reporting v&agrave; compliance r&#x1ea5;t m&#x1ea1;nh. Ph&ugrave; h&#x1ee3;p enterprise l&#x1edb;n c&#x1ea7;n audit trail v&agrave; compliance.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2005</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">7K+</div><div class="label">Modules</div></div>
+        <div class="stat"><div class="num">40K+</div><div class="label">Kh&aacute;ch h&agrave;ng</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Agent Required</span>
+        <span class="tag">DSL ri&ecirc;ng</span>
+        <span class="tag good">Enterprise</span>
+        <span class="tag warn">Learning Curve</span>
+      </div>
+    </div>
+
+    <!-- Chef -->
+    <div class="vendor-card chef">
+      <div class="vendor-logo">&#x1f468;&#x200d;&#x1f373;</div>
+      <h3>Chef</h3>
+      <div class="vendor-type">Agent-based / Ruby DSL</div>
+      <p>Vi&#x1ebf;t "recipes" b&#x1eb1;ng Ruby &#x111;&#x1ec3; c&#x1ea5;u h&igrave;nh server. M&#x1ea1;nh m&#x1ebd; v&#x1edb;i logic ph&#x1ee9;c t&#x1ea1;p nh&#x1edd; Ruby. Nh&#x1b0;ng c&#x169;ng v&igrave; th&#x1ebf; m&agrave; kh&oacute; h&#x1ecd;c. Progress Software &#x111;&atilde; mua Chef v&agrave; nhi&#x1ec1;u ph&#x1ea7;n &#x111;&atilde; chuy&#x1ec3;n sang open-source. &#x110;ang gi&#x1ea3;m d&#x1ea7;n th&#x1ecb; ph&#x1ea7;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2009</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">Ruby</div><div class="label">Ng&ocirc;n ng&#x1eef;</div></div>
+        <div class="stat"><div class="num">&#x2193;</div><div class="label">Xu h&#x1b0;&#x1edb;ng</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Agent Required</span>
+        <span class="tag">Ruby DSL</span>
+        <span class="tag warn">Ph&#x1ee9;c t&#x1ea1;p</span>
+        <span class="tag hot">&#x110;ang gi&#x1ea3;m</span>
+      </div>
+    </div>
+
+    <!-- Salt -->
+    <div class="vendor-card salt">
+      <div class="vendor-logo">&#x1f9c2;</div>
+      <h3>SaltStack (Salt)</h3>
+      <div class="vendor-type">Agent / Agentless / Python</div>
+      <p>T&#x1ed1;c &#x111;&#x1ed9; l&agrave; USP - d&ugrave;ng ZeroMQ &#x111;&#x1ec3; giao ti&#x1ebf;p. H&#x1ed7; tr&#x1ee3; c&#x1ea3; agent (minion) v&agrave; agentless (SSH). Event-driven automation r&#x1ea5;t m&#x1ea1;nh. VMware mua n&#x103;m 2020. Ph&ugrave; h&#x1ee3;p khi c&#x1ea7;n t&#x1ed1;c &#x111;&#x1ed9; v&agrave; qu&#x1ea3;n l&yacute; s&#x1ed1; l&#x1b0;&#x1ee3;ng l&#x1edb;n node.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2011</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">ZeroMQ</div><div class="label">Transport</div></div>
+        <div class="stat"><div class="num">10K+</div><div class="label">Node/gi&acirc;y</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Nhanh</span>
+        <span class="tag">YAML/Jinja2</span>
+        <span class="tag">Event-driven</span>
+        <span class="tag warn">&Iacute;t t&agrave;i li&#x1ec7;u</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ansible Deep Dive -->
+  <h3 style="color: var(--accent); margin-top: 3rem; margin-bottom: 1rem; font-size: 1.6rem;">Ansible Deep Dive</h3>
+  <p style="color: var(--text-dim); margin-bottom: 2rem;">V&igrave; sao Ansible l&agrave; l&#x1ef1;a ch&#x1ecd;n s&#x1ed1; 1 cho homelab v&agrave; SMB? H&atilde;y &#x111;i s&acirc;u v&agrave;o t&#x1eeb;ng th&agrave;nh ph&#x1ea7;n.</p>
+
+  <div class="arch-container">
+    <h3 style="color: var(--accent); margin-bottom: 1.5rem;">Ki&#x1ebf;n tr&uacute;c Ansible</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1f4bb;</div>
+        <h4>Control Node</h4>
+        <p>M&aacute;y ch&#x1ea1;y ansible<br>C&oacute; Python + SSH</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1f4cb;</div>
+        <h4>Inventory</h4>
+        <p>Danh s&aacute;ch host<br>Groups, variables</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1f4d6;</div>
+        <h4>Playbook</h4>
+        <p>YAML tasks<br>Roles, handlers</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1f50c;</div>
+        <h4>SSH</h4>
+        <p>K&#x1ebf;t n&#x1ed1;i agentless<br>Kh&ocirc;ng c&#x1ea7;n c&agrave;i g&igrave;</p>
+      </div>
+      <div class="arch-arrow">&#x2192;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1f5a5;&#xfe0f;</div>
+        <h4>Managed Nodes</h4>
+        <p>Server &#x111;&iacute;ch<br>Ch&#x1ec9; c&#x1ea7;n Python</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vendor-grid" style="margin-top: 2rem;">
+    <div style="background: var(--card); border-radius: 16px; padding: 2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--accent); margin-bottom: 1rem;">&#x1f4cb; Inventory</h4>
+      <p style="color: var(--text-dim); font-size: 0.95rem;">File &#x111;&#x1ecb;nh ngh&#x129;a server n&agrave;o thu&#x1ed9;c nh&oacute;m n&agrave;o. C&oacute; th&#x1ec3; l&agrave; file INI &#x111;&#x1a1;n gi&#x1ea3;n, YAML, ho&#x1eb7;c dynamic inventory l&#x1ea5;y t&#x1eeb; cloud API.</p>
+      <div class="code-block" style="margin-top: 1rem;">
+        <pre><span class="comment"># inventory.yml</span>
+all:
+  children:
+    proxmox:
+      hosts:
+        pve1.mimosa.lab:
+          ansible_host: 192.168.1.10
+        pve2.mimosa.lab:
+          ansible_host: 192.168.1.11
+    containers:
+      hosts:
+        docker01:
+          ansible_host: 192.168.1.50
+        k8s-master:
+          ansible_host: 192.168.1.60</pre>
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-radius: 16px; padding: 2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--accent2); margin-bottom: 1rem;">&#x1f4d6; Playbook</h4>
+      <p style="color: var(--text-dim); font-size: 0.95rem;">File YAML m&ocirc; t&#x1ea3; c&aacute;c task c&#x1ea7;n th&#x1ef1;c hi&#x1ec7;n. M&#x1ed7;i play nh&#x1eaf;m v&agrave;o m&#x1ed9;t nh&oacute;m host. M&#x1ed7;i task g&#x1ecd;i m&#x1ed9;t module.</p>
+      <div class="code-block" style="margin-top: 1rem;">
+        <pre><span class="comment"># playbook.yml</span>
+- name: C&#x1ea5;u h&igrave;nh web server
+  hosts: containers
+  become: yes
+  tasks:
+    - name: C&agrave;i Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Copy config
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted</pre>
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-radius: 16px; padding: 2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--accent3); margin-bottom: 1rem;">&#x1f4c1; Roles</h4>
+      <p style="color: var(--text-dim); font-size: 0.95rem;">C&#x1ea5;u tr&uacute;c th&#x1b0; m&#x1ee5;c chu&#x1ea9;n &#x111;&#x1ec3; t&aacute;i s&#x1eed; d&#x1ee5;ng code. M&#x1ed9;t role = m&#x1ed9;t ch&#x1ee9;c n&#x103;ng (webserver, database, monitoring...). Chia s&#x1ebb; qua Ansible Galaxy.</p>
+      <div class="code-block" style="margin-top: 1rem;">
+        <pre>roles/
+  webserver/
+    tasks/
+      main.yml        <span class="comment"># Tasks ch&iacute;nh</span>
+    handlers/
+      main.yml        <span class="comment"># Handlers</span>
+    templates/
+      nginx.conf.j2   <span class="comment"># Jinja2 templates</span>
+    files/
+      ssl-cert.pem    <span class="comment"># File t&#x129;nh</span>
+    vars/
+      main.yml        <span class="comment"># Bi&#x1ebf;n</span>
+    defaults/
+      main.yml        <span class="comment"># Gi&aacute; tr&#x1ecb; m&#x1eb7;c &#x111;&#x1ecb;nh</span></pre>
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-radius: 16px; padding: 2rem; border: 1px solid var(--border);">
+      <h4 style="color: var(--accent4); margin-bottom: 1rem;">&#x1f510; Ansible Vault</h4>
+      <p style="color: var(--text-dim); font-size: 0.95rem;">M&atilde; h&oacute;a d&#x1eef; li&#x1ec7;u nh&#x1ea1;y c&#x1ea3;m (passwords, API keys, certificates). Encrypt c&#x1ea3; file ho&#x1eb7;c t&#x1eeb;ng bi&#x1ebf;n. Kh&ocirc;ng bao gi&#x1edd; commit m&#x1eadt; kh&#x1ea9;u d&#x1ea1;ng plain text!</p>
+      <div class="code-block" style="margin-top: 1rem;">
+        <pre><span class="comment"># M&atilde; h&oacute;a file</span>
+ansible-vault encrypt secrets.yml
+
+<span class="comment"># S&#x1eed;a file &#x111;&atilde; m&atilde; h&oacute;a</span>
+ansible-vault edit secrets.yml
+
+<span class="comment"># Ch&#x1ea1;y playbook v&#x1edb;i vault</span>
+ansible-playbook site.yml \
+  --ask-vault-pass
+
+<span class="comment"># D&ugrave;ng vault password file</span>
+ansible-playbook site.yml \
+  --vault-password-file ~/.vault_pass</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <h3 style="color: var(--accent); margin-top: 3rem; margin-bottom: 1rem;">So s&aacute;nh CM Tools</h3>
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Ti&ecirc;u ch&iacute;</th>
+          <th>Ansible</th>
+          <th>Puppet</th>
+          <th>Chef</th>
+          <th>Salt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ki&#x1ebf;n tr&uacute;c</td>
+          <td>Agentless (SSH)</td>
+          <td>Agent + Master</td>
+          <td>Agent + Server</td>
+          <td>Agent / SSH</td>
+        </tr>
+        <tr>
+          <td>Ng&ocirc;n ng&#x1eef;</td>
+          <td>YAML</td>
+          <td>Puppet DSL</td>
+          <td>Ruby DSL</td>
+          <td>YAML + Jinja2</td>
+        </tr>
+        <tr>
+          <td>&#x110;&#x1ed9; kh&oacute; h&#x1ecd;c</td>
+          <td style="color: var(--accent3);">Th&#x1ea5;p</td>
+          <td style="color: var(--accent4);">Trung b&igrave;nh</td>
+          <td style="color: var(--accent5);">Cao</td>
+          <td style="color: var(--accent4);">Trung b&igrave;nh</td>
+        </tr>
+        <tr>
+          <td>T&#x1ed1;c &#x111;&#x1ed9;</td>
+          <td style="color: var(--accent4);">Trung b&igrave;nh</td>
+          <td>Trung b&igrave;nh</td>
+          <td>Trung b&igrave;nh</td>
+          <td style="color: var(--accent3);">Nhanh</td>
+        </tr>
+        <tr>
+          <td>C&#x1ed9;ng &#x111;&#x1ed3;ng</td>
+          <td style="color: var(--accent3);">R&#x1ea5;t l&#x1edb;n</td>
+          <td>L&#x1edb;n</td>
+          <td style="color: var(--accent5);">Gi&#x1ea3;m</td>
+          <td>Trung b&igrave;nh</td>
+        </tr>
+        <tr>
+          <td>Ph&ugrave; h&#x1ee3;p</td>
+          <td>M&#x1ecd;i quy m&ocirc;</td>
+          <td>Enterprise</td>
+          <td>DevOps team</td>
+          <td>Scale l&#x1edb;n</td>
+        </tr>
+        <tr>
+          <td>Homelab?</td>
+          <td style="color: var(--accent3);">Tuy&#x1ec7;t v&#x1edd;i</td>
+          <td style="color: var(--accent4);">Overkill</td>
+          <td style="color: var(--accent5);">Kh&ocirc;ng n&ecirc;n</td>
+          <td>&#x110;&#x1b0;&#x1ee3;c</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- INFRASTRUCTURE PROVISIONING -->
+<section id="provisioning">
+  <h2 class="section-title" style="color: var(--accent3);">Infrastructure Provisioning</h2>
+  <p class="section-subtitle">T&#x1ea1;o v&agrave; qu&#x1ea3;n l&yacute; t&agrave;i nguy&ecirc;n h&#x1ea1; t&#x1ea7;ng - VM, network, storage, DNS - b&#x1eb1;ng code</p>
+
+  <div class="insight-box" style="margin-bottom: 2rem;">
+    <h4>Configuration Management vs Provisioning</h4>
+    <p><strong>CM</strong> (Ansible, Puppet) tr&#x1ea3; l&#x1edd;i: "Server &#x111;&atilde; c&oacute;, c&#x1ea5;u h&igrave;nh n&oacute; th&#x1ebf; n&agrave;o?" <br>
+    <strong>Provisioning</strong> (Terraform, Pulumi) tr&#x1ea3; l&#x1edd;i: "T&#x1ea1;o server &#x1edf; &#x111;&acirc;u, bao nhi&ecirc;u, lo&#x1ea1;i g&igrave;?" <br>
+    Th&#x1ef1;c t&#x1ebf;, ch&uacute;ng b&#x1ed5; sung nhau: Terraform t&#x1ea1;o VM &#x2192; Ansible c&#x1ea5;u h&igrave;nh VM.</p>
+  </div>
+
+  <div class="vendor-grid">
+    <!-- Terraform -->
+    <div class="vendor-card terraform">
+      <div class="vendor-logo">&#x1f3d7;&#xfe0f;</div>
+      <h3>Terraform</h3>
+      <div class="vendor-type">HashiCorp / HCL / Multi-cloud</div>
+      <p>"Vua" c&#x1ee7;a Infrastructure Provisioning. Ng&ocirc;n ng&#x1eef; HCL d&#x1ec5; &#x111;&#x1ecd;c, h&#x1ec7; sinh th&aacute;i provider kh&#x1ed5;ng l&#x1ed3; (AWS, Azure, GCP, Proxmox, Cloudflare...). State file theo d&otilde;i m&#x1ecdi; t&agrave;i nguy&ecirc;n. Workflow: <code style="color: var(--accent4);">init &#x2192; plan &#x2192; apply</code>. L&#x1b0;u &yacute;: HashiCorp &#x111;&#x1ed5;i license sang BSL n&#x103;m 2023 g&acirc;y tranh c&atilde;i l&#x1edb;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2014</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">3000+</div><div class="label">Providers</div></div>
+        <div class="stat"><div class="num">42K+</div><div class="label">GitHub Stars</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Multi-cloud</span>
+        <span class="tag">HCL</span>
+        <span class="tag good">State Mgmt</span>
+        <span class="tag warn">BSL License</span>
+        <span class="tag">Plan/Apply</span>
+      </div>
+    </div>
+
+    <!-- Pulumi -->
+    <div class="vendor-card pulumi">
+      <div class="vendor-logo">&#x1f48e;</div>
+      <h3>Pulumi</h3>
+      <div class="vendor-type">Multi-language / SDK / Cloud Engineering</div>
+      <p>IaC b&#x1eb1;ng ng&ocirc;n ng&#x1eef; l&#x1eadp; tr&igrave;nh th&#x1ef1;c th&#x1ee5; - Python, TypeScript, Go, C#, Java. Kh&ocirc;ng c&#x1ea7;n h&#x1ecd;c DSL m&#x1edb;i. D&ugrave;ng &#x111;&#x1b0;&#x1ee3;c if/else, loop, function nh&#x1b0; code th&#x1b0;&#x1edd;ng. Test b&#x1eb1;ng unit test framework quen thu&#x1ed9;c.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2018</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">5+</div><div class="label">Ng&ocirc;n ng&#x1eef;</div></div>
+        <div class="stat"><div class="num">22K+</div><div class="label">GitHub Stars</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Real Languages</span>
+        <span class="tag">Python/TS/Go</span>
+        <span class="tag good">Testable</span>
+        <span class="tag warn">H&#x1ecd;c th&ecirc;m SDK</span>
+      </div>
+    </div>
+
+    <!-- OpenTofu -->
+    <div class="vendor-card opentofu">
+      <div class="vendor-logo">&#x1f331;</div>
+      <h3>OpenTofu</h3>
+      <div class="vendor-type">Open Source / Fork c&#x1ee7;a Terraform</div>
+      <p>Khi HashiCorp &#x111;&#x1ed5;i Terraform sang BSL license, c&#x1ed9;ng &#x111;&#x1ed3;ng fork th&agrave;nh OpenTofu d&#x1b0;&#x1edb;i Linux Foundation. T&#x1b0;&#x1a1;ng th&iacute;ch 100% v&#x1edb;i Terraform. &#x110;&acirc;y l&agrave; l&#x1ef1;a ch&#x1ecd;n "an to&agrave;n" cho ai lo ng&#x1ea1;i v&#x1ec1; license. C&#x1ed9;ng &#x111;&#x1ed3;ng &#x111;ang ph&aacute;t tri&#x1ec3;n r&#x1ea5;t nhanh.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2023</div><div class="label">Fork</div></div>
+        <div class="stat"><div class="num">MPL-2.0</div><div class="label">License</div></div>
+        <div class="stat"><div class="num">24K+</div><div class="label">GitHub Stars</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Truly Open</span>
+        <span class="tag good">TF Compatible</span>
+        <span class="tag">Linux Foundation</span>
+        <span class="tag warn">C&ograve;n m&#x1edb;i</span>
+      </div>
+    </div>
+
+    <!-- cloud-init -->
+    <div class="vendor-card cloudinit">
+      <div class="vendor-logo">&#x2601;&#xfe0f;</div>
+      <h3>cloud-init</h3>
+      <div class="vendor-type">Boot-time / Multi-cloud / Canonical</div>
+      <p>C&#x1ea5;u h&igrave;nh VM ngay khi boot l&#x1ea7;n &#x111;&#x1ea7;u ti&ecirc;n. Set hostname, SSH keys, packages, network, users - t&#x1ea5;t c&#x1ea3; trong 1 file YAML. H&#x1ea7;u h&#x1ebf;t cloud provider v&agrave; Proxmox &#x111;&#x1ec1;u h&#x1ed7; tr&#x1ee3;. &#x110;&acirc;y l&agrave; "c&#x1ea7;u n&#x1ed1;i" gi&#x1eef;a provisioning v&agrave; configuration management.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2010</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">Canonical</div><div class="label">Maintainer</div></div>
+        <div class="stat"><div class="num">&#x2605;&#x2605;&#x2605;</div><div class="label">Proxmox</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Boot-time</span>
+        <span class="tag">YAML</span>
+        <span class="tag good">Proxmox support</span>
+        <span class="tag">Multi-cloud</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terraform code example -->
+  <div class="code-block" style="margin-top: 2rem;">
+    <div class="code-title">V&iacute; d&#x1ee5; Terraform - T&#x1ea1;o VM tr&ecirc;n Proxmox</div>
+    <pre><span class="comment"># main.tf - T&#x1ea1;o VM t&#x1eeb; template tr&ecirc;n Proxmox</span>
+terraform {
+  required_providers {
+    proxmox = {
+      source  = <span class="string">"telmate/proxmox"</span>
+      version = <span class="string">"&gt;= 2.9.0"</span>
+    }
+  }
+}
+
+<span class="keyword">resource</span> <span class="string">"proxmox_vm_qemu"</span> <span class="string">"docker_host"</span> {
+  count       = 3
+  name        = <span class="string">"docker-${count.index + 1}"</span>
+  target_node = <span class="string">"pve1"</span>
+  clone       = <span class="string">"ubuntu-2204-template"</span>
+
+  cores   = 4
+  memory  = 8192
+  sockets = 1
+
+  disk {
+    storage = <span class="string">"local-zfs"</span>
+    size    = <span class="string">"50G"</span>
+    type    = <span class="string">"scsi"</span>
+  }
+
+  network {
+    model  = <span class="string">"virtio"</span>
+    bridge = <span class="string">"vmbr0"</span>
+  }
+
+  ipconfig0 = <span class="string">"ip=192.168.1.${50 + count.index}/24,gw=192.168.1.1"</span>
+}</pre>
+  </div>
+</section>
+
+<!-- GITOPS -->
+<section id="gitops">
+  <h2 class="section-title" style="color: var(--accent4);">GitOps</h2>
+  <p class="section-subtitle">Git l&agrave; ngu&#x1ed3;n s&#x1ef1; th&#x1eadt; duy nh&#x1ea5;t - m&#x1ecdi; thay &#x111;&#x1ed5;i infra &#x111;&#x1ec1;u qua Pull Request</p>
+
+  <div class="intro-box">
+    <h3 style="color: var(--accent4); margin-bottom: 1rem;">GitOps l&agrave; g&igrave;?</h3>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      GitOps l&agrave; m&ocirc; h&igrave;nh v&#x1eadn; h&agrave;nh m&agrave; <strong>to&agrave;n b&#x1ed9; tr&#x1ea1;ng th&aacute;i mong mu&#x1ed1;n c&#x1ee7;a h&#x1ec7; th&#x1ed1;ng</strong> &#x111;&#x1b0;&#x1ee3;c l&#x1b0;u trong Git. M&#x1ed9;t agent (ArgoCD, FluxCD) li&ecirc;n t&#x1ee5;c so s&aacute;nh tr&#x1ea1;ng th&aacute;i th&#x1ef1;c t&#x1ebf; v&#x1edb;i tr&#x1ea1;ng th&aacute;i trong Git. N&#x1ebf;u c&oacute; s&#x1ef1; kh&aacute;c bi&#x1ec7;t &#x2192; t&#x1ef1; &#x111;&#x1ed9;ng &#x111;&#x1ed3;ng b&#x1ed9;. Kh&ocirc;ng ai SSH v&agrave;o server &#x111;&#x1ec3; s&#x1eeda; g&igrave; n&#x1eef;a.
+    </p>
+
+    <div class="arch-container" style="margin-top: 2rem;">
+      <h4 style="color: var(--accent); margin-bottom: 1rem;">Quy tr&igrave;nh GitOps</h4>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="layer-icon">&#x1f468;&#x200d;&#x1f4bb;</div>
+          <h4>Developer</h4>
+          <p>Push code<br>T&#x1ea1;o Pull Request</p>
+        </div>
+        <div class="arch-arrow">&#x2192;</div>
+        <div class="arch-layer">
+          <div class="layer-icon">&#x1f4e6;</div>
+          <h4>Git Repo</h4>
+          <p>Source of Truth<br>YAML manifests</p>
+        </div>
+        <div class="arch-arrow">&#x2192;</div>
+        <div class="arch-layer">
+          <div class="layer-icon">&#x1f50d;</div>
+          <h4>GitOps Agent</h4>
+          <p>ArgoCD / FluxCD<br>Watch &amp; Sync</p>
+        </div>
+        <div class="arch-arrow">&#x2192;</div>
+        <div class="arch-layer">
+          <div class="layer-icon">&#x2638;&#xfe0f;</div>
+          <h4>Cluster</h4>
+          <p>K8s / Infra<br>Desired state</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vendor-grid" style="margin-top: 2rem;">
+    <!-- ArgoCD -->
+    <div class="vendor-card argocd">
+      <div class="vendor-logo">&#x1f419;</div>
+      <h3>ArgoCD</h3>
+      <div class="vendor-type">CNCF / Kubernetes-native</div>
+      <p>GitOps controller ph&#x1ed5; bi&#x1ebf;n nh&#x1ea5;t cho Kubernetes. UI &#x111;&#x1eb9;p, d&#x1ec5; d&ugrave;ng. Sync t&#x1ef1; &#x111;&#x1ed9;ng ho&#x1eb7;c manual. Health check, rollback, multi-cluster. CNCF Graduated project. N&#x1ebf;u d&ugrave;ng K8s, &#x111;&acirc;y l&agrave; l&#x1ef1;a ch&#x1ecd;n m&#x1eb7;c &#x111;&#x1ecb;nh.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2018</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">18K+</div><div class="label">GitHub Stars</div></div>
+        <div class="stat"><div class="num">CNCF</div><div class="label">Graduated</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">UI &#x111;&#x1eb9;p</span>
+        <span class="tag">Kubernetes</span>
+        <span class="tag good">CNCF</span>
+        <span class="tag">Multi-cluster</span>
+      </div>
+    </div>
+
+    <!-- FluxCD -->
+    <div class="vendor-card fluxcd">
+      <div class="vendor-logo">&#x1f300;</div>
+      <h3>FluxCD</h3>
+      <div class="vendor-type">CNCF / GitOps Toolkit</div>
+      <p>Nh&#x1eb9; h&#x1a1;n ArgoCD, "Git-native" h&#x1a1;n. Kh&ocirc;ng c&oacute; UI m&#x1eb7;c &#x111;&#x1ecb;nh (c&oacute; th&#x1ec3; th&ecirc;m Weave GitOps). D&ugrave;ng Custom Resources &#x111;&#x1ec3; c&#x1ea5;u h&igrave;nh. H&#x1ed7; tr&#x1ee3; Helm, Kustomize, OCI. Tri&#x1ebf;t l&yacute;: "l&agrave;m t&#x1ed1;t m&#x1ed9;t vi&#x1ec7;c".</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2016</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">6K+</div><div class="label">GitHub Stars</div></div>
+        <div class="stat"><div class="num">CNCF</div><div class="label">Graduated</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Nh&#x1eb9;</span>
+        <span class="tag">CLI-first</span>
+        <span class="tag good">CNCF</span>
+        <span class="tag">Helm/Kustomize</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>ArgoCD vs FluxCD - Ch&#x1ecd;n c&aacute;i n&agrave;o?</h4>
+    <p><strong>ArgoCD</strong> n&#x1ebf;u b&#x1ea1;n c&#x1ea7;n UI &#x111;&#x1eb9;p, multi-cluster, v&agrave; team l&#x1edb;n c&#x1ea7;n visibility. <strong>FluxCD</strong> n&#x1ebf;u b&#x1ea1;n th&iacute;ch CLI, mu&#x1ed1;n nh&#x1eb9; nh&agrave;ng, v&agrave; &#x111;&atilde; d&ugrave;ng Helm/Kustomize nhi&#x1ec1;u. Cho homelab? C&#x1ea3; hai &#x111;&#x1ec1;u tuy&#x1ec7;t v&#x1edd;i, nh&#x1b0;ng ArgoCD c&oacute; UI s&#x1ebd; vui h&#x1a1;n khi kh&aacute;m ph&aacute;.</p>
+  </div>
+</section>
+
+<!-- CI/CD -->
+<section id="cicd">
+  <h2 class="section-title" style="color: var(--accent);">CI/CD cho Homelab</h2>
+  <p class="section-subtitle">T&#x1ef1; &#x111;&#x1ed9;ng h&oacute;a quy tr&igrave;nh build, test, deploy - ngay c&#x1ea3; &#x1edf; nh&agrave;</p>
+
+  <div class="vendor-grid">
+    <!-- GitHub Actions -->
+    <div class="vendor-card github">
+      <div class="vendor-logo">&#x1f4a1;</div>
+      <h3>GitHub Actions</h3>
+      <div class="vendor-type">SaaS / Workflow / Free tier</div>
+      <p>CI/CD t&iacute;ch h&#x1ee3;p s&#x1eb5;n trong GitHub. Workflow vi&#x1ebf;t b&#x1eb1;ng YAML. Marketplace v&#x1edb;i h&agrave;ng ngh&igrave;n Actions c&oacute; s&#x1eb5;n. Free 2000 ph&uacute;t/th&aacute;ng cho repo private. Self-hosted runner c&oacute; th&#x1ec3; ch&#x1ea1;y tr&ecirc;n homelab &#x111;&#x1ec3; kh&ocirc;ng gi&#x1edb;i h&#x1ea1;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2019</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">2000</div><div class="label">Free ph&uacute;t</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Ph&#x1ed5; bi&#x1ebf;n</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Free tier</span>
+        <span class="tag">YAML</span>
+        <span class="tag good">Marketplace</span>
+        <span class="tag">Self-hosted runner</span>
+      </div>
+    </div>
+
+    <!-- Drone -->
+    <div class="vendor-card drone">
+      <div class="vendor-logo">&#x1f681;</div>
+      <h3>Drone CI</h3>
+      <div class="vendor-type">Self-hosted / Container-native</div>
+      <p>CI/CD nh&#x1eb9; nh&agrave;ng, m&#x1ed7;i step ch&#x1ea1;y trong container ri&ecirc;ng. C&#x1ea5;u h&igrave;nh b&#x1eb1;ng .drone.yml. H&#x1ed7; tr&#x1ee3; GitHub, GitLab, Gitea. R&#x1ea5;t ph&ugrave; h&#x1ee3;p self-host tr&ecirc;n homelab v&#x1edb;i resource th&#x1ea5;p. Harness &#x111;&atilde; mua Drone.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2014</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">32K+</div><div class="label">GitHub Stars</div></div>
+        <div class="stat"><div class="num">20MB</div><div class="label">Binary</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Nh&#x1eb9;</span>
+        <span class="tag">Container</span>
+        <span class="tag good">Self-host</span>
+        <span class="tag warn">&#x110;ang ch&#x1eadm ph&aacute;t tri&#x1ec3;n</span>
+      </div>
+    </div>
+
+    <!-- Woodpecker -->
+    <div class="vendor-card woodpecker">
+      <div class="vendor-logo">&#x1fab5;</div>
+      <h3>Woodpecker CI</h3>
+      <div class="vendor-type">Community Fork / Open Source</div>
+      <p>Fork c&#x1ee7;a Drone CI, ho&agrave;n to&agrave;n open-source (Apache 2.0). &#x110;ang ph&aacute;t tri&#x1ec3;n r&#x1ea5;t t&iacute;ch c&#x1ef1;c. T&#x1b0;&#x1a1;ng th&iacute;ch v&#x1edb;i Drone config. &#x110;&acirc;y l&agrave; l&#x1ef1;a ch&#x1ecd;n "Drone nh&#x1b0;ng th&#x1ef1;c s&#x1ef1; free" cho homelab. H&#x1ed7; tr&#x1ee3; Gitea, Forgejo tuy&#x1ec7;t v&#x1edd;i.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2022</div><div class="label">Fork</div></div>
+        <div class="stat"><div class="num">Apache</div><div class="label">License</div></div>
+        <div class="stat"><div class="num">4K+</div><div class="label">GitHub Stars</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Gitea support</span>
+        <span class="tag">Container</span>
+        <span class="tag">T&iacute;ch c&#x1ef1;c</span>
+      </div>
+    </div>
+
+    <!-- Jenkins -->
+    <div class="vendor-card jenkins">
+      <div class="vendor-logo">&#x1f474;</div>
+      <h3>Jenkins</h3>
+      <div class="vendor-type">Legacy / Java / Plugin Ecosystem</div>
+      <p>"&Ocirc;ng t&#x1ed5;" c&#x1ee7;a CI/CD. Ra &#x111;&#x1edd;i t&#x1eeb; 2011 (fork Hudson). Plugin cho m&#x1ecdi;i th&#x1ee9;. Nh&#x1b0;ng c&#x169;ng v&igrave; th&#x1ebf; m&agrave; n&#x1eb7;ng, ph&#x1ee9;c t&#x1ea1;p, v&agrave; c&#x1ea7;n nhi&#x1ec1;u resource. Groovy Pipelines kh&oacute; debug. V&#x1eab;n c&ograve;n r&#x1ea5;t ph&#x1ed5; bi&#x1ebf;n trong enterprise.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2011</div><div class="label">Ra &#x111;&#x1edd;i</div></div>
+        <div class="stat"><div class="num">1800+</div><div class="label">Plugins</div></div>
+        <div class="stat"><div class="num">Java</div><div class="label">Runtime</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Groovy</span>
+        <span class="tag warn">N&#x1eb7;ng</span>
+        <span class="tag">Plugin-rich</span>
+        <span class="tag hot">T&#x1ed1;n RAM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>G&#x1ee3;i &yacute; cho homelab</h4>
+    <p>N&#x1ebf;u &#x111;&atilde; d&ugrave;ng GitHub: <strong>GitHub Actions + self-hosted runner</strong> l&agrave; l&#x1ef1;a ch&#x1ecd;n kh&ocirc;ng c&#x1ea7;n suy ngh&#x129;. N&#x1ebf;u d&ugrave;ng Gitea/Forgejo: <strong>Woodpecker CI</strong> l&agrave; b&#x1ea1;n &#x111;&#x1ed3;ng h&agrave;nh ho&agrave;n h&#x1ea3;o. <strong>Jenkins</strong>? Ch&#x1ec9; n&ecirc;n d&ugrave;ng n&#x1ebf;u b&#x1ea1;n &#x111;&atilde; c&oacute; kinh nghi&#x1ec7;m v&agrave; c&#x1ea7;n plugin &#x111;&#x1eb7;c th&ugrave; m&agrave; c&aacute;i kh&aacute;c kh&ocirc;ng c&oacute;.</p>
+  </div>
+</section>
+
+<!-- ANSIBLE CHO PROXMOX -->
+<section id="proxmox">
+  <h2 class="section-title" style="color: var(--accent5);">Ansible cho Proxmox Homelab</h2>
+  <p class="section-subtitle">Th&#x1ef1;c chi&#x1ebf;n: t&#x1ef1; &#x111;&#x1ed9;ng h&oacute;a c&#x1ee5;m Proxmox "Mimosa-Offices" b&#x1eb1;ng Ansible</p>
+
+  <div class="intro-box">
+    <h3 style="color: var(--accent5); margin-bottom: 1rem;">T&#x1ea1;i sao Ansible + Proxmox?</h3>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      Proxmox c&oacute; API REST ho&agrave;n ch&#x1ec9;nh. Ansible c&oacute; module <code style="color: var(--accent4);">community.general.proxmox</code> v&agrave; <code style="color: var(--accent4);">community.general.proxmox_kvm</code>. K&#x1ebf;t h&#x1ee3;p l&#x1ea1;i: b&#x1ea1;n c&oacute; th&#x1ec3; t&#x1ea1;o VM, container, c&#x1ea5;u h&igrave;nh network, qu&#x1ea3;n l&yacute; storage - t&#x1ea5;t c&#x1ea3; b&#x1eb1;ng YAML. Kh&ocirc;ng c&#x1ea7;n m&#x1edf; WebUI n&#x1eef;a.
+    </p>
+  </div>
+
+  <!-- Example 1: Create LXC -->
+  <div class="code-block" style="margin-top: 2rem;">
+    <div class="code-title">V&iacute; d&#x1ee5; 1: T&#x1ea1;o LXC Container tr&ecirc;n Proxmox</div>
+    <pre><span class="comment"># create-lxc.yml</span>
+- name: T&#x1ea1;o LXC containers cho homelab
+  hosts: localhost
+  gather_facts: false
+  vars:
+    proxmox_host: <span class="string">"pve1.mimosa.lab"</span>
+    proxmox_user: <span class="string">"root@pam"</span>
+    api_token_id: <span class="string">"ansible"</span>
+    api_token_secret: <span class="string">"{{ vault_proxmox_token }}"</span>
+
+  tasks:
+    - name: T&#x1ea1;o Docker LXC
+      community.general.proxmox:
+        vmid: 200
+        hostname: <span class="string">"docker01"</span>
+        node: <span class="string">"pve1"</span>
+        api_host: <span class="string">"{{ proxmox_host }}"</span>
+        api_user: <span class="string">"{{ proxmox_user }}"</span>
+        api_token_id: <span class="string">"{{ api_token_id }}"</span>
+        api_token_secret: <span class="string">"{{ api_token_secret }}"</span>
+        ostemplate: <span class="string">"local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"</span>
+        storage: <span class="string">"local-zfs"</span>
+        disk: <span class="string">"50"</span>
+        cores: 4
+        memory: 4096
+        swap: 512
+        netif: '{"net0":"name=eth0,bridge=vmbr0,ip=192.168.1.50/24,gw=192.168.1.1"}'
+        features:
+          - nesting=1
+          - keyctl=1
+        state: present
+      register: lxc_result
+
+    - name: Kh&#x1edf;i &#x111;&#x1ed9;ng container
+      community.general.proxmox:
+        vmid: 200
+        api_host: <span class="string">"{{ proxmox_host }}"</span>
+        api_user: <span class="string">"{{ proxmox_user }}"</span>
+        api_token_id: <span class="string">"{{ api_token_id }}"</span>
+        api_token_secret: <span class="string">"{{ api_token_secret }}"</span>
+        state: started</pre>
+  </div>
+
+  <!-- Example 2: Configure all PVE nodes -->
+  <div class="code-block" style="margin-top: 2rem;">
+    <div class="code-title">V&iacute; d&#x1ee5; 2: C&#x1ea5;u h&igrave;nh t&#x1ea5;t c&#x1ea3; Proxmox nodes</div>
+    <pre><span class="comment"># configure-pve-nodes.yml</span>
+- name: C&#x1ea5;u h&igrave;nh c&#x1ee5;m Proxmox Mimosa-Offices
+  hosts: proxmox
+  become: yes
+  tasks:
+    - name: X&oacute;a enterprise repo (kh&ocirc;ng c&oacute; subscription)
+      file:
+        path: /etc/apt/sources.list.d/pve-enterprise.list
+        state: absent
+
+    - name: Th&ecirc;m no-subscription repo
+      apt_repository:
+        repo: <span class="string">"deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription"</span>
+        filename: pve-no-subscription
+        state: present
+
+    - name: C&#x1eadp; nh&#x1eadt; h&#x1ec7; th&#x1ed1;ng
+      apt:
+        update_cache: yes
+        upgrade: dist
+      register: upgrade_result
+
+    - name: C&agrave;i c&aacute;c g&oacute;i c&#x1ea7;n thi&#x1ebf;t
+      apt:
+        name:
+          - vim
+          - htop
+          - iotop
+          - tmux
+          - curl
+          - wget
+          - net-tools
+          - lm-sensors
+        state: present
+
+    - name: C&#x1ea5;u h&igrave;nh NTP
+      template:
+        src: templates/timesyncd.conf.j2
+        dest: /etc/systemd/timesyncd.conf
+      notify: Restart timesyncd
+
+    - name: T&#x1ea1;o API token cho Terraform/Ansible
+      shell: |
+        pveum user token add root@pam ansible \
+          --privsep 0 --expire 0 2>/dev/null || true
+      changed_when: false
+
+  handlers:
+    - name: Restart timesyncd
+      service:
+        name: systemd-timesyncd
+        state: restarted</pre>
+  </div>
+
+  <!-- Example 3: Backup automation -->
+  <div class="code-block" style="margin-top: 2rem;">
+    <div class="code-title">V&iacute; d&#x1ee5; 3: T&#x1ef1; &#x111;&#x1ed9;ng backup v&agrave; monitoring</div>
+    <pre><span class="comment"># backup-and-monitor.yml</span>
+- name: C&#x1ea5;u h&igrave;nh backup v&agrave; monitoring cho homelab
+  hosts: proxmox
+  become: yes
+  tasks:
+    - name: T&#x1ea1;o schedule backup h&agrave;ng &#x111;&ecirc;m
+      cron:
+        name: <span class="string">"Backup all VMs"</span>
+        hour: <span class="string">"2"</span>
+        minute: <span class="string">"0"</span>
+        job: <span class="string">"vzdump --all --mode snapshot --storage backup-nfs --compress zstd --mailnotification always --mailto admin@mimosa.lab"</span>
+
+    - name: C&agrave;i Prometheus node exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+
+    - name: B&#x1eadn; node exporter service
+      service:
+        name: prometheus-node-exporter
+        state: started
+        enabled: yes
+
+    - name: T&#x1ea1;o script ki&#x1ec3;m tra cluster health
+      copy:
+        dest: /usr/local/bin/check-cluster.sh
+        mode: <span class="string">"0755"</span>
+        content: |
+          #!/bin/bash
+          <span class="comment"># Ki&#x1ec3;m tra quorum</span>
+          pvecm status | grep -q "Quorate:.*Yes"
+          if [ $? -ne 0 ]; then
+            echo "CRITICAL: Cluster lost quorum!"
+            exit 2
+          fi
+          echo "OK: Cluster healthy"
+          exit 0
+
+    - name: Schedule health check m&#x1ed7;i 5 ph&uacute;t
+      cron:
+        name: <span class="string">"Cluster health check"</span>
+        minute: <span class="string">"*/5"</span>
+        job: <span class="string">"/usr/local/bin/check-cluster.sh >> /var/log/cluster-health.log 2>&amp;1"</span></pre>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Pro tip cho Proxmox + Ansible</h4>
+    <p>Khi d&ugrave;ng Ansible v&#x1edb;i Proxmox, h&atilde;y t&#x1ea1;o <strong>API token</strong> thay v&igrave; d&ugrave;ng password. Token kh&ocirc;ng h&#x1ebf;t h&#x1ea1;n, c&oacute; th&#x1ec3; gi&#x1edb;i h&#x1ea1;n quy&#x1ec1;n, v&agrave; kh&ocirc;ng c&#x1ea7;n l&#x1b0;u m&#x1eadt kh&#x1ea9;u root. L&#x1b0;u token trong <strong>Ansible Vault</strong>, kh&ocirc;ng bao gi&#x1edd; commit d&#x1ea1;ng plain text. C&#x1ea5;u tr&uacute;c th&#x1b0; m&#x1ee5;c g&#x1ee3;i &yacute;: <code style="color: var(--accent4);">homelab-ansible/</code> v&#x1edb;i roles ri&ecirc;ng cho proxmox, docker, monitoring, backup.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Nh&#x1eef;ng Hi&#x1ec3;u Nh&#x1ea7;m Ph&#x1ed5; Bi&#x1ebf;n</h2>
+  <p class="section-subtitle">&Iacute;t nh&#x1ea5;t 80% ng&#x1b0;&#x1edd;i m&#x1edb;i h&#x1ecd;c IaC s&#x1ebd; m&#x1eaf;c ph&#x1ea3;i nh&#x1eef;ng sai l&#x1ea7;m n&agrave;y</p>
+
+  <div class="myth-grid">
+    <!-- Myth 1 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"IaC ch&#x1ec9; d&agrave;nh cho cloud l&#x1edb;n, homelab kh&ocirc;ng c&#x1ea7;n"</h4>
+      <p>Nhi&#x1ec1;u ng&#x1b0;&#x1edd;i ngh&#x129; IaC ch&#x1ec9; c&#x1ea7;n khi c&oacute; h&agrave;ng tr&#x103;m server tr&ecirc;n AWS/Azure.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>Homelab c&agrave;ng c&#x1ea7;n IaC! V&igrave; b&#x1ea1;n l&agrave; <strong>ng&#x1b0;&#x1edd;i duy nh&#x1ea5;t</strong> qu&#x1ea3;n l&yacute;, n&#x1ebf;u qu&ecirc;n c&#x1ea5;u h&igrave;nh g&igrave; &#x111;&oacute; sau 6 th&aacute;ng, kh&ocirc;ng ai nh&#x1edb; gi&uacute;p. IaC l&agrave; "t&agrave;i li&#x1ec7;u s&#x1ed1;ng" c&#x1ee7;a h&#x1ea1; t&#x1ea7;ng. V&#x1edb;i 5 node Proxmox, Ansible ti&#x1ebf;t ki&#x1ec7;m h&agrave;ng ch&#x1ee5;c gi&#x1edd; m&#x1ed7;i th&aacute;ng.</p>
+    </div>
+
+    <!-- Myth 2 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Ansible v&agrave; Terraform l&agrave;m c&ugrave;ng m&#x1ed9;t vi&#x1ec7;c"</h4>
+      <p>R&#x1ea5;t nhi&#x1ec1;u ng&#x1b0;&#x1edd;i h&#x1ecf;i: "N&ecirc;n d&ugrave;ng Ansible hay Terraform?" nh&#x1b0; th&#x1ec3; ch&#x1ec9; c&#x1ea7;n ch&#x1ecd;n m&#x1ed9;t.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>Ch&uacute;ng l&agrave;m <strong>hai vi&#x1ec7;c kh&aacute;c nhau</strong>. Terraform <strong>t&#x1ea1;o</strong> h&#x1ea1; t&#x1ea7;ng (VM, network, storage). Ansible <strong>c&#x1ea5;u h&igrave;nh</strong> h&#x1ea1; t&#x1ea7;ng (c&agrave;i ph&#x1ea7;n m&#x1ec1;m, s&#x1eeda; config file). Workflow l&yacute; t&#x1b0;&#x1edf;ng: Terraform t&#x1ea1;o VM &#x2192; cloud-init bootstrap &#x2192; Ansible c&#x1ea5;u h&igrave;nh chi ti&#x1ebf;t.</p>
+    </div>
+
+    <!-- Myth 3 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Vi&#x1ebf;t shell script c&#x169;ng l&agrave; IaC"</h4>
+      <p>T&ocirc;i &#x111;&atilde; c&oacute; 200 d&ograve;ng bash script c&agrave;i &#x111;&#x1eb7;t server, v&#x1eady l&agrave; IaC r&#x1ed3;i ch&#x1ee9;?</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>Shell script <strong>kh&ocirc;ng idempotent</strong> - ch&#x1ea1;y l&#x1ea7;n 2 c&oacute; th&#x1ec3; h&#x1ecf;ng. Kh&ocirc;ng c&oacute; error handling t&#x1eed; t&#x1ebf;. Kh&ocirc;ng c&oacute; state tracking. Kh&oacute; test. IaC tools &#x111;&atilde; gi&#x1ea3;i quy&#x1ebf;t h&#x1ebf;t nh&#x1eef;ng v&#x1ea5;n &#x111;&#x1ec1; n&agrave;y. Shell script c&oacute; v&#x1ecb; tr&iacute; ri&ecirc;ng (glue code), nh&#x1b0;ng kh&ocirc;ng n&ecirc;n l&agrave; c&ocirc;ng c&#x1ee5; ch&iacute;nh &#x111;&#x1ec3; qu&#x1ea3;n l&yacute; infra.</p>
+    </div>
+
+    <!-- Myth 4 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"IaC m&#x1ea5;t nhi&#x1ec1;u th&#x1edd;i gian h&#x1a1;n l&agrave;m tay"</h4>
+      <p>Click v&agrave;i c&aacute;i l&agrave; xong, vi&#x1ebf;t YAML m&#x1ea5;t c&#x1ea3; ti&#x1ebf;ng &#x111;&#x1ed3;ng h&#x1ed3;!</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>L&#x1ea7;n &#x111;&#x1ea7;u vi&#x1ebf;t IaC: ch&#x1eadm h&#x1a1;n. L&#x1ea7;n th&#x1ee9; 2, 3, 10: <strong>nhanh h&#x1a1;n g&#x1ea5;p nhi&#x1ec1;u l&#x1ea7;n</strong>. V&agrave; quan tr&#x1ecd;ng h&#x1a1;n: kh&ocirc;ng bao gi&#x1edd; sai. Rebuild to&agrave;n b&#x1ed9; homelab sau disaster? 30 ph&uacute;t v&#x1edb;i IaC vs 2 ng&agrave;y l&agrave;m tay. &#x110;&#x1ea7;u t&#x1b0; ban &#x111;&#x1ea7;u, h&#x1b0;&#x1edf;ng l&#x1ee3;i m&atilde;i m&atilde;i.</p>
+    </div>
+
+    <!-- Myth 5 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Terraform state file kh&ocirc;ng quan tr&#x1ecd;ng"</h4>
+      <p>Nhi&#x1ec1;u ng&#x1b0;&#x1edd;i commit state file v&agrave;o Git ho&#x1eb7;c th&#x1eadm ch&iacute; x&oacute;a n&oacute; &#x111;i.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>State file l&agrave; <strong>"b&#x1ed9; nh&#x1edb;"</strong> c&#x1ee7;a Terraform. M&#x1ea5;t n&oacute; = Terraform kh&ocirc;ng bi&#x1ebf;t g&igrave; &#x111;&atilde; t&#x1ed3;n t&#x1ea1;i, s&#x1ebd; t&#x1ea1;o l&#x1ea1;i t&#x1ea5;t c&#x1ea3; ho&#x1eb7;c xung &#x111;&#x1ed9;t. <strong>Kh&ocirc;ng bao gi&#x1edd;</strong> commit state v&agrave;o Git (ch&#x1ee9;a secrets!). D&ugrave;ng remote backend: S3, Consul, ho&#x1eb7;c &#x111;&#x1a1;n gi&#x1ea3;n l&agrave; m&#x1ed9;t NFS share tr&ecirc;n homelab.</p>
+    </div>
+
+    <!-- Myth 6 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"GitOps th&igrave; ph&#x1ea3;i c&oacute; Kubernetes"</h4>
+      <p>T&ocirc;i kh&ocirc;ng d&ugrave;ng K8s n&ecirc;n GitOps kh&ocirc;ng li&ecirc;n quan &#x111;&#x1ebf;n t&ocirc;i.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>GitOps l&agrave; <strong>tri&#x1ebf;t l&yacute;</strong>, kh&ocirc;ng ph&#x1ea3;i c&ocirc;ng c&#x1ee5;. B&#x1ea1;n ho&agrave;n to&agrave;n c&oacute; th&#x1ec3; &aacute;p d&#x1ee5;ng GitOps v&#x1edb;i Ansible + Git + CI/CD: push thay &#x111;&#x1ed5;i v&agrave;o repo &#x2192; CI ch&#x1ea1;y ansible-playbook t&#x1ef1; &#x111;&#x1ed9;ng &#x2192; infra &#x111;&#x1b0;&#x1ee3;c c&#x1eadp; nh&#x1eadt;. ArgoCD/FluxCD ch&#x1ec9; l&agrave; implementation cho K8s, kh&ocirc;ng ph&#x1ea3;i &#x111;&#x1ecb;nh ngh&#x129;a c&#x1ee7;a GitOps.</p>
+    </div>
+
+    <!-- Myth 7 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"Ansible ch&#x1eadm, kh&ocirc;ng d&ugrave;ng cho production"</h4>
+      <p>SSH v&agrave;o t&#x1eeb;ng server m&#x1ed9;t th&igrave; ch&#x1eadm ch&#x1ebf;t.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>Ansible c&oacute; <strong>forks</strong> (song song nhi&#x1ec1;u host), <strong>pipelining</strong>, <strong>async tasks</strong>, v&agrave; <strong>Mitogen</strong> (plugin t&#x103;ng t&#x1ed1;c 2-7x). V&#x1edb;i 5-50 host c&#x1ee7;a homelab, Ansible ch&#x1ea1;y trong v&agrave;i gi&acirc;y. NASA, Red Hat, h&agrave;ng ngh&igrave;n enterprise d&ugrave;ng Ansible trong production h&agrave;ng ng&agrave;y.</p>
+    </div>
+
+    <!-- Myth 8 -->
+    <div class="myth-card">
+      <span class="myth-label wrong">Sai</span>
+      <h4>"C&#x1ee9; d&ugrave;ng c&ocirc;ng c&#x1ee5; m&#x1edb;i nh&#x1ea5;t l&agrave; t&#x1ed1;t nh&#x1ea5;t"</h4>
+      <p>Pulumi m&#x1edb;i h&#x1a1;n Terraform, ch&#x1eaf;c t&#x1ed1;t h&#x1a1;n. Crossplane c&ograve;n m&#x1edb;i h&#x1a1;n n&#x1eef;a!</p>
+      <div class="divider"></div>
+      <span class="myth-label right">&#x110;&uacute;ng</span>
+      <p>C&ocirc;ng c&#x1ee5; t&#x1ed1;t nh&#x1ea5;t l&agrave; c&ocirc;ng c&#x1ee5; <strong>b&#x1ea1;n th&agrave;nh th&#x1ea1;o</strong> v&agrave; <strong>c&#x1ed9;ng &#x111;&#x1ed3;ng h&#x1ed7; tr&#x1ee3; m&#x1ea1;nh</strong>. Terraform + Ansible &#x111;&atilde; &#x111;&#x1b0;&#x1ee3;c ch&#x1ee9;ng minh h&agrave;ng tri&#x1ec7;u l&#x1ea7;n. Tr&#x1b0;&#x1edb;c khi ch&#x1ea1;y theo c&ocirc;ng c&#x1ee5; m&#x1edb;i, h&atilde;y h&#x1ecf;i: "N&oacute; gi&#x1ea3;i quy&#x1ebf;t v&#x1ea5;n &#x111;&#x1ec1; g&igrave; m&agrave; c&ocirc;ng c&#x1ee5; hi&#x1ec7;n t&#x1ea1;i kh&ocirc;ng l&agrave;m &#x111;&#x1b0;&#x1ee3;c?"</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Cheat Sheet</h2>
+  <p class="section-subtitle">Nh&#x1eef;ng l&#x1ec7;nh c&#x1ea7;n nh&#x1edb; nh&#x1ea5;t - Ansible v&agrave; Terraform</p>
+
+  <h3 style="color: var(--accent); margin-bottom: 1.5rem;">Ansible Commands</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Ki&#x1ec3;m tra k&#x1ebf;t n&#x1ed1;i</h4>
+      <p>Ping t&#x1ea5;t c&#x1ea3; host trong inventory</p>
+      <code>ansible all -m ping -i inventory.yml</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Ch&#x1ea1;y Playbook</h4>
+      <p>Th&#x1ef1;c thi playbook v&#x1edb;i vault password</p>
+      <code>ansible-playbook site.yml \
+  -i inventory.yml \
+  --ask-vault-pass</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Dry Run (Check Mode)</h4>
+      <p>Xem s&#x1ebd; thay &#x111;&#x1ed5;i g&igrave; m&agrave; kh&ocirc;ng th&#x1ef1;c thi</p>
+      <code>ansible-playbook site.yml --check --diff</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Ch&#x1ec9; ch&#x1ea1;y tr&ecirc;n 1 host</h4>
+      <p>Gi&#x1edb;i h&#x1ea1;n playbook cho host c&#x1ee5; th&#x1ec3;</p>
+      <code>ansible-playbook site.yml \
+  --limit pve1.mimosa.lab</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Ch&#x1ea1;y Ad-hoc Command</h4>
+      <p>Th&#x1ef1;c thi l&#x1ec7;nh nhanh kh&ocirc;ng c&#x1ea7;n playbook</p>
+      <code>ansible proxmox -m shell \
+  -a "uptime" -i inventory.yml</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Xem bi&#x1ebf;n c&#x1ee7;a host</h4>
+      <p>Li&#x1ec7;t k&ecirc; t&#x1ea5;t c&#x1ea3; facts c&#x1ee7;a m&#x1ed9;t host</p>
+      <code>ansible pve1.mimosa.lab -m setup \
+  -i inventory.yml</code>
+    </div>
+    <div class="cheat-card">
+      <h4>M&atilde; h&oacute;a file Vault</h4>
+      <p>Encrypt file ch&#x1ee9;a secrets</p>
+      <code>ansible-vault encrypt secrets.yml
+ansible-vault decrypt secrets.yml
+ansible-vault edit secrets.yml
+ansible-vault view secrets.yml</code>
+    </div>
+    <div class="cheat-card">
+      <h4>C&agrave;i Role t&#x1eeb; Galaxy</h4>
+      <p>T&#x1ea3;i v&agrave; c&agrave;i &#x111;&#x1eb7;t role t&#x1eeb; Ansible Galaxy</p>
+      <code>ansible-galaxy install geerlingguy.docker
+ansible-galaxy collection install \
+  community.general</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Li&#x1ec7;t k&ecirc; Tasks</h4>
+      <p>Xem danh s&aacute;ch tasks m&agrave; kh&ocirc;ng ch&#x1ea1;y</p>
+      <code>ansible-playbook site.yml --list-tasks
+ansible-playbook site.yml --list-hosts</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent2); margin-top: 3rem; margin-bottom: 1.5rem;">Terraform Commands</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Kh&#x1edf;i t&#x1ea1;o Project</h4>
+      <p>T&#x1ea3;i providers v&agrave; kh&#x1edf;i t&#x1ea1;o backend</p>
+      <code>terraform init
+terraform init -upgrade</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Xem thay &#x111;&#x1ed5;i (Plan)</h4>
+      <p>Xem s&#x1ebd; t&#x1ea1;o/s&#x1eeda;/x&oacute;a g&igrave;</p>
+      <code>terraform plan
+terraform plan -out=tfplan
+terraform plan -target=proxmox_vm.web</code>
+    </div>
+    <div class="cheat-card">
+      <h4>&Aacute;p d&#x1ee5;ng thay &#x111;&#x1ed5;i</h4>
+      <p>Th&#x1ef1;c thi plan &#x111;&atilde; t&#x1ea1;o</p>
+      <code>terraform apply
+terraform apply tfplan
+terraform apply -auto-approve</code>
+    </div>
+    <div class="cheat-card">
+      <h4>X&oacute;a t&agrave;i nguy&ecirc;n</h4>
+      <p>X&oacute;a t&#x1ea5;t c&#x1ea3; ho&#x1eb7;c ch&#x1ec9; &#x111;&#x1ecb;nh</p>
+      <code>terraform destroy
+terraform destroy \
+  -target=proxmox_vm.test</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Qu&#x1ea3;n l&yacute; State</h4>
+      <p>Xem, di chuy&#x1ec3;n, x&oacute;a resource trong state</p>
+      <code>terraform state list
+terraform state show proxmox_vm.web
+terraform state rm proxmox_vm.old
+terraform state mv old_name new_name</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Import t&agrave;i nguy&ecirc;n c&oacute; s&#x1eb5;n</h4>
+      <p>&#x110;&#x1b0;a resource &#x111;&atilde; t&#x1ed3;n t&#x1ea1;i v&agrave;o state</p>
+      <code>terraform import \
+  proxmox_vm_qemu.existing \
+  pve1/qemu/100</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Validate v&agrave; Format</h4>
+      <p>Ki&#x1ec3;m tra c&uacute; ph&aacute;p v&agrave; format code</p>
+      <code>terraform validate
+terraform fmt
+terraform fmt -recursive</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Xem Output</h4>
+      <p>Xem gi&aacute; tr&#x1ecb; output &#x111;&atilde; &#x111;&#x1ecb;nh ngh&#x129;a</p>
+      <code>terraform output
+terraform output -json
+terraform output vm_ip_address</code>
+    </div>
+    <div class="cheat-card">
+      <h4>Workspace (Multi-env)</h4>
+      <p>Qu&#x1ea3;n l&yacute; nhi&#x1ec1;u m&ocirc;i tr&#x1b0;&#x1edd;ng v&#x1edb;i workspace</p>
+      <code>terraform workspace list
+terraform workspace new staging
+terraform workspace select production</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Workflow g&#x1ee3;i &yacute; cho Homelab</h4>
+    <p>
+      <strong>B&#x1b0;&#x1edb;c 1:</strong> D&ugrave;ng Terraform t&#x1ea1;o VM/LXC tr&ecirc;n Proxmox (infrastructure provisioning).<br>
+      <strong>B&#x1b0;&#x1edb;c 2:</strong> D&ugrave;ng cloud-init c&#x1ea5;u h&igrave;nh c&#x1a1; b&#x1ea3;n khi boot (SSH key, hostname, network).<br>
+      <strong>B&#x1b0;&#x1edb;c 3:</strong> D&ugrave;ng Ansible c&#x1ea5;u h&igrave;nh chi ti&#x1ebf;t (packages, services, config files).<br>
+      <strong>B&#x1b0;&#x1edb;c 4:</strong> L&#x1b0;u t&#x1ea5;t c&#x1ea3; v&agrave;o Git repo. D&ugrave;ng GitHub Actions ho&#x1eb7;c Woodpecker CI &#x111;&#x1ec3; t&#x1ef1; &#x111;&#x1ed9;ng ch&#x1ea1;y khi c&oacute; thay &#x111;&#x1ed5;i.<br>
+      &#x110;&acirc;y l&agrave; "GitOps cho homelab" - &#x111;&#x1a1;n gi&#x1ea3;n, hi&#x1ec7;u qu&#x1ea3;, v&agrave; b&#x1ea1;n s&#x1ebd; kh&ocirc;ng bao gi&#x1edd; m&#x1ea5;t c&#x1ea5;u h&igrave;nh n&#x1eef;a.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p>Th&#x1ebf; Gi&#x1edd;i Automation &mdash; T&#x1eeb; Shell Script &#x111;&#x1ebf;n GitOps</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">M&#x1ed9;t h&agrave;nh tr&igrave;nh kh&ocirc;ng ng&#x1eeb;ng h&#x1ecd;c h&#x1ecf;i. "Automate everything, document what you can't."</p>
+</footer>
+
+</body>
+</html>

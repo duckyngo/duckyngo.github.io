@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 4: Chuẩn Bị Cho Cuộc Thương Thuyết – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #B45309 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #92400E; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .checklist-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 20px 0; }
+  .checklist-card h3 { color: var(--amber); font-size: 1.05rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F3F4F6; }
+  .check-item:last-child { border-bottom: none; }
+  .check-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .check-content strong { font-weight: 700; color: var(--gray-800); display: block; }
+  .check-content p { font-size: 0.9rem; color: #6B7280; }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid var(--amber); transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--purple); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--teal); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--rose); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .quote-box { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border-left: 5px solid var(--amber); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--amber); opacity: 0.15; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: #92400E; font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .highlight-box { background: linear-gradient(135deg, #4C1D95, #6B21A8); border-radius: 16px; padding: 28px; margin: 24px 0; color: white; }
+  .highlight-box h3 { color: #FDE68A; font-size: 1.05rem; margin-bottom: 12px; }
+  .highlight-box p { font-size: 0.95rem; opacity: 0.9; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #451A03, #78350F); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #FDE68A; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">📋 Chương 4</div>
+  <div class="hero-emoji">🗂️</div>
+  <h1>Chuẩn Bị Cho Một Cuộc Thương Thuyết</h1>
+  <div class="subtitle">Trận chiến thắng hay thua phần lớn được định đoạt trước khi bước vào phòng họp</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">📋 Danh Sách Chuẩn Bị – Không Được Bỏ Qua</div>
+
+  <div class="checklist-card">
+    <h3>🎯 Trước Khi Vào Bàn Đàm Phán</h3>
+    <div class="check-item">
+      <div class="check-icon">✅</div>
+      <div class="check-content">
+        <strong>Biết rõ mình có gì để thương thuyết</strong>
+        <p>Xác định chính xác sản phẩm/dịch vụ/yêu cầu của mình. Thiếu thứ này là thiếu nền tảng cơ bản nhất.</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✅</div>
+      <div class="check-content">
+        <strong>Nghiên cứu đối tác</strong>
+        <p>Họ là ai, họ cần gì, họ đã thương thuyết với ai trước đây, điểm mạnh và điểm yếu của họ là gì.</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✅</div>
+      <div class="check-content">
+        <strong>Xác định BATNA của mình</strong>
+        <p>Phương án tốt nhất nếu đàm phán thất bại là gì? Biết điểm dừng của mình trước khi bắt đầu.</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✅</div>
+      <div class="check-content">
+        <strong>Kiểm tra giấy tờ ủy nhiệm</strong>
+        <p>Người đi đàm phán phải có văn bản ủy quyền hợp lệ từ tổ chức. Thiếu giấy ủy nhiệm = về nhà không kèn trống.</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✅</div>
+      <div class="check-content">
+        <strong>Xác nhận đối tác có đủ thẩm quyền</strong>
+        <p>Người ngồi đối diện có quyền quyết định không? Hay họ chỉ là "trạm chuyển tiếp" cần báo cáo lên trên?</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✅</div>
+      <div class="check-content">
+        <strong>Bảo mật thông tin</strong>
+        <p>Giữ bí mật chiến lược, con số, và thông tin nội bộ. Rò rỉ một con số nhỏ có thể lật ngược thế cờ.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h3>🔑 Bài Học Đặc Biệt: Thương Thuyết Nội Bộ</h3>
+    <p>Trước khi đi đàm phán bên ngoài, phải thống nhất bên trong trước. Ai là trưởng đoàn? Ai được phép nói? Ngưỡng tối thiểu và tối đa là bao nhiêu? Thưởng phạt ra sao? Đây là "trận chiến ít người nhắc đến" nhưng quyết định toàn bộ.</p>
+  </div>
+
+  <div class="section-title">💡 Bốn Điều Quyết Định Thành Bại</div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🔍</div>
+      <div class="takeaway-title">Thông tin là vàng</div>
+      <div class="takeaway-text">Người có nhiều thông tin hơn luôn ở thế mạnh hơn. Hãy nghiên cứu đối tác kỹ như một nhà thám tử trước buổi gặp.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🤫</div>
+      <div class="takeaway-title">Bí mật là sức mạnh</div>
+      <div class="takeaway-text">Thông tin nội bộ phải được bảo vệ tuyệt đối. Trong một cuộc đàm phán dài hàng tháng, rất khó che giấu mọi thứ – hãy cẩn thận từng lời nói.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🧩</div>
+      <div class="takeaway-title">Đoàn kết nội bộ</div>
+      <div class="takeaway-text">Đại biểu của mình phải nói một tiếng. Bất đồng nội bộ lộ ra trước đối tác là thảm họa – đối phương sẽ khai thác ngay.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">⚖️</div>
+      <div class="takeaway-title">Biết điểm dừng</div>
+      <div class="takeaway-text">Định sẵn: điều kiện tốt nhất mong muốn, điều kiện chấp nhận được tối thiểu, và điều kiện không thể nhượng bộ thêm.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Nội bộ có đoàn kết và nhất quán thì đại biểu mình gửi đi mới làm được việc! Thương thuyết nội bộ quan trọng không kém thương thuyết bên ngoài."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Lỗi phổ biến: Chuẩn bị tài chính</strong>
+      <p>Đi thương thuyết mà không biết mình có đủ tiền không là lãng phí hoàn toàn. Tác giả từng thấy đại biểu đi đàm phán hàng tháng mà tổ chức gửi đi không thực sự có ngân sách.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Thực tế dự án lớn ngày nay</strong>
+      <p>Trong các dự án hạ tầng khổng lồ, bên bán thường phải mang ngân hàng đi theo để chứng minh khả năng tài trợ. Người bán không chỉ bán – còn phải giúp người mua có tiền để mua.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">🔐</div>
+    <div class="callout-body">
+      <strong>Bảo mật thông tin trong đàm phán dài hạn</strong>
+      <p>Khi ngồi ròng rã nhiều tháng với đối tác, rất khó che giấu ưu khuyết của mình. Để lộ một con số, để hở một nỗi thất vọng – đều có thể gây ra tình huống bất lợi không thể cứu vãn.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 4</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Chuẩn bị quyết định hơn 50% thành bại – phần còn lại mới là tài năng thương thuyết tại chỗ.</li>
+      <li><span class="lesson-num">2</span>Thương thuyết nội bộ phải hoàn tất và thống nhất trước khi gặp đối tác bên ngoài.</li>
+      <li><span class="lesson-num">3</span>Giấy tờ ủy nhiệm hợp lệ là điều kiện tiên quyết – thiếu là về nhà ngay, không bàn thêm.</li>
+      <li><span class="lesson-num">4</span>Bảo mật thông tin là cả một nghệ thuật – đặc biệt quan trọng trong đàm phán kéo dài hàng năm.</li>
+      <li><span class="lesson-num">5</span>Biết điểm dừng trước: mục tiêu tốt nhất, chấp nhận được, và không thể nhượng bộ thêm.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-03.html" class="nav-btn nav-btn-prev">← Chương 3</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-05.html" class="nav-btn nav-btn-next">Chương 5 →</a>
+  </div>
+
+</div>
+</body>
+</html>

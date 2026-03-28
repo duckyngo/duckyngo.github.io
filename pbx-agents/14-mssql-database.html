@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent #14 — Dữ Liệu Trưởng Lão | MSSQL Database Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --sql-red: #CC2927;
+            --sql-dark: #1A0A0A;
+            --sql-deep: #2D0F0F;
+            --sql-wine: #5C1515;
+            --sql-light: #FF4B49;
+            --sql-glow: #FF6B6B;
+            --sql-accent: #FFA07A;
+            --sql-gold: #FFD700;
+            --card-bg: rgba(44, 15, 15, 0.7);
+            --text-primary: #F5E6E6;
+            --text-secondary: #C4A0A0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--sql-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(204,41,39,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(204,41,39,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(92,21,21,0.2) 0%, transparent 70%);
+            z-index: -1;
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* === FLOATING DATA PARTICLES === */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: rgba(204,41,39,0.2);
+            animation: fall linear infinite;
+            white-space: nowrap;
+        }
+
+        .particle:nth-child(1) { left: 5%; animation-duration: 18s; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 15%; animation-duration: 22s; animation-delay: 3s; }
+        .particle:nth-child(3) { left: 25%; animation-duration: 16s; animation-delay: 1s; }
+        .particle:nth-child(4) { left: 40%; animation-duration: 20s; animation-delay: 5s; }
+        .particle:nth-child(5) { left: 55%; animation-duration: 24s; animation-delay: 2s; }
+        .particle:nth-child(6) { left: 65%; animation-duration: 17s; animation-delay: 4s; }
+        .particle:nth-child(7) { left: 78%; animation-duration: 21s; animation-delay: 6s; }
+        .particle:nth-child(8) { left: 88%; animation-duration: 19s; animation-delay: 1.5s; }
+        .particle:nth-child(9) { left: 35%; animation-duration: 23s; animation-delay: 7s; }
+        .particle:nth-child(10) { left: 70%; animation-duration: 15s; animation-delay: 3.5s; }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* === CONTAINER === */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === HERO HEADER === */
+        .hero {
+            text-align: center;
+            padding: 60px 30px 50px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--sql-deep) 0%, rgba(204,41,39,0.25) 50%, var(--sql-deep) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(204,41,39,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--sql-red), transparent, var(--sql-red), transparent);
+            border-radius: 25px;
+            z-index: -1;
+            animation: borderGlow 4s linear infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sql-red), var(--sql-wine), #1A0505);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            border: 4px solid var(--sql-light);
+            box-shadow: 0 0 40px rgba(204,41,39,0.5), 0 0 80px rgba(204,41,39,0.2);
+            animation: avatarFloat 4s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 2px dashed rgba(204,41,39,0.4);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .agent-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--sql-red), var(--sql-wine));
+            color: #fff;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(204,41,39,0.4); }
+            50% { box-shadow: 0 0 25px rgba(204,41,39,0.7); }
+        }
+
+        .hero h1 {
+            font-size: 2.8em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--sql-glow), var(--sql-accent), var(--sql-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            text-shadow: none;
+        }
+
+        .hero .subtitle {
+            font-size: 1.15em;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .hero .tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--sql-light);
+            background: rgba(204,41,39,0.15);
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: 1px solid rgba(204,41,39,0.25);
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 22px;
+        }
+
+        .tech-badge {
+            background: rgba(204,41,39,0.15);
+            border: 1px solid rgba(204,41,39,0.3);
+            color: var(--sql-accent);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tech-badge:hover {
+            background: rgba(204,41,39,0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(204,41,39,0.3);
+        }
+
+        /* === SECTION === */
+        .section {
+            margin-bottom: 35px;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+        .section:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(204,41,39,0.25);
+        }
+
+        .section-icon {
+            font-size: 1.6em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(204,41,39,0.3), rgba(92,21,21,0.4));
+            border-radius: 14px;
+            border: 1px solid rgba(204,41,39,0.3);
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.6em;
+            font-weight: 800;
+            color: var(--sql-glow);
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(204,41,39,0.2);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 18px;
+            backdrop-filter: blur(10px);
+            transition: all 0.35s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(204,41,39,0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(204,41,39,0.15);
+        }
+
+        .card h3 {
+            color: var(--sql-accent);
+            font-size: 1.15em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        /* === INSIGHT GRID === */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .insight-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(204,41,39,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--sql-red), var(--sql-gold));
+            border-radius: 4px 0 0 4px;
+        }
+
+        .insight-card:hover {
+            border-color: rgba(204,41,39,0.5);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 30px rgba(204,41,39,0.15);
+        }
+
+        .insight-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            color: var(--sql-red);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .insight-card h4 {
+            color: var(--sql-glow);
+            font-size: 1.05em;
+            margin-bottom: 8px;
+        }
+
+        .insight-card p {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        /* === STORY CARDS === */
+        .story-card {
+            background: linear-gradient(135deg, var(--card-bg), rgba(204,41,39,0.08));
+            border: 1px solid rgba(204,41,39,0.25);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(204,41,39,0.1), transparent 70%);
+            border-radius: 50%;
+        }
+
+        .story-card .story-icon {
+            font-size: 2em;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .story-card h3 {
+            color: var(--sql-accent);
+            font-size: 1.15em;
+            margin-bottom: 12px;
+        }
+
+        .story-card p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            line-height: 1.85;
+        }
+
+        .story-card .moral {
+            margin-top: 14px;
+            padding: 10px 16px;
+            background: rgba(204,41,39,0.12);
+            border-left: 3px solid var(--sql-red);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: var(--sql-glow);
+            font-size: 0.9em;
+        }
+
+        /* === MISTAKES LIST === */
+        .mistakes-list {
+            list-style: none;
+            counter-reset: mistake;
+        }
+
+        .mistakes-list li {
+            counter-increment: mistake;
+            background: var(--card-bg);
+            border: 1px solid rgba(204,41,39,0.2);
+            border-radius: 12px;
+            padding: 18px 22px 18px 60px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        .mistakes-list li::before {
+            content: counter(mistake);
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--sql-red), var(--sql-wine));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85em;
+            color: #fff;
+        }
+
+        .mistakes-list li:hover {
+            border-color: rgba(204,41,39,0.5);
+            transform: translateX(6px);
+        }
+
+        .mistakes-list li strong {
+            color: var(--sql-glow);
+        }
+
+        /* === PBX SECTION === */
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .pbx-card {
+            background: linear-gradient(135deg, var(--card-bg), rgba(204,41,39,0.06));
+            border: 1px solid rgba(204,41,39,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.35s;
+        }
+
+        .pbx-card:hover {
+            border-color: var(--sql-red);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(204,41,39,0.2);
+        }
+
+        .pbx-card .pbx-icon {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .pbx-card h4 {
+            color: var(--sql-accent);
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .pbx-card p {
+            color: var(--text-secondary);
+            font-size: 0.88em;
+        }
+
+        /* === CODE BLOCK === */
+        .code-block {
+            background: #0D0505;
+            border: 1px solid rgba(204,41,39,0.25);
+            border-radius: 10px;
+            padding: 18px 22px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            color: var(--sql-accent);
+            overflow-x: auto;
+            margin: 14px 0;
+            line-height: 1.7;
+        }
+
+        .code-block .keyword { color: #CC2927; font-weight: 600; }
+        .code-block .func { color: #FFD700; }
+        .code-block .string { color: #98D8A0; }
+        .code-block .comment { color: #666; font-style: italic; }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            border-top: 1px solid rgba(204,41,39,0.15);
+            margin-top: 20px;
+        }
+
+        .footer .sql-query {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--sql-red);
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .container { padding: 12px; }
+            .hero { padding: 40px 20px 35px; }
+            .hero h1 { font-size: 2em; }
+            .avatar { width: 120px; height: 120px; font-size: 50px; }
+            .insight-grid { grid-template-columns: 1fr; }
+            .pbx-grid { grid-template-columns: 1fr; }
+            .section-header h2 { font-size: 1.3em; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.6em; }
+            .tech-badges { gap: 6px; }
+            .tech-badge { font-size: 0.72em; padding: 4px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating SQL particles -->
+<div class="particles">
+    <div class="particle">SELECT * FROM CallLogs</div>
+    <div class="particle">INNER JOIN Users ON ...</div>
+    <div class="particle">WHERE IsActive = 1</div>
+    <div class="particle">CREATE INDEX IX_Phone</div>
+    <div class="particle">BEGIN TRANSACTION</div>
+    <div class="particle">EXEC sp_GetCallHistory</div>
+    <div class="particle">ORDER BY CreatedDate DESC</div>
+    <div class="particle">ALTER TABLE Extensions</div>
+    <div class="particle">GROUP BY DepartmentId</div>
+    <div class="particle">COMMIT TRANSACTION</div>
+</div>
+
+<div class="container">
+
+    <!-- ==================== HERO ==================== -->
+    <header class="hero">
+        <div class="avatar-container">
+            <div class="avatar-ring"></div>
+            <div class="avatar">🗄️</div>
+        </div>
+        <div class="agent-badge">Agent #14 — MSSQL Expert</div>
+        <h1>Dữ Liệu Trưởng Lão</h1>
+        <p class="subtitle">Bậc Cao Nhân Của Xứ Sở SQL Server — Người Giữ Linh Hồn Dữ Liệu</p>
+        <div class="tagline">-- Ai bảo database chỉ là mớ bảng biểu? Đó là cả một vũ trụ, cháu ơi! 🧓</div>
+
+        <div class="tech-badges">
+            <span class="tech-badge">T-SQL</span>
+            <span class="tech-badge">Stored Procedures</span>
+            <span class="tech-badge">Query Optimization</span>
+            <span class="tech-badge">Index Strategy</span>
+            <span class="tech-badge">EF Core</span>
+            <span class="tech-badge">Transactions</span>
+            <span class="tech-badge">Connection Pooling</span>
+            <span class="tech-badge">Database Migration</span>
+            <span class="tech-badge">Deadlock Analysis</span>
+            <span class="tech-badge">Execution Plans</span>
+        </div>
+    </header>
+
+    <!-- ==================== BACKSTORY ==================== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">📜</div>
+            <h2>Thân Thế & Lai Lịch</h2>
+        </div>
+
+        <div class="card">
+            <h3>🧓 Câu chuyện của Trưởng Lão</h3>
+            <p>
+                Già này bắt đầu hành trình từ cái thời mà SQL Server còn chạy trên máy chủ to bằng cái tủ lạnh,
+                cháu ạ. Hồi đó, viết một cái <strong>stored procedure</strong> xong mà nó chạy đúng là vui
+                như Tết — vì debug thì khổ hơn cày ruộng mùa đông.
+            </p>
+            <p style="margin-top: 12px;">
+                Trải qua bao nhiêu năm chinh chiến, già đã thuần thục <strong>T-SQL</strong> như người ta thuần ngựa —
+                từ những câu SELECT đơn giản đến những stored procedure dài hàng nghìn dòng,
+                từ việc tối ưu <strong>index</strong> cho table vài trăm triệu dòng đến việc xử lý
+                <strong>deadlock</strong> lúc 3 giờ sáng khi cả team đang ngủ say.
+            </p>
+            <p style="margin-top: 12px;">
+                Già thành thạo <strong>query optimization</strong> — đọc execution plan như đọc truyện kiếm hiệp,
+                nhìn vào là biết ngay chỗ nào bị "table scan" thay vì "index seek".
+                <strong>Database migration</strong> cho già giống như dọn nhà — phải cẩn thận từng món đồ,
+                đánh rơi cái gì là mất dữ liệu luôn. <strong>Transaction</strong> và <strong>connection pooling</strong>
+                là hai bảo bối mà già luôn mang theo bên mình. Còn <strong>EF Core</strong>? Đó là cây cầu
+                nối giữa thế giới .NET và vương quốc MSSQL mà già canh giữ.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>⚔️ Võ công tuyệt học</h3>
+            <p>
+                Nếu database là một giang hồ, thì già là trưởng lão của phái SQL Server — đã tu luyện đủ các
+                tuyệt chiêu: <strong>Window Functions</strong> (Lăng Ba Vi Bộ), <strong>CTEs</strong> (Càn Khôn Đại Na Di),
+                <strong>Dynamic SQL</strong> (Hàm Ma Công), và <strong>MERGE statement</strong> (Hợp Nhất Thần Chưởng).
+                Có cháu hỏi già: "Ông ơi, sao ông không dùng ORM cho khỏe?" Già cười khà khà rồi bảo:
+                "Cháu ơi, ORM như xe đạp có bánh phụ — tiện đấy nhưng đi đua thì phải bỏ ra!"
+            </p>
+        </div>
+    </section>
+
+    <!-- ==================== BÍ KÍP ==================== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">🔮</div>
+            <h2>Bí Kíp Của Trưởng Lão</h2>
+        </div>
+
+        <div class="insight-grid">
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #1</div>
+                <h4>Index Không Phải Là Thuốc Tiên</h4>
+                <p>
+                    Đừng thấy query chậm là cứ thêm index bừa bãi. Mỗi index thêm vào là mỗi lần INSERT/UPDATE
+                    phải gánh thêm chi phí. Hãy dùng <code>SET STATISTICS IO ON</code> để xem thật sự
+                    cần index ở đâu, cháu ạ.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #2</div>
+                <h4>Execution Plan Là Bản Đồ Kho Báu</h4>
+                <p>
+                    Mỗi khi query chạy chậm, đừng ngồi đoán mò. Bật execution plan lên là thấy ngay
+                    chỗ nào SQL Server đang "khổ sở" — Table Scan, Key Lookup, hay Sort trên cả triệu dòng.
+                    Đọc plan giỏi là đã thắng một nửa.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #3</div>
+                <h4>Stored Procedure Cần Được Yêu Thương</h4>
+                <p>
+                    Viết stored procedure mà không có comment, không có error handling, không có
+                    <code>SET NOCOUNT ON</code> thì giống như xây nhà mà không có móng.
+                    Cháu nhớ luôn dùng <code>TRY...CATCH</code> và log lỗi vào bảng riêng nhé.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #4</div>
+                <h4>Connection Pooling — Đừng Mở Cửa Rồi Quên Đóng</h4>
+                <p>
+                    Mỗi kết nối đến SQL Server giống như mở cửa vào nhà kho — phải nhớ đóng lại!
+                    Dùng connection pooling đúng cách, set <code>Max Pool Size</code> hợp lý,
+                    và LUÔN dispose connection sau khi dùng. Không thì server hết connection là sập hệ thống ngay.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #5</div>
+                <h4>Transaction Ngắn Gọn Là Vàng</h4>
+                <p>
+                    Transaction giữ lock — lock lâu thì blocking — blocking nhiều thì deadlock.
+                    Giữ transaction ngắn nhất có thể. Đừng bao giờ mở transaction rồi đi gọi
+                    API bên ngoài. Già đã thấy nhiều cháu làm vậy rồi khóc lúc 3 giờ sáng.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #6</div>
+                <h4>NOLOCK Không Phải Thần Dược</h4>
+                <p>
+                    Cháu nào hay gắn <code>WITH (NOLOCK)</code> vào mọi query cho "nhanh" thì nghe già nói:
+                    NOLOCK có thể đọc dirty data, phantom reads, thậm chí bỏ qua cả dòng dữ liệu.
+                    Chỉ dùng khi thật sự chấp nhận dữ liệu không chính xác 100%.
+                </p>
+            </div>
+
+            <div class="insight-card">
+                <div class="insight-num">Bí kíp #7</div>
+                <h4>EF Core — Bạn Tốt Nhưng Phải Biết Giới Hạn</h4>
+                <p>
+                    EF Core sinh ra SQL rất "thật thà" — nhiều khi nó SELECT hết cả bảng trong khi cháu
+                    chỉ cần 3 cột. Luôn dùng <code>.Select()</code> projection, <code>.AsNoTracking()</code>
+                    cho query chỉ đọc, và kiểm tra SQL được sinh ra bằng logging.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FUN STORIES ==================== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">📖</div>
+            <h2>Chuyện Kể Bên Bếp Lửa</h2>
+        </div>
+
+        <div class="story-card">
+            <span class="story-icon">🐌</span>
+            <h3>Chuyện #1: Cái Index Bị Lãng Quên Và Sự Nổi Giận Của Khách Hàng</h3>
+            <p>
+                Ngày xưa, có một cháu developer trẻ tuổi, xây xong hệ thống PBX call log đẹp như mơ.
+                Trên môi trường dev, chạy mượt như lụa — vì data mới có 100 dòng. Lên production,
+                bảng CallLog có <strong>50 triệu bản ghi</strong>. Một cái query tìm cuộc gọi theo
+                số điện thoại — không có index — chạy mất <strong>47 giây</strong>. Khách hàng gọi điện
+                la làng: "Tôi bấm tìm cuộc gọi mà uống hết cốc cà phê vẫn chưa xong!"
+            </p>
+            <p style="margin-top: 10px;">
+                Già chạy vào, gõ một dòng duy nhất:
+            </p>
+            <div class="code-block">
+                <span class="keyword">CREATE NONCLUSTERED INDEX</span> IX_CallLog_PhoneNumber<br>
+                <span class="keyword">ON</span> dbo.CallLog (PhoneNumber)<br>
+                <span class="keyword">INCLUDE</span> (CallDate, Duration, Status);
+            </div>
+            <p>
+                Query từ 47 giây xuống còn <strong>12 mili-giây</strong>. Cháu developer mắt tròn mắt dẹt,
+                hỏi: "Ông ơi, ông làm phép thuật gì vậy?" Già cười: "Không phải phép thuật, cháu ơi.
+                Đây gọi là ĐỌC SÁCH TRƯỚC KHI VIẾT CODE."
+            </p>
+            <div class="moral">
+                💡 Bài học: Luôn tạo index cho các cột trong WHERE, JOIN và ORDER BY.
+                Và test với data thật, đừng test với 100 dòng rồi tự tin lên production!
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-icon">💀</span>
+            <h3>Chuyện #2: DELETE Không WHERE — Thảm Họa Tồi Tệ Nhất Lịch Sử</h3>
+            <p>
+                Một đêm khuya, có anh DBA trực đêm, buồn ngủ díp mắt. Anh ta cần xóa
+                một vài bản ghi test trong bảng <code>UserMappings</code>. Anh ta gõ:
+            </p>
+            <div class="code-block">
+                <span class="keyword">DELETE FROM</span> dbo.UserMappings<br>
+                <span class="comment">-- WHERE UserId = 999  ← Anh ta QUÊN bỏ comment dòng này</span>
+            </div>
+            <p style="margin-top: 10px;">
+                Enter. <strong>478,293 dòng bị xóa sạch.</strong> Anh ta tỉnh ngủ ngay lập tức —
+                tỉnh hơn uống 10 ly cà phê. Mồ hôi lạnh chảy dài, tay run bần bật.
+                Anh ta nhìn màn hình, nhìn lại câu query, rồi nhìn lên trần nhà cầu nguyện.
+            </p>
+            <p style="margin-top: 10px;">
+                May mắn thay, già đã thiết lập <strong>backup tự động mỗi 15 phút</strong>.
+                Restore lại từ backup, chỉ mất data 12 phút. Nhưng anh DBA đó từ đấy
+                mỗi lần viết DELETE đều run tay — y như già mỗi lần thấy câu DELETE không có WHERE
+                là tim già đập loạn xạ.
+            </p>
+            <div class="moral">
+                💡 Bài học: LUÔN viết WHERE trước, chạy SELECT trước để kiểm tra, rồi mới đổi thành DELETE.
+                Và backup, backup, BACKUP! Già nói 3 lần vì quan trọng gấp 3!
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-icon">👻</span>
+            <h3>Chuyện #3: Ma Deadlock Hiện Hồn Lúc 3 Giờ Sáng</h3>
+            <p>
+                Hệ thống PBX chạy ngon lành suốt ban ngày. Nhưng cứ đến 3 giờ sáng —
+                đúng lúc batch job đồng bộ dữ liệu từ hệ thống cũ chạy — thì alert nổ liên tục:
+                <strong>"Deadlock detected! Transaction was chosen as the deadlock victim."</strong>
+            </p>
+            <p style="margin-top: 10px;">
+                Già mở <code>system_health</code> extended event lên xem deadlock graph,
+                thấy hai stored procedure đang ôm nhau khóc — Procedure A lock bảng Users rồi
+                cần bảng Extensions, trong khi Procedure B lock bảng Extensions rồi cần bảng Users.
+                Hai đứa cứ chờ nhau mãi, không đứa nào chịu nhường.
+            </p>
+            <p style="margin-top: 10px;">
+                Già sửa bằng cách bắt cả hai procedure <strong>access các bảng theo cùng thứ tự</strong>
+                (Users trước, Extensions sau), thêm <code>ROWLOCK</code> hint và giảm scope của transaction.
+                Từ đó, 3 giờ sáng yên bình trở lại. Già lại được ngủ ngon.
+            </p>
+            <div class="moral">
+                💡 Bài học: Deadlock xảy ra khi các transaction lock tài nguyên theo thứ tự khác nhau.
+                Quy tắc vàng: luôn access bảng theo cùng một thứ tự trong mọi transaction!
+            </div>
+        </div>
+
+        <div class="story-card">
+            <span class="story-icon">🔥</span>
+            <h3>Chuyện #4: Cursor — Kẻ Thù Giấu Mặt</h3>
+            <p>
+                Có cháu mới ra trường, viết stored procedure đồng bộ call log bằng <strong>CURSOR</strong> —
+                duyệt từng dòng một, xử lý từng dòng một, như đếm gạo bằng tay. Dữ liệu ít thì không sao,
+                nhưng khi có <strong>2 triệu cuộc gọi mới</strong> cần sync, cái procedure chạy mất
+                <strong>4 tiếng 23 phút</strong>.
+            </p>
+            <p style="margin-top: 10px;">
+                Già ngồi viết lại bằng <strong>set-based operation</strong> — một cái MERGE statement
+                gọn gàng, sạch sẽ. Kết quả: <strong>47 giây</strong>. Cháu developer hỏi:
+                "Ông ơi, sao nhanh vậy?" Già bảo: "Cháu ơi, SQL Server sinh ra để xử lý SET,
+                không phải để chạy vòng lặp. Dùng cursor giống như bắt con trâu đi xe đạp —
+                nó làm được nhưng khổ lắm!"
+            </p>
+            <div class="moral">
+                💡 Bài học: Tránh CURSOR như tránh tà. Hãy nghĩ theo set-based approach.
+                SQL Server được tối ưu để xử lý cả tập dữ liệu cùng lúc, không phải từng dòng một.
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COMMON MISTAKES ==================== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">⚠️</div>
+            <h2>Những Sai Lầm Kinh Điển</h2>
+        </div>
+
+        <ul class="mistakes-list">
+            <li>
+                <strong>SELECT * mọi nơi mọi lúc:</strong> Cháu ơi, SELECT * giống như đi siêu thị
+                mà vác cả cái kệ về nhà trong khi chỉ cần mua chai nước mắm. Hãy chỉ SELECT những cột cần thiết!
+            </li>
+            <li>
+                <strong>Không dùng parameterized query:</strong> Cứ nối chuỗi SQL thẳng vào query
+                là mời SQL Injection vào nhà. Già đã thấy cháu viết <code>"WHERE Name = '" + input + "'"</code>
+                rồi hacker xóa sạch database. Dùng <code>@Parameter</code> đi, cháu!
+            </li>
+            <li>
+                <strong>Index quá nhiều trên bảng INSERT nhiều:</strong> Bảng call log mỗi giây có hàng chục
+                bản ghi mới — mà gắn 15 index lên đó thì INSERT chậm như rùa.
+                Phải cân bằng giữa đọc nhanh và ghi nhanh, cháu ạ.
+            </li>
+            <li>
+                <strong>Không có chiến lược backup:</strong> "Ôi, máy chủ hỏng ổ cứng, dữ liệu mất hết!" —
+                Già nghe câu này nhiều đến mức tai đã chai. <strong>Full backup hàng ngày,
+                differential backup mỗi 4 giờ, transaction log backup mỗi 15 phút</strong> — đó là tối thiểu!
+            </li>
+            <li>
+                <strong>Dùng FLOAT cho tiền bạc:</strong> Cháu lưu tiền cước cuộc gọi bằng FLOAT,
+                rồi cộng 0.1 + 0.2 ra 0.30000000000000004. Khách hàng nhìn hóa đơn tưởng bị hack.
+                Dùng <code>DECIMAL(18,2)</code> đi, cháu!
+            </li>
+            <li>
+                <strong>Quên đóng connection:</strong> Mở SqlConnection mà không có <code>using</code> block,
+                không dispose — connection pool cạn kiệt, hệ thống từ chối kết nối mới.
+                Già đã thấy production sập chỉ vì lý do ngớ ngẩn này nhiều lần.
+            </li>
+            <li>
+                <strong>Migration không có rollback plan:</strong> Chạy ALTER TABLE trên production
+                mà không biết rollback thế nào nếu lỗi. Già luôn viết script UP và DOWN cho mỗi migration.
+                Không có đường lùi thì đừng tiến, cháu ơi!
+            </li>
+        </ul>
+    </section>
+
+    <!-- ==================== PBX RELEVANCE ==================== -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">📞</div>
+            <h2>Vai Trò Trong Dự Án PBX</h2>
+        </div>
+
+        <div class="card" style="margin-bottom: 22px;">
+            <p>
+                Trong hệ thống PBX, MSSQL đóng vai trò <strong>trái tim lưu trữ dữ liệu</strong> —
+                nơi mọi thông tin về cuộc gọi, người dùng, và cấu hình đều hội tụ. Middleware database
+                là cầu nối giữa hệ thống PBX mới và các hệ thống cũ của khách hàng, đồng bộ dữ liệu
+                liên tục để đảm bảo không có cuộc gọi nào bị bỏ lỡ, không có thông tin nào bị sai lệch.
+            </p>
+        </div>
+
+        <div class="pbx-grid">
+            <div class="pbx-card">
+                <span class="pbx-icon">📋</span>
+                <h4>Call Logs</h4>
+                <p>
+                    Lưu trữ toàn bộ lịch sử cuộc gọi — ai gọi, ai nghe, thời gian bao lâu,
+                    trạng thái cuộc gọi. Bảng này tăng trưởng cực nhanh, cần partition
+                    và archival strategy đúng đắn.
+                </p>
+            </div>
+            <div class="pbx-card">
+                <span class="pbx-icon">👥</span>
+                <h4>User Mappings</h4>
+                <p>
+                    Ánh xạ người dùng giữa hệ thống PBX mới và hệ thống cũ. Đảm bảo extension numbers,
+                    phòng ban, quyền hạn được đồng bộ chính xác giữa hai bên.
+                </p>
+            </div>
+            <div class="pbx-card">
+                <span class="pbx-icon">🔄</span>
+                <h4>Data Sync</h4>
+                <p>
+                    Middleware đồng bộ dữ liệu từ MSSQL/MySQL databases hiện có của khách hàng.
+                    Change tracking, CDC, hoặc polling — tùy nguồn dữ liệu mà chọn chiến lược phù hợp.
+                </p>
+            </div>
+            <div class="pbx-card">
+                <span class="pbx-icon">📊</span>
+                <h4>Báo Cáo & Thống Kê</h4>
+                <p>
+                    Aggregation cuộc gọi theo ngày/tuần/tháng, thống kê hiệu suất nhân viên,
+                    thời gian chờ trung bình. Dùng indexed views và pre-computed tables cho tốc độ.
+                </p>
+            </div>
+            <div class="pbx-card">
+                <span class="pbx-icon">🔐</span>
+                <h4>Audit Trail</h4>
+                <p>
+                    Ghi lại mọi thay đổi cấu hình hệ thống — ai thay đổi, lúc nào, thay đổi gì.
+                    Temporal tables của SQL Server 2016+ là công cụ hoàn hảo cho việc này.
+                </p>
+            </div>
+            <div class="pbx-card">
+                <span class="pbx-icon">⚡</span>
+                <h4>Real-time Processing</h4>
+                <p>
+                    Xử lý sự kiện cuộc gọi trong thời gian thực — cần stored procedures tối ưu,
+                    connection pooling hiệu quả, và transaction isolation level phù hợp
+                    để không block các cuộc gọi đang diễn ra.
+                </p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 22px;">
+            <h3>🏗️ Kiến trúc Database trong PBX</h3>
+            <div class="code-block">
+                <span class="comment">-- Ví dụ: Query lấy lịch sử cuộc gọi với thông tin user mapping</span><br><br>
+                <span class="keyword">SELECT</span><br>
+                &nbsp;&nbsp;cl.CallId,<br>
+                &nbsp;&nbsp;cl.CallerNumber,<br>
+                &nbsp;&nbsp;cl.CalleeNumber,<br>
+                &nbsp;&nbsp;cl.StartTime,<br>
+                &nbsp;&nbsp;cl.Duration,<br>
+                &nbsp;&nbsp;um.DisplayName <span class="keyword">AS</span> CallerName,<br>
+                &nbsp;&nbsp;dept.DepartmentName<br>
+                <span class="keyword">FROM</span> dbo.CallLogs cl<br>
+                <span class="keyword">INNER JOIN</span> dbo.UserMappings um<br>
+                &nbsp;&nbsp;<span class="keyword">ON</span> cl.CallerExtension = um.ExtensionNumber<br>
+                <span class="keyword">LEFT JOIN</span> dbo.Departments dept<br>
+                &nbsp;&nbsp;<span class="keyword">ON</span> um.DepartmentId = dept.Id<br>
+                <span class="keyword">WHERE</span> cl.StartTime &gt;= <span class="func">DATEADD</span>(<span class="string">DAY</span>, -7, <span class="func">GETDATE</span>())<br>
+                <span class="keyword">ORDER BY</span> cl.StartTime <span class="keyword">DESC</span>;
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <p>
+            <strong>Agent #14 — Dữ Liệu Trưởng Lão</strong><br>
+            Thành viên đội ngũ PBX Virtual Expert Agents
+        </p>
+        <p class="sql-query">
+            SELECT wisdom FROM TruongLao WHERE experience = 'infinite' AND humor = 1;
+        </p>
+        <p style="margin-top: 14px; font-size: 0.8em; color: rgba(196,160,160,0.5);">
+            -- Hết rồi cháu ạ. Nhớ backup trước khi đi ngủ! 🧓
+        </p>
+    </footer>
+
+</div>
+
+</body>
+</html>

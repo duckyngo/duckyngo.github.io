@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Spring Boot - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: steam 2s ease-in-out infinite;
+  }
+
+  @keyframes steam {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.05); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is Spring Boot */
+  .spring-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .spring-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .spring-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Cards Grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .concept-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .concept-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .concept-card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .concept-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .concept-card .card-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .concept-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .concept-card.ioc::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .concept-card.di::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .concept-card.autoconfig::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .concept-card.starter::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .concept-card.actuator::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .concept-card.profiles::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+  .tag.purple { background: rgba(139,92,246,0.1); color: var(--accent2); border-color: rgba(139,92,246,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Ecosystem Grid */
+  .eco-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .eco-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .eco-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .eco-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .eco-card .eco-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .eco-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .eco-card .eco-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .eco-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .eco-card.mvc::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .eco-card.data::before { background: linear-gradient(90deg, #10b981, #34d399); }
+  .eco-card.security::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+  .eco-card.cloud::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+  .eco-card.batch::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .eco-card.webflux::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+
+  /* Code Flow */
+  .code-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .code-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .code-block {
+    background: rgba(0,0,0,0.4);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+  }
+
+  .code-block code {
+    color: var(--accent3);
+    font-size: 0.82rem;
+    white-space: pre;
+    line-height: 1.6;
+  }
+
+  .code-block .keyword { color: #c084fc; }
+  .code-block .annotation { color: #fbbf24; }
+  .code-block .string { color: #34d399; }
+  .code-block .comment { color: #64748b; }
+  .code-block .type { color: #60a5fa; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Deploy Cards */
+  .deploy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .deploy-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .deploy-card:hover { border-color: var(--accent); }
+
+  .deploy-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .deploy-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.modern { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.classic { background: var(--accent4); }
+  .status.cutting { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+
+  .deploy-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Perf Grid */
+  .perf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .perf-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .perf-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .perf-card .perf-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .perf-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .perf-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .spring-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .eco-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .deploy-grid { grid-template-columns: 1fr; }
+    .perf-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Spring Boot World</a>
+  <a href="#what">Spring Boot là gì?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#concepts">Core Concepts</a>
+  <a href="#architecture">Kiến trúc</a>
+  <a href="#ecosystem">Hệ sinh thái</a>
+  <a href="#database">Database</a>
+  <a href="#deployment">Deployment</a>
+  <a href="#testing">Testing</a>
+  <a href="#performance">Performance</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#9749;</div>
+  <h1>Thế Giới Spring Boot</h1>
+  <p class="subtitle">Từ những dòng XML dài dằng dặc của J2EE đến convention-over-configuration hiện đại - Hành trình 20+ năm của framework Java phổ biến nhất hành tinh. Mọi thứ bạn cần hiểu, những hiểu lầm cần xoá bỏ, và tư duy đúng khi xây dựng ứng dụng enterprise.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS SPRING BOOT -->
+<section id="what">
+  <div class="spring-what">
+    <h2 class="section-title">Spring Boot là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      Hãy tưởng tượng bạn muốn nấu một bữa ăn ngon. <strong>Spring Framework</strong> giống như một căn bếp chuyên nghiệp với đầy đủ dụng cụ - nhưng bạn phải tự chọn nồi, chảo, gia vị, tự điều chỉnh lửa. <strong>Spring Boot</strong> giống như căn bếp đó nhưng đã có sẵn công thức, nguyên liệu đã rửa sạch, lửa đã chỉnh đúng - bạn chỉ cần bấm nút "Cook" và tập trung vào việc sáng tạo món ăn.
+    </p>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      Nói kỹ thuật hơn: Spring Boot là một <strong>opinionated framework</strong> được xây dựng trên nền Spring Framework, giúp bạn tạo ứng dụng Java production-ready trong vài phút thay vì vài ngày. Nó tự động cấu hình mọi thứ dựa trên những gì bạn thêm vào classpath - không còn XML hell, không còn boilerplate code.
+    </p>
+
+    <div class="spring-analogy">
+      <div class="analogy-box">
+        <div class="icon">&#128220;</div>
+        <h3>Spring Framework thuần</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Hàng trăm dòng XML config<br>Tự chọn mọi dependency<br>Setup Tomcat thủ công<br>Độ phức tạp: <strong style="color: var(--accent5);">Cao</strong></p>
+      </div>
+      <div class="analogy-arrow">&rarr;</div>
+      <div class="analogy-box">
+        <div class="icon">&#128640;</div>
+        <h3>Spring Boot</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Zero XML, annotation-driven<br>Starter POMs lo dependency<br>Tomcat embedded sẵn<br>Độ phức tạp: <strong style="color: var(--accent3);">Thấp</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>&#128161; IoC &amp; DI - Trái tim của Spring</h4>
+      <p>
+        <strong>Inversion of Control (IoC)</strong> nghĩa là bạn không tự tạo đối tượng nữa - Spring Container lo chuyện đó. Hãy tưởng tượng thay vì tự đi chợ mua từng nguyên liệu (new Object()), bạn chỉ cần ghi vào đơn hàng và shipper (Spring Container) sẽ giao tận nơi.
+        <br><br>
+        <strong>Dependency Injection (DI)</strong> là cách Spring "tiêm" các đối tượng vào nơi cần dùng. Thay vì class A tự tạo class B, Spring tạo cả A và B rồi "gắn" B vào A. Kết quả? Code của bạn loose-coupled, dễ test, dễ thay đổi.
+      </p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="num">73%</div>
+        <div class="label">Java Dev dùng Spring</div>
+      </div>
+      <div class="stat">
+        <div class="num">77K+</div>
+        <div class="label">GitHub Stars</div>
+      </div>
+      <div class="stat">
+        <div class="num">3.x</div>
+        <div class="label">Phiên bản hiện tại</div>
+      </div>
+      <div class="stat">
+        <div class="num">2014</div>
+        <div class="label">Năm ra đời</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Chảy Lịch Sử</h2>
+  <p class="section-subtitle">Từ địa ngục J2EE đến thiên đường auto-configuration - câu chuyện về cuộc cách mạng trong thế giới Java enterprise.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">1999 - 2003</div>
+        <h3>&#128148; Kỷ nguyên J2EE đen tối</h3>
+        <p>Java 2 Enterprise Edition thống trị. Muốn viết một REST API đơn giản? Chuẩn bị hàng chục file XML, EJB descriptors, JNDI lookups. Developer khóc thầm mỗi ngày. Mỗi dự án mới là một cuộc chiến với configuration.</p>
+        <div class="tag-row">
+          <span class="tag hot">EJB 2.x</span>
+          <span class="tag warn">XML Hell</span>
+          <span class="tag">JNDI</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">Tháng 10, 2002</div>
+        <h3>&#128214; "Expert One-on-One J2EE"</h3>
+        <p>Rod Johnson xuất bản cuốn sách huyền thoại, chỉ ra mọi vấn đề của J2EE và đề xuất một framework nhẹ hơn. Cuốn sách đi kèm 30.000 dòng code - chính là tiền thân của Spring Framework. Một developer giận dữ đã thay đổi cả ngành công nghiệp.</p>
+        <div class="tag-row">
+          <span class="tag good">Rod Johnson</span>
+          <span class="tag">Wrox Press</span>
+          <span class="tag purple">Game Changer</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">Tháng 6, 2003</div>
+        <h3>&#127793; Spring Framework 1.0 ra đời</h3>
+        <p>Juergen Hoeller và Rod Johnson chính thức phát hành Spring Framework. Lightweight IoC container, AOP support, và quan trọng nhất - không cần application server nặng nề. Cộng đồng Java lần đầu thấy ánh sáng cuối đường hầm.</p>
+        <div class="tag-row">
+          <span class="tag good">IoC Container</span>
+          <span class="tag good">AOP</span>
+          <span class="tag">Apache License</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2006 - 2013</div>
+        <h3>&#128200; Spring trưởng thành</h3>
+        <p>Spring 2.0 mang đến XML namespaces, Spring 2.5 giới thiệu annotation-based config (@Autowired, @Component). Spring 3.0 chuyển sang Java 5+ với generics và REST support. Spring 4.0 hỗ trợ Java 8, WebSocket, và lambdas. Mỗi phiên bản là một bước tiến khổng lồ.</p>
+        <div class="tag-row">
+          <span class="tag">Annotations</span>
+          <span class="tag">REST Support</span>
+          <span class="tag good">Java 8</span>
+          <span class="tag">WebSocket</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">Tháng 4, 2014</div>
+        <h3>&#9889; Spring Boot 1.0 - Cuộc cách mạng</h3>
+        <p>Phil Webb và đội ngũ Pivotal phát hành Spring Boot 1.0. "Convention over configuration" trở thành hiện thực. Một ứng dụng web hoàn chỉnh chỉ với một file Java và vài annotation. start.spring.io ra đời - khởi tạo project trong 30 giây. Thế giới Java không bao giờ quay lại như cũ.</p>
+        <div class="tag-row">
+          <span class="tag good">Auto-configuration</span>
+          <span class="tag good">Embedded Server</span>
+          <span class="tag good">Starter POMs</span>
+          <span class="tag hot">Revolution</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2017 - 2020</div>
+        <h3>&#9729;&#65039; Spring Cloud &amp; Microservices</h3>
+        <p>Spring Cloud mang Netflix OSS vào thế giới Spring - Eureka, Zuul, Hystrix, Config Server. Microservices architecture bùng nổ và Spring Boot trở thành lựa chọn số 1. Spring Boot 2.0 chuyển sang Spring Framework 5 với WebFlux reactive.</p>
+        <div class="tag-row">
+          <span class="tag purple">Eureka</span>
+          <span class="tag purple">Zuul/Gateway</span>
+          <span class="tag">WebFlux</span>
+          <span class="tag warn">Reactive</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2022 - Hiện tại</div>
+        <h3>&#128171; Spring Boot 3.x &amp; Native</h3>
+        <p>Spring Boot 3.0 yêu cầu Java 17+, chuyển sang Jakarta EE, và hỗ trợ GraalVM native image. Thời gian khởi động giảm từ 2-3 giây xuống còn 50ms. Spring Native biến ứng dụng Java thành binary thuần - cuộc chơi serverless bắt đầu. Virtual Threads (Java 21) mở ra kỷ nguyên mới.</p>
+        <div class="tag-row">
+          <span class="tag good">GraalVM Native</span>
+          <span class="tag good">Java 21</span>
+          <span class="tag">Jakarta EE</span>
+          <span class="tag hot">Virtual Threads</span>
+        </div>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE CONCEPTS -->
+<section id="concepts">
+  <h2 class="section-title" style="color: var(--accent);">Core Concepts</h2>
+  <p class="section-subtitle">Sáu trụ cột tạo nên sức mạnh của Spring Boot. Hiểu rõ chúng, bạn sẽ hiểu tại sao framework này thống trị thế giới Java enterprise.</p>
+
+  <div class="card-grid">
+    <div class="concept-card ioc">
+      <div class="card-icon">&#128230;</div>
+      <div class="card-type">Foundation</div>
+      <h3>IoC Container</h3>
+      <p>ApplicationContext là "bộ não" của Spring. Nó quản lý vòng đời của mọi bean - từ lúc tạo, inject dependencies, đến lúc destroy. Bạn khai báo bean, Spring lo phần còn lại. Singleton scope mặc định nghĩa là mỗi bean chỉ có một instance duy nhất trong toàn bộ ứng dụng - tiết kiệm bộ nhớ và đảm bảo consistency.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">5</div>
+          <div class="label">Bean Scopes</div>
+        </div>
+        <div class="stat">
+          <div class="num">3</div>
+          <div class="label">Cách tạo Bean</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">@Component</span>
+        <span class="tag">@Bean</span>
+        <span class="tag good">@Configuration</span>
+        <span class="tag">Singleton</span>
+        <span class="tag warn">Prototype</span>
+      </div>
+    </div>
+
+    <div class="concept-card di">
+      <div class="card-icon">&#128268;</div>
+      <div class="card-type">Core Pattern</div>
+      <h3>Dependency Injection</h3>
+      <p>Thay vì class tự tạo dependency (tight coupling), Spring "tiêm" chúng vào qua constructor, setter, hoặc field injection. Constructor injection được khuyên dùng nhất vì đảm bảo immutability và dễ test. Khi bạn viết @Autowired, Spring tự tìm bean phù hợp trong container và inject vào - giống như hệ thống ống nước tự kết nối các vòi.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">3</div>
+          <div class="label">Kiểu Inject</div>
+        </div>
+        <div class="stat">
+          <div class="num">#1</div>
+          <div class="label">Constructor</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">@Autowired</span>
+        <span class="tag good">Constructor Injection</span>
+        <span class="tag warn">@Qualifier</span>
+        <span class="tag">@Primary</span>
+      </div>
+    </div>
+
+    <div class="concept-card autoconfig">
+      <div class="card-icon">&#9881;&#65039;</div>
+      <div class="card-type">Magic Behind</div>
+      <h3>Auto-configuration</h3>
+      <p>Đây là "phép thuật" lớn nhất của Spring Boot. Khi bạn thêm spring-boot-starter-web vào pom.xml, Spring Boot tự phát hiện và cấu hình embedded Tomcat, Jackson JSON, DispatcherServlet - tất cả không cần một dòng config. Bí mật nằm ở @Conditional annotations: Spring kiểm tra classpath, properties, và beans hiện có để quyết định cấu hình gì.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">150+</div>
+          <div class="label">Auto-configs</div>
+        </div>
+        <div class="stat">
+          <div class="num">7</div>
+          <div class="label">@Conditional</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">@EnableAutoConfiguration</span>
+        <span class="tag">@ConditionalOnClass</span>
+        <span class="tag">spring.factories</span>
+      </div>
+    </div>
+
+    <div class="concept-card starter">
+      <div class="card-icon">&#128230;</div>
+      <div class="card-type">Dependency Management</div>
+      <h3>Starter POMs</h3>
+      <p>Ngày xưa, thêm Spring MVC vào project nghĩa là tự chọn 15-20 dependencies với version tương thích. Starter POMs giải quyết điều đó - chỉ cần thêm spring-boot-starter-web là có đủ mọi thứ với versions đã được test kỹ. Giống như mua combo thay vì mua từng món - tiện lợi và không sợ xung đột version.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">50+</div>
+          <div class="label">Official Starters</div>
+        </div>
+        <div class="stat">
+          <div class="num">0</div>
+          <div class="label">Version Conflicts</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">starter-web</span>
+        <span class="tag">starter-data-jpa</span>
+        <span class="tag">starter-security</span>
+        <span class="tag good">starter-test</span>
+        <span class="tag warn">starter-actuator</span>
+      </div>
+    </div>
+
+    <div class="concept-card actuator">
+      <div class="card-icon">&#128202;</div>
+      <div class="card-type">Monitoring</div>
+      <h3>Actuator</h3>
+      <p>Ứng dụng đang chạy production mà không có monitoring giống như lái xe bịt mắt. Spring Boot Actuator cung cấp hàng chục endpoints để kiểm tra health, metrics, info, environment, thread dump, heap dump. Tích hợp sẵn với Prometheus, Grafana, Datadog. Chỉ cần thêm một starter dependency là có observability hoàn chỉnh.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">20+</div>
+          <div class="label">Endpoints</div>
+        </div>
+        <div class="stat">
+          <div class="num">/health</div>
+          <div class="label">Phổ biến nhất</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">/actuator/health</span>
+        <span class="tag">/metrics</span>
+        <span class="tag good">Micrometer</span>
+        <span class="tag">Prometheus</span>
+      </div>
+    </div>
+
+    <div class="concept-card profiles">
+      <div class="card-icon">&#127919;</div>
+      <div class="card-type">Configuration</div>
+      <h3>Profiles</h3>
+      <p>Môi trường dev khác production - database URL khác, log level khác, cache strategy khác. Profiles cho phép bạn định nghĩa config riêng cho từng môi trường: application-dev.yml, application-prod.yml, application-staging.yml. Chuyển đổi bằng một biến environment duy nhất. Không bao giờ hardcode credentials nữa!</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">&infin;</div>
+          <div class="label">Custom Profiles</div>
+        </div>
+        <div class="stat">
+          <div class="num">17</div>
+          <div class="label">Property Sources</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">@Profile</span>
+        <span class="tag good">application-{env}.yml</span>
+        <span class="tag warn">SPRING_PROFILES_ACTIVE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <h2 class="section-title" style="color: var(--accent3);">Kiến Trúc Ứng Dụng</h2>
+  <p class="section-subtitle">Spring Boot không ép bạn theo kiến trúc nào, nhưng layered architecture là pattern phổ biến và hiệu quả nhất. Mỗi layer có trách nhiệm riêng, giống như các phòng ban trong công ty.</p>
+
+  <div class="arch-container">
+    <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem;">Request Flow: Từ HTTP đến Database và ngược lại</div>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#127760;</div>
+        <h4>Client</h4>
+        <p>Browser / Mobile<br>HTTP Request</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128739;</div>
+        <h4>Controller</h4>
+        <p>@RestController<br>Nhận request, trả response</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#9881;&#65039;</div>
+        <h4>Service</h4>
+        <p>@Service<br>Business logic</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128451;</div>
+        <h4>Repository</h4>
+        <p>@Repository<br>Data access (JPA)</p>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128450;</div>
+        <h4>Database</h4>
+        <p>MySQL / PostgreSQL<br>Dữ liệu thực</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>&#128161; Tại sao cần DTO Pattern?</h4>
+    <p>
+      Entity là đại diện trực tiếp của bảng database - nó chứa mọi field, kể cả password hash, internal IDs. Nếu trả Entity thẳng cho client, bạn đang "lộ hàng" toàn bộ cấu trúc database. <strong>DTO (Data Transfer Object)</strong> là lớp áo giáp - chỉ chứa những gì client cần thấy. Thêm nữa, khi database schema thay đổi, DTO giữ cho API ổn định. Đừng lười - hãy dùng DTO!
+    </p>
+  </div>
+
+  <div class="code-flow">
+    <div class="flow-title">&#128187; Ví dụ Layered Architecture thực tế</div>
+
+    <p style="color: var(--text-dim); font-family: 'Segoe UI', sans-serif; margin-bottom: 1rem;">Entity - Ánh xạ bảng database:</p>
+    <div class="code-block">
+<code><span class="annotation">@Entity</span>
+<span class="annotation">@Table</span>(name = <span class="string">"users"</span>)
+<span class="keyword">public class</span> <span class="type">User</span> {
+    <span class="annotation">@Id</span> <span class="annotation">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)
+    <span class="keyword">private</span> Long id;
+    <span class="keyword">private</span> String username;
+    <span class="keyword">private</span> String email;
+    <span class="keyword">private</span> String passwordHash; <span class="comment">// Không bao giờ trả cho client!</span>
+}</code>
+    </div>
+
+    <p style="color: var(--text-dim); font-family: 'Segoe UI', sans-serif; margin-bottom: 1rem;">Repository - Data Access Layer:</p>
+    <div class="code-block">
+<code><span class="annotation">@Repository</span>
+<span class="keyword">public interface</span> <span class="type">UserRepository</span> <span class="keyword">extends</span> <span class="type">JpaRepository</span>&lt;User, Long&gt; {
+    Optional&lt;User&gt; findByEmail(String email);
+    List&lt;User&gt; findByUsernameContaining(String keyword);
+    <span class="comment">// Spring Data tự generate query từ tên method!</span>
+}</code>
+    </div>
+
+    <p style="color: var(--text-dim); font-family: 'Segoe UI', sans-serif; margin-bottom: 1rem;">Service - Business Logic:</p>
+    <div class="code-block">
+<code><span class="annotation">@Service</span>
+<span class="annotation">@RequiredArgsConstructor</span>
+<span class="keyword">public class</span> <span class="type">UserService</span> {
+    <span class="keyword">private final</span> UserRepository userRepository;
+
+    <span class="keyword">public</span> UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -&gt; <span class="keyword">new</span> ResourceNotFoundException(<span class="string">"User not found"</span>));
+        <span class="keyword">return</span> UserMapper.toDTO(user); <span class="comment">// Entity → DTO</span>
+    }
+}</code>
+    </div>
+
+    <p style="color: var(--text-dim); font-family: 'Segoe UI', sans-serif; margin-bottom: 1rem;">Controller - HTTP Layer:</p>
+    <div class="code-block">
+<code><span class="annotation">@RestController</span>
+<span class="annotation">@RequestMapping</span>(<span class="string">"/api/users"</span>)
+<span class="annotation">@RequiredArgsConstructor</span>
+<span class="keyword">public class</span> <span class="type">UserController</span> {
+    <span class="keyword">private final</span> UserService userService;
+
+    <span class="annotation">@GetMapping</span>(<span class="string">"/{id}"</span>)
+    <span class="keyword">public</span> ResponseEntity&lt;UserDTO&gt; getUser(<span class="annotation">@PathVariable</span> Long id) {
+        <span class="keyword">return</span> ResponseEntity.ok(userService.getUserById(id));
+    }
+}</code>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>&#128165; Exception Handling - Global &amp; Clean</h4>
+    <p>
+      Đừng try-catch trong từng controller method. Dùng <strong>@ControllerAdvice</strong> với <strong>@ExceptionHandler</strong> để xử lý exception tập trung. Mỗi loại exception map với một HTTP status code cụ thể: ResourceNotFoundException &rarr; 404, ValidationException &rarr; 400, AuthenticationException &rarr; 401. Response body luôn có cấu trúc nhất quán: timestamp, status, message, path. Client sẽ cảm ơn bạn.
+    </p>
+  </div>
+</section>
+
+<!-- SPRING ECOSYSTEM -->
+<section id="ecosystem">
+  <h2 class="section-title" style="color: var(--accent2);">Hệ Sinh Thái Spring</h2>
+  <p class="section-subtitle">Spring Boot là trung tâm, nhưng sức mạnh thực sự nằm ở hệ sinh thái khổng lồ xung quanh. Mỗi module là một vũ khí chuyên biệt cho từng bài toán.</p>
+
+  <div class="eco-grid">
+    <div class="eco-card mvc">
+      <div class="eco-icon">&#128736;</div>
+      <div class="eco-type">Web Framework</div>
+      <h3>Spring MVC</h3>
+      <p>Nền tảng web truyền thống của Spring - Model-View-Controller. DispatcherServlet là "tổng đài viên" nhận mọi request và điều phối đến đúng controller. Hỗ trợ cả REST API (JSON) lẫn server-side rendering (Thymeleaf). Sau 15+ năm, vẫn là lựa chọn mặc định cho đa số dự án vì sự ổn định và cộng đồng khổng lồ.</p>
+      <div class="tag-row">
+        <span class="tag">@RestController</span>
+        <span class="tag">@RequestMapping</span>
+        <span class="tag good">Thymeleaf</span>
+        <span class="tag">Content Negotiation</span>
+      </div>
+    </div>
+
+    <div class="eco-card data">
+      <div class="eco-icon">&#128451;</div>
+      <div class="eco-type">Data Access</div>
+      <h3>Spring Data JPA</h3>
+      <p>Viết repository mà không cần viết implementation? Spring Data JPA biến điều đó thành hiện thực. Chỉ cần khai báo interface extends JpaRepository, Spring tự generate CRUD operations. Method naming convention cho phép viết query phức tạp chỉ bằng tên method: findByStatusAndCreatedAtBetween(). Đây không phải magic - đây là convention.</p>
+      <div class="tag-row">
+        <span class="tag good">JpaRepository</span>
+        <span class="tag">Query Methods</span>
+        <span class="tag">@Query</span>
+        <span class="tag">Pageable</span>
+        <span class="tag warn">Specifications</span>
+      </div>
+    </div>
+
+    <div class="eco-card security">
+      <div class="eco-icon">&#128274;</div>
+      <div class="eco-type">Authentication & Authorization</div>
+      <h3>Spring Security</h3>
+      <p>Module mạnh mẽ nhất nhưng cũng phức tạp nhất trong hệ sinh thái Spring. Filter chain architecture bảo vệ ứng dụng ở mọi tầng. Hỗ trợ từ form login đơn giản đến OAuth2/OpenID Connect, JWT tokens, LDAP integration, method-level security (@PreAuthorize). Kẻ tấn công CSRF, XSS, session fixation? Spring Security đã lo.</p>
+      <div class="tag-row">
+        <span class="tag hot">Filter Chain</span>
+        <span class="tag">OAuth2</span>
+        <span class="tag">JWT</span>
+        <span class="tag warn">@PreAuthorize</span>
+        <span class="tag">CORS</span>
+      </div>
+    </div>
+
+    <div class="eco-card cloud">
+      <div class="eco-icon">&#9729;&#65039;</div>
+      <div class="eco-type">Microservices</div>
+      <h3>Spring Cloud</h3>
+      <p>Bộ công cụ xây dựng hệ thống microservices phân tán. Config Server quản lý cấu hình tập trung. Eureka/Consul cho service discovery. Spring Cloud Gateway thay thế Zuul làm API gateway. OpenFeign giúp gọi service khác như gọi method local. Resilience4j (thay Hystrix) cho circuit breaker pattern. Tất cả tích hợp seamless với Spring Boot.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">15+</div>
+          <div class="label">Sub-projects</div>
+        </div>
+        <div class="stat">
+          <div class="num">Netflix</div>
+          <div class="label">Nguồn gốc OSS</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag purple">Config Server</span>
+        <span class="tag purple">Gateway</span>
+        <span class="tag purple">Eureka</span>
+        <span class="tag">OpenFeign</span>
+        <span class="tag warn">Resilience4j</span>
+      </div>
+    </div>
+
+    <div class="eco-card batch">
+      <div class="eco-icon">&#128640;</div>
+      <div class="eco-type">Batch Processing</div>
+      <h3>Spring Batch</h3>
+      <p>Xử lý hàng triệu records mỗi đêm? Spring Batch là câu trả lời. Kiến trúc Job &rarr; Step &rarr; (Reader &rarr; Processor &rarr; Writer) cho phép xây dựng pipeline ETL mạnh mẽ. Chunk-based processing xử lý data theo lô, tự động retry khi lỗi, skip bad records, và restart từ đúng chỗ bị gián đoạn. Ngân hàng và fintech yêu thích Spring Batch.</p>
+      <div class="tag-row">
+        <span class="tag">Job</span>
+        <span class="tag">Step</span>
+        <span class="tag good">Chunk Processing</span>
+        <span class="tag warn">Retry/Skip</span>
+        <span class="tag">Partitioning</span>
+      </div>
+    </div>
+
+    <div class="eco-card webflux">
+      <div class="eco-icon">&#9889;</div>
+      <div class="eco-type">Reactive</div>
+      <h3>Spring WebFlux</h3>
+      <p>Khi servlet-based MVC không đủ nhanh cho high-concurrency workloads. WebFlux sử dụng reactive programming với Project Reactor (Mono &amp; Flux). Non-blocking I/O xử lý hàng ngàn concurrent requests với ít thread. Chạy trên Netty thay vì Tomcat. Nhưng cảnh báo: reactive code khó debug hơn nhiều, và không phải mọi project đều cần reactive.</p>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">Mono</div>
+          <div class="label">0..1 Element</div>
+        </div>
+        <div class="stat">
+          <div class="num">Flux</div>
+          <div class="label">0..N Elements</div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Non-blocking</span>
+        <span class="tag">Netty</span>
+        <span class="tag">Project Reactor</span>
+        <span class="tag warn">Learning Curve cao</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATABASE -->
+<section id="database">
+  <h2 class="section-title" style="color: var(--accent4);">Tích Hợp Database</h2>
+  <p class="section-subtitle">Ứng dụng enterprise không thể thiếu database. Spring Boot biến việc tích hợp database từ ác mộng JDBC thuần thành trải nghiệm mượt mà đáng ngạc nhiên.</p>
+
+  <div class="spring-what" style="margin-bottom: 2rem;">
+    <h3 style="color: var(--accent); margin-bottom: 1rem;">&#127959; JPA/Hibernate - ORM Layer</h3>
+    <p style="color: var(--text-dim);">
+      <strong>JPA (Java Persistence API)</strong> là specification - bộ quy tắc chung cho ORM trong Java. <strong>Hibernate</strong> là implementation phổ biến nhất của JPA. Spring Data JPA đứng phía trên cả hai, cung cấp abstraction layer giúp bạn viết ít code hơn nữa. Hãy nghĩ: JPA là luật giao thông, Hibernate là xe hơi tuân theo luật, Spring Data JPA là hệ thống tự lái.
+    </p>
+    <p style="color: var(--text-dim); margin-top: 1rem;">
+      Entity mapping qua annotations (@Entity, @Table, @Column, @OneToMany, @ManyToMany) thay vì XML. Hibernate tự generate SQL dựa trên entity definition. Nhưng hãy luôn bật <strong>show-sql</strong> trong development để biết Hibernate đang generate query gì - đừng để N+1 query problem giết chết performance.
+    </p>
+  </div>
+
+  <div class="comparison-wrap">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Thành phần</th>
+          <th>Vai trò</th>
+          <th>Mặc định trong Spring Boot</th>
+          <th>Thay thế phổ biến</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Connection Pool</td>
+          <td>Quản lý connections, tái sử dụng, tránh overhead tạo mới</td>
+          <td>HikariCP (nhanh nhất)</td>
+          <td>Tomcat Pool, DBCP2</td>
+        </tr>
+        <tr>
+          <td>ORM Framework</td>
+          <td>Ánh xạ Java objects sang database tables</td>
+          <td>Hibernate</td>
+          <td>EclipseLink, MyBatis</td>
+        </tr>
+        <tr>
+          <td>Database Migration</td>
+          <td>Version control cho database schema</td>
+          <td>(Cần thêm starter)</td>
+          <td>Flyway, Liquibase</td>
+        </tr>
+        <tr>
+          <td>Transaction Manager</td>
+          <td>Đảm bảo ACID cho database operations</td>
+          <td>JpaTransactionManager</td>
+          <td>JtaTransactionManager</td>
+        </tr>
+        <tr>
+          <td>Query Language</td>
+          <td>Truy vấn database theo cú pháp OOP</td>
+          <td>JPQL</td>
+          <td>Criteria API, QueryDSL, Native SQL</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    <h4>&#9888;&#65039; HikariCP - Tại sao nó là mặc định?</h4>
+    <p>
+      HikariCP (hikari = "ánh sáng" trong tiếng Nhật) là connection pool nhanh nhất trong thế giới JVM. Nó sử dụng bytecode-level optimization, ConcurrentBag cho lock-free operations, và giữ footprint cực nhỏ (~130KB). Spring Boot 2.0+ chọn HikariCP làm mặc định thay vì Tomcat Pool. Cấu hình quan trọng nhất: <strong>maximum-pool-size</strong> (mặc định 10) - đừng set quá cao, connections = cores * 2 + disk spindles là công thức kinh điển.
+    </p>
+  </div>
+
+  <div class="insight-box">
+    <h4>&#128451; Flyway vs Liquibase - Chọn gì?</h4>
+    <p>
+      Cả hai đều là database migration tools, nhưng triết lý khác nhau. <strong>Flyway</strong> dùng SQL files thuần (V1__init.sql, V2__add_column.sql) - đơn giản, dễ hiểu, developer SQL-savvy thích. <strong>Liquibase</strong> dùng XML/YAML/JSON changelogs - trừu tượng hơn, hỗ trợ rollback tốt hơn, database-agnostic. Team nhỏ, một database? Flyway. Enterprise, multi-database? Liquibase. Nhưng quan trọng nhất: <strong>CHỌN MỘT VÀ DÙNG NHẤT QUÁN</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- DEPLOYMENT -->
+<section id="deployment">
+  <h2 class="section-title" style="color: var(--accent5);">Triển Khai &amp; Đóng Gói</h2>
+  <p class="section-subtitle">Từ JAR file đơn giản đến Kubernetes cluster phức tạp - Spring Boot linh hoạt trong mọi hình thức deployment.</p>
+
+  <div class="deploy-grid">
+    <div class="deploy-card">
+      <h4><span class="status classic"></span> JAR (Fat JAR)</h4>
+      <p>Cách triển khai mặc định và đơn giản nhất. Một file .jar chứa mọi thứ: code, dependencies, embedded Tomcat. Chạy bằng <strong>java -jar app.jar</strong>. Ưu điểm: portable, self-contained, dễ distribute. Kích thước thường 30-80MB tuỳ dependencies.</p>
+      <div class="tag-row">
+        <span class="tag good">Mặc định</span>
+        <span class="tag">Self-contained</span>
+        <span class="tag">Portable</span>
+      </div>
+    </div>
+
+    <div class="deploy-card">
+      <h4><span class="status classic"></span> WAR (Web Archive)</h4>
+      <p>Triển khai truyền thống lên external Tomcat/WildFly/WebLogic. Cần khi công ty bắt buộc dùng application server riêng hoặc deploy nhiều app trên một server. Spring Boot hỗ trợ WAR bằng cách extends SpringBootServletInitializer. Ít phổ biến hơn FAT JAR ngày nay.</p>
+      <div class="tag-row">
+        <span class="tag warn">Legacy</span>
+        <span class="tag">External Tomcat</span>
+        <span class="tag">Enterprise</span>
+      </div>
+    </div>
+
+    <div class="deploy-card">
+      <h4><span class="status modern"></span> Docker Container</h4>
+      <p>Đóng gói app + JVM + OS layer vào container image. Spring Boot 2.3+ hỗ trợ Cloud Native Buildpacks - build Docker image không cần viết Dockerfile! Layered JAR giúp tận dụng Docker cache: dependencies layer hiếm thay đổi, chỉ rebuild app layer. Image size tối ưu: 150-250MB với distroless base.</p>
+      <div class="tag-row">
+        <span class="tag good">Buildpacks</span>
+        <span class="tag good">Layered JAR</span>
+        <span class="tag">Distroless</span>
+      </div>
+    </div>
+
+    <div class="deploy-card">
+      <h4><span class="status modern"></span> Kubernetes</h4>
+      <p>Orchestration cho production-grade deployment. Spring Boot Actuator cung cấp /health/liveness và /health/readiness cho K8s probes. Spring Cloud Kubernetes tự đọc ConfigMaps/Secrets thay vì cần Config Server. Graceful shutdown đảm bảo không mất request khi pod bị terminate.</p>
+      <div class="tag-row">
+        <span class="tag good">Liveness Probe</span>
+        <span class="tag good">Readiness Probe</span>
+        <span class="tag">Graceful Shutdown</span>
+      </div>
+    </div>
+
+    <div class="deploy-card">
+      <h4><span class="status cutting"></span> GraalVM Native Image</h4>
+      <p>Biên dịch Java bytecode thành native binary. Kết quả: khởi động trong 50ms (thay vì 2-5 giây), memory footprint giảm 5x. Hoàn hảo cho serverless (AWS Lambda, Azure Functions). Spring Boot 3.0+ hỗ trợ chính thức qua spring-boot-starter-parent. Trade-off: build time lâu hơn nhiều và một số reflection-based features cần cấu hình thêm.</p>
+      <div class="tag-row">
+        <span class="tag hot">50ms startup</span>
+        <span class="tag">AOT Compilation</span>
+        <span class="tag warn">Build time lâu</span>
+        <span class="tag purple">Serverless</span>
+      </div>
+    </div>
+
+    <div class="deploy-card">
+      <h4><span class="status modern"></span> Cloud Platforms</h4>
+      <p>Spring Boot chạy native trên mọi cloud: AWS (Elastic Beanstalk, ECS, Lambda), Azure (App Service, AKS), GCP (Cloud Run, GKE). Heroku, Railway, Render hỗ trợ Java buildpacks. Pivotal Cloud Foundry (nay là Tanzu) là nền tảng "nhà" của Spring. cf push và xong.</p>
+      <div class="tag-row">
+        <span class="tag">AWS</span>
+        <span class="tag">Azure</span>
+        <span class="tag">GCP</span>
+        <span class="tag good">Cloud Run</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-flow" style="margin-top: 2rem;">
+    <div class="flow-title">&#128011; Dockerfile tối ưu cho Spring Boot</div>
+    <div class="code-block">
+<code><span class="comment"># Multi-stage build - giảm image size đáng kể</span>
+<span class="keyword">FROM</span> eclipse-temurin:21-jre-alpine <span class="keyword">AS</span> runtime
+
+<span class="keyword">WORKDIR</span> /app
+
+<span class="comment"># Tận dụng layered JAR cho Docker cache</span>
+<span class="keyword">COPY</span> --from=builder /app/target/extracted/dependencies/ ./
+<span class="keyword">COPY</span> --from=builder /app/target/extracted/spring-boot-loader/ ./
+<span class="keyword">COPY</span> --from=builder /app/target/extracted/snapshot-dependencies/ ./
+<span class="keyword">COPY</span> --from=builder /app/target/extracted/application/ ./
+
+<span class="comment"># Non-root user - bảo mật cơ bản</span>
+<span class="keyword">RUN</span> addgroup -S spring && adduser -S spring -G spring
+<span class="keyword">USER</span> spring:spring
+
+<span class="keyword">EXPOSE</span> 8080
+<span class="keyword">ENTRYPOINT</span> [<span class="string">"java"</span>, <span class="string">"org.springframework.boot.loader.launch.JarLauncher"</span>]</code>
+    </div>
+  </div>
+</section>
+
+<!-- TESTING -->
+<section id="testing">
+  <h2 class="section-title" style="color: var(--accent3);">Testing - Không Test Không Ngủ Yên</h2>
+  <p class="section-subtitle">Spring Boot cung cấp hệ thống testing toàn diện nhất trong thế giới Java. Từ unit test đến integration test, mọi thứ đều có annotation riêng.</p>
+
+  <div class="card-grid">
+    <div class="concept-card ioc">
+      <div class="card-icon">&#128300;</div>
+      <div class="card-type">Integration Test</div>
+      <h3>@SpringBootTest</h3>
+      <p>"Nuclear option" của testing - load toàn bộ ApplicationContext và chạy test trên application thực. Dùng cho end-to-end integration tests, khi bạn cần đảm bảo mọi layer hoạt động cùng nhau. Cảnh báo: chậm vì phải khởi động toàn bộ Spring context. Dùng tiết kiệm, ưu tiên slice tests cho các test riêng lẻ.</p>
+      <div class="tag-row">
+        <span class="tag good">Full Context</span>
+        <span class="tag warn">Chậm</span>
+        <span class="tag">@AutoConfigureMockMvc</span>
+      </div>
+    </div>
+
+    <div class="concept-card di">
+      <div class="card-icon">&#127760;</div>
+      <div class="card-type">Web Layer Test</div>
+      <h3>MockMvc</h3>
+      <p>Test controller mà không cần khởi động HTTP server. MockMvc giả lập HTTP requests và kiểm tra responses, status codes, headers, JSON body. Kết hợp với @WebMvcTest chỉ load web layer - nhanh hơn @SpringBootTest rất nhiều. Dùng mockBean để mock service dependencies.</p>
+      <div class="tag-row">
+        <span class="tag">@WebMvcTest</span>
+        <span class="tag good">Nhanh</span>
+        <span class="tag">perform(get/post)</span>
+        <span class="tag">andExpect()</span>
+      </div>
+    </div>
+
+    <div class="concept-card autoconfig">
+      <div class="card-icon">&#128451;</div>
+      <div class="card-type">Data Layer Test</div>
+      <h3>@DataJpaTest</h3>
+      <p>Slice test chỉ cho JPA layer - chỉ load repository beans, EntityManager, và embedded database (H2 mặc định). Mỗi test method chạy trong transaction và auto-rollback sau khi xong. Hoàn hảo để test custom queries, entity mappings, và repository methods mà không load toàn bộ app.</p>
+      <div class="tag-row">
+        <span class="tag good">Auto-rollback</span>
+        <span class="tag">H2 In-memory</span>
+        <span class="tag">TestEntityManager</span>
+      </div>
+    </div>
+
+    <div class="concept-card starter">
+      <div class="card-icon">&#128230;</div>
+      <div class="card-type">Real Infrastructure</div>
+      <h3>Testcontainers</h3>
+      <p>H2 in-memory database khác PostgreSQL production. Testcontainers giải quyết bằng cách chạy database thật trong Docker container khi test. PostgreSQL, MySQL, Redis, Kafka, Elasticsearch - tất cả chạy trong Docker, tự start trước test và cleanup sau. Test trên infrastructure giống production 100%.</p>
+      <div class="tag-row">
+        <span class="tag hot">Docker required</span>
+        <span class="tag good">Real Database</span>
+        <span class="tag">@Container</span>
+        <span class="tag">@DynamicPropertySource</span>
+      </div>
+    </div>
+
+    <div class="concept-card actuator">
+      <div class="card-icon">&#9989;</div>
+      <div class="card-type">Test Framework</div>
+      <h3>JUnit 5 + AssertJ</h3>
+      <p>Spring Boot 2.2+ mặc định dùng JUnit 5 (Jupiter). @Nested classes tổ chức test theo ngữ cảnh. @ParameterizedTest chạy cùng test với nhiều input khác nhau. AssertJ cung cấp fluent assertions: assertThat(result).isNotNull().hasSize(3).contains("Spring"). Đọc như văn xuôi, viết nhanh, lỗi rõ ràng.</p>
+      <div class="tag-row">
+        <span class="tag">@Nested</span>
+        <span class="tag">@ParameterizedTest</span>
+        <span class="tag good">AssertJ</span>
+        <span class="tag">@DisplayName</span>
+      </div>
+    </div>
+
+    <div class="concept-card profiles">
+      <div class="card-icon">&#129520;</div>
+      <div class="card-type">Mocking</div>
+      <h3>Mockito + @MockBean</h3>
+      <p>Unit test cần isolate từng class. Mockito tạo mock objects giả lập behavior của dependencies. @MockBean đặc biệt cho Spring - thay thế bean thật trong ApplicationContext bằng mock. when(service.findById(1L)).thenReturn(user) - bạn kiểm soát hoàn toàn dependency trả về gì. Verify interactions với verify(repo).save(any()).</p>
+      <div class="tag-row">
+        <span class="tag">@MockBean</span>
+        <span class="tag">when/thenReturn</span>
+        <span class="tag good">verify()</span>
+        <span class="tag warn">Đừng mock quá nhiều</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-flow" style="margin-top: 2rem;">
+    <div class="flow-title">&#129302; Ví dụ Test Pyramid thực tế</div>
+    <div class="code-block">
+<code><span class="comment">// Unit Test - nhanh nhất, nhiều nhất</span>
+<span class="annotation">@ExtendWith</span>(MockitoExtension.class)
+<span class="keyword">class</span> <span class="type">UserServiceTest</span> {
+    <span class="annotation">@Mock</span> UserRepository userRepository;
+    <span class="annotation">@InjectMocks</span> UserService userService;
+
+    <span class="annotation">@Test</span>
+    <span class="annotation">@DisplayName</span>(<span class="string">"Nên trả user khi tìm thấy ID"</span>)
+    <span class="keyword">void</span> shouldReturnUserWhenFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        UserDTO result = userService.getUserById(1L);
+        assertThat(result.getUsername()).isEqualTo(<span class="string">"ducky"</span>);
+    }
+}
+
+<span class="comment">// Integration Test - chậm hơn, ít hơn</span>
+<span class="annotation">@SpringBootTest</span>
+<span class="annotation">@AutoConfigureMockMvc</span>
+<span class="keyword">class</span> <span class="type">UserControllerIntegrationTest</span> {
+    <span class="annotation">@Autowired</span> MockMvc mockMvc;
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">void</span> shouldReturn200ForValidUser() <span class="keyword">throws</span> Exception {
+        mockMvc.perform(get(<span class="string">"/api/users/1"</span>))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath(<span class="string">"$.username"</span>).value(<span class="string">"ducky"</span>));
+    }
+}</code>
+    </div>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section id="performance">
+  <h2 class="section-title" style="color: var(--accent);">Performance &amp; Tối Ưu Hoá</h2>
+  <p class="section-subtitle">Spring Boot "out of the box" đã đủ nhanh cho hầu hết use cases. Nhưng khi traffic tăng lên hàng triệu requests/ngày, bạn cần hiểu những nút thắt và cách mở chúng.</p>
+
+  <div class="perf-grid">
+    <div class="perf-card">
+      <div class="perf-num">1</div>
+      <h4>&#9889; JVM Tuning</h4>
+      <p>JVM là nền tảng - tune sai là chết. <strong>-Xms</strong> và <strong>-Xmx</strong> set heap size (nên bằng nhau để tránh resize). <strong>-XX:+UseG1GC</strong> là GC mặc định từ Java 9, phù hợp đa số workloads. <strong>-XX:MaxGCPauseMillis=200</strong> cho G1 biết target pause time. Container environments? Set <strong>-XX:MaxRAMPercentage=75</strong> thay vì -Xmx cố định.</p>
+      <div class="tag-row">
+        <span class="tag">G1GC</span>
+        <span class="tag">ZGC</span>
+        <span class="tag good">MaxRAMPercentage</span>
+        <span class="tag warn">Heap Dump</span>
+      </div>
+    </div>
+
+    <div class="perf-card">
+      <div class="perf-num">2</div>
+      <h4>&#128202; Caching Strategies</h4>
+      <p>Database query tốn 5-50ms. Cache hit tốn 0.1ms. Spring Boot hỗ trợ caching qua <strong>@Cacheable, @CacheEvict, @CachePut</strong>. Backend cache phổ biến: <strong>Caffeine</strong> (in-memory, cực nhanh, single-node) và <strong>Redis</strong> (distributed, shared giữa nhiều instances). Rule of thumb: cache data ít thay đổi, invalidate ngay khi update.</p>
+      <div class="tag-row">
+        <span class="tag good">@Cacheable</span>
+        <span class="tag">Caffeine</span>
+        <span class="tag hot">Redis</span>
+        <span class="tag warn">Cache Invalidation</span>
+      </div>
+    </div>
+
+    <div class="perf-card">
+      <div class="perf-num">3</div>
+      <h4>&#128260; Async Processing</h4>
+      <p>Gửi email sau khi user đăng ký? Đừng block HTTP thread. <strong>@Async</strong> chạy method trên thread pool riêng. <strong>@Scheduled</strong> cho các tác vụ định kỳ. CompletableFuture cho async composition. Message Queue (RabbitMQ, Kafka) cho inter-service async communication. Tách work khỏi request thread = response time giảm đáng kể.</p>
+      <div class="tag-row">
+        <span class="tag">@Async</span>
+        <span class="tag">@Scheduled</span>
+        <span class="tag good">CompletableFuture</span>
+        <span class="tag purple">Kafka</span>
+      </div>
+    </div>
+
+    <div class="perf-card">
+      <div class="perf-num">4</div>
+      <h4>&#127784;&#65039; Virtual Threads (Java 21)</h4>
+      <p>Game changer lớn nhất kể từ lambdas. Virtual threads (Project Loom) cho phép tạo hàng triệu threads với chi phí gần bằng 0. Spring Boot 3.2+ hỗ trợ qua <strong>spring.threads.virtual.enabled=true</strong>. Mỗi request một virtual thread - đơn giản như blocking code nhưng scalable như reactive. Không cần WebFlux nữa cho hầu hết use cases!</p>
+      <div class="tag-row">
+        <span class="tag hot">Project Loom</span>
+        <span class="tag good">1 dòng config</span>
+        <span class="tag">Java 21+</span>
+        <span class="tag warn">Pinning issues</span>
+      </div>
+    </div>
+
+    <div class="perf-card">
+      <div class="perf-num">5</div>
+      <h4>&#128200; Connection Pool Tuning</h4>
+      <p>HikariCP mặc định 10 connections. Quá ít? App chờ connection. Quá nhiều? Database overload. Công thức kinh điển: <strong>pool size = (core_count * 2) + effective_spindle_count</strong>. Với SSD, spindle = 1. Server 4 core = 9 connections là optimal. Thêm <strong>connectionTimeout: 30000</strong>, <strong>maxLifetime: 1800000</strong> để tránh stale connections.</p>
+      <div class="tag-row">
+        <span class="tag good">HikariCP</span>
+        <span class="tag">maximumPoolSize</span>
+        <span class="tag warn">N+1 Query</span>
+      </div>
+    </div>
+
+    <div class="perf-card">
+      <div class="perf-num">6</div>
+      <h4>&#128640; GraalVM AOT</h4>
+      <p>Ahead-of-Time compilation biến bytecode thành native binary. Startup: 50ms thay vì 3 giây. Memory: 50MB thay vì 250MB. Hoàn hảo cho serverless, CLI tools, và microservices cần scale-to-zero. Trade-off: build time 3-5 phút, reflection cần cấu hình hints, runtime performance có thể kém hơn JIT-optimized JVM trong long-running processes.</p>
+      <div class="tag-row">
+        <span class="tag hot">50ms startup</span>
+        <span class="tag good">Low memory</span>
+        <span class="tag warn">Build chậm</span>
+        <span class="tag">Reflection hints</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>&#128161; Performance Golden Rule</h4>
+    <p>
+      <strong>Đo trước, tối ưu sau.</strong> Đừng bao giờ tối ưu dựa trên trực giác. Dùng <strong>JMH (Java Microbenchmark Harness)</strong> cho micro-benchmarks, <strong>Gatling/k6</strong> cho load testing, <strong>async-profiler</strong> cho CPU/memory profiling. Spring Boot Actuator + Micrometer + Prometheus + Grafana cho production monitoring. Premature optimization is the root of all evil - Donald Knuth nói thế, và ông ấy đúng.
+    </p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Những Hiểu Lầm Phổ Biến</h2>
+  <p class="section-subtitle">Sau nhiều năm trong cộng đồng Java, đây là những misconception nghe đi nghe lại. Đã đến lúc xoá bỏ chúng.</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Spring Boot chậm vì Java chậm"</h4>
+      <p>Đây là myth lớn nhất. JVM với JIT compiler tối ưu hotcode ở runtime, đạt performance ngang C++ trong nhiều benchmarks. Spring Boot startup có thể chậm (2-5s) nhưng runtime throughput cực kỳ ấn tượng. Netflix, Alibaba, LinkedIn xử lý hàng triệu requests/second trên Spring Boot.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>JVM warm-up mất 1-2 phút nhưng sau đó hiệu suất vượt trội. GraalVM native giải quyết startup time. Virtual Threads (Java 21) cho throughput ngang Go/Node.js với code đơn giản hơn.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Annotations là magic, không cần hiểu"</h4>
+      <p>Nhiều developer copy-paste @Transactional, @Cacheable mà không hiểu cơ chế. Annotations không phải magic - chúng là metadata. Spring đọc annotations qua reflection/proxy và thực thi logic tương ứng. Nếu không hiểu proxy mechanism, bạn sẽ không biết tại sao @Transactional không work khi gọi method cùng class.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Mỗi annotation có một BeanPostProcessor hoặc Aspect đằng sau. Hãy đọc source code của @Transactional - bạn sẽ hiểu proxy pattern, AOP, và transaction propagation. Hiểu mechanism = debug nhanh gấp 10 lần.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Microservices = luôn dùng Spring Cloud"</h4>
+      <p>Spring Cloud ra đời khi Kubernetes chưa phổ biến. Eureka, Config Server, Ribbon - tất cả giải quyết vấn đề mà Kubernetes giờ đã xử lý native: service discovery (DNS), configuration (ConfigMaps), load balancing (Services). Thêm Spring Cloud lên Kubernetes = duplicate functionality.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Kubernetes environments? Dùng Spring Cloud Kubernetes (đọc ConfigMaps/Secrets) thay vì full Spring Cloud stack. Non-Kubernetes? Lúc đó Spring Cloud Eureka/Config mới thực sự cần thiết. Luôn chọn tool phù hợp với infrastructure.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Spring Boot chỉ dành cho enterprise lớn"</h4>
+      <p>Nhiều developer nghĩ Spring Boot "quá nặng" cho project nhỏ và chọn frameworks khác. Thực tế, một Spring Boot REST API cơ bản chỉ tốn 50MB RAM, khởi động trong 2 giây. start.spring.io tạo project trong 30 giây. Đó là overhead chấp nhận được cho mọi scale.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Spring Boot scale từ side-project cá nhân đến hệ thống triệu user. Với GraalVM native: 20MB RAM, 50ms startup. Nhỏ hơn nhiều Go binary. Sức mạnh thực sự là ecosystem - khi project grow, mọi tool đã sẵn sàng.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Reactive (WebFlux) luôn tốt hơn MVC"</h4>
+      <p>WebFlux marketing rất hấp dẫn: non-blocking, high throughput, scalable. Nhưng thực tế, reactive code phức tạp gấp 3 lần imperative code, debug khó, stack trace không readable, và đa số ứng dụng không cần level concurrency đó. JDBC bản thân cũng blocking nên dùng WebFlux với database truyền thống = nửa reactive, nửa blocking.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>95% ứng dụng dùng Spring MVC + Virtual Threads (Java 21) là đủ. WebFlux chỉ thực sự cần khi: streaming data, WebSocket intensive, hoặc calling nhiều external APIs đồng thời. Đừng chọn reactive vì "cool" - chọn vì thực sự cần.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Lombok giải quyết mọi boilerplate"</h4>
+      <p>Lombok (@Data, @Builder, @Getter/@Setter) giảm boilerplate nhưng tạo ra "hidden code" mà IDE mới hiểu. Trong code review, bạn không thấy getter/setter/equals/hashCode. @Data trên Entity là anti-pattern vì equals/hashCode dùng mọi field kể cả lazy-loaded associations - gây LazyInitializationException.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Java 16+ có Records cho immutable DTOs. @Builder vẫn hữu ích. Nhưng trên Entity, hãy tự viết equals/hashCode dùng ID field only. Team mới nên thống nhất: Lombok conventions nào được dùng, nào không.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"@Transactional gắn mọi nơi cho an toàn"</h4>
+      <p>Gắn @Transactional lên mọi service method "cho chắc" là anti-pattern phổ biến. Mỗi transaction giữ database connection từ pool, lock rows, và tăng contention. Read-only operations không cần transaction (hoặc dùng @Transactional(readOnly = true) cho query optimization). Long-running transactions = connection pool exhaustion.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Chỉ dùng @Transactional khi method thực sự cần ACID guarantees (write operations, multi-step logic). Đọc dữ liệu? readOnly = true. Và nhớ: @Transactional chỉ work qua proxy - self-invocation (this.method()) KHÔNG trigger transaction.</p>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-label wrong">Sai</div>
+      <h4>"Spring Boot thay thế hoàn toàn Java EE"</h4>
+      <p>Spring Boot và Jakarta EE (tên mới của Java EE) không phải đối thủ - chúng bổ sung nhau. Spring Boot 3.0 thực tế sử dụng Jakarta EE APIs (Servlet, JPA, Bean Validation, JSON-B). Nhiều enterprise vẫn chạy Jakarta EE trên WildFly/Payara cho compliance reasons. Biết cả hai là lợi thế.</p>
+      <div class="divider"></div>
+      <div class="myth-label right">Thực tế</div>
+      <p>Spring Boot xây trên nền Jakarta EE specifications. Hiểu JPA spec giúp bạn dùng Spring Data JPA tốt hơn. Hiểu Servlet spec giúp debug Spring MVC. Chúng là layers, không phải alternatives.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent2);">Cheat Sheet</h2>
+  <p class="section-subtitle">Những lệnh, annotations, và patterns bạn sẽ dùng hàng ngày. Bookmark trang này để tham khảo nhanh.</p>
+
+  <h3 style="color: var(--accent); margin-bottom: 1rem; font-size: 1.2rem;">&#127991;&#65039; Common Annotations</h3>
+  <div class="cheat-grid" style="margin-bottom: 2rem;">
+    <div class="cheat-card">
+      <h4>Stereotype Annotations</h4>
+      <p>Đánh dấu class để Spring quản lý</p>
+      <code>@Component    // Bean tổng quát
+@Service      // Business logic layer
+@Repository   // Data access layer
+@Controller   // MVC controller (trả view)
+@RestController // REST API (trả JSON)
+@Configuration // Khai báo @Bean methods</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Web Annotations</h4>
+      <p>Xử lý HTTP requests</p>
+      <code>@RequestMapping("/api")
+@GetMapping("/{id}")
+@PostMapping
+@PutMapping("/{id}")
+@DeleteMapping("/{id}")
+@PathVariable Long id
+@RequestBody UserDTO dto
+@RequestParam String name</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Injection Annotations</h4>
+      <p>Dependency Injection</p>
+      <code>@Autowired       // Inject dependency
+@Qualifier("name") // Chọn bean cụ thể
+@Primary         // Bean ưu tiên
+@Value("${key}") // Inject property
+@Lazy            // Tạo bean khi cần
+@Scope("prototype") // Mỗi lần inject = new</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Data Annotations (JPA)</h4>
+      <p>Entity mapping</p>
+      <code>@Entity
+@Table(name = "users")
+@Id @GeneratedValue
+@Column(nullable = false)
+@OneToMany(mappedBy = "user")
+@ManyToOne(fetch = LAZY)
+@ManyToMany
+@Enumerated(EnumType.STRING)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Validation Annotations</h4>
+      <p>Bean Validation (Jakarta)</p>
+      <code>@Valid           // Trigger validation
+@NotNull @NotBlank @NotEmpty
+@Size(min=2, max=50)
+@Email
+@Min(0) @Max(100)
+@Pattern(regexp="...")
+@Past @Future    // Date validation</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Testing Annotations</h4>
+      <p>Test slices &amp; utilities</p>
+      <code>@SpringBootTest
+@WebMvcTest(Controller.class)
+@DataJpaTest
+@MockBean
+@AutoConfigureMockMvc
+@TestConfiguration
+@ActiveProfiles("test")
+@Testcontainers</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent3); margin-bottom: 1rem; font-size: 1.2rem;">&#128196; application.yml Patterns</h3>
+  <div class="cheat-grid" style="margin-bottom: 2rem;">
+    <div class="cheat-card">
+      <h4>Server Config</h4>
+      <p>Cấu hình embedded server</p>
+      <code>server:
+  port: 8080
+  shutdown: graceful
+  servlet:
+    context-path: /api
+  tomcat:
+    max-threads: 200
+    accept-count: 100</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Database Config</h4>
+      <p>DataSource + JPA</p>
+      <code>spring:
+  datasource:
+    url: jdbc:postgresql://localhost/db
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Logging Config</h4>
+      <p>Cấu hình log levels</p>
+      <code>logging:
+  level:
+    root: WARN
+    com.myapp: DEBUG
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss} %-5level %msg%n"
+  file:
+    name: ./logs/app.log</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Actuator Config</h4>
+      <p>Monitoring endpoints</p>
+      <code>management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Security Config</h4>
+      <p>JWT &amp; CORS basics</p>
+      <code>spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://auth.example.com
+
+app:
+  cors:
+    allowed-origins: https://frontend.com
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: 86400</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Profile-specific</h4>
+      <p>application-prod.yml</p>
+      <code># Chỉ active khi profile = prod
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+
+logging:
+  level:
+    root: WARN</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent4); margin-bottom: 1rem; font-size: 1.2rem;">&#128187; Maven / Gradle Commands</h3>
+  <div class="cheat-grid" style="margin-bottom: 2rem;">
+    <div class="cheat-card">
+      <h4>Maven Commands</h4>
+      <p>Build &amp; run với Maven</p>
+      <code>mvn spring-boot:run        # Chạy app
+mvn clean package          # Build JAR
+mvn test                   # Chạy tests
+mvn clean package -DskipTests  # Build skip test
+mvn dependency:tree        # Xem dependency tree
+mvn spring-boot:build-image # Build Docker image</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Gradle Commands</h4>
+      <p>Build &amp; run với Gradle</p>
+      <code>./gradlew bootRun          # Chạy app
+./gradlew build            # Build JAR
+./gradlew test             # Chạy tests
+./gradlew build -x test   # Build skip test
+./gradlew dependencies     # Xem dependency tree
+./gradlew bootBuildImage   # Build Docker image</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Useful JVM Flags</h4>
+      <p>Production JVM tuning</p>
+      <code>java -jar app.jar \
+  -Xms512m -Xmx512m \
+  -XX:+UseG1GC \
+  -XX:MaxGCPauseMillis=200 \
+  -Dspring.profiles.active=prod \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:HeapDumpPath=/var/log/</code>
+    </div>
+  </div>
+
+  <h3 style="color: var(--accent5); margin-bottom: 1rem; font-size: 1.2rem;">&#128200; Actuator Endpoints</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Health &amp; Info</h4>
+      <p>Kiểm tra trạng thái ứng dụng</p>
+      <code>GET /actuator/health       # App health
+GET /actuator/health/liveness   # K8s liveness
+GET /actuator/health/readiness  # K8s readiness
+GET /actuator/info         # App info
+GET /actuator/env          # Environment props</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Metrics &amp; Monitoring</h4>
+      <p>Performance metrics</p>
+      <code>GET /actuator/metrics      # Tất cả metrics
+GET /actuator/metrics/jvm.memory.used
+GET /actuator/metrics/http.server.requests
+GET /actuator/prometheus   # Prometheus format
+GET /actuator/caches       # Cache statistics</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug &amp; Diagnostics</h4>
+      <p>Troubleshooting production</p>
+      <code>GET /actuator/beans        # Tất cả beans
+GET /actuator/mappings     # Request mappings
+GET /actuator/configprops  # Config properties
+GET /actuator/threaddump   # Thread dump
+POST /actuator/heapdump    # Heap dump (file)</code>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="font-size: 1.5rem; margin-bottom: 1rem;">&#9749;</p>
+  <p><strong>Thế Giới Spring Boot</strong> - Một trang deep-dive cho developer Việt Nam.</p>
+  <p style="margin-top: 0.5rem;">Từ J2EE XML hell đến convention-over-configuration. Từ monolith đến microservices. Từ JVM bytecode đến GraalVM native.</p>
+  <p style="margin-top: 1rem; color: var(--accent);">Spring Boot: Opinionated, Production-ready, Community-driven.</p>
+  <p style="margin-top: 1.5rem; font-size: 0.75rem;">Tạo bởi homelab team &bull; Cập nhật 2026 &bull; Nội dung giáo dục, không liên kết với VMware/Broadcom</p>
+</footer>
+
+</body>
+</html>

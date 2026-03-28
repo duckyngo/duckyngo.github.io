@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G-AGX Deep Dive — Hiểu hệ thống CTI/PBX từ A đến Z</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg-primary: #08080a;
+    --bg-secondary: #0e0e12;
+    --bg-card: #131318;
+    --bg-card-hover: #1a1a22;
+    --bg-code: #0d1117;
+    --text-primary: #e4e2df;
+    --text-secondary: #8f8f8f;
+    --text-muted: #505058;
+    --accent-teal: #2dd4bf;
+    --accent-blue: #3b82f6;
+    --accent-indigo: #6366f1;
+    --accent-purple: #a855f7;
+    --accent-pink: #ec4899;
+    --accent-orange: #f97316;
+    --accent-amber: #f59e0b;
+    --accent-green: #22c55e;
+    --accent-red: #ef4444;
+    --accent-cyan: #06b6d4;
+    --gradient-main: linear-gradient(135deg, #2dd4bf, #3b82f6, #6366f1);
+    --gradient-warm: linear-gradient(135deg, #f97316, #ec4899);
+    --gradient-cool: linear-gradient(135deg, #06b6d4, #a855f7);
+    --gradient-fire: linear-gradient(135deg, #ef4444, #f97316, #f59e0b);
+    --border-subtle: rgba(255,255,255,0.05);
+    --border-glow: rgba(45,212,191,0.15);
+    --glow-teal: 0 0 60px rgba(45,212,191,0.1);
+    --glow-indigo: 0 0 60px rgba(99,102,241,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: rgba(45,212,191,0.25); color: #fff; }
+
+  /* ─── READING PROGRESS ─── */
+  .reading-progress {
+    position: fixed; top: 0; left: 0;
+    width: 0%; height: 2px;
+    background: var(--gradient-main);
+    z-index: 9999;
+    transition: width 0.1s;
+  }
+
+  /* ─── FLOATING NAV ─── */
+  .float-nav {
+    position: fixed; right: 1.2rem; top: 50%;
+    transform: translateY(-50%); z-index: 100;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .float-nav a {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text-muted); opacity: 0.3;
+    transition: all 0.3s; display: block;
+    position: relative;
+  }
+  .float-nav a:hover, .float-nav a.active {
+    opacity: 1; background: var(--accent-teal);
+    box-shadow: 0 0 12px rgba(45,212,191,0.6);
+    transform: scale(1.4);
+  }
+  .float-nav a .nav-tooltip {
+    position: absolute; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    padding: 0.3rem 0.8rem; border-radius: 6px;
+    font-size: 0.7rem; color: var(--text-secondary);
+    white-space: nowrap; pointer-events: none;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .float-nav a:hover .nav-tooltip { opacity: 1; }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 50%, rgba(45,212,191,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(99,102,241,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 30% at 80% 20%, rgba(236,72,153,0.04) 0%, transparent 50%);
+  }
+  .hero-circuit {
+    position: absolute; inset: 0; opacity: 0.03;
+    background-image:
+      linear-gradient(rgba(45,212,191,0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45,212,191,0.5) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 65%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 65%);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 2rem; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.2);
+    padding: 0.4rem 1.2rem; border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    color: var(--accent-teal); letter-spacing: 1px;
+    margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-badge .pulse-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-teal);
+    animation: pulseDot 2s infinite;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900; line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title .g-text {
+    background: var(--gradient-main);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 300;
+    color: var(--text-secondary); max-width: 620px;
+    margin: 0 auto 3rem;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-tags {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    padding: 0.3rem 0.8rem; border-radius: 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+  }
+
+  .scroll-cue {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--text-muted); font-size: 0.7rem; letter-spacing: 2px;
+    animation: float 3s ease-in-out infinite;
+  }
+  .scroll-cue svg { width: 20px; height: 20px; stroke: var(--accent-teal); opacity: 0.5; }
+
+  /* ─── LAYOUT ─── */
+  .container { max-width: 820px; margin: 0 auto; padding: 0 2rem; }
+  .wide-container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+  section { padding: 5rem 0; position: relative; }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header { margin-bottom: 3.5rem; }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 3px; color: var(--accent-teal);
+    text-transform: uppercase; margin-bottom: 0.8rem; display: block;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+    font-weight: 700; line-height: 1.2; margin-bottom: 0.8rem;
+  }
+  .section-lead {
+    font-size: 1.05rem; color: var(--text-secondary);
+    max-width: 580px; font-weight: 300;
+  }
+
+  /* ─── EDITORIAL TEXT ─── */
+  .editorial p {
+    font-size: 1.05rem; line-height: 1.9;
+    color: var(--text-secondary); margin-bottom: 1.6rem;
+  }
+  .editorial strong { color: var(--text-primary); font-weight: 600; }
+  .editorial em {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; color: var(--text-primary); font-style: italic;
+  }
+  .hl { color: var(--accent-teal); font-weight: 500; }
+  .hl-orange { color: var(--accent-orange); font-weight: 500; }
+  .hl-pink { color: var(--accent-pink); font-weight: 500; }
+
+  .drop-cap::first-letter {
+    float: left; font-family: 'Playfair Display', serif;
+    font-size: 4.2rem; line-height: 0.82; padding-right: 0.5rem;
+    color: var(--accent-teal); font-weight: 700;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.2rem; padding: 1rem 0;
+  }
+  .divider .line { width: 50px; height: 1px; background: var(--border-subtle); }
+  .divider .icon { font-size: 0.9rem; opacity: 0.4; }
+
+  /* ─── PULL QUOTE ─── */
+  .pull-quote {
+    position: relative; padding: 2.5rem 0; margin: 3rem 0;
+    text-align: center;
+  }
+  .pull-quote::before {
+    content: ''; position: absolute; left: 50%; top: 0;
+    transform: translateX(-50%);
+    width: 40px; height: 3px; border-radius: 2px;
+    background: var(--gradient-main);
+  }
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    font-style: italic; line-height: 1.6;
+    color: var(--text-primary); max-width: 650px; margin: 0 auto;
+  }
+  .pull-quote cite {
+    display: block; margin-top: 1rem;
+    font-style: normal; font-family: 'Inter', sans-serif;
+    font-size: 0.8rem; color: var(--text-muted); letter-spacing: 1px;
+  }
+
+  /* ─── DEFINITION CARD ─── */
+  .def-card {
+    background: linear-gradient(135deg, rgba(45,212,191,0.04), rgba(99,102,241,0.04));
+    border: 1px solid rgba(45,212,191,0.12);
+    border-radius: 20px; padding: 2.5rem;
+    position: relative; overflow: hidden; margin: 2rem 0;
+  }
+  .def-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--gradient-main);
+  }
+  .def-card h3 {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+    color: var(--accent-teal); margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+  .def-card p {
+    font-size: 1rem; color: var(--text-secondary); line-height: 1.8;
+    margin-bottom: 0.8rem;
+  }
+  .def-card .korean {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--accent-indigo); font-weight: 500;
+  }
+
+  /* ─── FEATURE PILLS ─── */
+  .feature-pills {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin: 1.5rem 0;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.82rem; padding: 0.45rem 1rem;
+    border-radius: 100px; border: 1px solid;
+    font-weight: 500;
+  }
+  .pill-teal { color: var(--accent-teal); border-color: rgba(45,212,191,0.25); background: rgba(45,212,191,0.06); }
+  .pill-blue { color: var(--accent-blue); border-color: rgba(59,130,246,0.25); background: rgba(59,130,246,0.06); }
+  .pill-purple { color: var(--accent-purple); border-color: rgba(168,85,247,0.25); background: rgba(168,85,247,0.06); }
+  .pill-pink { color: var(--accent-pink); border-color: rgba(236,72,153,0.25); background: rgba(236,72,153,0.06); }
+  .pill-orange { color: var(--accent-orange); border-color: rgba(249,115,22,0.25); background: rgba(249,115,22,0.06); }
+
+  /* ─── ARCHITECTURE DIAGRAM ─── */
+  .arch-diagram {
+    background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+    border-radius: 20px; padding: 3rem 2rem; margin: 2.5rem 0;
+    overflow-x: auto;
+  }
+  .arch-diagram h4 {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 2rem; text-align: center;
+  }
+
+  .arch-flow {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; flex-wrap: nowrap; min-width: fit-content;
+    padding: 1rem 0;
+  }
+  .arch-box {
+    padding: 1rem 1.5rem; border-radius: 12px;
+    text-align: center; min-width: 140px;
+    position: relative; flex-shrink: 0;
+  }
+  .arch-box .box-label {
+    font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 0.3rem; display: block;
+  }
+  .arch-box .box-name {
+    font-size: 0.95rem; font-weight: 600;
+  }
+  .arch-box .box-detail {
+    font-size: 0.72rem; color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
+  .box-app {
+    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+  }
+  .box-app .box-label { color: var(--accent-blue); }
+  .box-app .box-name { color: var(--accent-blue); }
+
+  .box-gw {
+    background: rgba(45,212,191,0.1); border: 1px solid rgba(45,212,191,0.25);
+  }
+  .box-gw .box-label { color: var(--accent-teal); }
+  .box-gw .box-name { color: var(--accent-teal); }
+
+  .box-agx {
+    background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.25);
+  }
+  .box-agx .box-label { color: var(--accent-purple); }
+  .box-agx .box-name { color: var(--accent-purple); }
+
+  .box-pbx {
+    background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.25);
+  }
+  .box-pbx .box-label { color: var(--accent-orange); }
+  .box-pbx .box-name { color: var(--accent-orange); }
+
+  .arch-arrow {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 0.8rem; flex-shrink: 0;
+  }
+  .arch-arrow .arrow-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem; color: var(--text-muted); letter-spacing: -2px;
+  }
+  .arch-arrow .arrow-label {
+    font-size: 0.6rem; color: var(--text-muted);
+    white-space: nowrap; margin-top: 0.2rem;
+  }
+
+  /* ─── FLOW CARDS ─── */
+  .flow-section { margin: 2.5rem 0; }
+  .flow-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .flow-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 0.3rem 0.8rem; border-radius: 6px;
+    font-weight: 600;
+  }
+  .flow-badge.outbound { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+  .flow-badge.inbound { background: rgba(168,85,247,0.15); color: var(--accent-purple); }
+
+  .flow-title {
+    font-size: 1.2rem; font-weight: 700;
+  }
+
+  .flow-steps {
+    position: relative; padding-left: 2rem;
+  }
+  .flow-steps::before {
+    content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px;
+    width: 2px; border-radius: 1px;
+  }
+  .flow-steps.outbound-line::before {
+    background: linear-gradient(to bottom, var(--accent-blue), var(--accent-teal), transparent);
+  }
+  .flow-steps.inbound-line::before {
+    background: linear-gradient(to bottom, var(--accent-purple), var(--accent-pink), transparent);
+  }
+
+  .flow-step {
+    position: relative; margin-bottom: 1.2rem;
+    padding-left: 1.5rem;
+  }
+  .flow-step::before {
+    content: ''; position: absolute; left: -1.5rem; top: 8px;
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--accent-blue);
+    background: var(--bg-primary);
+  }
+  .flow-steps.inbound-line .flow-step::before {
+    border-color: var(--accent-purple);
+  }
+
+  .flow-step .step-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    color: var(--text-muted); margin-bottom: 0.1rem;
+  }
+  .flow-step .step-text {
+    font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;
+  }
+  .flow-step .step-text strong { color: var(--text-primary); }
+
+  /* ─── CODE BLOCK ─── */
+  .code-block {
+    background: var(--bg-code); border: 1px solid var(--border-subtle);
+    border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+    line-height: 1.8; color: var(--text-secondary);
+    overflow-x: auto; position: relative;
+  }
+  .code-block .code-label {
+    position: absolute; top: 0.5rem; right: 0.8rem;
+    font-size: 0.6rem; color: var(--text-muted);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .code-block .kw { color: var(--accent-purple); }
+  .code-block .fn { color: var(--accent-blue); }
+  .code-block .str { color: var(--accent-green); }
+  .code-block .comment { color: var(--text-muted); font-style: italic; }
+  .code-block .arrow { color: var(--accent-teal); font-weight: 700; }
+
+  /* ─── AUTH CARD ─── */
+  .auth-card {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 16px; padding: 2rem; margin: 2rem 0;
+    display: grid; grid-template-columns: 60px 1fr; gap: 1.5rem;
+    transition: all 0.3s;
+  }
+  .auth-card:hover {
+    border-color: var(--border-glow); box-shadow: var(--glow-teal);
+  }
+  .auth-icon {
+    width: 50px; height: 50px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+  }
+  .auth-icon.lock { background: rgba(249,115,22,0.1); }
+  .auth-icon.key { background: rgba(45,212,191,0.1); }
+  .auth-icon.shield { background: rgba(99,102,241,0.1); }
+
+  .auth-card h4 {
+    font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem;
+  }
+  .auth-card p {
+    font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
+  }
+
+  /* ─── SERVER ARCH ─── */
+  .server-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem; margin: 2.5rem 0;
+  }
+  .server-card {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 20px; padding: 2rem; position: relative;
+    overflow: hidden; transition: all 0.4s;
+  }
+  .server-card:hover {
+    border-color: var(--border-glow);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .server-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; opacity: 0; transition: opacity 0.3s;
+  }
+  .server-card:hover::before { opacity: 1; }
+  .server-card.common::before { background: var(--gradient-main); }
+  .server-card.interface::before { background: var(--gradient-cool); }
+
+  .server-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    display: inline-block; margin-bottom: 1rem;
+  }
+  .server-badge.gw-common {
+    background: rgba(45,212,191,0.1); color: var(--accent-teal);
+    border: 1px solid rgba(45,212,191,0.2);
+  }
+  .server-badge.gw-interface {
+    background: rgba(168,85,247,0.1); color: var(--accent-purple);
+    border: 1px solid rgba(168,85,247,0.2);
+  }
+
+  .server-card h3 {
+    font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem;
+  }
+  .server-card p {
+    font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;
+    margin-bottom: 0.5rem;
+  }
+  .server-card ul {
+    list-style: none; padding: 0; margin-top: 1rem;
+  }
+  .server-card li {
+    padding: 0.35rem 0; font-size: 0.85rem; color: var(--text-secondary);
+    position: relative; padding-left: 1.2rem;
+  }
+  .server-card.common li::before {
+    content: '›'; position: absolute; left: 0;
+    color: var(--accent-teal); font-weight: 700; font-size: 1.1rem;
+  }
+  .server-card.interface li::before {
+    content: '›'; position: absolute; left: 0;
+    color: var(--accent-purple); font-weight: 700; font-size: 1.1rem;
+  }
+
+  /* ─── BROADCAST VISUAL ─── */
+  .broadcast-visual {
+    background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+    border-radius: 20px; padding: 3rem 2rem; margin: 2rem 0;
+    text-align: center;
+  }
+  .broadcast-visual h4 {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 2px; color: var(--text-muted);
+    text-transform: uppercase; margin-bottom: 2rem;
+  }
+  .broadcast-nodes {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .broadcast-source {
+    background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 14px; padding: 1.2rem 1.8rem; text-align: center;
+    min-width: 120px;
+  }
+  .broadcast-source .node-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+    color: var(--accent-purple); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .broadcast-source .node-name {
+    font-size: 1rem; font-weight: 700; color: var(--accent-purple);
+    margin-top: 0.2rem;
+  }
+  .broadcast-fan {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    align-items: center;
+  }
+  .broadcast-fan .fan-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem; color: var(--text-muted);
+  }
+  .broadcast-targets {
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .broadcast-target {
+    background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.2);
+    border-radius: 8px; padding: 0.5rem 1.2rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    color: var(--accent-teal); display: flex; align-items: center; gap: 0.5rem;
+  }
+  .broadcast-target .status-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green);
+  }
+  .broadcast-target.inactive { opacity: 0.3; }
+  .broadcast-target.inactive .status-dot { background: var(--text-muted); }
+
+  .broadcast-note {
+    margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .broadcast-note .warn { color: var(--accent-orange); }
+
+  /* ─── 3 BLOCKS ─── */
+  .blocks-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin: 2.5rem 0;
+  }
+  .block-card {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 16px; padding: 2rem;
+    transition: all 0.4s; position: relative;
+  }
+  .block-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; border-radius: 16px 16px 0 0;
+  }
+  .block-card.block-a::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal)); }
+  .block-card.block-b::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); }
+  .block-card.block-c::before { background: linear-gradient(90deg, var(--accent-orange), var(--accent-amber)); }
+
+  .block-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .block-letter {
+    font-family: 'Playfair Display', serif; font-size: 2rem;
+    font-weight: 900; line-height: 1; margin-bottom: 0.8rem;
+  }
+  .block-card.block-a .block-letter { color: var(--accent-blue); }
+  .block-card.block-b .block-letter { color: var(--accent-purple); }
+  .block-card.block-c .block-letter { color: var(--accent-orange); }
+
+  .block-card h3 {
+    font-size: 1rem; font-weight: 700; margin-bottom: 0.8rem;
+  }
+  .block-card ul {
+    list-style: none; padding: 0;
+  }
+  .block-card li {
+    font-size: 0.82rem; color: var(--text-secondary);
+    padding: 0.3rem 0; position: relative; padding-left: 1rem;
+    line-height: 1.6;
+  }
+  .block-card.block-a li::before { content: '→'; position: absolute; left: 0; color: var(--accent-blue); }
+  .block-card.block-b li::before { content: '→'; position: absolute; left: 0; color: var(--accent-purple); }
+  .block-card.block-c li::before { content: '→'; position: absolute; left: 0; color: var(--accent-orange); }
+
+  /* ─── DEPENDENCY ALERT ─── */
+  .dep-alert {
+    background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(249,115,22,0.06));
+    border: 1px solid rgba(239,68,68,0.2); border-left: 3px solid var(--accent-red);
+    border-radius: 0 16px 16px 0; padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+  }
+  .dep-alert h4 {
+    font-size: 1rem; font-weight: 700; color: var(--accent-red);
+    margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .dep-alert p {
+    font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;
+  }
+
+  /* ─── MAPPING CHAIN ─── */
+  .mapping-chain {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin: 2rem 0; flex-wrap: wrap;
+  }
+  .mapping-node {
+    padding: 0.8rem 1.3rem; border-radius: 10px;
+    text-align: center; font-size: 0.85rem; font-weight: 600;
+  }
+  .mapping-arrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 1.2rem;
+    color: var(--text-muted); padding: 0 0.5rem;
+  }
+  .map-login { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); color: var(--accent-blue); }
+  .map-emp { background: rgba(45,212,191,0.1); border: 1px solid rgba(45,212,191,0.25); color: var(--accent-teal); }
+  .map-ext { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.25); color: var(--accent-purple); }
+  .map-term { background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.25); color: var(--accent-orange); }
+
+  /* ─── CHOT HA ─── */
+  .chot-ha {
+    background: linear-gradient(135deg, rgba(45,212,191,0.05), rgba(99,102,241,0.05));
+    border: 1px solid rgba(45,212,191,0.15);
+    border-radius: 24px; padding: 3rem;
+    margin: 2rem 0; position: relative;
+  }
+  .chot-ha::after {
+    content: '"'; position: absolute; bottom: -1rem; right: 2rem;
+    font-family: 'Playfair Display', serif; font-size: 6rem;
+    color: rgba(45,212,191,0.08); line-height: 1;
+  }
+  .chot-ha p {
+    font-size: 1.05rem; color: var(--text-secondary);
+    line-height: 1.9; margin-bottom: 0.8rem;
+  }
+  .chot-ha p:last-child { margin-bottom: 0; }
+
+  /* ─── AUDIENCE CARDS ─── */
+  .audience-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin: 2.5rem 0;
+  }
+  .audience-card {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: 16px; padding: 2rem; transition: all 0.3s;
+  }
+  .audience-card:hover {
+    border-color: rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+  }
+  .audience-card .audience-icon {
+    font-size: 1.8rem; margin-bottom: 0.8rem; display: block;
+  }
+  .audience-card h4 {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 0.8rem;
+  }
+  .audience-card ul {
+    list-style: none; padding: 0;
+  }
+  .audience-card li {
+    font-size: 0.85rem; color: var(--text-secondary);
+    padding: 0.3rem 0; position: relative; padding-left: 1rem;
+    line-height: 1.5;
+  }
+  .audience-card li::before {
+    content: '•'; position: absolute; left: 0; color: var(--accent-teal);
+  }
+
+  /* ─── VERDICT ─── */
+  .verdict {
+    text-align: center; padding: 5rem 2rem; position: relative;
+  }
+  .verdict::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(45,212,191,0.06), transparent 60%);
+  }
+  .verdict-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 700; line-height: 1.5;
+    max-width: 700px; margin: 0 auto 1.5rem;
+    position: relative;
+  }
+  .verdict-sub {
+    font-size: 1rem; color: var(--text-secondary);
+    max-width: 500px; margin: 0 auto; font-weight: 300;
+    position: relative;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center; padding: 2.5rem 2rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.75rem; color: var(--text-muted);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(45,212,191,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(45,212,191,0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-8px); }
+  }
+
+  .fade-in {
+    opacity: 0; transform: translateY(25px);
+    transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .server-grid, .blocks-grid, .audience-grid { grid-template-columns: 1fr; }
+    .arch-flow { flex-wrap: wrap; gap: 0.5rem; }
+    .arch-arrow { transform: rotate(90deg); padding: 0.3rem; }
+    .mapping-chain { flex-direction: column; }
+    .mapping-arrow { transform: rotate(90deg); }
+    .float-nav { display: none; }
+    .broadcast-nodes { flex-direction: column; }
+  }
+  @media (max-width: 480px) {
+    .hero-title { font-size: 2rem; }
+    section { padding: 3.5rem 0; }
+    .container, .wide-container { padding: 0 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav class="float-nav" id="floatNav">
+  <a href="#hero"><span class="nav-tooltip">Mở đầu</span></a>
+  <a href="#what"><span class="nav-tooltip">G-AGX là gì?</span></a>
+  <a href="#interface"><span class="nav-tooltip">Interface</span></a>
+  <a href="#flows"><span class="nav-tooltip">Outbound / Inbound</span></a>
+  <a href="#auth"><span class="nav-tooltip">Authentication</span></a>
+  <a href="#servers"><span class="nav-tooltip">Server Design</span></a>
+  <a href="#broadcast"><span class="nav-tooltip">Broadcast</span></a>
+  <a href="#architecture"><span class="nav-tooltip">Kiến trúc đề xuất</span></a>
+  <a href="#mapping"><span class="nav-tooltip">Terminal Mapping</span></a>
+  <a href="#summary"><span class="nav-tooltip">Tổng kết</span></a>
+</nav>
+
+<!-- ═══════════════════════════════════ HERO ═══ -->
+<header class="hero" id="hero">
+  <div class="hero-circuit"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      Meeting Deep Dive · Technical Analysis
+    </div>
+    <h1 class="hero-title">
+      Giải mã<br>
+      <span class="g-text">G-AGX</span><br>
+      từ A đến Z
+    </h1>
+    <p class="hero-sub">
+      Phân tích toàn bộ kiến trúc CTI/PBX, interface design, luồng giao tiếp, authentication, và server architecture — từ nội dung meeting thực tế.
+    </p>
+    <div class="hero-tags">
+      <span class="hero-tag">CTI / PBX</span>
+      <span class="hero-tag">API Integration</span>
+      <span class="hero-tag">Real-time Events</span>
+      <span class="hero-tag">Server Architecture</span>
+      <span class="hero-tag">Coway × G-AGX</span>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    cuộn xuống
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════ 1. G-AGX LÀ GÌ ═══ -->
+<section id="what">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">01 — Định nghĩa</span>
+      <h2 class="section-title">G-AGX là gì?</h2>
+      <p class="section-lead">Core telephony platform phía đối tác — không phải app của mình.</p>
+    </div>
+
+    <div class="editorial fade-in">
+      <p class="drop-cap">
+        Hiểu đơn giản, G-AGX là <strong>hệ thống CTI/PBX phía đối tác đã xây xong</strong>, chịu trách nhiệm xử lý toàn bộ nghiệp vụ điện thoại. Trong meeting, phía G-AGX nói rất rõ: hệ thống của họ đã được phát triển hoàn tất. Bên mình <span class="hl">không làm trực tiếp vào G-AGX</span>, mà sẽ kết nối từ PC App + backend sang G-AGX thông qua interface.
+      </p>
+    </div>
+
+    <div class="feature-pills fade-in">
+      <span class="pill pill-teal">🔐 Authentication server↔server</span>
+      <span class="pill pill-blue">📞 Make call / Click-to-call</span>
+      <span class="pill pill-purple">⚡ Real-time call events</span>
+      <span class="pill pill-pink">📊 Ringing / Answered / Hangup</span>
+      <span class="pill pill-orange">❌ Busy / Missed call</span>
+    </div>
+
+    <div class="def-card fade-in">
+      <h3>💡 Nói theo kiểu business-tech</h3>
+      <p>
+        G-AGX không phải là app của mình. Nó là <strong>core telephony platform / call control platform</strong> phía đối tác.
+      </p>
+      <p>
+        Bên mình chỉ build <span class="hl">application layer</span> và <span class="hl">integration layer</span> để gọi API, nhận event, rồi xử lý UI/logic ở phía Coway.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 2. INTERFACE ═══ -->
+<section id="interface">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">02 — Interface Server</span>
+      <h2 class="section-title">PC App không gọi<br>thẳng G-AGX</h2>
+      <p class="section-lead">Đây là mấu chốt kiến trúc. Mọi request đều đi qua backend gateway.</p>
+    </div>
+
+    <div class="editorial fade-in">
+      <p>
+        Trong meeting, họ nói rất rõ: <strong>PC App không gọi trực tiếp G-AGX</strong>. PC App sẽ gọi về backend của mình — cái đó chính là <span class="hl">Interface Gateway</span> — rồi từ Interface Gateway mới gọi sang G-AGX.
+      </p>
+    </div>
+
+    <div class="arch-diagram fade-in">
+      <h4>Kiến trúc giao tiếp tổng quan</h4>
+      <div class="arch-flow">
+        <div class="arch-box box-app">
+          <span class="box-label">Frontend</span>
+          <span class="box-name">PC App</span>
+          <span class="box-detail">UI / User actions</span>
+        </div>
+        <div class="arch-arrow">
+          <span class="arrow-line">→→→</span>
+          <span class="arrow-label">REST API</span>
+        </div>
+        <div class="arch-box box-gw">
+          <span class="box-label">Our Backend</span>
+          <span class="box-name">Interface Gateway</span>
+          <span class="box-detail">Auth · Mapping · Log</span>
+        </div>
+        <div class="arch-arrow">
+          <span class="arrow-line">→→→</span>
+          <span class="arrow-label">G-AGX API</span>
+        </div>
+        <div class="arch-box box-agx">
+          <span class="box-label">Partner</span>
+          <span class="box-name">G-AGX</span>
+          <span class="box-detail">CTI / PBX Core</span>
+        </div>
+        <div class="arch-arrow">
+          <span class="arrow-line">→→→</span>
+          <span class="arrow-label">SIP / Control</span>
+        </div>
+        <div class="arch-box box-pbx">
+          <span class="box-label">Hardware</span>
+          <span class="box-name">PBX / Phone</span>
+          <span class="box-detail">Actual call</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="def-card fade-in">
+      <h3>🎯 Cách giải thích với team hoặc khách</h3>
+      <p>
+        <strong>Interface Gateway là lớp trung gian tích hợp.</strong> App không chạm trực tiếp vào hệ thống telephony.
+      </p>
+      <p>
+        Mọi request đi qua backend gateway để kiểm soát <span class="hl">auth</span>, <span class="hl">mapping dữ liệu</span>, <span class="hl">logging</span>, <span class="hl">security</span> và mở rộng sau này.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 3. FLOWS ═══ -->
+<section id="flows">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">03 — Luồng giao tiếp</span>
+      <h2 class="section-title">Outbound & Inbound</h2>
+      <p class="section-lead">Hai chiều giao tiếp — hai luồng hoàn toàn khác nhau.</p>
+    </div>
+
+    <!-- OUTBOUND -->
+    <div class="flow-section fade-in">
+      <div class="flow-header">
+        <span class="flow-badge outbound">Outbound</span>
+        <span class="flow-title">Từ mình → G-AGX</span>
+      </div>
+
+      <div class="editorial">
+        <p>Ví dụ: user bấm nút gọi điện trên PC App.</p>
+      </div>
+
+      <div class="flow-steps outbound-line">
+        <div class="flow-step">
+          <div class="step-num">Step 1</div>
+          <div class="step-text"><strong>User thao tác trên PC App</strong> — bấm "Gọi" hoặc click-to-call</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Step 2</div>
+          <div class="step-text"><strong>App gọi backend của mình</strong> — Interface Gateway</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Step 3</div>
+          <div class="step-text"><strong>Backend thực hiện auth/check</strong> — verify session, map user → extension</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Step 4</div>
+          <div class="step-text"><strong>Backend gọi API của G-AGX</strong> — truyền terminal, caller, callee number</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Step 5</div>
+          <div class="step-text"><strong>G-AGX điều khiển PBX</strong> — thực hiện cuộc gọi thật</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <span class="code-label">API Parameters</span>
+<span class="comment">// G-AGX make call API cần đúng 3 tham số:</span>
+{
+  <span class="str">"terminal_number"</span>:  <span class="str">"1001"</span>,     <span class="comment">// device/phone vật lý</span>
+  <span class="str">"caller_extension"</span>: <span class="str">"8501"</span>,     <span class="comment">// số nội bộ người gọi</span>
+  <span class="str">"callee_number"</span>:    <span class="str">"0901234567"</span> <span class="comment">// số đích</span>
+}
+<span class="comment">// G-AGX không tự đoán → mình phải truyền đúng</span>
+      </div>
+    </div>
+
+    <!-- INBOUND -->
+    <div class="flow-section fade-in" style="margin-top: 3rem;">
+      <div class="flow-header">
+        <span class="flow-badge inbound">Inbound</span>
+        <span class="flow-title">Từ G-AGX → Mình</span>
+      </div>
+
+      <div class="editorial">
+        <p>Chiều ngược lại — <strong>event callback / receive notification</strong>. Khi cuộc gọi thay đổi trạng thái, G-AGX đẩy event real-time về backend.</p>
+      </div>
+
+      <div class="flow-steps inbound-line">
+        <div class="flow-step">
+          <div class="step-num">Event</div>
+          <div class="step-text">Cuộc gọi thay đổi trạng thái: <span class="hl-pink">ringing → answered → hangup</span></div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Push</div>
+          <div class="step-text"><strong>G-AGX đẩy event real-time</strong> về endpoint của backend mình</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Process</div>
+          <div class="step-text"><strong>Backend parse payload</strong>, cập nhật trạng thái, đẩy qua WebSocket cho App</div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">Display</div>
+          <div class="step-text"><strong>PC App hiển thị real-time</strong> — user thấy trạng thái cuộc gọi thay đổi</div>
+        </div>
+      </div>
+
+      <div class="dep-alert fade-in">
+        <h4>⚠️ Yêu cầu từ phía G-AGX</h4>
+        <p>
+          Backend của mình <strong>phải có public endpoint / callback URL</strong> để nhận event. Phía G-AGX nói rõ: muốn test phần này, <span class="hl-orange">bên mình phải cung cấp endpoint URL/domain</span>, vì hiện tại họ mới đang để sample/test endpoint thôi.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 4. AUTH ═══ -->
+<section id="auth">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">04 — Authentication</span>
+      <h2 class="section-title">Xác thực giữa<br>hai server</h2>
+      <p class="section-lead">Minimum server-to-server authentication — không phải user login.</p>
+    </div>
+
+    <div class="editorial fade-in">
+      <p>
+        Ban đầu trong meeting có chút nhầm lẫn, nhưng sau đó họ chốt: <strong>Authentication là cần thiết</strong>. Mục đích là <span class="hl">minimum server-to-server authentication</span> — có API <span class="korean" style="font-family: 'Noto Sans KR', sans-serif; color: var(--accent-indigo); font-weight: 500;">인증 체크</span> (auth check).
+      </p>
+    </div>
+
+    <div class="auth-card fade-in">
+      <div class="auth-icon lock">🔒</div>
+      <div>
+        <h4>Server-to-Server Auth Check</h4>
+        <p>Trước khi gọi bất kỳ business API nào (make call, transfer...), backend của mình phải đi qua bước auth/check với G-AGX. Đây là lớp xác thực tối thiểu, <strong>tránh API bị gọi vô tội vạ từ nguồn không hợp lệ</strong>.</p>
+      </div>
+    </div>
+
+    <div class="auth-card fade-in">
+      <div class="auth-icon key">🔑</div>
+      <div>
+        <h4>Admin ID/PW — Credential tạm thời</h4>
+        <p>Trong màn hình admin có ID/PW liên quan đến auth check. Phía họ nói giá trị hiện tại là <span class="hl-orange">tạm thời</span> — lúc open chính thức sẽ phải chốt lại credential thật.</p>
+      </div>
+    </div>
+
+    <div class="auth-card fade-in">
+      <div class="auth-icon shield">🛡️</div>
+      <div>
+        <h4>Dev Server vs Production Server</h4>
+        <p>Sample trong document cũ đang trỏ <strong>production server</strong> → gọi vào sẽ timeout. Muốn test phải dùng <span class="hl">development server info mới đúng</span>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 5. SERVERS ═══ -->
+<section id="servers">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">05 — Server Design</span>
+      <h2 class="section-title">Common Gateway vs<br>Interface Gateway</h2>
+      <p class="section-lead">Phía G-AGX nhìn server của mình theo 2 vai trò khác nhau.</p>
+    </div>
+
+    <div class="server-grid fade-in">
+      <div class="server-card common">
+        <span class="server-badge gw-common">Common Gateway</span>
+        <h3>Kênh Request / Response chính</h3>
+        <p>Server entry chung cho mọi request/API từ phía Coway sang G-AGX.</p>
+        <ul>
+          <li>Nhận request từ backend của mình</li>
+          <li>Điểm gọi chính cho auth, make call…</li>
+          <li>Nơi G-AGX gửi lại API response</li>
+          <li>Kiểm tra IP/domain đã đăng ký (whitelist)</li>
+          <li>Server phía Coway, không phải G-AGX</li>
+        </ul>
+      </div>
+
+      <div class="server-card interface">
+        <span class="server-badge gw-interface">Interface Gateway(s)</span>
+        <h3>Kênh nhận Event Realtime</h3>
+        <p>Nhóm endpoint nhận event broadcast từ G-AGX khi cuộc gọi có thay đổi.</p>
+        <ul>
+          <li>Đăng ký được 1~5 server endpoints</li>
+          <li>Event broadcast đến TẤT CẢ server active</li>
+          <li>Không phải load balancing round-robin</li>
+          <li>Là fan-out broadcast</li>
+          <li>Mỗi endpoint cần trạng thái kết nối "ON"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block fade-in">
+      <span class="code-label">Tóm tắt</span>
+<span class="comment">// Hai vai trò, hai mục đích:</span>
+
+<span class="fn">Common Gateway</span>   <span class="arrow">=</span> <span class="str">"kênh command — mình gửi, họ trả lời"</span>
+<span class="fn">Interface Gateway</span> <span class="arrow">=</span> <span class="str">"kênh event — họ đẩy, mình nhận"</span>
+
+<span class="comment">// Đây là thiết kế tách biệt request flow và event flow</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 6. BROADCAST ═══ -->
+<section id="broadcast">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">06 — Broadcast Fan-out</span>
+      <h2 class="section-title">Tại sao 1 Common +<br>5 Interface Gateway?</h2>
+      <p class="section-lead">Đây là chỗ rất dễ hiểu sai. Không phải load balancer — là broadcast.</p>
+    </div>
+
+    <div class="broadcast-visual fade-in">
+      <h4>Event Broadcast Model — Fan-out, không phải Round-robin</h4>
+      <div class="broadcast-nodes">
+        <div class="broadcast-source">
+          <span class="node-label">Source</span>
+          <span class="node-name">G-AGX</span>
+        </div>
+
+        <div class="broadcast-fan">
+          <span class="fan-arrow">──→</span>
+          <span class="fan-arrow">──→</span>
+          <span class="fan-arrow">──→</span>
+          <span class="fan-arrow">──→</span>
+          <span class="fan-arrow">──→</span>
+        </div>
+
+        <div class="broadcast-targets">
+          <div class="broadcast-target"><span class="status-dot"></span> Interface GW #1 — Active</div>
+          <div class="broadcast-target"><span class="status-dot"></span> Interface GW #2 — Active</div>
+          <div class="broadcast-target"><span class="status-dot"></span> Interface GW #3 — Active</div>
+          <div class="broadcast-target inactive"><span class="status-dot"></span> Interface GW #4 — Inactive</div>
+          <div class="broadcast-target inactive"><span class="status-dot"></span> Interface GW #5 — Inactive</div>
+        </div>
+      </div>
+      <div class="broadcast-note">
+        <span class="warn">⚠</span> Cùng 1 event được gửi đến TẤT CẢ endpoint active — không chọn 1 cái bất kỳ
+      </div>
+    </div>
+
+    <div class="editorial fade-in">
+      <p>
+        Logic ban đầu: request từ Coway sang G-AGX chỉ cần <strong>1 cổng chung</strong>. Nhưng event trả về có thể nhiều, realtime, liên tục — nên họ tách riêng và <strong>hỗ trợ nhiều endpoint</strong> vì trước đây phía Coway có vẻ đã hình dung mô hình backend phân tán.
+      </p>
+      <p>
+        <strong>Góc nhìn kỹ thuật hiện đại:</strong> Nếu hạ tầng dùng <span class="hl">ELB / reverse proxy / autoscaling / k8s pods</span> thì không nhất thiết phải giữ đúng tư duy "5 endpoint vật lý riêng". Hoàn toàn có thể thiết kế <em>1 logical endpoint</em>, còn scale phía sau bằng hạ tầng cloud.
+      </p>
+    </div>
+
+    <div class="pull-quote fade-in">
+      <p>Broadcast vào 5 nơi cùng lúc không giống cách scaling hiện đại. Nhưng đó là thiết kế của G-AGX — mình cần hiểu để adapt, không cần giữ nguyên.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 7. ARCHITECTURE ═══ -->
+<section id="architecture">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">07 — Kiến trúc đề xuất</span>
+      <h2 class="section-title">Server architecture<br>bên mình nên thế nào?</h2>
+    </div>
+
+    <div class="arch-diagram fade-in">
+      <h4>Proposed Architecture — Clean & Scalable</h4>
+
+      <div style="margin-bottom: 2rem;">
+        <div class="arch-flow">
+          <div class="arch-box box-app">
+            <span class="box-label">Client</span>
+            <span class="box-name">PC App</span>
+          </div>
+          <div class="arch-arrow">
+            <span class="arrow-line">→→→</span>
+            <span class="arrow-label">HTTP/WS</span>
+          </div>
+          <div class="arch-box box-gw">
+            <span class="box-label">Our Backend</span>
+            <span class="box-name">Application Backend</span>
+          </div>
+          <div class="arch-arrow">
+            <span class="arrow-line">→→→</span>
+            <span class="arrow-label">G-AGX API</span>
+          </div>
+          <div class="arch-box box-agx">
+            <span class="box-label">Partner</span>
+            <span class="box-name">G-AGX</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 0.5rem 0;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px;">+ ĐỒNG THỜI CHIỀU NGƯỢC LẠI</span>
+      </div>
+
+      <div>
+        <div class="arch-flow">
+          <div class="arch-box box-agx">
+            <span class="box-label">Partner</span>
+            <span class="box-name">G-AGX</span>
+          </div>
+          <div class="arch-arrow">
+            <span class="arrow-line">→→→</span>
+            <span class="arrow-label">Callback</span>
+          </div>
+          <div class="arch-box box-gw">
+            <span class="box-label">Our Backend</span>
+            <span class="box-name">Event Receiver</span>
+          </div>
+          <div class="arch-arrow">
+            <span class="arrow-line">→→→</span>
+            <span class="arrow-label">WebSocket</span>
+          </div>
+          <div class="arch-box box-app">
+            <span class="box-label">Client</span>
+            <span class="box-name">PC App</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1.5rem;" class="fade-in">Tách logic thành 3 khối</h3>
+
+    <div class="blocks-grid fade-in">
+      <div class="block-card block-a">
+        <div class="block-letter">A</div>
+        <h3>API Gateway /<br>Integration API</h3>
+        <ul>
+          <li>Auth with G-AGX</li>
+          <li>Make call API</li>
+          <li>Các command sang G-AGX</li>
+          <li>Request/response logging</li>
+          <li>Error handling / retry / timeout</li>
+        </ul>
+      </div>
+
+      <div class="block-card block-b">
+        <div class="block-letter">B</div>
+        <h3>Event Receiver</h3>
+        <ul>
+          <li>Nhận callback từ G-AGX</li>
+          <li>Verify source / auth</li>
+          <li>Parse event type</li>
+          <li>Cập nhật trạng thái call</li>
+          <li>Đẩy qua WebSocket/SignalR</li>
+        </ul>
+      </div>
+
+      <div class="block-card block-c">
+        <div class="block-letter">C</div>
+        <h3>Internal Mapping<br>Layer</h3>
+        <ul>
+          <li>Login user ↔ employee info</li>
+          <li>Employee ↔ extension</li>
+          <li>Extension ↔ terminal/device</li>
+          <li>Dữ liệu nội bộ Coway</li>
+          <li>Có thể từ HR/Org API</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 8. MAPPING ═══ -->
+<section id="mapping">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">08 — Terminal / Extension Mapping</span>
+      <h2 class="section-title">Dependency lớn nhất<br>nằm ở đây</h2>
+      <p class="section-lead">Không chốt mapping sớm → dev sẽ bị nghẽn.</p>
+    </div>
+
+    <div class="editorial fade-in">
+      <p>
+        Khi gọi điện, API cần <strong>terminal number, caller extension, callee number</strong>. Nhưng app không tự biết terminal/caller nếu không có mapping. Phía G-AGX nói rõ: <span class="hl-orange">phần mapping đó là nội bộ Coway</span>, có thể liên quan đến HR/org information.
+      </p>
+    </div>
+
+    <div class="mapping-chain fade-in">
+      <div class="mapping-node map-login">🔑 User Login</div>
+      <span class="mapping-arrow">→</span>
+      <div class="mapping-node map-emp">👤 Employee Info</div>
+      <span class="mapping-arrow">→</span>
+      <div class="mapping-node map-ext">📞 Extension</div>
+      <span class="mapping-arrow">→</span>
+      <div class="mapping-node map-term">📱 Terminal/Device</div>
+    </div>
+
+    <div class="dep-alert fade-in">
+      <h4>🚨 Critical Dependency — Phải chốt sớm</h4>
+      <p>
+        Muốn chạy thật, bên mình phải làm rõ: <strong>user login bằng gì → từ login map ra extension thế nào → extension map sang terminal/device ra sao → lấy dữ liệu từ HR API hay nguồn nào?</strong>
+      </p>
+      <p style="margin-top: 0.5rem;">
+        Đây là <span class="hl-orange">dependency lớn</span> — không chốt sớm là dev sẽ bị nghẽn hoàn toàn.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="line"></div><div class="icon">§</div><div class="line"></div></div>
+
+<!-- ═══════════════════════════════════ 9+10. SUMMARY ═══ -->
+<section id="summary">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-num">09 — Câu chốt hạ</span>
+      <h2 class="section-title">Khi giải thích với<br>khách hoặc nội bộ</h2>
+    </div>
+
+    <div class="chot-ha fade-in">
+      <p>
+        G-AGX là hệ thống telephony core đã được phía đối tác xây dựng <strong>hoàn tất</strong>.
+      </p>
+      <p>
+        Bên chúng ta không phát triển phần tổng đài lõi, mà phát triển <span class="hl">PC App</span> và <span class="hl">backend integration</span> để kết nối với G-AGX.
+      </p>
+      <p>
+        Kiến trúc tích hợp gồm <strong>2 chiều</strong>: một là command/API từ backend của chúng ta sang G-AGX, hai là event realtime từ G-AGX callback về endpoint của chúng ta.
+      </p>
+      <p>
+        Backend của chúng ta đóng vai trò <span class="hl">interface gateway</span> — vừa thực hiện auth và API orchestration, vừa nhận và xử lý call events.
+      </p>
+    </div>
+
+    <div class="section-header fade-in" style="margin-top: 4rem;">
+      <span class="section-num">10 — Nói với ai, nói gì</span>
+      <h2 class="section-title">3 góc nhìn,<br>3 cách trình bày</h2>
+    </div>
+
+    <div class="audience-grid fade-in">
+      <div class="audience-card">
+        <span class="audience-icon">💼</span>
+        <h4>Với Non-tech / Business</h4>
+        <ul>
+          <li>G-AGX là <strong>"engine tổng đài"</strong></li>
+          <li>App của mình là <strong>"lớp sử dụng / điều khiển"</strong></li>
+          <li>Backend của mình là <strong>"cầu nối tích hợp"</strong></li>
+        </ul>
+      </div>
+
+      <div class="audience-card">
+        <span class="audience-icon">💻</span>
+        <h4>Với Dev Team</h4>
+        <ul>
+          <li>Tách request API flow và event callback flow</li>
+          <li>Cần endpoint rõ ràng cho inbound event</li>
+          <li>Cần mapping user → extension → terminal</li>
+        </ul>
+      </div>
+
+      <div class="audience-card">
+        <span class="audience-icon">📋</span>
+        <h4>Với PM / Management</h4>
+        <ul>
+          <li>Dependency lớn nằm ở: tài liệu latest</li>
+          <li>Dev server / admin access</li>
+          <li>Endpoint / domain cho callback</li>
+          <li>Mapping dữ liệu nội bộ (HR)</li>
+          <li>Test coordination với lab phía họ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ VERDICT ═══ -->
+<section class="verdict">
+  <div class="container fade-in">
+    <span class="section-num" style="display: block; margin-bottom: 1.5rem;">Kết luận</span>
+    <div class="verdict-text">
+      G-AGX = <span style="background: var(--gradient-cool); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Telephony Core</span> của đối tác.<br>
+      Mình build = <span style="background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">App + Integration Layer</span>.<br>
+      Hai chiều: <span style="background: var(--gradient-warm); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Command ↔ Event</span>.
+    </div>
+    <p class="verdict-sub">
+      Hiểu rõ ranh giới. Build đúng integration. Chốt sớm mapping dependency.
+    </p>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Tổng hợp từ meeting notes · Tháng 3, 2026 · Coway × G-AGX Integration Analysis</p>
+  <p style="margin-top: 0.3rem;">Được tạo với sự hỗ trợ của Claude Code</p>
+</footer>
+
+<script>
+  // Reading progress
+  window.addEventListener('scroll', () => {
+    const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('readingProgress').style.width = p + '%';
+  });
+
+  // Fade in on scroll
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // Active nav dot
+  const secs = document.querySelectorAll('section, header.hero');
+  const dots = document.querySelectorAll('.float-nav a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    secs.forEach(s => { if (window.scrollY >= s.offsetTop - 200) cur = s.id; });
+    dots.forEach(d => {
+      d.classList.toggle('active', d.getAttribute('href') === '#' + cur);
+    });
+  });
+</script>
+
+</body>
+</html>

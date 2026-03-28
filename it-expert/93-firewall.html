@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tường Lửa Đại Sư - Chuyên Gia iptables, nftables & pf</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a0a 30%, #2a0a0a 60%, #3a1a0a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #f97316; text-shadow: 0 0 20px #f9731640; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #f97316; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #f97316; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #f97316; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f9731630; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #f97316; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #f97316; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🔥</span>
+            <h1>Tường Lửa Đại Sư</h1>
+            <div class="title">Chuyên Gia iptables, nftables & pf</div>
+            <div class="quote">"Firewall rules giống như luật giao thông: DENY ALL mặc định, rồi ALLOW từng thứ cụ thể. Nhưng luôn có ai đó mở port 22 cho 0.0.0.0/0 'để test'."</div>
+        </div>
+        <div class="badges">            <span class="badge">🔥 iptables Master</span>
+            <span class="badge">🛡️ nftables Expert</span>
+            <span class="badge">🍎 pf (BSD)</span>
+            <span class="badge">📋 Rule Management</span>
+            <span class="badge">🔄 NAT/PAT</span>
+            <span class="badge">🔍 Stateful Inspection</span>
+            <span class="badge">📊 Traffic Analysis</span>
+            <span class="badge">🚫 DDoS Mitigation</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Tường Lửa Đại Sư bắt đầu sự nghiệp với iptables trên Red Hat 7. Một chain, một rule, DROP all. Giờ chàng ta quản lý firewall policies cho 500 servers với hàng nghìn rules, và vẫn nhớ cú pháp iptables -A INPUT -p tcp --dport 22 -j ACCEPT bằng cơ bắp.</p><p>Chàng ta đã chứng kiến evolution: ipchains → iptables → nftables. Mỗi lần đổi, chàng ta phải relearn syntax. "Tại sao không giữ iptables?" — vì nftables nhanh hơn, unified framework, và không cần nhớ 4 tables riêng biệt.</p><p>Kỷ niệm đau thương nhất: chạy iptables -F (flush all rules) trên production server qua SSH... quên rằng default policy là DROP. Mất SSH access. Phải drive 2 giờ đến datacenter để console vào server.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Default DENY — Nguyên Tắc Vàng:</strong> Default policy: DROP tất cả. Chỉ ACCEPT những gì cần thiết. Whitelist approach, không blacklist. iptables -P INPUT DROP, iptables -P FORWARD DROP, iptables -P OUTPUT ACCEPT (hoặc DROP nếu paranoid). NHƯNG: LUÔN thêm rule allow SSH TRƯỚC khi set default DROP.</div>
+            <div class="tip"><strong>2. Stateful Inspection:</strong> ESTABLISHED,RELATED connections tự động allow. Chỉ cần rule cho NEW connections. -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT phải là rule đầu tiên. Giảm số rules cần evaluate = better performance.</div>
+            <div class="tip"><strong>3. nftables — Tương Lai Của Linux Firewall:</strong> Unified framework thay thế iptables, ip6tables, arptables, ebtables. Syntax nhất quán hơn. Atomic rule replacement (không downtime). Sets và maps cho efficient matching. Backward compatible qua iptables-nft translation layer. Migrate dần, đừng big-bang.</div>
+            <div class="tip"><strong>4. NAT — Network Address Translation:</strong> SNAT/MASQUERADE cho outbound traffic. DNAT/port forwarding cho inbound. MASQUERADE cho dynamic IP (home/VPN), SNAT cho static IP (server). NAT traversal phức tạp cho VoIP, gaming. conntrack table size tuning cho high-connection servers.</div>
+            <div class="tip"><strong>5. Rule Ordering Matters:</strong> Rules evaluated top-to-bottom, first match wins. Most specific rules first, generic rules last. Frequently matched rules near top cho performance. Log rules trước drop rules cho debugging. Comment rules (iptables -m comment) cho maintainability.</div>
+            <div class="tip"><strong>6. Firewall Management At Scale:</strong> firewalld cho RHEL/CentOS (zones, services). UFW cho Ubuntu (simplified interface). Ansible/Terraform cho managed firewalls. Centralized policy management. Change management process — mọi thay đổi phải reviewed. Audit log cho compliance.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🔒 Chuyện Firewall Rule Lock Out Admin</h3><p>Admin SSH vào production server, chạy: iptables -P INPUT DROP rồi iptables -F. Default policy DROP + flush all rules = NO traffic allowed. Bao gồm SSH session hiện tại. Connection freeze. Admin mất access. 500 users affected. Phải physical console access — datacenter ở 50km.</p><p>From that day: LUÔN thêm SSH allow rule TRƯỚC set default DROP. Hoặc dùng at command: at now + 5 minutes <<< 'iptables -P INPUT ACCEPT' — tự động rollback nếu mất access.</p><div class="lesson">💡 Bài học: KHÔNG BAO GIỜ flush rules khi default policy là DROP qua remote session. Script rollback: cron job restore rules sau 5 phút nếu không cancelled. Test firewall changes trên staging trước. Có out-of-band management (IPMI/iLO) cho emergency.</div></div>
+            <div class="story"><h3>💥 Chuyện iptables Flush Disaster</h3><p>Team triển khai firewall mới cho cluster 20 servers. Ansible playbook: step 1 flush old rules, step 2 apply new rules. Network glitch giữa step 1 và step 2 → Ansible timeout. Kết quả: 20 servers với FLUSHED firewall rules = hoàn toàn OPEN. Mọi port exposed to internet. 15 phút trước khi team phát hiện và manually apply rules.</p><p>Fix: atomic firewall update — iptables-restore thay vì individual commands. nftables: nft -f ruleset.nft cho atomic replacement. Ansible handler chạy restore nếu apply fails.</p><div class="lesson">💡 Bài học: Firewall updates phải atomic — all or nothing. iptables-restore < rules.v4 cho atomic apply. nftables native atomic replacement. ĐỪNG BAO GIỜ flush-then-apply — race condition window = security hole.</div></div>
+            <div class="story"><h3>🛡️ Chuyện DDoS Attack Và Firewall Rate Limiting</h3><p>Web server nhận 100K requests/giây từ botnet. iptables rules cho HTTP: ACCEPT. Server overwhelmed, legitimate users can't access. Team panic: 'Block tất cả IPs!' — nhưng botnet có 50K unique IPs, rotate liên tục.</p><p>Đại Sư implement: hashlimit module cho rate limiting per source IP (30 req/s max), GeoIP blocking cho countries không có customers, SYN cookies cho SYN flood protection, connlimit cho max connections per IP. Kết hợp với Cloudflare DDoS protection phía trước. Attack mitigated.</p><div class="lesson">💡 Bài học: Firewall alone không đủ cho DDoS. Rate limiting (iptables hashlimit/recent) cho basic protection. CDN/DDoS protection (Cloudflare, AWS Shield) cho serious attacks. SYN cookies, connection limits, GeoIP filtering là layers of defense.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. iptables -F qua SSH:</strong> Flush rules khi default DROP = lock yourself out. ALWAYS ensure SSH rule exists before flushing.</div>
+            <div class="mistake"><strong>2. ACCEPT ALL default policy:</strong> 'Tôi sẽ thêm DROP rules sau.' Rồi quên. Default DENY, whitelist approach.</div>
+            <div class="mistake"><strong>3. Không log dropped packets:</strong> Không biết traffic bị block là security hay misconfiguration. LOG trước DROP cho troubleshooting.</div>
+            <div class="mistake"><strong>4. Rules không có comments:</strong> 500 rules, không ai biết rule nào cho mục đích gì. Comment EVERY rule với date và purpose.</div>
+            <div class="mistake"><strong>5. Firewall rules không version controlled:</strong> Manual changes = drift, inconsistency. Store rules trong git, apply qua automation.</div>
+            <div class="mistake"><strong>6. NAT table quá tải:</strong> conntrack table full = new connections dropped. Monitor conntrack count, tăng nf_conntrack_max cho high-connection servers.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #93</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

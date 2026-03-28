@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Self-Hosting - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is Self-Hosting */
+  .intro-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor/Category Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.cloud-files::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.password::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.git::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.photos::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.media::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.comms::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+  .vendor-card.notes::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Protocol/Infra Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.important { background: var(--accent4); box-shadow: 0 0 6px var(--accent4); }
+  .status.critical { background: var(--accent5); box-shadow: 0 0 6px var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Docker / Code Flow */
+  .code-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .code-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .code-flow pre {
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-size: 0.82rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .code-flow .comment { color: #6b7280; }
+  .code-flow .key { color: var(--accent); }
+  .code-flow .value { color: var(--accent3); }
+  .code-flow .highlight { color: var(--accent4); }
+
+  /* Trade-offs Grid */
+  .tradeoff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .tradeoff-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .tradeoff-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .tradeoff-card .tradeoff-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .tradeoff-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .tradeoff-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .tradeoff-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Self-Host World</a>
+  <a href="#what">Self-Host l&agrave; g&igrave;?</a>
+  <a href="#history">L&#7883;ch s&#7917;</a>
+  <a href="#categories">Danh m&#7909;c</a>
+  <a href="#tradeoffs">&#272;&#225;nh &#273;&#7893;i</a>
+  <a href="#infra">H&#7841; t&#7847;ng</a>
+  <a href="#docker">Docker</a>
+  <a href="#myths">Hi&#7875;u nh&#7847;m</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#127968;</div>
+  <h1>Th&#7871; Gi&#7899;i Self-Hosting</h1>
+  <p class="subtitle">T&#7915; nh&#7919;ng ng&#224;y &#273;&#7847;u internet cho &#273;&#7871;n k&#7927; nguy&#234;n cloud &#273;&#7897;c quy&#7873;n, r&#7891;i &#273;&#7871;n cu&#7897;c ph&#7909;c h&#432;ng self-host. M&#7885;i th&#7913; b&#7841;n c&#7847;n bi&#7871;t &#273;&#7875; t&#7921; l&#224;m ch&#7911; d&#7919; li&#7879;u, d&#7883;ch v&#7909; v&#224; s&#7921; t&#7921; do s&#7889; c&#7911;a m&#236;nh.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS SELF-HOSTING -->
+<section id="what">
+  <div class="intro-what">
+    <h2 class="section-title">Self-Hosting l&#224; g&#236; th&#7921;c s&#7921;?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Self-Hosting</strong> &#8212; n&#244;m na l&#224; b&#7841;n t&#7921; ch&#7841;y c&#225;c d&#7883;ch v&#7909; ph&#7847;n m&#7873;m tr&#234;n ph&#7847;n c&#7913;ng c&#7911;a m&#236;nh, thay v&#236; ph&#7909; thu&#7897;c v&#224;o b&#234;n th&#7913; ba (Google, Microsoft, Dropbox...). Thay v&#236; d&#7919; li&#7879;u c&#7911;a b&#7841;n n&#7857;m trong data center c&#7911;a ng&#432;&#7901;i kh&#225;c, ch&#250;ng n&#7857;m ngay d&#432;&#7899;i m&#225;i nh&#224; b&#7841;n &#8212; ho&#7863;c &#237;t nh&#7845;t l&#224; tr&#234;n m&#225;y ch&#7911; b&#7841;n ki&#7875;m so&#225;t ho&#224;n to&#224;n.
+    </p>
+
+    <div class="philosophy-grid">
+      <div class="analogy-box">
+        <div class="icon">&#9729;&#65039;</div>
+        <h3>D&#249;ng d&#7883;ch v&#7909; cloud</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">D&#7919; li&#7879;u &#7903; nh&#224; ng&#432;&#7901;i kh&#225;c<br>H&#7885; &#273;&#7885;c &#273;&#432;&#7907;c, h&#7885; x&#243;a &#273;&#432;&#7907;c<br>Quy&#7873;n ki&#7875;m so&#225;t: <strong style="color: var(--accent5);">Th&#7845;p</strong></p>
+      </div>
+      <div class="analogy-arrow">&#8594;</div>
+      <div class="analogy-box">
+        <div class="icon">&#127968;</div>
+        <h3>T&#7921; host</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">D&#7919; li&#7879;u &#7903; nh&#224; b&#7841;n<br>B&#7841;n l&#224; ch&#7911;, b&#7841;n quy&#7871;t &#273;&#7883;nh<br>Quy&#7873;n ki&#7875;m so&#225;t: <strong style="color: var(--accent3);">Tuy&#7879;t &#273;&#7889;i</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Tri&#7871;t l&#253; c&#7889;t l&#245;i</h4>
+      <p>Self-hosting kh&#244;ng ch&#7881; l&#224; chuy&#7879;n k&#7929; thu&#7853;t. N&#243; l&#224; m&#7897;t <strong>tri&#7871;t l&#253; s&#7889;ng</strong> &#8212; tin r&#7857;ng d&#7919; li&#7879;u c&#225; nh&#226;n l&#224; quy&#7873;n c&#417; b&#7843;n, r&#7857;ng b&#7841;n kh&#244;ng n&#234;n l&#224; "s&#7843;n ph&#7849;m" c&#7911;a b&#7845;t k&#7923; c&#244;ng ty n&#224;o, v&#224; r&#7857;ng s&#7921; t&#7921; ch&#7911; k&#7929; thu&#7853;t s&#7889; l&#224; m&#7897;t d&#7841;ng t&#7921; do &#273;&#225;ng &#273;&#432;&#7907;c &#273;&#7845;u tranh. H&#227;y ngh&#297; v&#7873; n&#243; nh&#432; vi&#7879;c <strong>t&#7921; tr&#7891;ng rau thay v&#236; mua si&#234;u th&#7883;</strong> &#8212; t&#7889;n c&#244;ng h&#417;n, nh&#432;ng b&#7841;n bi&#7871;t ch&#237;nh x&#225;c m&#236;nh &#273;ang &#259;n g&#236;.</p>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <h3 style="color: var(--accent3); margin-bottom: 1rem;">T&#7841;i sao ng&#432;&#7901;i ta t&#7921; host?</h3>
+      <div class="stats-row">
+        <div class="stat"><div class="num">&#128274;</div><div class="label">Quy&#7873;n ri&#234;ng t&#432;</div></div>
+        <div class="stat"><div class="num">&#128176;</div><div class="label">Ti&#7871;t ki&#7879;m l&#226;u d&#224;i</div></div>
+        <div class="stat"><div class="num">&#128218;</div><div class="label">H&#7885;c h&#7887;i</div></div>
+        <div class="stat"><div class="num">&#9989;</div><div class="label">Kh&#244;ng ph&#7909; thu&#7897;c</div></div>
+        <div class="stat"><div class="num">&#128736;&#65039;</div><div class="label">T&#249;y bi&#7871;n v&#244; h&#7841;n</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">D&#242;ng Th&#7901;i Gian Self-Hosting</h2>
+  <p class="section-subtitle">T&#7915; internet s&#417; khai &#273;&#7871;n cu&#7897;c ph&#7909;c h&#432;ng c&#7911;a nh&#7919;ng ng&#432;&#7901;i y&#234;u t&#7921; do s&#7889;</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1990s &#8212; Th&#7901;i &#273;&#7841;i hoang d&#227;</span>
+        <h3>Internet s&#417; khai: ai c&#361;ng t&#7921; host</h3>
+        <p>Kh&#244;ng c&#243; kh&#225;i ni&#7879;m "cloud". Mu&#7889;n c&#243; website? D&#7921;ng Apache tr&#234;n m&#225;y ri&#234;ng. Mu&#7889;n email? Ch&#7841;y Sendmail. M&#7885;i ng&#432;&#7901;i &#273;&#7873;u l&#224; sysadmin b&#7845;t &#273;&#7855;c d&#297;. IRC, FTP server &#7903; nh&#224; l&#224; chuy&#7879;n b&#236;nh th&#432;&#7901;ng.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2000s &#8212; B&#236;nh minh c&#7911;a SaaS</span>
+        <h3>Web 2.0 v&#224; s&#7921; tr&#7895;i d&#7853;y c&#7911;a d&#7883;ch v&#7909;</h3>
+        <p>Gmail (2004), Flickr, YouTube, Facebook xu&#7845;t hi&#7879;n. "Mi&#7877;n ph&#237; v&#224; ti&#7879;n l&#7907;i" tr&#7903; th&#224;nh kh&#7849;u hi&#7879;u. Ng&#432;&#7901;i d&#249;ng b&#7855;t &#273;&#7847;u trao d&#7919; li&#7879;u cho c&#225;c &#244;ng l&#7899;n &#273;&#7893;i l&#7845;y s&#7921; thu&#7853;n ti&#7879;n. T&#7921; host d&#7847;n b&#7883; coi l&#224; "l&#7895;i th&#7901;i".</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2010-2018 &#8212; Cloud th&#7889;ng tr&#7883;</span>
+        <h3>K&#7927; nguy&#234;n cloud &#273;&#7897;c quy&#7873;n</h3>
+        <p>AWS, Azure, GCP b&#249;ng n&#7893;. Docker ra &#273;&#7901;i (2013). M&#7885;i th&#7913; l&#234;n cloud. Nh&#432;ng r&#7891;i c&#225;c v&#7909; b&#234; b&#7889;i b&#7855;t &#273;&#7847;u: Cambridge Analytica (2018), Google &#273;&#7885;c email, vendor lock-in, gi&#225; t&#259;ng li&#234;n t&#7909;c. Ng&#432;&#7901;i ta b&#7855;t &#273;&#7847;u t&#7921; h&#7887;i: "D&#7919; li&#7879;u c&#7911;a m&#236;nh &#7903; &#273;&#226;u?"</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2019-2022 &#8212; Th&#7913;c t&#7881;nh</span>
+        <h3>Cu&#7897;c ph&#7909;c h&#432;ng Self-Host</h3>
+        <p>Nextcloud, Vaultwarden, Immich b&#249;ng n&#7893;. r/selfhosted tr&#234;n Reddit &#273;&#7841;t h&#224;ng tri&#7879;u members. Docker Compose gi&#250;p ai c&#361;ng c&#243; th&#7875; deploy d&#7883;ch v&#7909; trong v&#224;i ph&#250;t. Raspberry Pi tr&#7903; th&#224;nh "home server c&#7911;a nh&#226;n d&#226;n".</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2023-nay &#8212; Tr&#432;&#7903;ng th&#224;nh</span>
+        <h3>Self-host nh&#432; m&#7897;t phong tr&#224;o</h3>
+        <p>AI t&#7921; host (Ollama, LocalAI). Immich &#273;&#7841;t &#273;&#7897; ho&#224;n thi&#7879;n thay th&#7871; Google Photos. Tailscale/WireGuard gi&#250;p truy c&#7853;p t&#7915; xa d&#7877; d&#224;ng. Self-hosting kh&#244;ng c&#242;n l&#224; s&#7903; th&#237;ch geek m&#224; l&#224; <strong>phong tr&#224;o ch&#237;nh th&#7889;ng</strong>.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES & TOP PICKS -->
+<section id="categories">
+  <h2 class="section-title" style="color: var(--accent2);">Danh M&#7909;c &amp; L&#7921;a Ch&#7885;n H&#224;ng &#272;&#7847;u</h2>
+  <p class="section-subtitle">M&#7895;i danh m&#7909;c &#273;&#7873;u c&#243; nh&#7919;ng ng&#244;i sao s&#225;ng &#8212; v&#224; nh&#7919;ng c&#7841;m b&#7851;y &#7849;n</p>
+
+  <div class="vendor-grid">
+    <!-- Cloud / Files -->
+    <div class="vendor-card cloud-files">
+      <div class="vendor-logo">&#9729;&#65039;</div>
+      <h3>Cloud &amp; L&#432;u Tr&#7919; File</h3>
+      <div class="vendor-type">Thay th&#7871; Google Drive / Dropbox</div>
+      <p><strong>Nextcloud</strong> l&#224; "v&#7883; vua" kh&#244;ng th&#7875; ch&#7889;i c&#227;i &#8212; t&#7915; sync file, calendar, contacts, &#273;&#7871;n office online, talk, v&#224; h&#224;ng tr&#259;m app. Nh&#432;ng n&#243; c&#361;ng n&#7863;ng n&#7873; v&#224; hay g&#7863;p l&#7895;i &#7903; quy m&#244; l&#7899;n. <strong>Seafile</strong> nh&#7865; h&#417;n nhi&#7873;u, t&#7889;c &#273;&#7897; sync nhanh h&#417;n &#273;&#225;ng k&#7875;, nh&#432;ng &#237;t t&#237;nh n&#259;ng "all-in-one".</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">400K+</div><div class="label">Nextcloud servers</div></div>
+        <div class="stat"><div class="num">PHP</div><div class="label">Nextcloud</div></div>
+        <div class="stat"><div class="num">C/Python</div><div class="label">Seafile</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Nextcloud: All-in-one</span>
+        <span class="tag warn">Nextcloud: N&#7863;ng</span>
+        <span class="tag good">Seafile: Nhanh</span>
+        <span class="tag">WebDAV</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>M&#7865;o th&#7921;c chi&#7871;n</h4>
+        <p>N&#7871;u ch&#7881; c&#7847;n sync file, <strong>Seafile th&#7855;ng Nextcloud v&#7873; t&#7889;c &#273;&#7897;</strong> (d&#249;ng block-level dedup). N&#7871;u c&#7847;n h&#7879; sinh th&#225;i &#273;&#7847;y &#273;&#7911; (calendar, mail, office), Nextcloud l&#224; l&#7921;a ch&#7885;n duy nh&#7845;t. &#272;&#7915;ng c&#7889; bi&#7871;n Nextcloud th&#224;nh "l&#224;m m&#7885;i th&#7913;" &#8212; n&#243; s&#7869; ch&#7853;m d&#7847;n.</p>
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="vendor-card password">
+      <div class="vendor-logo">&#128272;</div>
+      <h3>Qu&#7843;n L&#253; M&#7853;t Kh&#7849;u</h3>
+      <div class="vendor-type">Thay th&#7871; 1Password / LastPass</div>
+      <p><strong>Vaultwarden</strong> (implementation kh&#244;ng ch&#237;nh th&#7913;c c&#7911;a Bitwarden API) l&#224; ng&#244;i sao s&#225;ng nh&#7845;t. Vi&#7871;t b&#7857;ng Rust, c&#7921;c k&#7923; nh&#7865;, t&#432;&#417;ng th&#237;ch 100% v&#7899;i Bitwarden client. <strong>KeePassXC</strong> ho&#7841;t &#273;&#7897;ng ho&#224;n to&#224;n offline, file .kdbx &#273;&#7875; &#273;&#226;u c&#361;ng &#273;&#432;&#7907;c, nh&#432;ng thi&#7871;u sync t&#7921; &#273;&#7897;ng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">35K+</div><div class="label">GitHub stars</div></div>
+        <div class="stat"><div class="num">~50MB</div><div class="label">RAM Vaultwarden</div></div>
+        <div class="stat"><div class="num">Rust</div><div class="label">Ng&#244;n ng&#7919;</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Vaultwarden: Nh&#7865;</span>
+        <span class="tag good">E2E Encrypted</span>
+        <span class="tag">Bitwarden compatible</span>
+        <span class="tag">TOTP support</span>
+      </div>
+    </div>
+
+    <!-- Git -->
+    <div class="vendor-card git">
+      <div class="vendor-logo">&#128025;</div>
+      <h3>Git Hosting</h3>
+      <div class="vendor-type">Thay th&#7871; GitHub / GitLab.com</div>
+      <p><strong>Gitea</strong> nh&#7865; nh&#432; l&#244;ng h&#7891;ng, vi&#7871;t b&#7857;ng Go, c&#224;i xong trong 5 ph&#250;t. <strong>Forgejo</strong> l&#224; fork c&#7897;ng &#273;&#7891;ng c&#7911;a Gitea, cam k&#7871;t m&#227;i l&#224; open-source (sau khi Gitea nh&#7853;n v&#7889;n VC). <strong>GitLab CE</strong> l&#224; "con qu&#225;i v&#7853;t" &#273;&#7847;y &#273;&#7911; CI/CD nh&#432;ng ng&#7889;n t&#7915; 4GB RAM tr&#7903; l&#234;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">45K+</div><div class="label">Gitea stars</div></div>
+        <div class="stat"><div class="num">~100MB</div><div class="label">RAM Gitea</div></div>
+        <div class="stat"><div class="num">4GB+</div><div class="label">RAM GitLab</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Gitea: Nh&#7865;</span>
+        <span class="tag good">Forgejo: C&#7897;ng &#273;&#7891;ng</span>
+        <span class="tag warn">GitLab: T&#7889;n RAM</span>
+        <span class="tag">CI/CD</span>
+        <span class="tag">Go</span>
+      </div>
+    </div>
+
+    <!-- Photos -->
+    <div class="vendor-card photos">
+      <div class="vendor-logo">&#128248;</div>
+      <h3>Qu&#7843;n L&#253; &#7842;nh</h3>
+      <div class="vendor-type">Thay th&#7871; Google Photos / iCloud Photos</div>
+      <p><strong>Immich</strong> &#273;ang l&#224; hi&#7879;n t&#432;&#7907;ng. Giao di&#7879;n g&#7847;n gi&#7889;ng Google Photos &#273;&#7871;n kinh ng&#7841;c. Auto backup t&#7915; &#273;i&#7879;n tho&#7841;i, nh&#7853;n di&#7879;n khu&#244;n m&#7863;t, t&#236;m ki&#7871;m b&#7857;ng AI. <strong>PhotoPrism</strong> d&#249;ng TensorFlow &#273;&#7875; ph&#226;n lo&#7841;i &#7843;nh, ch&#7841;y &#7893;n &#273;&#7883;nh nh&#432;ng giao di&#7879;n k&#233;m hi&#7879;n &#273;&#7841;i h&#417;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">55K+</div><div class="label">Immich stars</div></div>
+        <div class="stat"><div class="num">ML</div><div class="label">Nh&#7853;n di&#7879;n m&#7863;t</div></div>
+        <div class="stat"><div class="num">iOS/Android</div><div class="label">Mobile app</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Immich: G&#7847;n Google Photos</span>
+        <span class="tag warn">Immich: Ch&#432;a stable API</span>
+        <span class="tag">PhotoPrism: &#7892;n &#273;&#7883;nh</span>
+        <span class="tag">AI Search</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>C&#7843;nh b&#225;o quan tr&#7885;ng</h4>
+        <p>Immich t&#7921; nh&#7853;n m&#236;nh <strong>"&#273;ang trong giai &#273;o&#7841;n ph&#225;t tri&#7875;n t&#237;ch c&#7921;c"</strong> v&#224; API c&#243; th&#7875; thay &#273;&#7893;i b&#7845;t c&#7913; l&#250;c n&#224;o. &#272;&#7915;ng d&#249;ng n&#243; l&#224;m n&#417;i l&#432;u tr&#7919; duy nh&#7845;t. H&#227;y lu&#244;n gi&#7919; b&#7843;n g&#7889;c &#7843;nh &#7903; m&#7897;t n&#417;i kh&#225;c (NAS, backup).</p>
+      </div>
+    </div>
+
+    <!-- Media -->
+    <div class="vendor-card media">
+      <div class="vendor-logo">&#127916;</div>
+      <h3>Media Server</h3>
+      <div class="vendor-type">Thay th&#7871; Netflix / Spotify</div>
+      <p><strong>Jellyfin</strong> l&#224; open-source ho&#224;n to&#224;n, kh&#244;ng c&#7847;n t&#224;i kho&#7843;n, kh&#244;ng qu&#7843;ng c&#225;o. <strong>Plex</strong> &#273;&#7865;p h&#417;n, UX t&#7889;t h&#417;n, nh&#432;ng d&#7847;n b&#7883; nh&#7891;i qu&#7843;ng c&#225;o v&#224; y&#234;u c&#7847;u t&#224;i kho&#7843;n online. <strong>*arr stack</strong> (Sonarr, Radarr, Prowlarr, Bazarr) l&#224; h&#7879; th&#7889;ng t&#7921; &#273;&#7897;ng t&#7843;i v&#224; qu&#7843;n l&#253; media.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">35K+</div><div class="label">Jellyfin stars</div></div>
+        <div class="stat"><div class="num">C#</div><div class="label">Jellyfin</div></div>
+        <div class="stat"><div class="num">7 apps</div><div class="label">*arr stack</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Jellyfin: 100% Free</span>
+        <span class="tag warn">Plex: Qu&#7843;ng c&#225;o</span>
+        <span class="tag">Hardware transcode</span>
+        <span class="tag">*arr: T&#7921; &#273;&#7897;ng h&#243;a</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>*arr stack l&#224; g&#236;?</h4>
+        <p><strong>Sonarr</strong> (TV), <strong>Radarr</strong> (phim), <strong>Lidarr</strong> (nh&#7841;c), <strong>Prowlarr</strong> (indexer), <strong>Bazarr</strong> (ph&#7909; &#273;&#7873;). Ch&#250;ng t&#7921; &#273;&#7897;ng t&#236;m, t&#7843;i, &#273;&#7893;i t&#234;n, v&#224; s&#7855;p x&#7871;p media v&#224;o th&#432; vi&#7879;n. K&#7871;t h&#7907;p v&#7899;i Jellyfin = tr&#7843;i nghi&#7879;m "Netflix t&#7841;i gia" ho&#224;n ch&#7881;nh.</p>
+      </div>
+    </div>
+
+    <!-- Communication -->
+    <div class="vendor-card comms">
+      <div class="vendor-logo">&#128172;</div>
+      <h3>Giao Ti&#7871;p &amp; Chat</h3>
+      <div class="vendor-type">Thay th&#7871; Slack / Teams / WhatsApp</div>
+      <p><strong>Matrix/Element</strong> l&#224; giao th&#7913;c ph&#226;n t&#225;n (federated) &#8212; kh&#244;ng ai s&#7903; h&#7919;u n&#243;, gi&#7889;ng nh&#432; email. B&#7841;n ch&#7841;y server Matrix (Synapse ho&#7863;c Conduit), d&#249;ng Element l&#224;m client. <strong>Rocket.Chat</strong> gi&#7889;ng Slack h&#417;n, c&#243; threads, channels, v&#224; h&#7895; tr&#7907; omnichannel cho doanh nghi&#7879;p.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">115M+</div><div class="label">Matrix accounts</div></div>
+        <div class="stat"><div class="num">E2EE</div><div class="label">M&#227; h&#243;a</div></div>
+        <div class="stat"><div class="num">Federated</div><div class="label">Ki&#7871;n tr&#250;c</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Matrix: Ph&#226;n t&#225;n</span>
+        <span class="tag warn">Synapse: T&#7889;n RAM</span>
+        <span class="tag good">Rocket.Chat: Doanh nghi&#7879;p</span>
+        <span class="tag">Bridges</span>
+      </div>
+    </div>
+
+    <!-- Notes / Wiki -->
+    <div class="vendor-card notes">
+      <div class="vendor-logo">&#128221;</div>
+      <h3>Ghi Ch&#250; &amp; Wiki</h3>
+      <div class="vendor-type">Thay th&#7871; Notion / Confluence</div>
+      <p><strong>Obsidian</strong> l&#432;u file Markdown c&#7909;c b&#7897;, kh&#244;ng c&#7847;n server (sync qua Syncthing ho&#7863;c Nextcloud). <strong>BookStack</strong> l&#224; wiki t&#7921; host tuy&#7879;t v&#7901;i cho team nh&#7887;, giao di&#7879;n s&#7841;ch s&#7869;. <strong>Wiki.js</strong> hi&#7879;n &#273;&#7841;i, h&#7895; tr&#7907; Markdown v&#224; nhi&#7873;u editor, nh&#432;ng c&#7845;u h&#236;nh ph&#7913;c t&#7841;p h&#417;n.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Local</div><div class="label">Obsidian</div></div>
+        <div class="stat"><div class="num">PHP</div><div class="label">BookStack</div></div>
+        <div class="stat"><div class="num">Node.js</div><div class="label">Wiki.js</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Obsidian: Offline</span>
+        <span class="tag good">BookStack: &#272;&#417;n gi&#7843;n</span>
+        <span class="tag">Wiki.js: Hi&#7879;n &#273;&#7841;i</span>
+        <span class="tag">Markdown</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Ti&#234;u ch&#237;</th>
+          <th>Nextcloud</th>
+          <th>Immich</th>
+          <th>Jellyfin</th>
+          <th>Vaultwarden</th>
+          <th>Gitea</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RAM t&#7889;i thi&#7875;u</td>
+          <td style="color: var(--accent4);">512MB</td>
+          <td style="color: var(--accent4);">2GB</td>
+          <td style="color: var(--accent4);">1GB</td>
+          <td style="color: var(--accent3);">50MB</td>
+          <td style="color: var(--accent3);">100MB</td>
+        </tr>
+        <tr>
+          <td>&#272;&#7897; kh&#243; c&#224;i &#273;&#7863;t</td>
+          <td>Trung b&#236;nh</td>
+          <td>D&#7877; (Docker)</td>
+          <td>D&#7877;</td>
+          <td>R&#7845;t d&#7877;</td>
+          <td>R&#7845;t d&#7877;</td>
+        </tr>
+        <tr>
+          <td>Mobile app</td>
+          <td style="color: var(--accent3);">C&#243;</td>
+          <td style="color: var(--accent3);">C&#243;</td>
+          <td style="color: var(--accent3);">C&#243;</td>
+          <td style="color: var(--accent3);">C&#243; (Bitwarden)</td>
+          <td style="color: var(--accent4);">Web only</td>
+        </tr>
+        <tr>
+          <td>Thay th&#7871;</td>
+          <td>Google Drive</td>
+          <td>Google Photos</td>
+          <td>Netflix/Plex</td>
+          <td>1Password</td>
+          <td>GitHub</td>
+        </tr>
+        <tr>
+          <td>License</td>
+          <td style="color: var(--accent3);">AGPL</td>
+          <td style="color: var(--accent3);">AGPL</td>
+          <td style="color: var(--accent3);">GPL</td>
+          <td style="color: var(--accent3);">AGPL</td>
+          <td style="color: var(--accent3);">MIT</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TRADE-OFFS -->
+<section id="tradeoffs">
+  <h2 class="section-title" style="color: var(--accent5);">&#272;&#225;nh &#272;&#7893;i &amp; Th&#7921;c T&#7871;</h2>
+  <p class="section-subtitle">Self-hosting kh&#244;ng ph&#7843;i m&#224;u h&#7891;ng &#8212; h&#227;y hi&#7875;u r&#245; c&#225;i gi&#225; tr&#432;&#7899;c khi b&#7855;t &#273;&#7847;u</p>
+
+  <div class="tradeoff-grid">
+    <div class="tradeoff-card">
+      <div class="tradeoff-num" style="background: var(--accent4);">1</div>
+      <h4>&#128176; Chi ph&#237; &#7849;n</h4>
+      <p>Ph&#7847;n c&#7913;ng, &#273;i&#7879;n, internet t&#297;nh IP. M&#7897;t chi&#7871;c mini PC ch&#7841;y 24/7 t&#7889;n kho&#7843;ng 200-500k/th&#225;ng ti&#7873;n &#273;i&#7879;n. Ch&#432;a k&#7875; UPS, HDD thay th&#7871;, v&#224; th&#7901;i gian c&#7911;a b&#7841;n. Cloud "mi&#7877;n ph&#237;" nh&#432;ng b&#7841;n tr&#7843; b&#7857;ng d&#7919; li&#7879;u; self-host "t&#7921; do" nh&#432;ng b&#7841;n tr&#7843; b&#7857;ng th&#7901;i gian v&#224; ti&#7873;n th&#7853;t.</p>
+    </div>
+
+    <div class="tradeoff-card">
+      <div class="tradeoff-num" style="background: var(--accent5);">2</div>
+      <h4>&#128736;&#65039; B&#7843;o tr&#236; li&#234;n t&#7909;c</h4>
+      <p>C&#7853;p nh&#7853;t b&#7843;o m&#7853;t, fix l&#7895;i, upgrade phi&#234;n b&#7843;n, gi&#225;m s&#225;t uptime. Kh&#244;ng c&#243; &#273;&#7897;i SRE 24/7 nh&#432; Google. L&#250;c 2 gi&#7901; s&#225;ng server ch&#7871;t th&#236; ch&#237;nh b&#7841;n ph&#7843;i d&#7853;y s&#7917;a. N&#7871;u b&#7841;n &#273;i du l&#7883;ch 2 tu&#7847;n v&#224; server g&#7863;p s&#7921; c&#7889; &#8212; ai s&#7869; x&#7917; l&#253;?</p>
+    </div>
+
+    <div class="tradeoff-card">
+      <div class="tradeoff-num" style="background: var(--accent2);">3</div>
+      <h4>&#128737;&#65039; Tr&#225;ch nhi&#7879;m b&#7843;o m&#7853;t</h4>
+      <p>B&#7841;n l&#224; CSO c&#7911;a ch&#237;nh m&#236;nh. Expose service ra internet = m&#7903; c&#7917;a cho c&#7843; th&#7871; gi&#7899;i t&#7845;n c&#244;ng. C&#7845;u h&#236;nh sai firewall, qu&#234;n c&#7853;p nh&#7853;t SSL, &#273;&#7875; default password &#8212; m&#7895;i l&#7895;i nh&#7887; &#273;&#7873;u c&#243; th&#7875; d&#7851;n &#273;&#7871;n m&#7845;t to&#224;n b&#7897; d&#7919; li&#7879;u.</p>
+    </div>
+
+    <div class="tradeoff-card">
+      <div class="tradeoff-num" style="background: var(--accent3);">4</div>
+      <h4>&#9888;&#65039; &#272;&#7897; tin c&#7853;y</h4>
+      <p>Google c&#243; SLA 99.99%. Server nh&#224; b&#7841;n? C&#243; th&#7875; 99% n&#7871;u l&#224;m t&#7889;t, 95% n&#7871;u l&#224;m v&#7915;a, v&#224; th&#7843;m h&#7885;a n&#7871;u kh&#244;ng c&#243; monitoring. M&#7845;t &#273;i&#7879;n, h&#7887;ng &#7893; c&#7913;ng, update h&#7887;ng &#8212; &#273;&#7873;u c&#243; th&#7875; x&#7843;y ra b&#7845;t c&#7913; l&#250;c n&#224;o.</p>
+    </div>
+
+    <div class="tradeoff-card">
+      <div class="tradeoff-num" style="background: var(--accent);">5</div>
+      <h4>&#128106; Y&#7871;u t&#7889; gia &#273;&#236;nh</h4>
+      <p>"Em &#417;i Nextcloud l&#7841;i kh&#244;ng sync &#273;&#432;&#7907;c" &#8212; c&#226;u n&#243;i ki&#7871;m b&#7841;n h&#7855;n quen. Khi b&#7841;n self-host cho c&#7843; nh&#224;, b&#7841;n tr&#7903; th&#224;nh IT support kh&#244;ng l&#432;&#417;ng. Ng&#432;&#7901;i th&#226;n kh&#244;ng hi&#7875;u "t&#7841;i sao kh&#244;ng d&#249;ng Google cho &#273;&#417;n gi&#7843;n".</p>
+    </div>
+
+    <div class="tradeoff-card">
+      <div class="tradeoff-num" style="background: var(--accent4);">6</div>
+      <h4>&#128200; Scale gi&#7899;i h&#7841;n</h4>
+      <p>M&#7897;t mini PC ch&#7881; ph&#7909;c v&#7909; &#273;&#432;&#7907;c v&#224;i ng&#432;&#7901;i &#273;&#7871;n v&#224;i ch&#7909;c ng&#432;&#7901;i. Mu&#7889;n ph&#7909;c v&#7909; h&#224;ng tr&#259;m ng&#432;&#7901;i c&#7847;n ki&#7871;n th&#7913;c s&#226;u v&#7873; clustering, load balancing, v&#224; nhi&#7873;u ti&#7873;n h&#417;n cho ph&#7847;n c&#7913;ng. &#272;&#226;y l&#224; l&#250;c cloud th&#7921;c s&#7921; c&#243; l&#7907;i th&#7871;.</p>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>L&#7901;i khuy&#234;n th&#7921;c t&#7871;</h4>
+    <p>B&#7855;t &#273;&#7847;u nh&#7887;. Ch&#7841;y 2-3 service tr&#432;&#7899;c (Vaultwarden + Nextcloud ch&#7859;ng h&#7841;n). Khi &#273;&#227; t&#7921; tin v&#7899;i Docker, backup, v&#224; reverse proxy, h&#227;y m&#7903; r&#7897;ng d&#7847;n. <strong>&#272;&#7915;ng c&#7889; thay th&#7871; m&#7885;i d&#7883;ch v&#7909; cloud trong m&#7897;t ng&#224;y</strong> &#8212; &#273;&#243; l&#224; c&#225;ch nhanh nh&#7845;t &#273;&#7875; burn out v&#224; quay l&#7841;i Google.</p>
+  </div>
+</section>
+
+<!-- ESSENTIAL INFRASTRUCTURE -->
+<section id="infra">
+  <h2 class="section-title" style="color: var(--accent3);">H&#7841; T&#7847;ng Thi&#7871;t Y&#7871;u</h2>
+  <p class="section-subtitle">Tr&#432;&#7899;c khi ngh&#297; &#273;&#7871;n Nextcloud hay Immich, h&#227;y x&#226;y n&#7873;n m&#243;ng v&#7919;ng ch&#7855;c</p>
+
+  <!-- Architecture -->
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Lu&#7891;ng truy c&#7853;p t&#7915; internet v&#224;o d&#7883;ch v&#7909; self-host</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">&#127760;</div>
+        <h4>Internet / User</h4>
+        <p>Truy c&#7853;p t&#7915; b&#234;n ngo&#224;i<br>HTTPS, domain name</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128225;</div>
+        <h4>DNS / DDNS</h4>
+        <p>Cloudflare, DuckDNS<br>Tr&#7887; domain v&#7873; IP nh&#224;</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">&#128737;&#65039;</div>
+        <h4>Reverse Proxy</h4>
+        <p>Traefik, Nginx Proxy Manager<br>SSL, routing</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#128230;</div>
+        <h4>Docker Services</h4>
+        <p>Nextcloud, Immich...<br>M&#7895;i service m&#7897;t container</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Reverse Proxy</h4>
+      <p><strong>C&#7917;a ng&#245; duy nh&#7845;t.</strong> Nh&#7853;n m&#7885;i request t&#7915; internet, ph&#226;n ph&#7889;i &#273;&#250;ng service d&#7921;a tr&#234;n domain/subdomain. <strong>Traefik</strong> t&#7921; &#273;&#7897;ng ph&#225;t hi&#7879;n container Docker m&#7899;i. <strong>Nginx Proxy Manager</strong> c&#243; GUI d&#7877; d&#249;ng. <strong>Caddy</strong> t&#7921; &#273;&#7897;ng HTTPS kh&#244;ng c&#7847;n config.</p>
+      <div class="tag-row"><span class="tag good">B&#7855;t bu&#7897;c</span><span class="tag">Traefik / NPM / Caddy</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> DNS &amp; DDNS</h4>
+      <p><strong>&#272;&#7883;a ch&#7881; nh&#224; b&#7841;n tr&#234;n internet.</strong> IP nh&#224; th&#432;&#7901;ng &#273;&#7897;ng (thay &#273;&#7893;i), c&#7847;n DDNS (DuckDNS, Cloudflare API) &#273;&#7875; t&#7921; &#273;&#7897;ng c&#7853;p nh&#7853;t. Ho&#7863;c d&#249;ng <strong>Cloudflare Tunnel</strong> &#273;&#7875; kh&#244;ng c&#7847;n m&#7903; port router.</p>
+      <div class="tag-row"><span class="tag good">Cloudflare Tunnel: An to&#224;n</span><span class="tag warn">DDNS: C&#7847;n m&#7903; port</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SSL/TLS Certificates</h4>
+      <p><strong>HTTPS kh&#244;ng ph&#7843;i t&#249;y ch&#7885;n.</strong> Let's Encrypt mi&#7877;n ph&#237;, t&#7921; &#273;&#7897;ng gia h&#7841;n. Traefik v&#224; Caddy t&#237;ch h&#7907;p s&#7861;n. Kh&#244;ng c&#243; HTTPS = tr&#236;nh duy&#7879;t c&#7843;nh b&#225;o, m&#7853;t kh&#7849;u b&#7883; l&#7897;.</p>
+      <div class="tag-row"><span class="tag good">Let's Encrypt: Mi&#7877;n ph&#237;</span><span class="tag">T&#7921; &#273;&#7897;ng renew</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status critical"></span> Backup - Quy t&#7855;c 3-2-1</h4>
+      <p><strong>Kh&#244;ng c&#243; backup = kh&#244;ng c&#243; d&#7919; li&#7879;u.</strong> 3 b&#7843;n sao, 2 lo&#7841;i media kh&#225;c nhau, 1 b&#7843;n offsite. D&#249;ng <strong>Restic</strong> ho&#7863;c <strong>BorgBackup</strong> &#273;&#7875; backup t&#259;ng d&#7847;n, m&#227; h&#243;a. Test restore th&#432;&#7901;ng xuy&#234;n!</p>
+      <div class="tag-row"><span class="tag hot">C&#7921;c k&#7923; quan tr&#7885;ng</span><span class="tag">Restic / Borg</span><span class="tag">3-2-1 Rule</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> VPN / Tailscale</h4>
+      <p><strong>Truy c&#7853;p t&#7915; xa an to&#224;n.</strong> Thay v&#236; expose m&#7885;i d&#7883;ch v&#7909; ra internet, d&#249;ng VPN. <strong>Tailscale</strong> (WireGuard-based) c&#224;i trong 2 ph&#250;t, kh&#244;ng c&#7847;n m&#7903; port, mesh network t&#7921; &#273;&#7897;ng. Headscale l&#224; b&#7843;n t&#7921; host c&#7911;a Tailscale.</p>
+      <div class="tag-row"><span class="tag good">Tailscale: C&#7921;c d&#7877;</span><span class="tag">WireGuard</span><span class="tag">Zero-config</span></div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status important"></span> Monitoring</h4>
+      <p><strong>Kh&#244;ng gi&#225;m s&#225;t = m&#249; qu\225ng.</strong> <strong>Uptime Kuma</strong> ki&#7875;m tra service c&#242;n s&#7889;ng kh&#244;ng, g&#7917;i alert qua Telegram/Discord. <strong>Grafana + Prometheus</strong> cho dashboard chi ti&#7871;t CPU, RAM, disk. &#272;&#417;n gi&#7843;n h&#417;n c&#243; <strong>Netdata</strong>.</p>
+      <div class="tag-row"><span class="tag good">Uptime Kuma: &#272;&#417;n gi&#7843;n</span><span class="tag">Grafana: Chuy&#234;n s&#226;u</span></div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Th&#7913; t&#7921; &#432;u ti&#234;n c&#224;i &#273;&#7863;t</h4>
+    <p>1. <strong>Docker + Docker Compose</strong> &#8212; n&#7873;n t&#7843;ng cho m&#7885;i th&#7913;. 2. <strong>Reverse proxy</strong> (Traefik ho&#7863;c NPM) + SSL. 3. <strong>Backup</strong> (Restic + cron). 4. <strong>Monitoring</strong> (Uptime Kuma). 5. <strong>VPN</strong> (Tailscale). Ch&#7881; sau khi 5 th&#7913; n&#224;y ch&#7841;y &#7893;n &#273;&#7883;nh, h&#227;y b&#7855;t &#273;&#7847;u c&#224;i d&#7883;ch v&#7909; th&#7921;c s&#7921;.</p>
+  </div>
+</section>
+
+<!-- DOCKER COMPOSE PATTERNS -->
+<section id="docker">
+  <h2 class="section-title" style="color: var(--accent4);">Docker Compose Patterns</h2>
+  <p class="section-subtitle">Nh&#7919;ng m&#7851;u Docker Compose th&#432;&#7901;ng g&#7863;p &#8212; t&#7915; &#273;&#417;n gi&#7843;n &#273;&#7871;n n&#226;ng cao</p>
+
+  <div class="code-flow">
+    <div class="flow-title">Pattern 1: Service &#273;&#417;n gi&#7843;n v&#7899;i Reverse Proxy Labels</div>
+    <pre><span style="color:#6b7280;"># Vaultwarden - Password Manager</span>
+<span style="color:#6b7280;"># File: ~/docker/vaultwarden/docker-compose.yml</span>
+
+<span style="color:var(--accent);">version:</span> <span style="color:var(--accent3);">"3.8"</span>
+<span style="color:var(--accent);">services:</span>
+  <span style="color:var(--accent);">vaultwarden:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">vaultwarden/server:latest</span>
+    <span style="color:var(--accent);">container_name:</span> <span style="color:var(--accent3);">vaultwarden</span>
+    <span style="color:var(--accent);">restart:</span> <span style="color:var(--accent3);">unless-stopped</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./data:/data</span>
+    <span style="color:var(--accent);">environment:</span>
+      - <span style="color:var(--accent4);">SIGNUPS_ALLOWED=false</span>   <span style="color:#6b7280;"># Kh&#243;a &#273;&#259;ng k&#253; sau khi t&#7841;o t&#224;i kho&#7843;n</span>
+      - <span style="color:var(--accent4);">WEBSOCKET_ENABLED=true</span>
+    <span style="color:var(--accent);">labels:</span>
+      - <span style="color:var(--accent3);">"traefik.enable=true"</span>
+      - <span style="color:var(--accent3);">"traefik.http.routers.vault.rule=Host(`vault.home.lab`)"</span>
+      - <span style="color:var(--accent3);">"traefik.http.routers.vault.tls.certresolver=le"</span></pre>
+  </div>
+
+  <div class="code-flow">
+    <div class="flow-title">Pattern 2: Service v&#7899;i Database ri&#234;ng</div>
+    <pre><span style="color:#6b7280;"># Nextcloud v&#7899;i PostgreSQL v&#224; Redis</span>
+
+<span style="color:var(--accent);">version:</span> <span style="color:var(--accent3);">"3.8"</span>
+<span style="color:var(--accent);">services:</span>
+  <span style="color:var(--accent);">nextcloud:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">nextcloud:latest</span>
+    <span style="color:var(--accent);">restart:</span> <span style="color:var(--accent3);">unless-stopped</span>
+    <span style="color:var(--accent);">depends_on:</span>
+      - <span style="color:var(--accent3);">db</span>
+      - <span style="color:var(--accent3);">redis</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./html:/var/www/html</span>
+      - <span style="color:var(--accent3);">./data:/var/www/html/data</span>
+    <span style="color:var(--accent);">environment:</span>
+      - <span style="color:var(--accent4);">POSTGRES_HOST=db</span>
+      - <span style="color:var(--accent4);">POSTGRES_DB=nextcloud</span>
+      - <span style="color:var(--accent4);">REDIS_HOST=redis</span>
+
+  <span style="color:var(--accent);">db:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">postgres:16-alpine</span>
+    <span style="color:var(--accent);">restart:</span> <span style="color:var(--accent3);">unless-stopped</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./db:/var/lib/postgresql/data</span>
+    <span style="color:var(--accent);">environment:</span>
+      - <span style="color:var(--accent4);">POSTGRES_DB=nextcloud</span>
+      - <span style="color:var(--accent4);">POSTGRES_PASSWORD=secret</span>  <span style="color:#6b7280;"># D&#249;ng .env file!</span>
+
+  <span style="color:var(--accent);">redis:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">redis:7-alpine</span>
+    <span style="color:var(--accent);">restart:</span> <span style="color:var(--accent3);">unless-stopped</span></pre>
+  </div>
+
+  <div class="code-flow">
+    <div class="flow-title">Pattern 3: Media Stack ho&#224;n ch&#7881;nh</div>
+    <pre><span style="color:#6b7280;"># *arr stack + Jellyfin = Netflix t&#7841;i gia</span>
+
+<span style="color:var(--accent);">version:</span> <span style="color:var(--accent3);">"3.8"</span>
+<span style="color:var(--accent);">services:</span>
+  <span style="color:var(--accent);">jellyfin:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">jellyfin/jellyfin:latest</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./config:/config</span>
+      - <span style="color:var(--accent3);">/mnt/media/movies:/movies</span>
+      - <span style="color:var(--accent3);">/mnt/media/shows:/shows</span>
+    <span style="color:var(--accent);">ports:</span>
+      - <span style="color:var(--accent3);">"8096:8096"</span>
+    <span style="color:var(--accent);">devices:</span>           <span style="color:#6b7280;"># Hardware transcoding</span>
+      - <span style="color:var(--accent3);">/dev/dri:/dev/dri</span>
+
+  <span style="color:var(--accent);">sonarr:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">linuxserver/sonarr:latest</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./sonarr:/config</span>
+      - <span style="color:var(--accent3);">/mnt/media:/media</span>
+
+  <span style="color:var(--accent);">radarr:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">linuxserver/radarr:latest</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./radarr:/config</span>
+      - <span style="color:var(--accent3);">/mnt/media:/media</span>
+
+  <span style="color:var(--accent);">prowlarr:</span>
+    <span style="color:var(--accent);">image:</span> <span style="color:var(--accent3);">linuxserver/prowlarr:latest</span>
+    <span style="color:var(--accent);">volumes:</span>
+      - <span style="color:var(--accent3);">./prowlarr:/config</span></pre>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Nguy&#234;n t&#7855;c v&#224;ng c&#7911;a Docker self-host</h4>
+    <p><strong>1.</strong> Lu&#244;n d&#249;ng <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;color:var(--accent3);">restart: unless-stopped</code>. <strong>2.</strong> Kh&#244;ng bao gi&#7901; &#273;&#7875; password trong docker-compose.yml &#8212; d&#249;ng file <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;color:var(--accent3);">.env</code>. <strong>3.</strong> Mount volume ra ngo&#224;i &#273;&#7875; d&#7877; backup. <strong>4.</strong> M&#7895;i service m&#7897;t th&#432; m&#7909;c ri&#234;ng. <strong>5.</strong> D&#249;ng Docker network ri&#234;ng thay v&#236; expose port. <strong>6.</strong> Tag image c&#7909; th&#7875; (vd: <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;color:var(--accent3);">postgres:16-alpine</code>) thay v&#236; <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;color:var(--accent5);">latest</code> cho database.</p>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">Nh&#7919;ng Hi&#7875;u Nh&#7847;m Ph&#7893; Bi&#7871;n</h2>
+  <p class="section-subtitle">&#272;&#7915;ng &#273;&#7875; nh&#7919;ng h&#7885;ng tin n&#224;y c&#7843;n b&#432;&#7899;c b&#7841;n &#8212; ho&#7863;c khi&#7871;n b&#7841;n t&#7921; tin th&#225;i qu&#225;</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Self-host th&#236; b&#7843;o m&#7853;t h&#417;n cloud"</h4>
+      <p>Nhi&#7873;u ng&#432;&#7901;i ngh&#297; r&#7857;ng ch&#7881; c&#7847;n gi&#7919; d&#7919; li&#7879;u &#7903; nh&#224; l&#224; an to&#224;n h&#417;n Google.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>Google c&#243; h&#224;ng ngh&#236;n k&#7929; s&#432; b&#7843;o m&#7853;t. B&#7841;n c&#243; m&#7897;t m&#236;nh. N&#7871;u kh&#244;ng bi&#7871;t c&#7845;u h&#236;nh firewall, SSL, v&#224; update th&#432;&#7901;ng xuy&#234;n, server nh&#224; b&#7841;n d&#7877; b&#7883; hack h&#417;n nhi&#7873;u. <strong>Self-host an to&#224;n h&#417;n ch&#7881; khi b&#7841;n bi&#7871;t m&#236;nh &#273;ang l&#224;m g&#236;.</strong></p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"C&#7847;n server m&#7841;nh &#273;&#7875; self-host"</h4>
+      <p>Ph&#7843;i c&#243; m&#225;y ch&#7911; x&#7883;n, nhi&#7873;u RAM, SSD nhanh m&#7899;i ch&#7841;y &#273;&#432;&#7907;c.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>Raspberry Pi 4 (4GB RAM, $55) ch&#7841;y t&#7889;t Vaultwarden, Pi-hole, WireGuard, v&#224; v&#224;i service nh&#7865;. Mini PC c&#361; (i5, 8GB RAM) ch&#7841;y &#273;&#432;&#7907;c g&#7847;n nh&#432; m&#7885;i th&#7913;. <strong>B&#7855;t &#273;&#7847;u v&#7899;i c&#225;i b&#7841;n c&#243;, n&#226;ng c&#7845;p khi c&#7847;n.</strong></p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Self-host ti&#7871;t ki&#7879;m ti&#7873;n"</h4>
+      <p>Kh&#244;ng ph&#7843;i tr&#7843; ph&#237; h&#224;ng th&#225;ng cho cloud, v&#7853;y l&#224; r&#7867; h&#417;n.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>T&#237;nh &#273;&#7911; chi ph&#237;: ph&#7847;n c&#7913;ng ($200-2000), &#273;i&#7879;n (200-500k/th&#225;ng), domain ($12/n&#259;m), th&#7901;i gian b&#7841;n b&#7887; ra (v&#244; gi&#225;). N&#7871;u ch&#7881; c&#7847;n 15GB Google Drive, <strong>mi&#7877;n ph&#237; c&#7911;a Google r&#7867; h&#417;n nhi&#7873;u</strong>. Self-host ti&#7871;t ki&#7879;m khi b&#7841;n c&#7847;n nhi&#7873;u d&#7883;ch v&#7909; v&#224; nhi&#7873;u storage.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Ch&#7881; c&#7847;n c&#224;i xong l&#224; ch&#7841;y m&#227;i"</h4>
+      <p>Setup m&#7897;t l&#7847;n r&#7891;i qu&#234;n lu&#244;n, kh&#244;ng c&#7847;n &#273;&#7909;ng t&#7899;i n&#7919;a.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>Ph&#7847;n m&#7873;m c&#7847;n update li&#234;n t&#7909;c (b&#7843;o m&#7853;t!). SSL c&#7847;n gia h&#7841;n. &#7892; c&#7913;ng s&#7869; &#273;&#7847;y. Database c&#7847;n vacuum. Docker image c&#7847;n d&#7885;n. <strong>Self-host l&#224; m&#7897;t cam k&#7871;t d&#224;i h&#7841;n</strong>, kh&#244;ng ph&#7843;i vi&#7879;c l&#224;m m&#7897;t l&#7847;n.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Expose ra internet l&#224; b&#7855;t bu&#7897;c"</h4>
+      <p>Ph&#7843;i m&#7903; port, tr&#7887; domain v&#7873; nh&#224; m&#7899;i truy c&#7853;p &#273;&#432;&#7907;c t&#7915; xa.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p><strong>Tailscale / WireGuard VPN</strong> cho ph&#233;p truy c&#7853;p t&#7915; b&#7845;t c&#7913; &#273;&#226;u m&#224; kh&#244;ng c&#7847;n m&#7903; port n&#224;o. <strong>Cloudflare Tunnel</strong> c&#361;ng l&#224;m &#273;i&#7873;u t&#432;&#417;ng t&#7921;. Nhi&#7873;u ng&#432;&#7901;i ch&#7841;y to&#224;n b&#7897; homelab m&#224; kh&#244;ng h&#7873; expose port n&#224;o ra internet.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Docker l&#224; c&#225;ch duy nh&#7845;t"</h4>
+      <p>M&#7885;i h&#432;&#7899;ng d&#7851;n self-host &#273;&#7873;u d&#249;ng Docker, v&#7853;y Docker l&#224; b&#7855;t bu&#7897;c.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>Docker l&#224; <strong>thu&#7853;n ti&#7879;n nh&#7845;t</strong>, kh&#244;ng ph&#7843;i duy nh&#7845;t. B&#7841;n ho&#224;n to&#224;n c&#243; th&#7875; c&#224;i tr&#7921;c ti&#7871;p l&#234;n OS (bare metal), d&#249;ng LXC container, Podman, ho&#7863;c th&#7853;m ch&#237; NixOS. Tuy nhi&#234;n, Docker Compose &#273;&#227; tr&#7903; th&#224;nh "lingua franca" c&#7911;a self-hosting v&#236; t&#237;nh &#273;&#417;n gi&#7843;n v&#224; t&#225;i s&#7917; d&#7909;ng.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Self-host thay th&#7871; &#273;&#432;&#7907;c m&#7885;i th&#7913;"</h4>
+      <p>B&#7845;t k&#7923; d&#7883;ch v&#7909; cloud n&#224;o c&#361;ng c&#243; b&#7843;n self-host t&#432;&#417;ng &#273;&#432;&#417;ng.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>M&#7897;t s&#7889; th&#7913; r&#7845;t kh&#243; ho&#7863;c kh&#244;ng th&#7875; t&#7921; host: <strong>email g&#7917;i &#273;i</strong> (IP nh&#224; b&#7883; blacklist), <strong>real-time collaboration</strong> ki&#7875;u Google Docs (kh&#243; scale), <strong>CDN to&#224;n c&#7847;u</strong>. H&#227;y h&#7885;c c&#225;ch ch&#7885;n: t&#7921; host nh&#7919;ng g&#236; c&#243; l&#253;, d&#249;ng cloud cho nh&#7919;ng g&#236; cloud l&#224;m t&#7889;t h&#417;n.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hi&#7875;u nh&#7847;m</span>
+      <h4>"Ph&#7843;i bi&#7871;t Linux m&#7899;i self-host &#273;&#432;&#7907;c"</h4>
+      <p>C&#7847;n l&#224; "Linux guru" m&#7899;i d&#225;m b&#7855;t &#273;&#7847;u.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Th&#7921;c t&#7871;</span>
+      <p>C&#225;c n&#7873;n t&#7843;ng nh&#432; <strong>CasaOS, Umbrel, YunoHost</strong> cung c&#7845;p giao di&#7879;n web &#273;&#7875; c&#224;i app ch&#7881; b&#7857;ng m&#7897;t click. Unraid v&#224; TrueNAS c&#361;ng c&#243; app store. B&#7841;n s&#7869; d&#7847;n h&#7885;c Linux trong qu&#225; tr&#236;nh s&#7917; d&#7909;ng, <strong>kh&#244;ng c&#7847;n gi&#7887;i t&#7915; &#273;&#7847;u</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent);">Cheat Sheet Self-Hosting</h2>
+  <p class="section-subtitle">Nh&#7919;ng l&#7879;nh v&#224; m&#7865;o b&#7841;n s&#7869; d&#249;ng h&#224;ng ng&#224;y</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>Docker c&#417; b&#7843;n</h4>
+      <p>Nh&#7919;ng l&#7879;nh th&#432;&#7901;ng d&#249;ng nh&#7845;t</p>
+      <code>docker compose up -d
+docker compose down
+docker compose pull
+docker compose logs -f
+docker ps
+docker system prune -a</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Ki&#7875;m tra t&#224;i nguy&#234;n</h4>
+      <p>Gi&#225;m s&#225;t server nhanh</p>
+      <code>htop                    # CPU/RAM
+df -h                   # Disk usage
+docker stats            # Container stats
+ncdu /                  # T&#236;m file l&#7899;n
+ss -tlnp                # Port &#273;ang m&#7903;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Backup v&#7899;i Restic</h4>
+      <p>Backup t&#259;ng d&#7847;n, m&#227; h&#243;a</p>
+      <code># Kh&#7903;i t&#7841;o repo
+restic init --repo /backup
+
+# Backup
+restic backup ~/docker
+
+# Xem snapshots
+restic snapshots
+
+# Restore
+restic restore latest --target /</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Firewall (UFW)</h4>
+      <p>Qu&#7843;n l&#253; firewall &#273;&#417;n gi&#7843;n</p>
+      <code>ufw enable
+ufw default deny incoming
+ufw allow ssh
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw status verbose</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SSL v&#7899;i Certbot</h4>
+      <p>Ch&#7913;ng ch&#7881; mi&#7877;n ph&#237; t&#7915; Let's Encrypt</p>
+      <code># C&#224;i &#273;&#7863;t
+apt install certbot
+
+# L&#7845;y cert
+certbot certonly \
+  --dns-cloudflare \
+  -d "*.home.lab"
+
+# T&#7921; &#273;&#7897;ng gia h&#7841;n
+certbot renew --dry-run</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Docker network</h4>
+      <p>T&#7841;o m&#7841;ng ri&#234;ng cho service</p>
+      <code># T&#7841;o network
+docker network create proxy
+
+# Trong docker-compose.yml
+networks:
+  default:
+    external:
+      name: proxy</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Update to&#224;n b&#7897; container</h4>
+      <p>Script c&#7853;p nh&#7853;t h&#224;ng tu&#7847;n</p>
+      <code>#!/bin/bash
+cd ~/docker
+for d in */; do
+  echo "Updating $d..."
+  cd "$d"
+  docker compose pull
+  docker compose up -d
+  cd ..
+done
+docker image prune -f</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Tailscale nhanh</h4>
+      <p>VPN trong 60 gi&#226;y</p>
+      <code># C&#224;i &#273;&#7863;t
+curl -fsSL \
+  https://tailscale.com/install.sh \
+  | sh
+
+# K&#7871;t n&#7889;i
+tailscale up
+
+# Ki&#7875;m tra
+tailscale status</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Cloudflare Tunnel</h4>
+      <p>Expose service kh&#244;ng c&#7847;n m&#7903; port</p>
+      <code># C&#224;i cloudflared
+apt install cloudflared
+
+# &#272;&#259;ng nh&#7853;p
+cloudflared tunnel login
+
+# T&#7841;o tunnel
+cloudflared tunnel create mylab
+
+# Ch&#7841;y
+cloudflared tunnel run mylab</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>C&#7845;u tr&#250;c th&#432; m&#7909;c g&#7907;i &#253;</h4>
+      <p>T&#7893; ch&#7913;c file g&#7885;n g&#224;ng</p>
+      <code>~/docker/
+  &#9500;&#9472;&#9472; traefik/
+  &#9474;   &#9500;&#9472;&#9472; docker-compose.yml
+  &#9474;   &#9492;&#9472;&#9472; data/
+  &#9500;&#9472;&#9472; vaultwarden/
+  &#9474;   &#9500;&#9472;&#9472; docker-compose.yml
+  &#9474;   &#9492;&#9472;&#9472; data/
+  &#9500;&#9472;&#9472; nextcloud/
+  &#9492;&#9472;&#9472; immich/</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug network</h4>
+      <p>Khi service kh&#244;ng k&#7871;t n&#7889;i &#273;&#432;&#7907;c</p>
+      <code># Ki&#7875;m tra DNS
+dig vault.home.lab
+
+# Ki&#7875;m tra port
+curl -v https://vault.home.lab
+
+# V&#224;o trong container
+docker exec -it vaultwarden sh
+
+# Xem logs
+docker compose logs -f --tail=50</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>B&#7843;o m&#7853;t c&#417; b&#7843;n</h4>
+      <p>Nh&#7919;ng vi&#7879;c l&#224;m ngay sau khi c&#224;i server</p>
+      <code># &#272;&#7893;i SSH port
+# /etc/ssh/sshd_config
+Port 2222
+
+# T&#7855;t root login
+PermitRootLogin no
+
+# Ch&#7881; d&#249;ng key
+PasswordAuthentication no
+
+# C&#224;i fail2ban
+apt install fail2ban</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Checklist khi deploy service m&#7899;i</h4>
+    <p><strong>1.</strong> &#272;&#7885;c doc ch&#237;nh th&#7913;c (&#273;&#7915;ng ch&#7881; copy docker-compose t&#7915; blog). <strong>2.</strong> Ki&#7875;m tra image tr&#234;n Docker Hub (s&#7889; pull, last updated). <strong>3.</strong> &#272;&#7885;c Dockerfile n&#7871;u c&#243; th&#7875;. <strong>4.</strong> C&#7845;u h&#236;nh backup tr&#432;&#7899;c khi &#273;&#432;a v&#224;o s&#7917; d&#7909;ng. <strong>5.</strong> Test restore t&#7915; backup. <strong>6.</strong> Set up monitoring/alert. <strong>7.</strong> Ghi ch&#233;p l&#7841;i c&#7845;u h&#236;nh &#273;&#7875; t&#432;&#417;ng lai rebuild &#273;&#432;&#7907;c.</p>
+  </div>
+</section>
+
+<footer>
+  <p>&#127968; Th&#7871; Gi&#7899;i Self-Hosting &#8212; T&#7893;ng h&#7907;p ki&#7871;n th&#7913;c t&#7915; c&#7897;ng &#273;&#7891;ng homelab</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-dim);">D&#7919; li&#7879;u c&#7911;a b&#7841;n, m&#225;y ch&#7911; c&#7911;a b&#7841;n, quy t&#7855;c c&#7911;a b&#7841;n. &#128274;</p>
+</footer>
+
+</body>
+</html>

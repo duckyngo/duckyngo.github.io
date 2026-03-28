@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 8: Tìm kiếm nhân tài — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#8E44AD 0%,var(--navy) 50%,var(--gold) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #8E44AD;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .story-box{background:linear-gradient(135deg,#F3E5F5,#EDE7F6);border-radius:16px;padding:32px;margin:32px 0;border:2px solid #9C27B0;}
+  .story-box h3{color:var(--navy);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .story-box p{font-size:0.95rem;line-height:1.8;color:#444;}
+  .talent-traits{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:28px 0;}
+  .trait{background:white;border-radius:12px;padding:20px;box-shadow:var(--shadow);text-align:center;border-top:4px solid var(--orange);}
+  .trait:nth-child(2){border-top-color:var(--gold);}
+  .trait:nth-child(3){border-top-color:var(--green);}
+  .trait:nth-child(4){border-top-color:#8E44AD;}
+  .trait:nth-child(5){border-top-color:#E74C3C;}
+  .trait-emoji{font-size:2rem;margin-bottom:8px;}
+  .trait-name{font-size:0.85rem;font-weight:700;color:var(--navy);}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card.purple .card-num{background:#8E44AD;}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-07.html" class="nav-btn">← Chương 7</a>
+    <a href="chuong-09.html" class="nav-btn">Chương 9 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">💎 Chương 8</div>
+  <span class="hero-emoji">🔍</span>
+  <h1>Tìm Kiếm và <span>Chiêu Mộ Nhân Tài</span></h1>
+  <p class="hero-sub">Nhân tài không sợ nghèo. Họ chỉ sợ một điều — bị coi thường.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Tuyển dụng không phải là điền vào chỗ trống trong sơ đồ tổ chức. Đó là nghệ thuật nhận ra tiềm năng, tạo ra môi trường để tài năng nở rộ, và quan trọng nhất — hiểu được điều gì thật sự thúc đẩy người giỏi. Câu chuyện về Anne Duthilleul là một bài học không thể quên.
+  </div>
+
+  <div class="story-box">
+    <h3>📖 Câu Chuyện: Anne Duthilleul và Bẫy Micromanagement</h3>
+    <p>
+      Anne Duthilleul là một nhân tài xuất sắc. Năng lực không ai nghi ngờ. Nhưng một ngày, cô quyết
+      định nghỉ việc. Lý do không phải lương thấp hay không thăng tiến được. Lý do là sếp của cô
+      <em>micromanage</em> — kiểm soát từng chi tiết nhỏ, không tin tưởng, không cho không gian làm việc.
+    </p>
+    <p style="margin-top:14px;">
+      Với người bình thường, điều này có thể chấp nhận được. Với nhân tài, đây là sự xúc phạm không thể
+      tha thứ. Bởi vì nhân tài không chỉ cần tiền — họ cần được <em>tin tưởng</em>, cần không gian để
+      <em>sáng tạo</em>, cần cảm giác công việc của mình thật sự có ý nghĩa.
+    </p>
+  </div>
+
+  <div class="cards-title">✨ 5 Điều Nhân Tài Thật Sự Cần</div>
+  <div class="talent-traits">
+    <div class="trait">
+      <div class="trait-emoji">🎯</div>
+      <div class="trait-name">Ý nghĩa — Purpose</div>
+    </div>
+    <div class="trait">
+      <div class="trait-emoji">🔓</div>
+      <div class="trait-name">Tự chủ — Autonomy</div>
+    </div>
+    <div class="trait">
+      <div class="trait-emoji">📈</div>
+      <div class="trait-name">Phát triển — Mastery</div>
+    </div>
+    <div class="trait">
+      <div class="trait-emoji">🤝</div>
+      <div class="trait-name">Tin tưởng — Trust</div>
+    </div>
+    <div class="trait">
+      <div class="trait-emoji">🏆</div>
+      <div class="trait-name">Công nhận — Recognition</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Nghệ Thuật Chiêu Mộ Nhân Tài</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">👁️</div>
+      <div class="card-num">01</div>
+      <h3>Nhận ra tiềm năng sớm</h3>
+      <p>Đừng chỉ nhìn vào CV và bằng cấp. Tìm kiếm những tín hiệu của tư duy độc lập, sự tò mò, và khả năng học hỏi nhanh.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🌍</div>
+      <div class="card-num">02</div>
+      <h3>Tạo môi trường xứng đáng</h3>
+      <p>Nhân tài không đến vì lương cao. Họ đến vì văn hóa, vì mission, vì họ tin rằng nơi đây sẽ giúp họ trở thành phiên bản tốt nhất của mình.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🚫</div>
+      <div class="card-num">03</div>
+      <h3>Tránh micromanagement</h3>
+      <p>Micromanagement là cách nhanh nhất để đuổi nhân tài. Hãy quản lý kết quả, không quản lý từng bước đi.</p>
+    </div>
+    <div class="card purple">
+      <div class="card-icon">💛</div>
+      <div class="card-num">04</div>
+      <h3>Tôn trọng là ngôn ngữ của nhân tài</h3>
+      <p>Tiền có thể thuê người làm việc. Nhưng chỉ sự tôn trọng mới giữ được người tài ở lại và cống hiến hết mình.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Nhân tài không sợ nghèo.<br>Nhân tài chỉ sợ bị coi thường."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Micromanagement — kẻ thù số 1 của nhân tài:</strong> Khi bạn micromanage, bạn đang ngầm nói: "Tôi không tin vào khả năng của anh/chị." Với người bình thường, điều này gây khó chịu. Với nhân tài, đây là lý do để ra đi không quay lại.
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Nghịch lý tuyển dụng:</strong> Công ty nào cũng nói muốn nhân tài. Nhưng khi nhân tài vào, lại bị kiểm soát chặt, không được làm theo cách của mình, không được thử nghiệm. Muốn giữ nhân tài, trước hết phải thay đổi văn hóa lãnh đạo.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Nhân tài cần ý nghĩa, tự chủ, phát triển, tin tưởng, và công nhận — không chỉ cần lương tốt.</li>
+      <li>Câu chuyện Anne Duthilleul: micromanagement là nguyên nhân hàng đầu khiến người giỏi ra đi.</li>
+      <li>Nhận ra tiềm năng sớm quan trọng hơn tuyển dụng theo CV và bằng cấp.</li>
+      <li>Tạo ra môi trường xứng đáng trước — rồi nhân tài sẽ tự tìm đến bạn.</li>
+      <li>"Nhân tài không sợ nghèo, chỉ sợ bị coi thường" — đây là câu nói cần dán lên bàn làm việc của mọi HR.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-07.html" class="bnav-btn">← Chương 7</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-09.html" class="bnav-btn next">Chương 9: Cột trụ trong đội →</a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Profile - Tín Hiệu Vương | SignalR Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal-50: #f0fdfa;
+            --teal-100: #ccfbf1;
+            --teal-200: #99f6e4;
+            --teal-300: #5eead4;
+            --teal-400: #2dd4bf;
+            --teal-500: #14b8a6;
+            --teal-600: #0d9488;
+            --teal-700: #0f766e;
+            --teal-800: #115e59;
+            --teal-900: #134e4a;
+            --green-400: #4ade80;
+            --green-500: #22c55e;
+            --green-600: #16a34a;
+            --emerald-400: #34d399;
+            --emerald-500: #10b981;
+            --dark-900: #0c1220;
+            --dark-800: #111827;
+            --dark-700: #1a2332;
+            --dark-600: #243044;
+            --dark-500: #2d3b50;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-900);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(13, 148, 136, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Signal pulse lines background */
+        @keyframes signalFlow {
+            0% { transform: translateX(-100%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw); opacity: 0; }
+        }
+
+        @keyframes signalFlowReverse {
+            0% { transform: translateX(100vw); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-100%); opacity: 0; }
+        }
+
+        .signal-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .signal-line {
+            position: absolute;
+            height: 1px;
+            width: 120px;
+            background: linear-gradient(90deg, transparent, var(--teal-400), transparent);
+            opacity: 0;
+        }
+
+        .signal-line:nth-child(1) { top: 15%; animation: signalFlow 6s ease-in-out infinite; animation-delay: 0s; }
+        .signal-line:nth-child(2) { top: 30%; animation: signalFlowReverse 8s ease-in-out infinite; animation-delay: 1s; width: 80px; }
+        .signal-line:nth-child(3) { top: 50%; animation: signalFlow 7s ease-in-out infinite; animation-delay: 2s; width: 150px; }
+        .signal-line:nth-child(4) { top: 70%; animation: signalFlowReverse 5s ease-in-out infinite; animation-delay: 0.5s; width: 100px; }
+        .signal-line:nth-child(5) { top: 85%; animation: signalFlow 9s ease-in-out infinite; animation-delay: 3s; width: 60px; }
+        .signal-line:nth-child(6) { top: 40%; animation: signalFlowReverse 6.5s ease-in-out infinite; animation-delay: 1.5s; width: 90px; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb a {
+            color: var(--teal-400);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--teal-300);
+        }
+
+        /* Hero / Avatar Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 30px 10px rgba(20, 184, 166, 0.15); }
+        }
+
+        @keyframes connectionPulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            border: 2px solid var(--teal-400);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            animation: connectionPulse 3s ease-out infinite;
+        }
+
+        .avatar-ring:nth-child(2) { animation-delay: 1s; }
+        .avatar-ring:nth-child(3) { animation-delay: 2s; }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal-700), var(--teal-500), var(--emerald-400));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+            z-index: 2;
+            border: 3px solid var(--teal-400);
+            box-shadow: 0 0 40px rgba(20, 184, 166, 0.3);
+        }
+
+        /* Connection status indicator */
+        .status-dot {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: var(--green-400);
+            border-radius: 50%;
+            border: 3px solid var(--dark-800);
+            z-index: 3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--teal-300), var(--green-400), var(--teal-200));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.1rem;
+            color: var(--teal-400);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .hero .tagline {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .badge-teal {
+            background: rgba(20, 184, 166, 0.1);
+            border-color: rgba(20, 184, 166, 0.3);
+            color: var(--teal-300);
+        }
+
+        .badge-green {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--green-400);
+        }
+
+        .badge-emerald {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--emerald-400);
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--dark-600);
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--teal-800), var(--teal-700));
+            border-radius: 12px;
+            border: 1px solid var(--teal-600);
+        }
+
+        .section-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-header h2 span {
+            color: var(--teal-400);
+        }
+
+        /* Card styles */
+        .card {
+            background: var(--dark-800);
+            border: 1px solid var(--dark-600);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--teal-700);
+            box-shadow: 0 4px 20px rgba(20, 184, 166, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .card p strong {
+            color: var(--teal-300);
+        }
+
+        /* Backstory card */
+        .backstory-card {
+            background: linear-gradient(135deg, var(--dark-800), var(--dark-700));
+            border: 1px solid var(--teal-800);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backstory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal-500), var(--green-400), var(--teal-500));
+        }
+
+        .backstory-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            line-height: 1.8;
+        }
+
+        .backstory-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Skills grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .skill-item {
+            background: var(--dark-700);
+            border: 1px solid var(--dark-600);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .skill-item:hover {
+            border-color: var(--teal-600);
+            background: var(--dark-600);
+        }
+
+        .skill-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--teal-400);
+            flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(20, 184, 166, 0.5);
+        }
+
+        .skill-item span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Secret technique cards */
+        .secret-card {
+            background: var(--dark-800);
+            border: 1px solid var(--dark-600);
+            border-left: 4px solid var(--teal-500);
+            border-radius: 0 16px 16px 0;
+            padding: 24px;
+            margin-bottom: 16px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .secret-card:hover {
+            border-left-color: var(--green-400);
+            box-shadow: 0 4px 16px rgba(20, 184, 166, 0.1);
+            transform: translateX(4px);
+        }
+
+        .secret-number {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--dark-600);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .secret-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .secret-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .secret-card code {
+            background: var(--dark-700);
+            border: 1px solid var(--dark-500);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--teal-300);
+        }
+
+        /* Story cards */
+        .story-card {
+            background: linear-gradient(135deg, var(--dark-800), rgba(15, 118, 110, 0.05));
+            border: 1px solid var(--dark-600);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.06) 0%, transparent 70%);
+        }
+
+        .story-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 14px;
+        }
+
+        .story-card h3 .story-emoji {
+            margin-right: 8px;
+        }
+
+        .story-card p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.9;
+            margin-bottom: 12px;
+        }
+
+        .story-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .story-moral {
+            background: rgba(20, 184, 166, 0.08);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.88rem;
+            color: var(--teal-300);
+            font-style: italic;
+        }
+
+        /* Mistake cards */
+        .mistake-card {
+            background: var(--dark-800);
+            border: 1px solid var(--dark-600);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.3s;
+        }
+
+        .mistake-card:hover {
+            border-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .mistake-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .mistake-content h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 6px;
+        }
+
+        .mistake-content p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .mistake-fix {
+            margin-top: 8px;
+            padding: 8px 14px;
+            background: rgba(20, 184, 166, 0.08);
+            border: 1px solid rgba(20, 184, 166, 0.15);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--teal-300);
+        }
+
+        /* PBX relevance section */
+        .pbx-card {
+            background: linear-gradient(135deg, var(--dark-800), rgba(15, 118, 110, 0.08));
+            border: 1px solid var(--teal-800);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pbx-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--teal-500), var(--green-400), var(--emerald-500));
+        }
+
+        .pbx-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 16px;
+        }
+
+        .pbx-card p {
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .pbx-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .pbx-feature {
+            background: var(--dark-700);
+            border: 1px solid var(--dark-500);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pbx-feature:hover {
+            border-color: var(--teal-600);
+            transform: translateY(-2px);
+        }
+
+        .pbx-feature .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .pbx-feature h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--teal-300);
+            margin-bottom: 6px;
+        }
+
+        .pbx-feature p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Architecture diagram */
+        .architecture-box {
+            background: var(--dark-900);
+            border: 1px solid var(--dark-500);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--teal-300);
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.6;
+        }
+
+        /* Connection animation */
+        @keyframes dataStream {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .data-stream-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--dark-700), var(--teal-500), var(--green-400), var(--teal-500), var(--dark-700));
+            background-size: 200% 100%;
+            animation: dataStream 3s linear infinite;
+            margin: 30px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--dark-600);
+            margin-top: 40px;
+        }
+
+        .footer p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .footer .agent-id {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--teal-500);
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .container { padding: 12px; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .pbx-feature-grid { grid-template-columns: 1fr; }
+            .mistake-card { flex-direction: column; }
+            .architecture-box { font-size: 0.65rem; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated signal lines background -->
+    <div class="signal-lines">
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+        <div class="signal-line"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="./index.html">Agent Hub</a>
+            <span>/</span>
+            <span>02 - SignalR Expert</span>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="avatar-wrapper">
+                <div class="avatar-ring"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar">&#x1F4E1;</div>
+                <div class="status-dot"></div>
+            </div>
+
+            <h1>Tín Hiệu Vương</h1>
+            <p class="subtitle">SignalR Grandmaster &bull; Vua Thời Gian Thực</p>
+            <p class="tagline">
+                "Ngày ta chưa sinh ra, WebSocket đã gọi tên ta. Ngày ta lớn lên, mọi connection đều đi qua tay ta.
+                Ta là người giúp client và server nói chuyện với nhau không cần gửi thư!"
+            </p>
+
+            <div class="badge-row">
+                <span class="badge badge-teal">&#x1F50C; SignalR Hub</span>
+                <span class="badge badge-green">&#x26A1; WebSocket</span>
+                <span class="badge badge-emerald">&#x1F4E8; Real-time Events</span>
+                <span class="badge badge-teal">&#x1F504; Connection Lifecycle</span>
+                <span class="badge badge-green">&#x1F465; Groups & Users</span>
+                <span class="badge badge-emerald">&#x1F6E0; .NET + Vue.js</span>
+            </div>
+        </header>
+
+        <div class="data-stream-bar"></div>
+
+        <!-- Experience & Expertise -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x1F3AF;</div>
+                <h2>Thân Thế & <span>Nội Lực</span></h2>
+            </div>
+
+            <div class="backstory-card">
+                <p>
+                    Chuyện kể rằng, từ thuở xa xưa khi HTTP còn là "gửi thư rồi đợi" -- một chiều, một request, một response,
+                    rồi chia tay nhau mãi mãi -- có một cậu bé tên <strong>Tín Hiệu Vương</strong> luôn tự hỏi:
+                    "Tại sao client và server không thể nói chuyện với nhau như hai người bạn?"
+                </p>
+                <p>
+                    Cậu bé lớn lên, đi khắp các vùng đất <strong>Long Polling</strong> (gửi request liên tục như nhắn tin cho crush không trả lời),
+                    vùng đất <strong>Server-Sent Events</strong> (server chỉ biết nói mà không biết nghe -- giống ông bà kể chuyện),
+                    cho đến khi cậu gặp được thần kỳ <strong>WebSocket</strong> -- kênh giao tiếp hai chiều, full-duplex, như hai
+                    người nói chuyện điện thoại thật sự!
+                </p>
+                <p>
+                    Nhưng WebSocket thô quá, khó quản lý quá. Cậu cần một lớp áo đài đẳng cấp hơn. Và thế là
+                    <strong>SignalR</strong> ra đời -- lớp abstraction tuyệt vời của Microsoft, tự động chọn transport tốt nhất
+                    (WebSocket &gt; SSE &gt; Long Polling), quản lý connection, hỗ trợ Groups, và còn nhiều điều kỳ diệu khác.
+                    Tín Hiệu Vương trở thành cao thủ, mang thông điệp real-time đến mọi nơi, không ai bị "delay"!
+                </p>
+            </div>
+
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>SignalR Hub & Hub Protocol</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>WebSocket, SSE, Long Polling</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Connection Lifecycle</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Groups & User Mapping</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Reconnection Strategies</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Scale-out với Redis Backplane</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>MessagePack Protocol</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Authentication & Authorization</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Strongly-typed Hubs</span>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-dot"></div>
+                    <span>Client SDK (.NET, JS, Vue)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights / Secret Techniques -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x1F4DC;</div>
+                <h2>Bí Kíp <span>Chuyên Gia</span></h2>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">01</div>
+                <h3>&#x1F504; Hiểu Đúng Transport Fallback</h3>
+                <p>
+                    SignalR không chỉ là WebSocket! Nó tự động "fallback" theo thứ tự:
+                    <code>WebSocket</code> &#x2192; <code>Server-Sent Events</code> &#x2192; <code>Long Polling</code>.
+                    Nhiều junior nghĩ WebSocket là tất cả, nhưng khi client nằm sau proxy của công ty (không hỗ trợ WS),
+                    SSE hoặc Long Polling sẽ cứu mạng. Đừng bao giờ ép transport -- hãy để SignalR tự chọn!
+                    Ngoại trừ khi bạn biết chính xác môi trường deploy.
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">02</div>
+                <h3>&#x1F465; Group là Vũ Khí Bí Mật</h3>
+                <p>
+                    <code>Groups.AddToGroupAsync(connectionId, "room-123")</code> -- chỉ một dòng code này thôi
+                    mà sức mạnh vô cùng. Thay vì loop qua tất cả connection để gửi message, bạn chỉ cần
+                    <code>Clients.Group("room-123").SendAsync(...)</code>. Trong PBX, mỗi phòng call là một Group.
+                    Agent join Group khi nhận cuộc gọi, rồi rời Group khi kết thúc. Sạch, gọn, hiệu quả.
+                    Lưu ý: Group tự động xóa khi không còn connection nào -- không cần dọn dẹp!
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">03</div>
+                <h3>&#x1F512; ConnectionId Không Phải Là Định Danh Người Dùng</h3>
+                <p>
+                    Đây là sai lầm kinh điển. <code>ConnectionId</code> thay đổi mỗi lần reconnect!
+                    Người dùng mở 3 tab trình duyệt = 3 ConnectionId khác nhau. Muốn gửi cho "người dùng A"?
+                    Dùng <code>Clients.User(userId)</code> -- SignalR sẽ tự map qua <code>IUserIdProvider</code>.
+                    Hoặc tự xây một <code>Dictionary&lt;userId, List&lt;connectionId&gt;&gt;</code> trong
+                    <code>OnConnectedAsync</code> / <code>OnDisconnectedAsync</code>. Đừng bao giờ lưu
+                    ConnectionId vào database làm "user identifier"!
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">04</div>
+                <h3>&#x1F680; Scale-out Với Redis Backplane</h3>
+                <p>
+                    Khi deploy nhiều instance server (2, 3, 10 instance...), client A kết nối vào server 1,
+                    client B vào server 2. Làm sao A gửi tin nhắn cho B? Câu trả lời:
+                    <code>AddStackExchangeRedis()</code> -- Redis Backplane sẽ đồng bộ message giữa các server.
+                    Mỗi message gửi từ server 1 sẽ được Redis fan-out đến server 2, 3... Không có Redis Backplane,
+                    hệ thống multi-instance của bạn sẽ "câm như điếc" -- tin nhắn mất tích bí ẩn.
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">05</div>
+                <h3>&#x2764; Strongly-Typed Hub Là Tình Yêu</h3>
+                <p>
+                    Thay vì <code>Clients.All.SendAsync("ReceiveMessage", msg)</code> -- dễ bị lỗi typo,
+                    hãy dùng <code>Hub&lt;ICallHubClient&gt;</code> với interface định nghĩa sẵn.
+                    Khi đó bạn gọi <code>Clients.All.ReceiveCallEvent(data)</code> -- compiler sẽ báo lỗi
+                    nếu tên method sai. Trong dự án lớn như PBX, một chữ viết sai tên method = cả team debug 2 ngày.
+                    Strongly-typed Hub là "bảo hiểm nhân thọ" cho developer!
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">06</div>
+                <h3>&#x1F6E1; Reconnection -- Nghệ Thuật Không Để Mất Kết Nối</h3>
+                <p>
+                    Client SignalR (.js) có <code>withAutomaticReconnect([0, 2000, 5000, 10000, 30000])</code> --
+                    tự động kết nối lại với thời gian tăng dần. Nhưng lưu ý: trong lúc mất kết nối,
+                    mọi event server gửi đều <strong>mất</strong>! Không có "message queue" tự động.
+                    Bạn phải tự xử lý: khi reconnect thành công, gọi API lấy state mới nhất.
+                    Trong PBX, khi agent reconnect, phải gọi lại <code>GetCurrentCallState()</code>
+                    để đồng bộ trạng thái cuộc gọi.
+                </p>
+            </div>
+
+            <div class="secret-card">
+                <div class="secret-number">07</div>
+                <h3>&#x1F4E6; MessagePack -- Nhanh Hơn JSON 5 Lần</h3>
+                <p>
+                    SignalR mặc định dùng JSON. Nhưng nếu bạn cần performance cao (như PBX với hàng trăm
+                    cuộc gọi đồng thời), chuyển sang <code>MessagePack</code> -- binary protocol nhỏ hơn,
+                    nhanh hơn JSON 5-10 lần. Chỉ cần <code>AddMessagePackProtocol()</code> ở server
+                    và <code>withHubProtocol(new MessagePackHubProtocol())</code> ở client.
+                    Trade-off: khó debug hơn vì không đọc được bằng mắt thường.
+                </p>
+            </div>
+        </section>
+
+        <div class="data-stream-bar"></div>
+
+        <!-- Fun Stories -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x1F4DA;</div>
+                <h2>Chuyện Đời Xưa <span>Kể Lại</span></h2>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F4AC;</span> Cái Ngày Tin Nhắn Đi Lạc</h3>
+                <p>
+                    Ngày xửa ngày xưa, có một anh developer trẻ tên Minh, xây chat feature cho hệ thống PBX.
+                    Anh Minh dùng <code>Clients.All.SendAsync("ReceiveMessage", msg)</code> để gửi tin nhắn.
+                    Mọi thứ chạy ngon lành... cho đến khi sếp gọi điện cho khách hàng mà tin nhắn "Anh ơi em đi ăn trưa không?"
+                    của cô nhân viên Lan hiện lên trên màn hình của TẤT CẢ 200 người trong công ty.
+                </p>
+                <p>
+                    Sếp đỏ mặt, khách hàng cười ngất, cô Lan muốn chui xuống đất. Anh Minh học được bài học đầu đời:
+                    <code>Clients.All</code> nghĩa là <strong>TẤT CẢ MỌI NGƯỜI</strong>, kể cả sếp, kể cả khách hàng,
+                    kể cả ông bảo vệ.
+                </p>
+                <div class="story-moral">
+                    Bài học: Luôn dùng <code>Clients.User(userId)</code> hoặc <code>Clients.Group(groupId)</code>.
+                    <code>Clients.All</code> chỉ dùng cho broadcast thông báo toàn hệ thống. Đừng bao giờ gửi tin nhắn
+                    riêng tư qua <code>Clients.All</code>!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F50C;</span> "Connection Ma" Lúc Nửa Đêm</h3>
+                <p>
+                    Một đêm khuya, team dev nhận được alert: server RAM tăng vọt 95%. Tất cả hoảng hốt check.
+                    Hóa ra, có một trang admin dashboard mà không ai đóng -- nó cứ reconnect liên tục,
+                    tạo ra hàng ngàn "connection ma" (zombie connections).
+                </p>
+                <p>
+                    Lý do: anh dev A viết code <code>withAutomaticReconnect()</code> nhưng quên xử lý
+                    <code>onclose</code>. Mỗi lần mất mạng wifi (văn phòng đêm hay bị), client reconnect
+                    nhưng connection cũ không được dispose. Server ôm giữ hàng ngàn connection không ai dùng,
+                    như một quán cafe giữ 1000 cái bàn đặt trước nhưng không ai đến!
+                </p>
+                <div class="story-moral">
+                    Bài học: Luôn implement <code>OnDisconnectedAsync()</code> ở server để dọn dẹp.
+                    Và ở client, xử lý <code>onclose</code> event đúng cách. Connection phải có sinh có tử
+                    -- không được chỉ sinh mà không tử!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F4DD;</span> Lỗi Chính Tả Triệu Đô</h3>
+                <p>
+                    Anh Tuấn -- senior dev 5 năm kinh nghiệm, tự tin viết code SignalR như "ăn cơm bình dân".
+                    Server gửi: <code>SendAsync("RecieveCallUpdate", data)</code>.
+                    Client lắng nghe: <code>connection.on("ReceiveCallUpdate", callback)</code>.
+                </p>
+                <p>
+                    Bạn nhìn thấy lỗi chưa? "Rec<strong>ie</strong>ve" vs "Rec<strong>ei</strong>ve" -- một lỗi chính tả nhỏ xíu
+                    mà cả team debug 3 ngày trời. Postman test API: ok. Server log: đã gửi. Client: không nhận được gì hết.
+                    Anh Tuấn nhợt ôm, tóc bạc thêm vài sợi. QA report bug "P0 - Critical". PM hỏi hàng ngày
+                    "fix xong chưa?". Cuối cùng có em intern mới vào, đọc code 5 phút, chỉ ra lỗi typo.
+                </p>
+                <div class="story-moral">
+                    Bài học: LUÔN dùng <code>Hub&lt;IClientInterface&gt;</code> (strongly-typed hub).
+                    Compiler sẽ báo lỗi chính tả ngay lúc build -- không cần đợi 3 ngày debug.
+                    Và nhớ: em intern đôi khi giỏi hơn senior, vì em đọc code bằng "mắt tươi"!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <h3><span class="story-emoji">&#x1F30D;</span> Scale-out Kinh Hoàng</h3>
+                <p>
+                    Khi hệ thống PBX lên production với 2 server instances, mọi thứ ổn... trong 5 phút đầu tiên.
+                    Sau đó khách hàng báo: "Tôi gọi điện nhưng dashboard không cập nhật!". Kiểm tra: agent A kết nối
+                    server 1, dashboard của manager kết nối server 2. Server 1 gửi event "cuộc gọi mới" nhưng
+                    server 2 không biết gì hết -- như hai ông hàng xóm không bao giờ nói chuyện với nhau!
+                </p>
+                <p>
+                    Team cấp tốc cài Redis Backplane lúc 2h sáng. Deploy xong, mọi thứ thông suốt. Nhưng hôm sau,
+                    Redis bị restart và... cả hệ thống im lặng như tờ chưa. Hóa ra chưa config reconnect cho Redis!
+                </p>
+                <div class="story-moral">
+                    Bài học: Multi-instance = bắt buộc có Backplane (Redis/Azure SignalR Service).
+                    Và luôn config retry policy cho Backplane connection. Không có Backplane,
+                    hệ thống multi-server chỉ là "nhiều server cô đơn đứng cạnh nhau".
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Mistakes -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x26A0;</div>
+                <h2>Sai Lầm <span>Muôn Thuở</span></h2>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F4A5;</div>
+                <div class="mistake-content">
+                    <h3>Lưu ConnectionId vào Database</h3>
+                    <p>
+                        ConnectionId thay đổi mỗi lần reconnect, mỗi tab trình duyệt là một ConnectionId khác.
+                        Lưu nó vào DB như lưu số điện thoại tạm -- ngày mai nó đã đổi số rồi!
+                        Dùng User mapping hoặc tự quản lý dictionary in-memory.
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Dùng <code>IUserIdProvider</code> để map userId &harr; connections tự động.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F634;</div>
+                <div class="mistake-content">
+                    <h3>Blocking Call Trong Hub Method</h3>
+                    <p>
+                        Gọi <code>.Result</code> hoặc <code>.Wait()</code> trong Hub method = tự sát.
+                        SignalR Hub chỉ có giới hạn số thread xử lý. Block một thread = giảm throughput cả hệ thống.
+                        Như bạn đi vào nhà hàng chỉ có 10 bàn mà ngồi làm việc cả ngày!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Luôn dùng <code>async/await</code>. Không bao giờ <code>.Result</code> trong Hub.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F4E2;</div>
+                <div class="mistake-content">
+                    <h3>Dùng Clients.All Cho Mọi Thứ</h3>
+                    <p>
+                        "Tiện thì gửi hết cho tất cả" -- tư duy này làm 100 người nhận tin nhắn chỉ dành cho 1 người.
+                        Tốn bandwidth, lộ thông tin, và user bảo: "Sao tôi thấy cuộc gọi của người khác?"
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: <code>Clients.User()</code>, <code>Clients.Group()</code>, hoặc
+                        <code>Clients.Client(connectionId)</code> tùy trường hợp.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F4A8;</div>
+                <div class="mistake-content">
+                    <h3>Không Xử Lý Reconnection Phía Client</h3>
+                    <p>
+                        Client mất mạng 3 giây, reconnect thành công, nhưng trạng thái đã cũ. User thấy dashboard
+                        "đứng hình" -- cuộc gọi đã kết thúc nhưng vẫn hiện "đang gọi". Vì trong 3 giây mất kết nối,
+                        event "cuộc gọi kết thúc" đã bị mất!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Khi <code>onreconnected</code>, gọi API lấy trạng thái mới nhất. Không tin tưởng
+                        "data cũ" trên UI.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F6AB;</div>
+                <div class="mistake-content">
+                    <h3>Gửi Object Quá Lớn Qua SignalR</h3>
+                    <p>
+                        Gửi cả cái List 10,000 records qua SignalR "cho nhanh" -- như nhồi cả con voi vào
+                        đường ống nước! SignalR để gửi event nhỏ, realtime, không phải để truyền file.
+                        Message lớn làm chậm tất cả connection khác trong cùng Hub.
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Chỉ gửi notification nhỏ (ID, type, summary). Client tự gọi REST API để lấy data đầy đủ.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F513;</div>
+                <div class="mistake-content">
+                    <h3>Quên Authentication Cho Hub</h3>
+                    <p>
+                        Hub endpoint mở toang cho bất kỳ ai kết nối. Không có <code>[Authorize]</code>,
+                        không validate token. Bất kỳ ai biết URL đều có thể lắng nghe mọi cuộc gọi trong hệ thống!
+                        Bảo mật như... không có cửa!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: <code>[Authorize]</code> trên Hub class. Gửi JWT qua access_token query string
+                        (vì WebSocket không hỗ trợ header). Config
+                        <code>OnMessageReceived</code> để đọc token.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mistake-card">
+                <div class="mistake-icon">&#x1F648;</div>
+                <div class="mistake-content">
+                    <h3>Không Dọn Dẹp Khi Disconnect</h3>
+                    <p>
+                        User đóng tab, connection chết, nhưng server vẫn giữ reference trong memory.
+                        Sau 1 tuần, server như một cái kho chứa đầy hộp rỗng -- RAM đầy nghẹt,
+                        GC chạy liên tục, performance xuống vực!
+                    </p>
+                    <div class="mistake-fix">
+                        Fix: Override <code>OnDisconnectedAsync()</code>. Xóa user khỏi dictionary,
+                        rời khỏi Group, dọn dẹp mọi resource liên quan.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="data-stream-bar"></div>
+
+        <!-- PBX Project Relevance -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#x260E;</div>
+                <h2>Vai Trò Trong <span>Dự Án PBX</span></h2>
+            </div>
+
+            <div class="pbx-card">
+                <h3>&#x1F4E1; CallHub -- Trái Tim Thời Gian Thực Của PBX</h3>
+                <p>
+                    Trong dự án PBX, <strong>SignalR CallHub</strong> là thành phần cốt lõi để truyền tải
+                    trạng thái cuộc gọi từ .NET backend đến Vue.js frontend theo thời gian thực. Mỗi khi có
+                    cuộc gọi đến, cuộc gọi chuyển tiếp, agent pick up, hoặc cuộc gọi kết thúc --
+                    tất cả đều được push qua CallHub ngay lập tức, không cần polling!
+                </p>
+                <p>
+                    CallHub hoạt động như "tổng đài viên số" -- lắng nghe mọi sự kiện từ SIP server,
+                    biến đổi thành event có cấu trúc, rồi đẩy xuống đúng agent, đúng dashboard, đúng màn hình
+                    cần hiển thị. Không có CallHub, agent phải F5 liên tục để biết có cuộc gọi mới -- thật là
+                    một thảm họa UX!
+                </p>
+
+                <div class="architecture-box">
+&#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;      &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;      &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;
+&#x2502;   SIP Server    &#x2502; ───▶ &#x2502;  .NET Backend        &#x2502; ───▶ &#x2502;   Vue.js Client  &#x2502;
+&#x2502;   (Asterisk)    &#x2502;      &#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510; &#x2502;      &#x2502;  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510; &#x2502;
+&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;      &#x2502;  &#x2502;   CallHub     &#x2502; &#x2502; ═══▶ &#x2502;  &#x2502;  Pinia Store&#x2502; &#x2502;
+                           &#x2502;  &#x2502;  (SignalR)   &#x2502; &#x2502;      &#x2502;  &#x2502;  &#x2192; UI Update&#x2502; &#x2502;
+  &#x250C;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;      &#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518; &#x2502;      &#x2502;  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518; &#x2502;
+  &#x2502;  Redis          &#x2502; ◄──▶ &#x2502;                    &#x2502;      &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+  &#x2502;  (Backplane)    &#x2502;      &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+  &#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;
+
+  ═══▶  WebSocket (real-time, bi-directional)
+  ───▶  HTTP/SIP events</div>
+
+                <div class="pbx-feature-grid">
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F4DE;</div>
+                        <h4>Cuộc Gọi Đến</h4>
+                        <p>Push event "IncomingCall" tới agent đang rảnh, hiện popup ngay lập tức</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F504;</div>
+                        <h4>Chuyển Tiếp</h4>
+                        <p>Notify agent mới khi có cuộc gọi được transfer, cập nhật UI realtime</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F4CA;</div>
+                        <h4>Dashboard Live</h4>
+                        <p>Manager xem số cuộc gọi, trạng thái agent, thời gian chờ -- tất cả realtime</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F514;</div>
+                        <h4>Agent Status</h4>
+                        <p>Đồng bộ trạng thái Available/Busy/Away giữa tất cả các màn hình</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F50A;</div>
+                        <h4>Call Recording</h4>
+                        <p>Thông báo khi recording bắt đầu/kết thúc, lưu trữ hoàn tất</p>
+                    </div>
+                    <div class="pbx-feature">
+                        <div class="feature-icon">&#x1F6A8;</div>
+                        <h4>Alert & Warning</h4>
+                        <p>Push cảnh báo khi hàng đợi quá dài, agent mất kết nối, lỗi hệ thống</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                "Mỗi connection là một sợi dây kết nối con người. Ta không chỉ gửi data -- ta gửi sự tin tưởng."
+            </p>
+            <p class="agent-id">
+                AGENT-02 &bull; TIN-HIEU-VUONG &bull; SIGNALR-SPECIALIST &bull; PBX-TEAM
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>

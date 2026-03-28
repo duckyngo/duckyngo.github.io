@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xe Tự Hành Đại Sư - Autonomous Vehicles</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #0d1a2e 25%, #0a2e3e 50%, #0d1a2e 75%, #0a0a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        .hero {
+            text-align: center; padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(20,184,166,0.15));
+            border-radius: 24px; border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden;
+        }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #0ea5e9, #14b8a6, #0ea5e9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #7dd3fc; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(14,165,233,0.2), rgba(20,184,166,0.2)); border: 1px solid rgba(14,165,233,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #7dd3fc; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; }
+        .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; }
+        .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(14,165,233,0.4), rgba(20,184,166,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(14,165,233,0.3); }
+
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(14,165,233,0.2); box-shadow: 0 8px 40px rgba(14,165,233,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #7dd3fc; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+
+        .tip { background: rgba(14,165,233,0.06); border-left: 3px solid #0ea5e9; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #7dd3fc; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+
+        .story { background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(14,165,233,0.06)); border: 1px solid rgba(20,184,166,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #2dd4bf; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #7dd3fc; font-weight: 600; }
+        code { background: rgba(14,165,233,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #7dd3fc; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🚗</span>
+            <h1>Xe Tự Hành Đại Sư</h1>
+            <p class="subtitle">Phạm Văn Tự Lái — Chiến Binh LIDAR, SLAM, Path Planning & V2X</p>
+            <p class="quote">"Xe tự hành giống junior developer — biết chạy nhưng chưa biết khi nào nên dừng."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">LIDAR / Radar / Camera</span>
+            <span class="skill-tag">Sensor Fusion</span>
+            <span class="skill-tag">SLAM</span>
+            <span class="skill-tag">Path Planning</span>
+            <span class="skill-tag">V2X Communication</span>
+            <span class="skill-tag">HD Mapping</span>
+            <span class="skill-tag">Control Systems</span>
+            <span class="skill-tag">Safety Validation</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Phạm Văn Tự Lái bắt đầu sự nghiệp bằng việc lập trình robot line-follower ở đại học — con robot theo vạch đen trên nền trắng, đơn giản nhưng vinh quang. Khi DARPA Grand Challenge 2005 truyền cảm hứng cho cả thế giới, ông quyết tâm: "Tôi sẽ làm xe tự lái cho Việt Nam."</p>
+            <p>Kiếp nạn đầu tiên: thử nghiệm xe tự hành trên đường phố Hà Nội — nơi mà xe máy đi ngược chiều là "feature, not bug", người đi bộ qua đường không nhìn, và xe buýt dừng giữa đường là behaviour bình thường. AI model trained trên data Mỹ nhìn giao thông Việt Nam như nhìn chaos theory hiện thực hoá. Kiếp nạn thứ hai: LIDAR sensor giá $75,000 — đắt hơn cả chiếc xe.</p>
+            <p>Sau nhiều năm chiến đấu với sensor noise, edge cases, và regulatory barriers, ông nhận ra rằng Level 5 full autonomy là "10 năm nữa" — và nó đã là "10 năm nữa" từ 15 năm trước. Nhưng Level 2-3 (ADAS, highway autopilot) đã thực sự cứu mạng người, và đó là nơi ông tập trung.</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Sensor Fusion — Không sensor nào hoàn hảo</h3>
+                <p>Camera: texture, color, lane detection. Giá rẻ nhưng fail trong low light, rain, glare. LIDAR: precise 3D point cloud, 360° coverage, works in dark. Đắt, fail trong rain/fog/snow (scattering). Radar: velocity measurement, long range, all-weather. Low resolution, ghost detections. Ultrasonic: parking/close range. Fusion approaches: early fusion (raw data level), late fusion (object level), mid-level fusion (feature level). Kalman Filter / Extended Kalman Filter cho tracking + fusion. Sensor redundancy: nếu 1 sensor fail, hệ thống vẫn hoạt động an toàn.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: SLAM — Biết mình ở đâu, biết xung quanh có gì</h3>
+                <p>Simultaneous Localization and Mapping: xây bản đồ VÀ xác định vị trí đồng thời. Visual SLAM (ORB-SLAM3): dùng camera, rẻ nhưng drift over time. LIDAR SLAM (LOAM, LeGO-LOAM): precise nhưng đắt. Loop closure detection: nhận ra đã qua đây rồi → correct accumulated drift. Graph-based SLAM: pose graph optimization (g2o, GTSAM). Real-time requirement: 10-20Hz cho driving. Pre-built HD maps + localization (matching current scan against map) thường dùng thay vì full online SLAM cho production vehicles.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: Path Planning — Từ A đến B mà không đâm ai</h3>
+                <p>Hierarchy: route planning (A* / Dijkstra trên road network) → behavioral planning (state machine: lane follow, lane change, intersection) → motion planning (trajectory generation). Motion planning algorithms: lattice planner, polynomial planner, optimization-based (Model Predictive Control). Obstacle avoidance: potential field, RRT* (Rapidly-exploring Random Trees). Prediction: predict other vehicles/pedestrians trajectory 3-5 giây ahead. Comfort constraints: max jerk, max lateral acceleration. Safety constraints: min distance, time-to-collision &gt; threshold.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: V2X Communication — Xe nói chuyện với nhau</h3>
+                <p>V2V (Vehicle-to-Vehicle): share position, speed, brake status. V2I (Vehicle-to-Infrastructure): traffic light status, road conditions. V2P (Vehicle-to-Pedestrian): alert pedestrian. V2N (Vehicle-to-Network): cloud-based traffic management. DSRC (5.9 GHz) vs C-V2X (cellular). Use cases: intersection collision avoidance (xe không nhìn thấy nhau nhưng biết nhau qua V2V), emergency vehicle preemption, platooning (convoy with reduced following distance). Latency requirement: &lt;20ms cho safety-critical messages.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: HD Mapping — Bản đồ centimeter-level</h3>
+                <p>HD Map layers: base map (road geometry, elevation), lane model (lane boundaries, center lines), localization layer (distinctive features cho matching), semantic layer (traffic signs, signals, speed limits). Data collection: mapping vehicles với RTK GPS + LIDAR + cameras. Map format: OpenDRIVE, Lanelet2, NDS. Map freshness: construction zones, new roads — cần update pipeline. Crowdsourced updates từ fleet vehicles. Map-based localization: match current LIDAR scan against pre-built HD map cho cm-level positioning.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Safety Validation — Không thể test đủ bằng real driving</h3>
+                <p>SAE J3016 levels: L0 (no automation) → L5 (full automation). SOTIF (ISO 21448): Safety of the Intended Functionality — handling known + unknown unsafe scenarios. Simulation: CARLA, LGSVL, Waymax — generate millions of scenarios. Scenario-based testing: concrete scenarios (specific parameter values), logical scenarios (parameter ranges), functional scenarios (abstract). Shadow mode: AI makes decisions but human drives — compare and log disagreements. ODD (Operational Design Domain): clearly define where/when system works. Và nhớ: "99.9% accuracy" = 1 failure per 1000 decisions = ~1 dangerous situation per hour of driving.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Xe Tự Lái Hoảng Loạn Vì Cọc Tiêu</h3>
+                <p>Test xe tự hành trên highway. Mọi thứ smooth — lane keeping, adaptive cruise control, lane change. Cho đến khi gặp đoạn đường đang sửa: hàng cọc tiêu cam xếp thành hình zigzag để redirect traffic. LIDAR detect cọc tiêu như "solid obstacles." Camera classify chúng là... "pedestrians standing in road."</p>
+                <p>Xe panic brake từ 80km/h. Hành khách văng về phía trước. May mắn thắt dây. Xe dừng giữa highway. Xe phía sau suýt đâm. Heart rate trong xe: 150 BPM cho tất cả mọi người, kể cả safety driver (người ngồi sẵn để take over).</p>
+                <p>Root cause: training data không có đủ examples của construction zones Việt Nam. Cọc tiêu cam + hình dáng cylinder = model confuse giữa traffic cone và standing person. Hơn nữa, zigzag pattern confuse lane detection — xe không biết lane nào là lane thật. Edge case trong edge case.</p>
+                <div class="lesson">💡 Bài học: Edge cases trong autonomous driving là vô hạn. Construction zones, unusual road markings, objects chưa thấy trong training data — tất cả đều potential hazards. Đa dạng training data, scenario-based testing, và graceful degradation (slow down + alert driver thay vì panic brake) là critical. Và LUÔN có human fallback cho L2-L4.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 2: HD Map Outdated — Xe Chạy Vào Đường Cấm</h3>
+                <p>HD map được build 6 tháng trước. Từ đó, thành phố mở đường mới, đổi chiều một số đường, và thêm dải phân cách ở ngã tư. Xe tự hành dùng HD map cho localization VÀ planning. Kết quả: xe định rẽ trái vào đường đã bị đổi thành một chiều. Barricade mới không có trong map → xe coi đường clear.</p>
+                <p>Safety driver take over kịp thời. Nhưng incident report phải nộp, media coverage, public trust giảm. "Xe tự lái Google suýt gây tai nạn" — headline, mặc dù đó không phải Google. Reputation damage.</p>
+                <p>Solution: crowdsourced map updates — mỗi xe trong fleet gửi "map diff" khi detect discrepancy giữa expected vs actual. Change detection pipeline: so sánh current LIDAR/camera data với HD map, flag mismatches. Real-time map layers cho temporary changes (construction, accidents). Và fallback: khi map confidence thấp, giảm tốc + switch sang camera-only perception.</p>
+                <div class="lesson">💡 Bài học: HD map là snapshot of the past. Roads change. Map freshness là critical — stale map = wrong decisions. Crowdsourced updates, change detection, và confidence-based degradation strategy. Xe phải handle "map says X but reality says Y" gracefully. Và communication với public: transparency about limitations builds more trust than hiding them.</div>
+            </div>
+
+            <div class="story">
+                <h3>📖 Chuyện 3: Giao Thông Việt Nam — AI Surrender</h3>
+                <p>Demo xe tự hành cho đối tác Nhật Bản tại TPHCM. Route: Quận 7 → Quận 1, 8km, estimated 25 phút. AI model trained trên US + Japan data, fine-tuned với 200 giờ driving data TPHCM.</p>
+                <p>Phút 3: xe máy đi ngược chiều trên vỉa hè, LIDAR detect nhưng prediction model confused — "vehicle moving toward us on sidewalk" không có trong training distribution. AI: "???". Phút 7: xe rẽ phải, 15 xe máy luồn lách từ mọi hướng, mỗi xe cách nhau 30cm. Collision avoidance trigger liên tục → xe freeze, không dám di chuyển. Phút 12: người bán hàng rong đẩy xe vào giữa đường. Object detection: "unknown moving object." AI decide: emergency stop. Traffic behind: honk khắp nơi.</p>
+                <p>Phút 20: safety driver take over. Đối tác Nhật: "Very... interesting traffic conditions." Polite way of saying "your AI cannot handle this." Kết luận nội bộ: autonomous driving ở Việt Nam cần mô hình hoàn toàn khác — mixed traffic (xe máy + ô tô + xe đạp + người đi bộ + xe rong) là challenge chưa company nào trên thế giới giải được tốt.</p>
+                <div class="lesson">💡 Bài học: Autonomous driving không phải one-size-fits-all. Traffic culture Mỹ/Nhật (rule-based, predictable) ≠ traffic Việt Nam/Ấn Độ (negotiation-based, creative). AI trained on one culture fails spectacularly in another. Localization không chỉ là ngôn ngữ — mà là behavior model. Và sometimes the answer is: "Not ready for this environment yet. Start with controlled environments (highway, campus, factory)."</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: "99.9% accuracy is good enough"</h3>
+                <p>Driving ở 60km/h, xe make ~10 decisions/second. 99.9% accuracy = 1 bad decision per ~17 minutes. Mỗi bad decision có thể là tai nạn chết người. Autonomous driving cần 99.9999%+ reliability cho safety-critical decisions. 6-sigma, not 3-sigma.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Test chỉ trong điều kiện tốt</h3>
+                <p>Sunny day, dry road, clear markings, normal traffic = easy mode. Real world: rain, fog, night, construction zones, faded lane markings, aggressive drivers, jaywalking pedestrians. Test in worst conditions, not just best. Nếu hệ thống chỉ work trong good weather, nó work ~60% of the time.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Rely 100% vào camera (Tesla approach debate)</h3>
+                <p>Camera-only (pure vision) vs sensor fusion debate. Camera fail: glare, low light, occulsion. LIDAR fail: rain, fog, cost. Redundancy saves lives. Commercial aviation dùng triple-redundant systems. Autonomous driving carrying humans should do the same. Sensor diversity = resilience.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Over-promise autonomy level</h3>
+                <p>"Full self-driving" marketing nhưng thực tế là L2 (driver must pay attention). Users treat L2 như L5 → accidents. Clear communication about limitations. And design system to enforce attention: driver monitoring camera, periodic steering input requirements, loud alerts.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Ignore ethical edge cases</h3>
+                <p>Trolley problem: swerve left (hit 1 person) or right (hit 3 people)? In practice: AI should minimize harm, not choose who to harm. But product managers, ethicists, and lawyers need to define guidelines. "Let the AI decide" is not a policy. Ethics frameworks must be explicit and auditable.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: Không có graceful degradation</h3>
+                <p>Khi sensor fail, GPS mất, hoặc entering unknown area — system phải degrade gracefully: reduce speed, increase follow distance, pull over safely, alert driver. "All or nothing" autonomy = dangerous. Minimum Risk Condition (MRC): nếu không thể operate safely, dừng xe ở vị trí an toàn nhất có thể.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Phạm Văn Tự Lái</span> — Xe Tự Hành Đại Sư</p>
+            <p>🚗 "Xe tự hành an toàn nhất là xe biết khi nào nên nhường quyền cho con người."</p>
+        </div>
+    </div>
+</body>
+</html>

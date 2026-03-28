@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab CI Đại Sư - Chuyên Gia GitLab CI/CD | Người Viết .gitlab-ci.yml</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 30%, #2a0a1a 60%, #3a1a0a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #f97316; text-shadow: 0 0 20px #f9731640; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #f97316; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #f97316; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #f97316; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f9731630; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #f97316; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #f97316; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🦊</span><h1>GitLab CI Đại Sư</h1><div class="title">Chuyên Gia GitLab CI/CD | Người Viết .gitlab-ci.yml</div><div class="quote">"GitLab CI: tất cả trong một — Git, CI/CD, Registry, Issue Tracking, Wiki. Giống Swiss Army knife: làm được mọi thứ, nhưng mỗi thứ không bằng tool chuyên dụng."</div></div>
+        <div class="badges">            <span class="badge">🦊 GitLab CI Expert</span>
+            <span class="badge">🔄 Pipeline Stages</span>
+            <span class="badge">🏃 Runners</span>
+            <span class="badge">📦 Artifacts/Cache</span>
+            <span class="badge">🌍 Environments</span>
+            <span class="badge">🔐 Variables/Secrets</span>
+            <span class="badge">📋 YAML Templates</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư chọn GitLab vì "all-in-one platform." Git repository + CI/CD + Container Registry + Issue Tracking + Wiki + Security Scanning — tất cả built-in. Không cần integrate 10 tools khác nhau.</p><p>Chàng ta viết .gitlab-ci.yml đầu tiên: 3 stages (build, test, deploy), 5 jobs, YAML anchors cho DRY. Pipeline runs, tests pass, deploy to staging automatic. "DevOps in 30 lines of YAML," chàng ta tự hào.</p><p>6 tháng sau: .gitlab-ci.yml 500 dòng, 15 stages, 30 jobs, include templates từ 5 repositories. Pipeline takes 45 phút. Runner queue backed up. Cache miss rebuilds everything. "DevOps in 500 lines of YAML and 45 minutes of waiting," chàng ta thở dài.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Pipeline Architecture:</strong> Stages run sequentially, jobs trong stage run parallel. DAG (needs keyword) cho custom dependencies. Parent-child pipelines cho modularity. Multi-project pipelines cho cross-repo. Rules cho conditional job execution. Workflow rules cho conditional pipeline creation.</div>
+            <div class="tip"><strong>2. Runners — Execution Environment:</strong> Shared runners (GitLab.com provided). Group runners cho organization. Project runners cho specific needs. Docker executor: isolated containers. Kubernetes executor: pods per job. Shell executor: direct on machine (security risk). Auto-scaling: Docker Machine hoặc Kubernetes.</div>
+            <div class="tip"><strong>3. Cache & Artifacts:</strong> Cache: speed up jobs (dependencies, build tools). Per-branch caching. Cache key strategies: files hash, branch name. Artifacts: pass data between jobs/stages. Artifact expiration: set retention. ĐỪNG cache build outputs — use artifacts. ĐỪNG artifact dependencies — use cache.</div>
+            <div class="tip"><strong>4. Environments & Deployments:</strong> environment keyword cho deployment tracking. Dynamic environments per branch (review apps). Auto-stop environments after merge. Protected environments cho production (manual approval). Deployment history và rollback. Environment-specific variables.</div>
+            <div class="tip"><strong>5. Templates & Includes:</strong> include:template cho GitLab templates. include:project cho cross-project templates. include:remote cho external URLs. YAML anchors và extends cho DRY. Component catalog (newer feature) cho reusable CI/CD components. Centralize common job definitions.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>⏰ Chuyện Pipeline 45 Phút</h3><p>GitLab CI pipeline: build (10 min) → lint (5 min) → unit tests (15 min) → integration tests (10 min) → deploy staging (5 min). Sequential stages. Total: 45 phút per pipeline. 20 merges/day = 15 giờ pipeline time/day. Developer wait 45 min cho feedback. Productivity killed.</p><p>Optimization: DAG dependencies (parallel where possible). Build: 10 min. Parallel: lint + unit tests + integration tests = 15 min (longest). Deploy: 5 min. Total: 30 min. Further: cache dependencies, skip unchanged tests, parallel test splitting. Final: 12 min.</p><div class="lesson">💡 Bài học: Sequential stages = wasted time. DAG (needs keyword) cho true dependency graph. Parallel test execution. Cache dependencies aggressively. Skip unchanged components. Pipeline time is developer time — optimize relentlessly.</div></div>
+            <div class="story"><h3>💾 Chuyện Cache Miss Rebuild Everything</h3><p>Node.js project, cache key: package-lock.json hash. Developer update 1 dependency → package-lock.json hash change → cache miss → npm install 3000 packages (8 phút). 15 merges/day × 8 min = 2 giờ/day npm install.</p><p>Optimization: fallback cache key (CI_DEFAULT_BRANCH), so partial cache hit even khi lock file changes. Cache trên shared runner storage. Pre-populated cache. Result: npm install 30 giây (install delta only).</p><div class="lesson">💡 Bài học: Cache key strategy matters. Fallback keys cho partial cache hits. cache:key:files cho file-based keys. cache:policy: pull cho read-only jobs. Shared cache between branches via fallback. Pre-warm cache cho common dependencies.</div></div>
+            <div class="story"><h3>🔐 Chuyện CI Variable Exposed</h3><p>CI/CD variable DATABASE_PASSWORD set as 'Visible' (not masked, not protected). Any developer can see variable value in pipeline logs. Any branch can access variable. Fork can access variable. Credentials exposed to entire team + potential external contributors.</p><p>Fix: set variables as Protected (only protected branches) + Masked (hidden in logs). Environment-scoped variables cho production credentials. Limit access to Settings → CI/CD. Rotate exposed credentials immediately.</p><div class="lesson">💡 Bài học: CI/CD variables: set Protected + Masked cho secrets. Environment-scoped cho deployment credentials. File type variables cho certificate/key files. NEVER log variable values. Audit variable access permissions. Rotate credentials khi exposed.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Monolithic .gitlab-ci.yml:</strong> 500+ lines, unmaintainable. Split with includes, templates, components. Modular CI configuration.</div>
+            <div class="mistake"><strong>2. Shell executor cho shared runners:</strong> No isolation between jobs. Docker executor cho security. Shell executor only cho dedicated, single-project runners.</div>
+            <div class="mistake"><strong>3. No retry strategy:</strong> Flaky tests fail pipeline. retry: 2 cho known flaky jobs. But fix flaky tests — retry is band-aid.</div>
+            <div class="mistake"><strong>4. Artifacts without expiration:</strong> Artifacts stored indefinitely. Storage costs grow. Set expire_in: 1 week hoặc appropriate duration.</div>
+            <div class="mistake"><strong>5. No pipeline timeout:</strong> Job stuck in loop. Default: 1 hour per job. Set appropriate timeouts. timeout: 30 minutes cho most builds.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #110</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

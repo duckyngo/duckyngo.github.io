@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 1: Trời phú hay học tập? — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#2D6A4F 0%,#1A3A5C 50%,var(--orange) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--green);}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card.purple .card-num{background:#8E44AD;}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .story-box{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:16px;padding:32px;margin:32px 0;border:2px solid var(--gold);}
+  .story-box h3{color:var(--navy);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .story-box p{font-size:0.95rem;line-height:1.8;color:#444;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .five-elements{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0;}
+  .element{background:white;border-radius:10px;padding:18px;box-shadow:var(--shadow);text-align:center;border-top:3px solid var(--orange);}
+  .element:nth-child(2){border-top-color:var(--gold);}
+  .element:nth-child(3){border-top-color:var(--green);}
+  .element:nth-child(4){border-top-color:#9B59B6;}
+  .element:nth-child(5){border-top-color:#E74C3C;}
+  .element-emoji{font-size:1.8rem;margin-bottom:8px;}
+  .element-label{font-size:0.85rem;font-weight:700;color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="dan-nhap.html" class="nav-btn">← Dẫn Nhập</a>
+    <a href="chuong-02.html" class="nav-btn">Chương 2 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">👦 Chương 1</div>
+  <span class="hero-emoji">🏖️</span>
+  <h1>Trời Phú <span>hay Học Tập?</span></h1>
+  <p class="hero-sub">Cậu bé Ben 11 tuổi tổ chức xây lâu đài cát — và vô tình dạy cho chúng ta mọi thứ về lãnh đạo.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Lãnh đạo là bẩm sinh hay có thể học được? Đây là câu hỏi muôn thuở. GS. Phan Văn Trường không trả lời lý thuyết — ông kể chuyện một cậu bé 11 tuổi tên Ben trên bãi biển, và câu chuyện đó nói lên tất cả.
+  </div>
+
+  <div class="story-box">
+    <h3>📖 Câu Chuyện: Cậu Bé Ben Trên Bãi Biển</h3>
+    <p>
+      Một ngày hè, một nhóm trẻ em quyết định xây lâu đài cát. Trong số đó có cậu bé Ben, 11 tuổi.
+      Không ai bầu Ben làm trưởng nhóm. Không ai phân công cậu. Nhưng chỉ trong vài phút, mọi người
+      tự nhiên nhìn vào Ben để biết phải làm gì tiếp theo. Cậu không ra lệnh — cậu <em>gợi ý</em>.
+      Cậu không ép buộc — cậu <em>truyền cảm hứng</em>. Kết quả: một tòa lâu đài cát đẹp nhất bãi biển
+      hôm đó, và mọi đứa trẻ đều vui vẻ.
+    </p>
+  </div>
+
+  <div class="cards-title">⚡ 5 Yếu Tố Lãnh Đạo Của Ben</div>
+  <div class="five-elements">
+    <div class="element">
+      <div class="element-emoji">👁️</div>
+      <div class="element-label">Có tầm nhìn rõ ràng</div>
+    </div>
+    <div class="element">
+      <div class="element-emoji">🗣️</div>
+      <div class="element-label">Truyền đạt thuyết phục</div>
+    </div>
+    <div class="element">
+      <div class="element-emoji">🤝</div>
+      <div class="element-label">Kết nối mọi người</div>
+    </div>
+    <div class="element">
+      <div class="element-emoji">💪</div>
+      <div class="element-label">Tạo ra hành động</div>
+    </div>
+    <div class="element">
+      <div class="element-emoji">😊</div>
+      <div class="element-label">Giữ tinh thần tích cực</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Những Điểm Quan Trọng</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🧬</div>
+      <div class="card-num">01</div>
+      <h3>Tố Chất Bẩm Sinh</h3>
+      <p>Một số người sinh ra đã có charisma — sức hút tự nhiên khiến người khác tự nguyện đi theo mà không cần chức vị hay quyền lực.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">📚</div>
+      <div class="card-num">02</div>
+      <h3>Có Thể Học Được</h3>
+      <p>Lãnh đạo cũng là kỹ năng. Quan sát, luyện tập, thất bại, rút kinh nghiệm — đây là con đường của đa số lãnh đạo vĩ đại.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">👑</div>
+      <div class="card-num">03</div>
+      <h3>Đinh Bộ Lĩnh</h3>
+      <p>Từ cậu bé chăn trâu dùng bông lau làm cờ — lãnh đạo xuất hiện từ sớm, trong những hoàn cảnh bình thường nhất.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🚫</div>
+      <div class="card-num">04</div>
+      <h3>Không Phải Chức Vị</h3>
+      <p>Chức vụ CEO hay Giám đốc không tạo ra lãnh đạo. Lãnh đạo thật sự là khi người khác <em>tự nguyện</em> đi theo bạn.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Lãnh đạo không phải là chức vị,<br>mà là khi người khác tự nguyện đi theo."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Đinh Bộ Lĩnh — Lãnh đạo Việt Nam bẩm sinh:</strong> Từ nhỏ đã biết tổ chức bạn bè, phân công nhiệm vụ, tạo ra kỷ luật tập thể — tất cả trước khi có bất kỳ chức vị chính thức nào. Đây là minh chứng rằng tố chất lãnh đạo xuất hiện sớm và có thể nhận ra từ sớm.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌱</div>
+    <div class="callout-text">
+      <strong>Kết luận của tác giả:</strong> Câu trả lời không phải "trời phú" hay "học tập" — mà là cả hai. Tố chất bẩm sinh tạo ra lợi thế ban đầu, nhưng kỹ năng học được mới là thứ biến người có tiềm năng thành lãnh đạo thật sự xuất sắc.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Lãnh đạo thật sự được nhận ra qua hành vi, không qua chức danh trên name card.</li>
+      <li>5 yếu tố cốt lõi: tầm nhìn, truyền đạt, kết nối, tạo hành động, duy trì tinh thần.</li>
+      <li>Lịch sử Việt Nam có nhiều ví dụ lãnh đạo bẩm sinh — Đinh Bộ Lĩnh là một trong những hình mẫu đẹp nhất.</li>
+      <li>Nếu bạn không phải "lãnh đạo bẩm sinh", đừng nản — tất cả kỹ năng này đều có thể học và phát triển.</li>
+      <li>Quan sát những người xung quanh: ai mọi người tự nhiên nhìn vào khi cần quyết định? Đó là lãnh đạo thật sự.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="dan-nhap.html" class="bnav-btn">← Dẫn Nhập</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-02.html" class="bnav-btn next">Chương 2: Đường vào quản trị →</a>
+  </div>
+</div>
+
+</body>
+</html>

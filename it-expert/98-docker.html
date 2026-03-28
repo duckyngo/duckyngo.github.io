@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hộp Container Đại Sư - Chuyên Gia Docker, Dockerfile & Compose</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a2e 30%, #0a2a3e 60%, #1a3a4e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #0ea5e9; text-shadow: 0 0 20px #0ea5e940; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #0ea5e9; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #0ea5e9; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #0ea5e9; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #0ea5e930; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #0ea5e9; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #0ea5e9; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🐳</span>
+            <h1>Hộp Container Đại Sư</h1>
+            <div class="title">Chuyên Gia Docker, Dockerfile & Compose</div>
+            <div class="quote">"Docker container giống như hộp cơm Bento: mọi thứ được đóng gói gọn gàng, portable, và bạn biết chính xác bên trong có gì. Trừ khi bạn dùng latest tag."</div>
+        </div>
+        <div class="badges">            <span class="badge">🐳 Docker Expert</span>
+            <span class="badge">📝 Dockerfile Master</span>
+            <span class="badge">🎼 Docker Compose</span>
+            <span class="badge">🔗 Networking</span>
+            <span class="badge">💾 Volumes</span>
+            <span class="badge">🏗️ Multi-stage Builds</span>
+            <span class="badge">🔐 Security</span>
+            <span class="badge">📊 Resource Limits</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư nhớ thời "works on my machine" là câu trả lời cho mọi bug. Dev nói: "Máy tôi chạy được!" QA nói: "Máy tôi không!" Ops nói: "Production cũng không!" Vòng xoáy đổ lỗi bất tận.</p><p>Docker xuất hiện như vị cứu tinh: đóng gói application + dependencies vào container. "Works on my machine? Great, we'll ship your machine." Đại Sư bắt đầu containerize mọi thứ — web apps, databases, monitoring, thậm chí cả... desktop environment (đừng hỏi tại sao).</p><p>Sau 8 năm Docker, chàng ta đã thấy đủ thứ: 2GB images vì dùng ubuntu base cho Python script, secrets hardcode trong Dockerfile, và docker-compose down -v xóa sạch database production. Chàng ta giờ dạy Docker như dạy võ: đẹp và nguy hiểm.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Dockerfile Best Practices:</strong> Multi-stage builds: build stage (compile) + runtime stage (minimal image). FROM alpine/slim/distroless cho small images. COPY thay vì ADD (trừ khi cần extract tar). RUN instructions combine với && cho fewer layers. .dockerignore cho node_modules, .git, build artifacts. Non-root USER bắt buộc. HEALTHCHECK cho container health monitoring.</div>
+            <div class="tip"><strong>2. Image Optimization:</strong> Minimal base image: alpine (~5MB) vs ubuntu (~77MB). Layer caching: put rarely-changing layers first (dependencies trước source code). Multi-stage: build image 1GB → runtime image 50MB. Distroless images cho minimal attack surface. Pin versions: python:3.11-slim, không phải python:latest. Scan images cho vulnerabilities (trivy, grype).</div>
+            <div class="tip"><strong>3. Docker Compose — Local Development:</strong> services, volumes, networks trong một file. Environment variables cho configuration. depends_on với health checks cho startup order. docker compose watch (2.22+) cho hot reload. Profiles cho optional services. Override files (docker-compose.override.yml) cho dev customization. ĐỪNG dùng Compose cho production — dùng Kubernetes hoặc ECS.</div>
+            <div class="tip"><strong>4. Networking:</strong> Bridge network (default): containers communicate by name. Host network: container dùng host network stack (performance). Overlay network: multi-host networking (Swarm). Custom networks cho isolation. Published ports (-p) expose to host. KHÔNG expose database ports to host trừ khi development.</div>
+            <div class="tip"><strong>5. Volumes — Persistent Data:</strong> Named volumes cho data persistence (docker volume create). Bind mounts cho development (source code). tmpfs mounts cho sensitive/temporary data. Volume drivers cho remote storage. BACKUP volumes regularly. docker-compose down -v XÓA TẤT CẢ VOLUMES — cẩn thận!</div>
+            <div class="tip"><strong>6. Resource Limits:</strong> --memory và --cpus cho resource limits. Prevent container từ eating all host resources. --restart=unless-stopped cho auto-restart. ulimit settings cho file descriptors. PID limits cho fork bomb protection. Log rotation: --log-opt max-size=10m --log-opt max-file=3.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📦 Chuyện 2GB Image Từ Wrong Base</h3><p>Developer build Python Flask app: FROM ubuntu:latest → apt-get install python3 → pip install requirements → COPY app. Image size: 2.1GB. Pull time trên CI/CD: 5 phút. Deployment time tăng 300%. Docker registry storage full nhanh chóng.</p><p>Đại Sư refactor Dockerfile: FROM python:3.11-slim. Multi-stage build. Remove unnecessary packages. Image size: 85MB. 96% reduction. Pull time: 15 giây. CI/CD pipeline giảm 4 phút per build.</p><div class="lesson">💡 Bài học: Base image matters enormously. python:slim (~120MB) vs ubuntu + python (~800MB). Multi-stage builds separate build-time và runtime dependencies. Alpine even smaller nhưng musl libc có thể gây compatibility issues. Regularly audit image sizes — docker images --format table.</div></div>
+            <div class="story"><h3>💾 Chuyện docker-compose down -v Xóa Data</h3><p>Developer chạy docker-compose down -v để 'clean restart' local environment. -v flag xóa tất cả volumes — bao gồm PostgreSQL data volume. Database chứa 6 tháng test data, seed data scripts, và custom migrations. Tất cả mất.</p><p>'Nhưng em chỉ muốn restart containers!' — docker-compose restart là đủ. down -v là nuclear option. Team thêm README warning và alias docker-compose-safe='docker compose down' (không có -v).</p><div class="lesson">💡 Bài học: docker compose down -v là DESTRUCTIVE operation. Hiểu sự khác biệt: restart (restart containers), down (stop + remove containers/networks), down -v (stop + remove EVERYTHING including volumes). Label critical volumes. Backup trước destructive operations.</div></div>
+            <div class="story"><h3>🔐 Chuyện Secret Trong Dockerfile</h3><p>Dockerfile: ENV DATABASE_URL=postgres://admin:SuperSecret123@db:5432/production. Image push to Docker Hub public repository. Credentials exposed. Bất kỳ ai pull image có thể docker inspect và thấy password.</p><p>Worse: mọi layer trong image history đều giữ secrets. Ngay cả khi developer 'fix' bằng cách remove ENV trong layer sau, docker history vẫn show. Phải rebuild image hoàn toàn.</p><div class="lesson">💡 Bài học: KHÔNG BAO GIỜ put secrets trong Dockerfile (ENV, ARG, COPY). Dùng runtime environment variables, Docker secrets, hoặc mount secret files. docker history shows ALL layers. Multi-stage builds: secrets trong build stage không appear trong final stage (nếu đúng). Scan images cho leaked secrets.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Dùng latest tag:</strong> latest có thể thay đổi bất cứ lúc nào. Pin specific version: nginx:1.25-alpine. Reproducible builds require pinned versions.</div>
+            <div class="mistake"><strong>2. Run as root trong container:</strong> Default Docker runs as root. Compromised container = root access. USER directive cho non-root. Rootless Docker cho extra security.</div>
+            <div class="mistake"><strong>3. Không set resource limits:</strong> Container eat all host RAM/CPU → other containers starved. --memory, --cpus limits. Docker Compose: deploy.resources.limits.</div>
+            <div class="mistake"><strong>4. Không cleanup unused resources:</strong> docker system df cho disk usage. docker system prune cho cleanup. Dangling images, stopped containers, unused volumes accumulate.</div>
+            <div class="mistake"><strong>5. COPY . . quá sớm trong Dockerfile:</strong> Source code change → rebuild ALL subsequent layers. COPY requirements.txt first → pip install → COPY . → tận dụng layer caching.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #98</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

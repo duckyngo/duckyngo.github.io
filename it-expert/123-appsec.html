@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảo Mật Ứng Dụng Đại Sư - AppSec Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a0a 25%, #1b0d0d 50%, #1a0a0a 75%, #0a0a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,127,0.15));
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(239,68,68,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero h1 {
+            font-size: 2.5em; font-weight: 800;
+            background: linear-gradient(135deg, #f87171, #fb923c, #fbbf24);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            position: relative; z-index: 1;
+        }
+
+        .hero .subtitle { font-size: 1.2em; color: #fca5a5; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+
+        .skill-tag {
+            background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,127,0.2));
+            border: 1px solid rgba(239,68,68,0.3);
+            padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fca5a5;
+            backdrop-filter: blur(10px); transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; }
+        .skill-tag:nth-child(2) { animation-delay: 0.15s; }
+        .skill-tag:nth-child(3) { animation-delay: 0.2s; }
+        .skill-tag:nth-child(4) { animation-delay: 0.25s; }
+        .skill-tag:nth-child(5) { animation-delay: 0.3s; }
+        .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        .skill-tag:nth-child(7) { animation-delay: 0.4s; }
+        .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .skill-tag:hover {
+            background: linear-gradient(135deg, rgba(239,68,68,0.4), rgba(220,38,127,0.4));
+            transform: translateY(-2px); box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.06);
+            padding: 36px; margin-bottom: 30px; transition: all 0.3s ease;
+        }
+
+        .card:hover { border-color: rgba(239,68,68,0.2); box-shadow: 0 8px 40px rgba(239,68,68,0.1); transform: translateY(-2px); }
+
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fca5a5; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+
+        .tip {
+            background: rgba(239,68,68,0.06); border-left: 3px solid #f87171;
+            padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0;
+        }
+
+        .tip h3 { color: #fca5a5; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+
+        .story {
+            background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(251,146,60,0.06));
+            border: 1px solid rgba(239,68,68,0.1); border-radius: 16px;
+            padding: 24px; margin: 20px 0;
+        }
+
+        .story h3 { color: #fb923c; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+
+        .story .lesson {
+            background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15);
+            border-radius: 10px; padding: 12px 16px; margin-top: 12px;
+            color: #fde68a; font-weight: 500;
+        }
+
+        .mistake {
+            background: rgba(239,68,68,0.06); border-left: 3px solid #f87171;
+            padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0;
+        }
+
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fca5a5; font-weight: 600; }
+
+        code {
+            background: rgba(239,68,68,0.15); padding: 2px 8px; border-radius: 6px;
+            font-size: 0.9em; color: #fca5a5;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8em; }
+            .card { padding: 24px; }
+            .container { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🛡️</span>
+            <h1>Bảo Mật Ứng Dụng Đại Sư</h1>
+            <p class="subtitle">Nguyễn Thị Lỗ Hổng — Người Săn Bug Bất Bại</p>
+            <p class="quote">"Mỗi dòng code đều có một cánh cửa hậu — việc của tôi là tìm ra nó trước hacker."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">OWASP Top 10</span>
+            <span class="skill-tag">SQL Injection</span>
+            <span class="skill-tag">XSS/CSRF</span>
+            <span class="skill-tag">SAST (SonarQube)</span>
+            <span class="skill-tag">DAST (OWASP ZAP)</span>
+            <span class="skill-tag">SCA (Snyk)</span>
+            <span class="skill-tag">Semgrep</span>
+            <span class="skill-tag">Threat Modeling</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Nguyễn Thị Lỗ Hổng sinh ra trong một gia đình mà bố là sysadmin và mẹ là QA tester — một sự kết hợp DNA hoàn hảo để tạo ra người phụ nữ không tin tưởng bất kỳ input nào từ người dùng. Năm 12 tuổi, cô đã hack được form đăng ký câu lạc bộ tin học của trường bằng cách nhập <code>' OR 1=1 --</code> vào ô tên — và từ đó, số phận cô đã được định đoạt.</p>
+            <p>Trải qua ba kiếp nạn: Kiếp đầu là "Thời Đại XSS Hoành Hành" — khi mà alert(1) xuất hiện trên mọi website và cô phải giải thích cho dev rằng <code>innerHTML = userInput</code> không phải là ý hay. Kiếp hai là "Cuộc Chiến Dependency" — khi mà một package npm bé xíu bị compromise và cả hệ thống sụp đổ như domino. Kiếp ba là "Khai Ngộ Shift-Left" — khi cô nhận ra rằng tìm bug ở production tốn gấp 100 lần so với tìm ở design phase.</p>
+            <p>Ngày nay, Lỗ Hổng nổi tiếng với triết lý: "Trust nothing. Validate everything. Và luôn encode output." Cô có thể nhìn một đoạn code và đánh hơi ra lỗ hổng bảo mật như chó nghiệp vụ đánh hơi thuốc nổ.</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: OWASP Top 10 — Bảng Xếp Hạng Tội Phạm</h3>
+                <p>OWASP Top 10 là danh sách 10 lỗ hổng bảo mật phổ biến nhất trong ứng dụng web. Phiên bản 2021 bao gồm: Broken Access Control (#1), Cryptographic Failures (#2), Injection (#3), Insecure Design (#4), Security Misconfiguration (#5). Đây không chỉ là checklist — đây là bản đồ chiến trường. Mỗi mục đều có CWE mapping, ví dụ thực tế, và cách phòng chống. Nếu team của bạn chưa nắm vững OWASP Top 10, thì giống như lính ra trận mà không biết địch ở đâu.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: SQL Injection — Kẻ Thù Không Bao Giờ Chết</h3>
+                <p>SQL Injection tồn tại từ năm 1998 nhưng vẫn xuất hiện hàng ngày. Quy tắc vàng: <strong>LUÔN dùng parameterized queries / prepared statements</strong>. Đừng bao giờ nối chuỗi SQL bằng tay. Dù dùng ORM cũng phải cẩn thận — raw queries trong ORM vẫn có thể bị inject. Kiểm tra cả stored procedures — chúng không miễn nhiễm. Và nhớ: SQLi không chỉ xảy ra qua form — headers, cookies, và URL parameters đều là vector tấn công.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: XSS — Cross-Site Scripting Ba Đầu Rắn</h3>
+                <p>XSS có 3 loại: Stored (lưu trong DB, nguy hiểm nhất), Reflected (qua URL), và DOM-based (xảy ra phía client). Phòng chống: encode output theo context (HTML, JavaScript, URL, CSS khác nhau). Dùng <code>Content-Security-Policy</code> header để chặn inline scripts. Framework hiện đại như React auto-escape by default — nhưng <code>dangerouslySetInnerHTML</code> là cái tên đã cảnh báo bạn rồi đó. Và đừng quên: Markdown renderers cũng có thể bị XSS nếu không sanitize.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: SAST — Quét Mã Nguồn Tĩnh</h3>
+                <p>SAST (Static Application Security Testing) phân tích source code mà không cần chạy ứng dụng. Tools phổ biến: <code>SonarQube</code> (đa ngôn ngữ), <code>Semgrep</code> (pattern matching mạnh mẽ, custom rules dễ viết), <code>CodeQL</code> (semantic analysis sâu). Tích hợp SAST vào CI/CD pipeline — mỗi PR phải pass security scan trước khi merge. Quan trọng: tune rules để giảm false positives — nếu dev bị alert fatigue, họ sẽ ignore tất cả, kể cả true positives.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: DAST — Tấn Công Chính Mình Trước</h3>
+                <p>DAST (Dynamic Application Security Testing) test ứng dụng đang chạy từ bên ngoài — giống như hacker thật sự. <code>OWASP ZAP</code> là tool miễn phí tuyệt vời, <code>Burp Suite</code> là chuẩn enterprise. Chạy DAST trong staging environment, không phải production. Kết hợp với authenticated scanning để test các trang cần đăng nhập. DAST tìm được những gì SAST bỏ sót — ví dụ security misconfigurations, missing headers, exposed endpoints.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: SCA — Kiểm Soát Supply Chain</h3>
+                <p>SCA (Software Composition Analysis) quét dependencies để tìm CVE đã biết. <code>Snyk</code>, <code>Dependabot</code>, <code>Trivy</code> đều là lựa chọn tốt. Nhưng SCA không chỉ là tìm CVE — còn phải kiểm tra license compliance, abandoned packages, và typosquatting. Lock file (<code>package-lock.json</code>, <code>go.sum</code>) là thiêng liêng — đừng commit mà không review changes. Và luôn nhớ: dependency của dependency cũng có thể là threat vector.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #7: CSRF — Cross-Site Request Forgery</h3>
+                <p>CSRF lợi dụng session cookie của user để thực hiện request trái phép. Phòng chống bằng CSRF tokens (synchronizer token pattern hoặc double-submit cookie). Dùng <code>SameSite=Lax</code> hoặc <code>SameSite=Strict</code> cho cookies. API dùng Bearer token thay vì cookie thì miễn nhiễm CSRF. Và luôn kiểm tra <code>Origin</code> / <code>Referer</code> header cho critical operations.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: SQL Injection Giữa Đêm Production</h3>
+                <p>Nửa đêm, alert dồn dập: database đang bị dump toàn bộ. Kiểm tra access log thấy request với payload <code>UNION SELECT * FROM users--</code> đang kéo hết dữ liệu. Truy nguồn thì ra... một endpoint search được viết tạm bởi intern 6 tháng trước, dùng string concatenation để build SQL query. Endpoint này bypass mọi middleware vì "chỉ là search thôi mà".</p>
+                <p>Ba tiếng sáng đó, team phải: block IP, patch endpoint, rotate tất cả credentials, notify affected users, và viết incident report dài 15 trang. Intern thì đã nghỉ việc từ lâu. Dòng code tạm đó tồn tại qua 47 lần deploy mà không ai review.</p>
+                <div class="lesson">💡 Bài học: Không có code nào là "tạm". Mọi code đều phải qua security review. Và parameterized queries là bắt buộc — không có ngoại lệ, không có "nhưng mà endpoint này đơn giản lắm".</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: SCA Phát Hiện CVE Nghiêm Trọng</h3>
+                <p>Sáng thứ Hai, Snyk scan báo critical CVE trong <code>log4j</code> — đúng vào tuần Log4Shell bùng nổ (CVE-2021-44228). Team có 200+ microservices, 80% dùng Java. Câu hỏi: service nào dùng log4j phiên bản nào? Không có SBOM (Software Bill of Materials), không ai biết chính xác.</p>
+                <p>Mất 3 ngày quét toàn bộ registry, tìm mọi dependency tree, phát hiện 47 services bị ảnh hưởng — kể cả 12 services mà "không ai nghĩ là dùng log4j" vì nó là transitive dependency. Từ đó, SBOM generation trở thành bắt buộc trong CI/CD pipeline.</p>
+                <div class="lesson">💡 Bài học: SBOM không phải nice-to-have — đó là critical requirement. Khi CVE zero-day xuất hiện, câu hỏi đầu tiên luôn là "chỗ nào dùng thư viện này?" và bạn cần câu trả lời trong PHÚT, không phải ngày.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: CSP Header Cứu Cả Hệ Thống</h3>
+                <p>Một ngày đẹp trời, bug bounty hunter báo Stored XSS trên trang profile — user có thể inject script qua field "Bio". Nhưng khi thử exploit, script không chạy. Tại sao? Vì 6 tháng trước, team đã triển khai Content-Security-Policy header nghiêm ngặt: <code>script-src 'self'</code>, không cho inline scripts.</p>
+                <p>XSS payload nằm trong DB, render ra HTML, nhưng browser refuse to execute vì CSP violation. Defense in depth đã cứu ngày hôm đó. Tất nhiên, team vẫn fix XSS bug ngay — CSP là lớp phòng thủ cuối cùng, không phải cái cớ để lười sanitize input.</p>
+                <div class="lesson">💡 Bài học: Defense in depth nghĩa là nhiều lớp bảo vệ chồng lên nhau. CSP, input validation, output encoding — mỗi lớp có thể fail, nhưng cùng lúc tất cả fail thì hiếm hơn nhiều. Đầu tư vào security headers — chúng là free insurance.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: "Frontend validation là đủ rồi"</h3>
+                <p>Frontend validation chỉ để UX tốt hơn — attacker bypass nó trong 5 giây bằng curl hoặc Burp Suite. Mọi validation phải lặp lại ở backend. Mọi input. Mọi endpoint. Không ngoại lệ.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Lưu password bằng MD5 hoặc SHA1</h3>
+                <p>MD5 và SHA1 là hash functions, không phải password hashing algorithms. Dùng <code>bcrypt</code>, <code>scrypt</code>, hoặc <code>Argon2id</code> — chúng được thiết kế chậm intentionally để chống brute force. Và luôn dùng unique salt per password.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Trả về error message chi tiết cho user</h3>
+                <p>"Invalid password for user admin" — congratulations, bạn vừa confirm username tồn tại. Stack trace trong API response? Bạn vừa leak technology stack. Error messages cho user phải generic, chi tiết chỉ nên log phía server.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Hardcode secrets trong source code</h3>
+                <p>API keys, database passwords, JWT secrets trong source code = tặng quà cho hacker. Dùng environment variables, secret management tools (Vault, AWS Secrets Manager). Và scan git history — vì <code>git log</code> nhớ tất cả.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Bỏ qua security headers</h3>
+                <p>Thiếu <code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options</code>, <code>Strict-Transport-Security</code>, <code>Content-Security-Policy</code> là để cửa mở cho XSS, clickjacking, và protocol downgrade attacks.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #6: "Endpoint nội bộ không cần auth"</h3>
+                <p>Internal network không phải trusted zone. Lateral movement là kỹ thuật cơ bản của attacker. Mọi endpoint, dù internal, đều cần authentication và authorization. Zero trust không phải buzzword.</p>
+            </div>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #7: Ignore dependency vulnerabilities</h3>
+                <p>"Không có thời gian update dependencies" — cho đến khi bạn có thời gian xử lý security incident. Dependencies chiếm 80-90% codebase. Automate dependency updates với Dependabot/Renovate và SCA scanning trong CI.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Nguyễn Thị Lỗ Hổng</span> — Bảo Mật Ứng Dụng Đại Sư</p>
+            <p>🛡️ "Secure by default, broken by choice" 🛡️</p>
+        </div>
+    </div>
+</body>
+</html>

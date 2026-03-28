@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vi Xử Lý Tôn Sư - Bậc Thầy Embedded Systems</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(202,138,4,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(234,179,8,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #eab308, #ca8a04, #fde047); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fde047; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(202,138,4,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fde047; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fde047; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #eab308; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fde047; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #ca8a04; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fde047; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fde047; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🔧</span>
+            <h1>Vi Xử Lý Tôn Sư</h1>
+            <p class="subtitle">Lý Vi Xử Lý — Bậc Thầy Embedded Systems</p>
+            <p class="quote">"Khi bạn chỉ có 2KB RAM, mỗi byte đều là vàng, mỗi cycle đều là kim cương."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">C/C++</span>
+            <span class="skill-tag">Rust</span>
+            <span class="skill-tag">MicroPython</span>
+            <span class="skill-tag">Arduino</span>
+            <span class="skill-tag">ESP32</span>
+            <span class="skill-tag">STM32</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Lý Vi Xử Lý bắt đầu sự nghiệp bằng cách lập trình vi điều khiển 8051 bằng Assembly — mỗi instruction đếm từng clock cycle. Khi C compiler cho microcontroller ra đời, ông cảm thấy như được giải phóng. 'Viết C mà compile ra code gần bằng hand-written Assembly — đây là tương lai!'
+
+Ông đã làm việc với mọi kiến trúc: AVR (Arduino), ARM Cortex-M (STM32), Xtensa (ESP32), RISC-V, và cả PIC. Mỗi project là một bài toán resource constraint: 2KB RAM cho firmware xử lý cảm biến, 4MHz clock cho real-time control, 32KB flash cho toàn bộ program.
+
+Motto: 'Trong embedded, bạn không optimize cho performance — bạn optimize cho EXISTENCE. Code phải FIT trong hardware constraints, không phải ngược lại.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Memory Management — Khi Heap Là Xa Xỉ</h3>
+                <p>Embedded thường KHÔNG dùng dynamic memory allocation (malloc/free). Lý do: fragmentation trong limited RAM = system crash. Stack allocation cho local variables, static allocation cho global state. Fixed-size buffer pools thay vì malloc. Memory-mapped I/O: registers access trực tiếp memory addresses. Stack overflow: embedded stack thường 1-4KB — recursive functions = danger. Monitor stack usage với stack painting technique (fill stack với pattern, check how far it's consumed).</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Bare Metal vs RTOS</h3>
+                <p>Bare metal: code chạy trực tiếp trên hardware, no OS overhead. Simple state machine hoặc super loop architecture. Tốt cho: simple tasks, resource-constrained devices, predictable timing. RTOS (FreeRTOS, Zephyr): task scheduling, inter-task communication, timers, mutexes. Tốt cho: multi-task applications, complex state management, team development. ESP-IDF dùng FreeRTOS by default. STM32CubeIDE support FreeRTOS integration. Tradeoff: RTOS thêm 5-10KB flash, small RAM overhead, nhưng giảm complexity cho multi-task apps.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Sensor Integration — I2C, SPI, UART</h3>
+                <p>I2C: 2-wire (SDA, SCL), multiple devices trên cùng bus, moderate speed (100-400KHz). Dùng cho: sensors (temperature, humidity, accelerometer), EEPROM. SPI: 4-wire (MOSI, MISO, SCK, CS), faster than I2C (MHz range), point-to-point. Dùng cho: displays, SD cards, high-speed ADC. UART: asynchronous, point-to-point, simple. Dùng cho: GPS modules, debug console, Bluetooth modules. ADC: analog sensor → digital value. Tips: filter noise (moving average, Kalman), calibrate sensors, handle sensor failure gracefully.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: ESP32 — IoT Powerhouse</h3>
+                <p>Dual-core 240MHz, WiFi + Bluetooth, 520KB SRAM, deep sleep mode (10uA). ESP-IDF: official SDK (FreeRTOS based). Arduino core: simpler API, compatible libraries. WiFi: station mode (connect to AP), AP mode (create hotspot), mesh networking. MQTT: lightweight pub/sub protocol cho IoT → cloud communication. OTA (Over-the-Air) updates: update firmware remotely — essential cho deployed devices. Power management: deep sleep + wake on GPIO/timer cho battery-powered devices.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Rust cho Embedded — Safety Without Runtime</h3>
+                <p>Rust no_std: compile without standard library, bare metal compatible. Memory safety tại compile time — no buffer overflow, no null pointer dereference. Embedded Rust ecosystem: <code>embedded-hal</code> (hardware abstraction), <code>cortex-m</code> (ARM Cortex-M support), <code>embassy</code> (async embedded framework). Tradeoff: Rust embedded ecosystem nhỏ hơn C, learning curve cao, some HAL libraries immature. Dùng cho: safety-critical embedded systems, new projects by Rust-proficient teams.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Stack Overflow trên 2KB RAM</h3>
+                <p>Firmware cho IoT sensor: ESP8266 (80KB RAM nhưng chỉ 4KB stack cho main task). Developer viết recursive JSON parser cho MQTT message. JSON nested 5 levels deep → recursive calls → stack overflow → device reset loop (watchdog timer restart → parse → crash → restart...).
+
+Device deployed ở remote location. Restart loop = device offline. No OTA update possible (WiFi connect code runs AFTER crash point). Team phải drive 200km đến location, flash firmware qua USB cable.
+
+Fix: iterative JSON parser (no recursion), static buffer allocation, stack usage monitoring. Add: OTA recovery mode (connect WiFi FIRST, check for update BEFORE main logic).</p>
+                <div class="lesson">💡 Bài học: Embedded rule: NO RECURSION trên constrained devices. Iterative algorithms always. Monitor stack usage (stack painting, compiler stack analysis). Implement failsafe boot: if main firmware crash N times → boot into recovery mode (minimal firmware that accepts OTA update). ALWAYS have physical access plan for deployed devices.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Off-by-one Bricked 1000 Devices</h3>
+                <p>Firmware update for production IoT devices. OTA update system works fine. New firmware: bug trong flash memory write routine — off-by-one error overwrite bootloader sector. Devices receive update → write new firmware → overwrite bootloader → device brick (cannot boot anymore).
+
+1000 devices deployed across 50 locations. All bricked simultaneously (batch OTA). Recall: ship 1000 devices back, JTAG flash new bootloader + firmware. Cost: $50,000 (shipping + labor + downtime). Customer trust: destroyed.
+
+Fix: write-protected bootloader sector (hardware lock), dual-bank firmware (A/B update scheme — if new firmware fails, boot from old bank), staged rollout (update 1% → verify → 10% → verify → 100%).</p>
+                <div class="lesson">💡 Bài học: Firmware update = HIGHEST RISK operation in embedded. Protect: 1) Write-protect bootloader, 2) A/B firmware banks (rollback possible), 3) Staged rollout (never 100% at once), 4) Verify firmware integrity (CRC/signature) before committing, 5) Factory reset option that doesn't require bootloader. One bad update = thousands of bricks.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Power Consumption Debug — Battery 1 Ngày Thay Vì 1 Năm</h3>
+                <p>IoT sensor thiết kế chạy pin CR2032 (225mAh) suốt 1 năm. Prototype: pin hết sau 1 ngày. Power profiling: device KHÔNG enter deep sleep. Nguyên nhân: I2C sensor chip không power down → pull-up resistors draw 1mA constantly. WiFi modem stay connected → 80mA average.
+
+Fix: 1) Power gate sensors (MOSFET switch, turn off khi không đọc), 2) Deep sleep giữa readings (wake every 15 minutes, read sensor, send data, sleep), 3) WiFi connect only when data ready (không maintain connection). Power consumption: 80mA → 20uA average. Battery life: 1 day → 14 months.</p>
+                <div class="lesson">💡 Bài học: Power optimization là CRITICAL cho battery devices. Measure ACTUAL current (oscilloscope + shunt resistor, or dedicated power analyzer). Every peripheral: power down khi không dùng. Deep sleep modes: research MCU sleep modes (light sleep, deep sleep, hibernate). WiFi/Bluetooth: connect → transmit → disconnect (don't stay connected). Target: uA range average current for year-long battery life.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Dùng floating point trên MCU không có FPU</h3>
+                <p>ATmega328 (Arduino Uno): no FPU. Float operations = software emulation = 10-100x slower than integer. Dùng fixed-point arithmetic (multiply by 1000, work in integers). Hoặc chọn MCU có FPU (Cortex-M4F, ESP32).</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Không handle watchdog timer</h3>
+                <p>Watchdog timer: reset device nếu firmware hang. Nhưng: dài initialization → watchdog reset trước khi firmware ready. Feed watchdog trong init sequence. Và: infinite loop bug → watchdog reset → boot → same bug → reset loop. Log crash reason để debug.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Debug bằng printf trên production</h3>
+                <p>printf trên UART: mỗi character ~10us ở 115200 baud. 100 chars = 1ms. In vòng lặp 1KHz → printf take 100% CPU time. Remove debug prints cho production build. Hoặc: conditional compilation (#ifdef DEBUG).</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Không handle sensor failure</h3>
+                <p>Sensor disconnect, wire break, I2C bus hang → firmware freeze waiting for response. Implement: timeout cho mọi I/O operation, sensor health check, fallback values, I2C bus recovery (clock stretching reset).</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Magic numbers trong register config</h3>
+                <p><code>REG = 0x3F;</code> — 6 tháng sau không ai biết 0x3F nghĩa gì. Dùng named constants, bitfield structs, hoặc comment từng bit. Readability quan trọng hơn cleverness.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Lý Vi Xử Lý</span> — Vi Xử Lý Tôn Sư</p>
+            <p>🔧 "Khi bạn chỉ có 2KB RAM, mỗi byte đều là vàng, mỗi cycle đều là kim cương."</p>
+        </div>
+    </div>
+</body>
+</html>

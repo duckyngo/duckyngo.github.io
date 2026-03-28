@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Kiếm Thánh — Advanced SQL Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root { --bg: #0a0a18; --card-bg: rgba(15, 12, 35, 0.85); --card-border: rgba(255, 193, 7, 0.2); --accent: #ffc107; --accent2: #ffecb3; --accent3: #ff5252; --text: #fff8e1; --text-muted: #bbaa66; --glow: rgba(255, 193, 7, 0.3); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.8; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 25% 35%, rgba(255,193,7,0.08) 0%, transparent 50%), radial-gradient(ellipse at 75% 65%, rgba(255,82,82,0.06) 0%, transparent 50%); z-index: -1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; padding: 4rem 2rem; }
+        .header .emoji { font-size: 5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientShift 5s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .header .subtitle { color: var(--text-muted); font-size: 1.2rem; margin-top: 0.5rem; font-style: italic; }
+        .header .quote { margin-top: 1.5rem; padding: 1rem 2rem; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; backdrop-filter: blur(10px); font-style: italic; color: var(--accent2); display: inline-block; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 2rem 0; }
+        .badge { padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--card-border); background: var(--card-bg); backdrop-filter: blur(10px); transition: all 0.3s ease; cursor: default; }
+        .badge:hover { transform: translateY(-3px); box-shadow: 0 5px 20px var(--glow); border-color: var(--accent); }
+        .section { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .section:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent); }
+        .tip { padding: 1rem 1.5rem; margin: 1rem 0; border-left: 3px solid var(--accent); background: rgba(255,193,7,0.05); border-radius: 0 8px 8px 0; }
+        .tip .tip-number { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+        code { background: rgba(255,193,7,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        .story { padding: 1.5rem; margin: 1rem 0; background: rgba(255,82,82,0.05); border-radius: 12px; border: 1px solid rgba(255,82,82,0.1); }
+        .story-title { color: var(--accent3); font-weight: 700; margin-bottom: 0.5rem; }
+        .lesson { margin-top: 0.75rem; padding: 0.75rem; background: rgba(255,193,7,0.1); border-radius: 8px; font-weight: 600; color: var(--accent); }
+        .mistake { padding: 1rem 1.5rem; margin: 0.75rem 0; background: rgba(255,50,50,0.05); border-left: 3px solid #ff4757; border-radius: 0 8px 8px 0; }
+        .mistake strong { color: #ff6b81; }
+        .footer { text-align: center; padding: 3rem 2rem; margin-top: 2rem; color: var(--text-muted); border-top: 1px solid var(--card-border); }
+        .footer .name { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .section { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="emoji">⚔️</span>
+        <h1>SQL Kiếm Thánh</h1>
+        <p class="subtitle">Kiếm Khách Tối Thượng — Mỗi Dòng SQL Là Một Nhát Kiếm Chính Xác</p>
+        <div class="quote">"Cho tôi một Window Function, tôi sẽ di chuyển cả thế giới dữ liệu."</div>
+    </div>
+
+    <div class="badge-container">
+        <span class="badge">🪟 Window Functions</span>
+        <span class="badge">📝 CTEs</span>
+        <span class="badge">🔄 Recursive Queries</span>
+        <span class="badge">📊 Query Plans</span>
+        <span class="badge">🎯 Optimization</span>
+        <span class="badge">🧮 Analytical SQL</span>
+        <span class="badge">🔗 Advanced JOINs</span>
+    </div>
+
+    <div class="section">
+        <h2>📚 Thân Thế & Lai Lịch</h2>
+        <p>SQL Kiếm Thánh, tên thật là <strong>Truy Vấn Thần Tốc</strong>, tin rằng SQL là ngôn ngữ lập trình đẹp nhất thế giới. Trong khi thiên hạ chạy theo Python, JavaScript, Rust — lão ngồi yên, tay cầm SQL Editor, mắt nhìn execution plan, miệng lẩm bẩm: <em>"Nested Loop Join... không tốt... Hash Join... được rồi..."</em></p>
+        <p>Lão bắt đầu với <code>SELECT * FROM table</code> năm 2005. Mất 2 năm để hiểu JOIN. Mất 3 năm để hiểu subqueries. Mất 5 năm để master window functions. Và mất cả đời để hiểu rằng: <em>"Viết SQL đúng thì dễ. Viết SQL nhanh mới khó. Viết SQL vừa đúng vừa nhanh vừa dễ đọc — đó là nghệ thuật."</em></p>
+        <p>Hiện tại, lão là người cuối cùng review mọi SQL query trước khi deploy. Đồng nghiệp gọi lão là <em>"SQL linter sống"</em>. Lão lấy đó làm vinh dự.</p>
+    </div>
+
+    <div class="section">
+        <h2>📜 Bí Kíp</h2>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #1:</span> <strong>CTEs — Viết SQL Như Viết Văn</strong>
+            <p><code>WITH active_users AS (...), user_orders AS (...), order_summary AS (...) SELECT * FROM order_summary</code>. CTEs biến query 100 dòng thành chuỗi steps dễ đọc. Mỗi CTE = 1 concept. Debug từng CTE riêng biệt. Đặt tên CTE có ý nghĩa. CTE không phải performance tool — nó là readability tool.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #2:</span> <strong>Window Functions — Superpower Của SQL</strong>
+            <p><code>ROW_NUMBER()</code>: đánh số thứ tự. <code>RANK()</code>/<code>DENSE_RANK()</code>: xếp hạng. <code>LAG()</code>/<code>LEAD()</code>: lấy row trước/sau. <code>SUM() OVER(ORDER BY date)</code>: running total. <code>SUM() OVER(PARTITION BY customer_id)</code>: sum per customer. Không cần self-join, không cần subquery. Window functions = elegant + fast.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #3:</span> <strong>Recursive CTEs — Traversal Trees Và Hierarchies</strong>
+            <p><code>WITH RECURSIVE org_tree AS (SELECT id, name, manager_id, 1 as level FROM employees WHERE manager_id IS NULL UNION ALL SELECT e.id, e.name, e.manager_id, t.level + 1 FROM employees e JOIN org_tree t ON e.manager_id = t.id) SELECT * FROM org_tree</code>. Traverse org charts, category trees, BOM (Bill of Materials). Nhớ set max recursion depth!</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #4:</span> <strong>Query Plan — Đọc Được Query Plan Là Đọc Được Tương Lai</strong>
+            <p><code>EXPLAIN ANALYZE</code>: xem actual execution. Key metrics: Seq Scan vs Index Scan, Nested Loop vs Hash Join, Sort method (in-memory vs disk), actual rows vs estimated rows. Nếu estimated rows sai nhiều → statistics outdated → <code>ANALYZE table</code>. Nếu Seq Scan trên bảng lớn → thiếu index.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #5:</span> <strong>LATERAL JOIN — Secret Weapon</strong>
+            <p><code>SELECT c.*, latest_order.* FROM customers c, LATERAL (SELECT * FROM orders o WHERE o.customer_id = c.id ORDER BY created_at DESC LIMIT 1) latest_order</code>. Lấy "top N per group" elegantly. Thay thế correlated subquery trong SELECT clause. Performance thường tốt hơn window function approach cho "get latest per group".</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #6:</span> <strong>GROUPING SETS, CUBE, ROLLUP — Aggregation Nâng Cao</strong>
+            <p><code>GROUP BY ROLLUP(country, city)</code>: tạo subtotals (country level) và grand total. <code>GROUP BY CUBE(country, city)</code>: mọi combination. <code>GROUP BY GROUPING SETS((country, city), (country), ())</code>: custom combinations. Thay vì UNION ALL 3 queries aggregation khác nhau = 1 scan duy nhất.</p>
+        </div>
+
+        <div class="tip">
+            <span class="tip-number">Bí Kíp #7:</span> <strong>Optimization Patterns — Viết SQL Nhanh</strong>
+            <p>Sargable predicates: <code>WHERE created_at >= '2024-01-01'</code> (index-friendly) thay vì <code>WHERE YEAR(created_at) = 2024</code> (function = no index). Avoid <code>SELECT DISTINCT</code> khi <code>EXISTS</code> đủ. <code>EXISTS</code> nhanh hơn <code>IN</code> cho large subqueries. Avoid <code>OR</code> — rewrite thành <code>UNION ALL</code> khi có thể.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+        <div class="story">
+            <div class="story-title">🚀 Chuyện 1: Window Function Cứu 100x Performance</div>
+            <p>Query: "Tìm customers có order amount tăng liên tục 3 tháng gần nhất." Anh junior viết: 3 self-JOINs trên bảng orders (50M rows). Self-join 50M × 50M × 50M. Query chạy... timeout sau 30 phút.</p>
+            <p>Lão viết lại bằng window function: <code>LAG(monthly_amount, 1) OVER (PARTITION BY customer_id ORDER BY month)</code> — so sánh tháng này với tháng trước. 1 pass duy nhất qua data. Query time: <strong>18 giây</strong>. Từ timeout xuống 18 giây. Anh junior nhìn lão như nhìn phù thủy.</p>
+            <div class="lesson">💡 Bài học: Self-JOIN cho "compare with previous row" = quadratic complexity. Window functions (LAG, LEAD, running totals) = linear complexity. Master window functions = level up SQL skills 10x.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">🔄 Chuyện 2: Self-Join Nightmare — N^2 Không Tha Ai</div>
+            <p>Requirement: "Tìm pairs of products thường được mua cùng nhau." Anh dev viết: <code>SELECT a.product_id, b.product_id FROM order_items a JOIN order_items b ON a.order_id = b.order_id AND a.product_id < b.product_id</code>. Order_items: 100M rows. Self-join 100M × 100M = hàng tỷ tỷ comparisons. Database crash.</p>
+            <p>Lão refactor: pre-aggregate thành basket (array of products per order), rồi dùng <code>UNNEST</code> + <code>CROSS JOIN</code> chỉ trên orders có > 1 item. Giảm từ 100M self-join xuống 5M baskets. Kết hợp bloom filter cho popular products. Query time: 45 giây, acceptable.</p>
+            <div class="lesson">💡 Bài học: Self-JOIN trên large tables = dangerous. Tìm cách reduce dataset trước JOIN. Pre-aggregate, filter early, use window functions hoặc array operations thay thế khi có thể.</div>
+        </div>
+
+        <div class="story">
+            <div class="story-title">📊 Chuyện 3: Query Plan Tells All — Câu Chuyện Của 1000x Speedup</div>
+            <p>Dashboard query chạy 45 giây. Team đã "optimize" bằng cách thêm index nhưng không giúp. Lão gõ <code>EXPLAIN ANALYZE</code> và thấy: estimated rows = 100, actual rows = 5,000,000. Statistics hoàn toàn sai → planner chọn Nested Loop Join thay vì Hash Join.</p>
+            <p><code>ANALYZE table_name;</code> — update statistics. Chạy lại: planner chọn Hash Join. Query time: <strong>45ms</strong>. Từ 45 giây xuống 45ms = 1000x speedup, chỉ bằng 1 lệnh ANALYZE. Team: <em>"Sao không ai nói cho mình biết lệnh ANALYZE?"</em> Lão: <em>"Vì các bạn không đọc query plan."</em></p>
+            <div class="lesson">💡 Bài học: LUÔN đọc EXPLAIN ANALYZE trước khi optimize. Check estimated vs actual rows. Nếu lệch nhiều → ANALYZE để update statistics. Statistics outdated = query planner make wrong decisions = slow queries.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+        <div class="mistake"><strong>❌ SELECT DISTINCT thay vì fix JOINs</strong><p>Query trả duplicates → thêm DISTINCT → "fix rồi!" Thực ra: JOINs tạo ra cartesian product vì thiếu condition. Fix root cause, không dùng DISTINCT che giấu.</p></div>
+        <div class="mistake"><strong>❌ Function trên indexed column trong WHERE</strong><p><code>WHERE UPPER(email) = 'TEST@ABC.COM'</code> — index on email vô dụng. Dùng <code>WHERE email = lower('TEST@ABC.COM')</code> hoặc functional index.</p></div>
+        <div class="mistake"><strong>❌ NOT IN với NULL values</strong><p><code>WHERE id NOT IN (SELECT id FROM other_table)</code> — nếu subquery trả NULL, toàn bộ NOT IN = FALSE. Dùng <code>NOT EXISTS</code> thay thế, luôn luôn safe hơn.</p></div>
+        <div class="mistake"><strong>❌ ORDER BY trong subquery</strong><p><code>SELECT * FROM (SELECT * FROM t ORDER BY date) sub WHERE rownum <= 10</code> — ORDER BY trong subquery bị optimizer bỏ qua (trừ khi có LIMIT). Đặt ORDER BY ở outer query.</p></div>
+        <div class="mistake"><strong>❌ Quá nhiều CTEs nested</strong><p>CTE A dùng CTE B dùng CTE C dùng CTE D... 8 levels deep. Khó debug, khó optimize. Flatten khi có thể, materialize intermediate results cho complex pipelines.</p></div>
+    </div>
+
+    <div class="footer">
+        <div class="name">⚔️ SQL Kiếm Thánh — Truy Vấn Thần Tốc</div>
+        <p style="margin-top: 0.5rem; font-style: italic;">"SQL đã 50 năm tuổi và vẫn là kỹ năng có ROI cao nhất trong data. Master SQL, master data."</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Section 2: DATA & DATABASE — IT-AI-Infra Expert Series</p>
+    </div>
+</div>
+</body>
+</html>

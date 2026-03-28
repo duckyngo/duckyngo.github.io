@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Tính & Quyền Truy Cập Đại Sư - IAM Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a1a0d 25%, #1a170a 50%, #1a1a0d 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(234,179,8,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #fde68a; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(234,179,8,0.2)); border: 1px solid rgba(245,158,11,0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #fde68a; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; } .skill-tag:nth-child(7) { animation-delay: 0.4s; } .skill-tag:nth-child(8) { animation-delay: 0.45s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { background: linear-gradient(135deg, rgba(245,158,11,0.4), rgba(234,179,8,0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(245,158,11,0.3); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(245,158,11,0.2); box-shadow: 0 8px 40px rgba(245,158,11,0.1); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #fde68a; display: flex; align-items: center; gap: 10px; }
+        .card h2 .icon { font-size: 1.3em; }
+        .tip { background: rgba(245,158,11,0.06); border-left: 3px solid #fbbf24; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #fde68a; font-size: 1.1em; margin-bottom: 8px; }
+        .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(217,119,6,0.06)); border: 1px solid rgba(245,158,11,0.1); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #f59e0b; font-size: 1.15em; margin-bottom: 12px; }
+        .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; }
+        .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #fde68a; font-weight: 600; }
+        code { background: rgba(245,158,11,0.15); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #fde68a; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🗝️</span>
+            <h1>Danh Tính & Quyền Truy Cập Đại Sư</h1>
+            <p class="subtitle">Lê Thị Chìa Khóa — Người Phán Xử "Ai Được Vào Đâu"</p>
+            <p class="quote">"Authentication hỏi 'Bạn là ai?', Authorization hỏi 'Bạn được làm gì?'. Nhầm hai cái này là mất cả vương quốc."</p>
+        </div>
+
+        <div class="skill-tags">
+            <span class="skill-tag">OAuth 2.0 / OIDC</span>
+            <span class="skill-tag">SSO (SAML)</span>
+            <span class="skill-tag">MFA / FIDO2</span>
+            <span class="skill-tag">Keycloak</span>
+            <span class="skill-tag">SCIM Provisioning</span>
+            <span class="skill-tag">RBAC / ABAC</span>
+            <span class="skill-tag">Passwordless</span>
+            <span class="skill-tag">Identity Federation</span>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📚</span> Thân Thế & Lai Lịch</h2>
+            <p>Lê Thị Chìa Khóa sinh ra trong gia đình bảo vệ — bố là bảo vệ trường học, mẹ là bảo vệ siêu thị, ông nội là bảo vệ kho bạc nhà nước. DNA "kiểm tra thẻ trước khi vào" chảy trong huyết quản cô từ bé. Năm 6 tuổi, cô đã tự thiết kế "hệ thống xác thực" cho phòng riêng: phải trả lời 3 câu hỏi bí mật, quét vân tay (thực ra là dán tay lên kính lúp), và hát đúng mật khẩu — bài "Trống Cơm".</p>
+            <p>Kiếp nạn thứ nhất: "OAuth Dance from Hell" — khi cô phải implement OAuth 2.0 authorization code flow với PKCE cho mobile app và redirect URI callback chạy vòng vòng như vũ điệu tango. Kiếp hai: "SSO Misconfiguration Massacre" — khi một dòng config sai trong Keycloak biến TẤT CẢ users thành admin trong 30 phút. Kiếp ba: "Passwordless Enlightenment" — khi cô nhận ra passwords là root cause của 80% breaches và FIDO2 mới là tương lai.</p>
+            <p>Triết lý của cô: "Identity is the new perimeter. Nếu bạn không quản lý được identity, bạn không quản lý được gì cả."</p>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📜</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: OAuth 2.0 & OpenID Connect — Đừng Tự Viết Auth</h3>
+                <p>OAuth 2.0 cho authorization (access tokens), OIDC cho authentication (ID tokens). Flows: Authorization Code + PKCE cho web/mobile (LUÔN dùng PKCE), Client Credentials cho machine-to-machine, Device Authorization cho IoT. ĐỪNG dùng Implicit flow — deprecated vì security reasons. Access token nên short-lived (15-60 phút), refresh token longer (hours-days) với rotation. JWT claims: <code>iss</code>, <code>sub</code>, <code>aud</code>, <code>exp</code> phải validate đầy đủ. Và nhớ: OAuth KHÔNG phải authentication protocol — OIDC mới là.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #2: SSO & Identity Federation</h3>
+                <p>Single Sign-On cho phép user login một lần, access nhiều applications. SAML 2.0 cho enterprise (XML-based, mature), OIDC cho modern apps (JSON-based, developer-friendly). Identity federation: kết nối multiple identity providers (corporate AD, Google, GitHub) qua standard protocols. Keycloak là lựa chọn open-source tuyệt vời: hỗ trợ SAML + OIDC, user federation (LDAP/AD), social login, admin console. Key: SCIM (System for Cross-domain Identity Management) để auto-provision/deprovision users khi onboard/offboard.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #3: MFA & FIDO2 — Vượt Qua Password</h3>
+                <p>MFA factors: something you know (password), something you have (phone/key), something you are (biometrics). SMS OTP là yếu nhất (SIM swapping, SS7 attacks) — dùng TOTP (Google Authenticator) hoặc tốt hơn là FIDO2/WebAuthn. FIDO2 phishing-resistant vì bound to origin — fake site không thể replay credential. Hardware keys (YubiKey) cho high-security accounts. Passwordless flow: FIDO2 passkey + biometric = no password needed, phishing-proof, user-friendly. Đây là tương lai.</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #4: RBAC vs ABAC — Chọn Đúng Model</h3>
+                <p>RBAC (Role-Based Access Control): user -> role -> permissions. Đơn giản, phổ biến, nhưng role explosion khi phức tạp. ABAC (Attribute-Based Access Control): decisions dựa trên attributes (user department, resource sensitivity, time, location). Flexible hơn nhưng complex hơn. ReBAC (Relationship-Based Access Control): permissions dựa trên relationships (Google Zanzibar model, dùng bởi Google Docs). Thực tế: bắt đầu với RBAC, evolve sang ABAC/ReBAC khi cần. Tools: OPA (Open Policy Agent), Casbin, SpiceDB (ReBAC).</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #5: Keycloak — Swiss Army Knife của IAM</h3>
+                <p>Keycloak cung cấp: SSO (SAML + OIDC), user management, social login, identity brokering, MFA, admin console, account management portal. Deploy: container-based, HA với database cluster (PostgreSQL recommended). Realms để multi-tenancy. Client adapters cho Java, Node.js, Python. Customization qua themes (login page branding), SPI extensions (custom authenticators), event listeners (audit logging). Performance: cache sessions trong Infinispan, database connection pooling. Và backup realm export regularly!</p>
+            </div>
+
+            <div class="tip">
+                <h3>Bí Kíp #6: Least Privilege & Access Reviews</h3>
+                <p>Principle of Least Privilege: user chỉ có quyền TỐI THIỂU cần thiết. Implement: start with zero access, add permissions as needed (whitelist approach). Regular access reviews: quarterly review ai có quyền gì, revoke unused permissions. Just-In-Time (JIT) access: temporary elevated permissions cho specific tasks, auto-revoke after time window. Break-glass procedures: emergency access với full audit trail. Và phải có offboarding checklist — revoke ALL access within hours khi employee rời công ty.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">📖</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>🔥 Chuyện 1: SSO Config Sai — Mọi Người Đều Là Admin</h3>
+                <p>Thứ Ba bình thường, deploy Keycloak config update để thêm role mapping cho team mới. Typo trong mapper configuration: thay vì map group "platform-admins" sang role "admin", nó map group "authenticated" (tức LÀ MỌI USER ĐÃ LOGIN) sang role "admin".</p>
+                <p>30 phút sau, intern phát hiện mình có nút "Delete Production Database" trong admin panel và — may mắn — báo ngay cho manager thay vì tò mò bấm thử. Rollback config, audit log review: 2 users đã vô tình access admin pages nhưng không thay đổi gì. Close call.</p>
+                <p>Từ đó: mọi IAM config change phải qua peer review, có staging environment test trước, và automated tests verify role assignments.</p>
+                <div class="lesson">💡 Bài học: IAM configuration changes là HIGH-RISK changes. Treat chúng như infrastructure code — version controlled, peer reviewed, tested in staging. Một dòng config sai có thể biến cleaning staff thành super admin.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 2: MFA Bypass Qua Account Recovery</h3>
+                <p>Company tự hào 100% MFA adoption. Pentest phát hiện: account recovery flow cho phép reset password qua email, sau reset login KHÔNG yêu cầu MFA. Attacker chỉ cần compromise email -> reset password -> login without MFA -> full access.</p>
+                <p>Worse: "security questions" cho recovery là "Tên thú cưng?" và "Trường cấp 3?" — thông tin public trên Facebook. MFA enforcement bypass hoàn toàn chỉ bằng social engineering + password reset flow.</p>
+                <div class="lesson">💡 Bài học: MFA phải enforce ở MỌI login path, kể cả recovery flows. Security questions là theater, không phải security. Account recovery nên yêu cầu multiple verification steps và re-enroll MFA device.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 3: SCIM Auto-Deprovision Cứu Ngày</h3>
+                <p>Engineer bất mãn bị sa thải, HR process offboarding trong hệ thống HR. SCIM integration tự động: disable user trong Keycloak -> revoke tất cả OAuth tokens -> remove từ mọi groups -> notify security team. Tất cả trong vòng 5 phút từ khi HR click "Terminate".</p>
+                <p>30 phút sau, cựu employee thử login — blocked. Thử dùng saved API tokens — revoked. Thử access Git repos — removed. Không có cửa nào mở. Trước khi có SCIM automation, offboarding mất 3-5 ngày và thường miss vài systems.</p>
+                <div class="lesson">💡 Bài học: Automated provisioning/deprovisioning qua SCIM không phải nice-to-have — đó là critical security control. Manual offboarding luôn có gaps. Minutes matter khi có disgruntled employee.</div>
+            </div>
+
+            <div class="story">
+                <h3>🔥 Chuyện 4: Token Lifetime Quá Dài</h3>
+                <p>Access token lifetime: 24 giờ. Refresh token: 30 ngày, không rotation. User logout khỏi app nhưng tokens vẫn valid. Attacker steal token từ browser localStorage (XSS) và dùng suốt 30 ngày mà không bị detect vì "user vẫn active".</p>
+                <p>Fix: access token 15 phút, refresh token 8 giờ với rotation (mỗi lần dùng refresh token, issue new refresh token, invalidate old one). Token stored trong httpOnly cookie (không phải localStorage). Và implement token revocation endpoint + blacklist cho compromised tokens.</p>
+                <div class="lesson">💡 Bài học: Token lifetime phải SHORT. Refresh token rotation detect token theft (cùng refresh token dùng 2 lần = compromised, revoke toàn bộ session). Và NEVER store tokens trong localStorage.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">⚠️</span> Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Tự viết authentication system</h3>
+                <p>Password hashing, session management, token generation — tự viết = tự tạo vulnerabilities. Dùng proven solutions: Keycloak, Auth0, Firebase Auth, AWS Cognito. Custom auth chỉ khi bạn là security expert.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: SMS-based MFA cho accounts quan trọng</h3>
+                <p>SIM swapping, SS7 interception, social engineering carrier. SMS OTP là MFA yếu nhất. Dùng TOTP hoặc FIDO2 cho admin accounts. SMS chỉ acceptable cho low-risk accounts.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: Shared admin accounts</h3>
+                <p>"root" password chia sẻ giữa 10 người. Khi có incident, ai đã login? Không biết. Mỗi admin phải có individual account với MFA. Shared accounts = no accountability.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Role explosion — 500 roles, không ai hiểu</h3>
+                <p>Mỗi request tạo role mới vì "không có role phù hợp". Kết quả: 500 roles, 80% overlap. Regular role review, consolidation, và proper RBAC hierarchy là bắt buộc.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Không revoke access khi offboarding</h3>
+                <p>Employee nghỉ việc 6 tháng vẫn access được production. Automated deprovisioning + regular access audit + offboarding checklist. Access phải revoke trong GIỜ, không phải tuần.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Lê Thị Chìa Khóa</span> — Danh Tính & Quyền Truy Cập Đại Sư</p>
+            <p>🗝️ "Identity is the new firewall" 🗝️</p>
+        </div>
+    </div>
+</body>
+</html>

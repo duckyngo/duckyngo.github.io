@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giám Sát Học Tôn Sư - Supervised ML Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(100,100,255,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.5em; color: #7eb8ff; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(126,184,255,0.3); }
+        .header .title { font-size: 1.2em; color: #a0a0ff; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote {
+            font-style: italic;
+            color: #ffcc80;
+            margin-top: 15px;
+            font-size: 1.1em;
+            position: relative;
+            z-index: 1;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(100,100,255,0.1);
+        }
+        .card h2 { color: #7eb8ff; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge {
+            background: linear-gradient(135deg, rgba(100,100,255,0.3), rgba(150,100,255,0.2));
+            border: 1px solid rgba(150,150,255,0.3);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            color: #c0c0ff;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .badge:hover {
+            background: linear-gradient(135deg, rgba(100,100,255,0.5), rgba(150,100,255,0.4));
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(100,100,255,0.3);
+        }
+        .tip-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+        }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson {
+            background: rgba(255,200,50,0.08);
+            border: 1px solid rgba(255,200,50,0.2);
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-top: 10px;
+            color: #ffcc80;
+        }
+        .mistake {
+            background: rgba(255,80,80,0.08);
+            border-left: 3px solid #ff5252;
+            padding: 12px 18px;
+            margin-bottom: 12px;
+            border-radius: 0 10px 10px 0;
+        }
+        .mistake strong { color: #ff8a80; }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            color: #80cbc4;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .container { padding: 10px; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">🎓</span>
+            <h1>Giám Sát Học Tôn Sư</h1>
+            <div class="title">Supervised Machine Learning Expert</div>
+            <div class="quote">"Dạy máy như dạy con: phải cho ví dụ đúng, nếu không nó sẽ học theo cách mình không muốn."</div>
+            <div class="badge-container">
+                <span class="badge">🌳 Random Forest</span>
+                <span class="badge">⚡ XGBoost</span>
+                <span class="badge">🚀 LightGBM</span>
+                <span class="badge">📐 SVM</span>
+                <span class="badge">📈 Regression</span>
+                <span class="badge">🏷️ Classification</span>
+                <span class="badge">🎯 Cross-Validation</span>
+                <span class="badge">🔧 Hyperparameter Tuning</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Giám Sát Học Tôn Sư tên thật là <strong>Nguyễn Huấn Luyện</strong>, sinh ra trong một gia đình có truyền thống... dạy học. Ông nội dạy tiểu học, bố dạy đại học, nên tự nhiên anh cũng đi dạy — dạy máy tính.</p>
+            <p>Hồi nhỏ, anh hay bắt mèo trong nhà phân loại đồ chơi: "Cái này là xe, cái kia là búp bê." Con mèo không hiểu, nhưng anh vẫn kiên trì. Lớn lên, anh thay mèo bằng model — và model thực sự học được.</p>
+            <p>Anh từng giành giải nhì Kaggle năm 2019 (nhất là một team 47 người dùng ensemble 200 model), và từ đó tự gọi mình là "Top 2 thế giới, chỉ thua đám đông." Hiện tại anh làm Lead ML Engineer tại một startup fintech, nơi anh dạy model phân biệt giao dịch thật và giao dịch gian lận — một công việc mà theo anh "giống dạy trẻ con phân biệt đúng sai, nhưng trẻ con này xử lý 10 triệu giao dịch mỗi ngày."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Giám Sát Học</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Bias-Variance Tradeoff — Nghệ thuật cân bằng</h3>
+                    <p>Model quá đơn giản thì <strong>underfitting</strong> (bias cao), quá phức tạp thì <strong>overfitting</strong> (variance cao). Bí kíp là tìm sweet spot: bắt đầu từ model đơn giản (Linear Regression, Logistic), rồi tăng dần complexity. Dùng <code>learning curves</code> để xem train/val gap — nếu cả hai đều cao → underfitting, nếu train thấp nhưng val cao → overfitting.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Cross-Validation đúng cách</h3>
+                    <p>Đừng chỉ dùng <code>train_test_split</code> rồi kết luận. Dùng <strong>Stratified K-Fold</strong> (5 hoặc 10 fold) cho classification, <code>TimeSeriesSplit</code> cho time series data. Nhớ: cross-validation phải được thực hiện SAU feature engineering pipeline, nếu không bạn đang leak data từ validation vào training. Dùng <code>sklearn.pipeline.Pipeline</code> để đảm bảo.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>XGBoost vs LightGBM — Chọn đúng vũ khí</h3>
+                    <p><strong>XGBoost</strong>: ổn định, tốt cho dataset nhỏ-trung, nhiều tài liệu. <strong>LightGBM</strong>: nhanh hơn 10-20x trên dataset lớn nhờ histogram-based splitting và leaf-wise growth. Với dataset > 100K rows, hãy thử LightGBM trước. Cả hai đều cần tuning <code>learning_rate</code>, <code>max_depth</code>, <code>n_estimators</code>, <code>min_child_weight</code>. Trick: set <code>n_estimators</code> cao (5000) + <code>early_stopping_rounds=50</code>.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Hyperparameter Tuning có chiến lược</h3>
+                    <p>Đừng dùng GridSearch trừ khi search space nhỏ. Thứ tự ưu tiên: <strong>Optuna</strong> (Bayesian) > <code>RandomizedSearchCV</code> > GridSearch. Optuna với <code>TPESampler</code> thường tìm được hyperparameter tốt trong 50-100 trials. Trick: tune learning_rate và n_estimators trước, sau đó tree-specific params (max_depth, min_child_weight), cuối cùng regularization (reg_alpha, reg_lambda).</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Đánh giá model — Metric phải đúng bài toán</h3>
+                    <p>Classification imbalanced? Đừng dùng accuracy. Dùng <strong>F1-score</strong> (macro cho balanced, weighted cho imbalanced), <strong>PR-AUC</strong> (tốt hơn ROC-AUC khi positive class hiếm), hoặc custom metric theo business. Regression? <strong>MAE</strong> khi cần robust với outliers, <strong>RMSE</strong> khi outliers quan trọng. Luôn report <strong>confidence interval</strong> bằng bootstrap.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">6</span>
+                <div class="tip-content">
+                    <h3>Ensemble — Sức mạnh đoàn kết</h3>
+                    <p>Model đơn lẻ ít khi thắng. <strong>Stacking</strong>: dùng predictions của base models làm features cho meta-learner (thường là Logistic Regression hoặc LightGBM nhẹ). <strong>Blending</strong>: weighted average đơn giản nhưng hiệu quả. Trick: ensemble các model "đa dạng" (tree-based + linear + NN) tốt hơn ensemble cùng loại. Dùng <code>scipy.optimize.minimize</code> để tìm optimal weights.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">7</span>
+                <div class="tip-content">
+                    <h3>Xử lý Imbalanced Data</h3>
+                    <p>Đừng chỉ dùng SMOTE mù quáng. Thứ tự thử: (1) <code>class_weight='balanced'</code> trong model, (2) Undersampling majority + slight oversampling minority, (3) <strong>SMOTE-ENN</strong> hoặc <strong>SMOTE-Tomek</strong> cho hybrid approach. Với tree-based models, <code>scale_pos_weight</code> thường đủ. Quan trọng nhất: đánh giá trên original distribution, chỉ resampling trên training set.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">🎯 Chuyện 1: Model đạt 99.9% accuracy — và không ai vui</div>
+                <p>Có lần anh Huấn Luyện train một model phân loại giao dịch gian lận. Accuracy 99.9%! Cả team hò reo, sếp gọi điện khen. Nhưng khi deploy, model không bắt được giao dịch gian lận nào. Tại sao? Vì 99.9% giao dịch là hợp lệ — model chỉ cần predict "hợp lệ" cho mọi thứ là đạt 99.9%. Recall cho class "gian lận" = 0%.</p>
+                <p>Anh mất 2 ngày giải thích cho sếp tại sao 99.9% accuracy lại là model tệ nhất có thể. Sếp nhìn anh như nhìn người điên.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Accuracy là metric lừa đảo nhất trong classification imbalanced. Luôn kiểm tra Precision, Recall, F1, và Confusion Matrix. Metric phải phản ánh business value, không phải ego của data scientist.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🏆 Chuyện 2: XGBoost lại thắng Kaggle — một lần nữa</div>
+                <p>Năm 2019, anh tham gia một cuộc thi Kaggle về dự đoán customer churn. Anh dành 3 tuần xây dựng feature engineering pipeline phức tạp, thử đủ loại model: SVM, Random Forest, Neural Network, thậm chí cả model ensemble 5 tầng.</p>
+                <p>Cuối cùng, anh submit XGBoost với default parameters + một vài features thông minh. Kết quả: top 2%. Trong khi đó, Neural Network anh train 3 ngày chỉ đạt top 15%. Anh nhận ra: trong tabular data, feature engineering > model complexity.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Với tabular data, gradient boosting (XGBoost/LightGBM) + good features thường thắng deep learning. Đầu tư thời gian vào hiểu data và feature engineering hơn là thử model phức tạp. "Garbage in, garbage out" — nhưng "gold features in, gold predictions out."</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">💥 Chuyện 3: Overfitting — khi model thuộc bài nhưng không hiểu bài</div>
+                <p>Một junior trong team train Random Forest với <code>max_depth=None</code> và <code>min_samples_leaf=1</code>. Training accuracy: 100%. Validation accuracy: 62%. Cậu ta tự hào khoe: "Model em train accuracy 100% anh ơi!"</p>
+                <p>Anh Huấn Luyện nhìn learning curve, thở dài: "Em ơi, model của em giống sinh viên học tủ — thuộc hết đáp án nhưng đổi đề là chết." Rồi anh chỉ cậu ta cách dùng <code>max_depth=8</code>, <code>min_samples_leaf=20</code>, và thêm cross-validation. Validation accuracy tăng lên 81%.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Training accuracy 100% là dấu hiệu đỏ, không phải thành tích. Luôn regularize model: giới hạn depth, tăng min_samples, dùng dropout (với NN). Model tốt là model generalize tốt, không phải model memorize tốt.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">🔄 Chuyện 4: Data leakage — kẻ phá hoại thầm lặng</div>
+                <p>Team anh có lần build model dự đoán bệnh nhân sẽ nhập viện lại trong 30 ngày. Model đạt AUC 0.98 — quá tốt để là thật. Và đúng vậy, nó không thật.</p>
+                <p>Sau 2 tuần debug, phát hiện: một feature là "số lần gọi điện follow-up của bác sĩ" — feature này chỉ có SAU khi bệnh nhân đã nhập viện lại. Model đang "nhìn vào tương lai" để dự đoán. Remove feature đó, AUC xuống 0.72 — con số thật.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Data leakage là kẻ giết người thầm lặng trong ML. Luôn hỏi: "Feature này có available tại thời điểm prediction không?" Dùng feature importance để kiểm tra — nếu một feature quá dominant, hãy nghi ngờ nó.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Dùng accuracy cho imbalanced data:</strong> 99% accuracy nghe đẹp nhưng nếu 99% data thuộc một class thì model chỉ cần predict class đó. Hãy dùng F1, PR-AUC, hoặc custom metric.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không dùng Pipeline:</strong> Fit scaler trên toàn bộ data rồi mới split → data leakage. Luôn dùng <code>sklearn.pipeline.Pipeline</code> để đảm bảo preprocessing chỉ fit trên training data.
+            </div>
+            <div class="mistake">
+                <strong>❌ GridSearch với không gian lớn:</strong> GridSearch 5 params × 10 values = 100,000 combinations. Dùng <code>Optuna</code> hoặc <code>RandomizedSearchCV</code> thay vì đốt tiền điện.
+            </div>
+            <div class="mistake">
+                <strong>❌ Bỏ qua feature importance:</strong> Train xong rồi deploy luôn mà không xem feature nào quan trọng. Khi model sai, không biết debug từ đâu.
+            </div>
+            <div class="mistake">
+                <strong>❌ Train trên data tương lai:</strong> Time series data mà dùng random split → model "biết tương lai." Luôn dùng <code>TimeSeriesSplit</code> cho temporal data.
+            </div>
+            <div class="mistake">
+                <strong>❌ Overfit trên validation set:</strong> Submit 100 lần trên Kaggle, mỗi lần tune theo leaderboard → overfit leaderboard. Public LB khác private LB. Giữ một holdout set riêng.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không set random seed:</strong> Kết quả thay đổi mỗi lần chạy mà không biết tại sao. Luôn set <code>random_state=42</code> (hoặc bất kỳ số nào) để reproducible.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🎓 Giám Sát Học Tôn Sư — "Dạy máy 10 năm, máy vẫn chưa biết ơn thầy."</p>
+            <p>Section 3: AI & Machine Learning · Expert #52</p>
+        </div>
+    </div>
+</body>
+</html>

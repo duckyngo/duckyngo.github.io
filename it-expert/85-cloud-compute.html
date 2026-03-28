@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán Mây Đại Sư - VM, Container, GPU/TPU</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a0a 30%, #2a0a1a 60%, #3a1a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(239,68,68,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(239,68,68,0.2); margin-bottom: 30px; }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #ef4444; text-shadow: 0 0 20px #ef444440; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #ef4444; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #ef4444; transition: all 0.3s; }
+        .badge:hover { background: rgba(239,68,68,0.15); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #ef4444; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid rgba(239,68,68,0.3); }
+        .tip { background: rgba(239,68,68,0.03); border-left: 4px solid #ef4444; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #ef4444; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🖥️</span>
+            <h1>Tính Toán Mây Đại Sư</h1>
+            <div class="title">Chuyên Gia VM, Container & GPU/TPU | Người Biết Giá Mỗi vCPU</div>
+            <div class="quote">"Chọn instance type giống như mua xe: bạn không cần Ferrari để đi chợ, nhưng cũng đừng mua xe đạp rồi chở cả gia đình."</div>
+        </div>
+
+        <div class="badges">
+            <span class="badge">🖥️ EC2 Expert</span>
+            <span class="badge">💨 Spot Instances</span>
+            <span class="badge">🎮 GPU Computing</span>
+            <span class="badge">🧠 TPU/AI Chips</span>
+            <span class="badge">💪 ARM/Graviton</span>
+            <span class="badge">🏎️ HPC</span>
+            <span class="badge">📦 Container Compute</span>
+            <span class="badge">⚖️ Auto Scaling</span>
+        </div>
+
+        <div class="section">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Đại Sư bắt đầu với việc quản lý một rack server duy nhất. Chàng ta biết chính xác mỗi server có bao nhiêu RAM, bao nhiêu cores, và tốc độ quạt bao nhiêu RPM. Khi chuyển sang cloud, chàng ta choáng ngợp: EC2 có hơn 750 instance types. "Ai cần 750 loại xe?" chàng ta hỏi.</p>
+            <p>Sau khi chọn sai instance type 47 lần (compute-optimized cho memory-heavy workload, memory-optimized cho CPU-heavy workload, và một lần legendary chọn GPU instance để chạy WordPress), chàng ta đã master nghệ thuật right-sizing.</p>
+            <p>Ngày nay, chàng ta còn phải deal với GPU shortage cho AI workloads — NVIDIA A100 wait list 6 tháng, H100 thì "call for pricing" (nghĩa là bạn không đủ tiền). Chàng ta biết mọi trick: spot instances, reserved capacity, và "chạy lúc 3 giờ sáng khi GPU rẻ hơn".</p>
+        </div>
+
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. Instance Family — Hiểu Alphabet Soup:</strong> T (burstable, dev/test), M (general purpose), C (compute-optimized), R (memory-optimized), P/G (GPU), I (storage-optimized), X (memory-intensive). Graviton (ARM) instances: 20-40% better price-performance cho nhiều workloads. Benchmark trước khi chọn.
+            </div>
+            <div class="tip">
+                <strong>2. Spot Instances — 90% Savings, 100% Risk Management:</strong> Spot giá rẻ hơn On-Demand tới 90%. Nhưng có thể bị terminate với 2-minute warning. Use cases: batch processing, CI/CD, stateless web servers (behind ASG), big data processing. KHÔNG dùng cho: databases, stateful services, single-instance workloads.
+            </div>
+            <div class="tip">
+                <strong>3. GPU Computing — AI/ML Infrastructure:</strong> NVIDIA T4 cho inference (giá rẻ, hiệu quả). A10G cho mixed training/inference. A100/H100 cho large-scale training. Multi-GPU instances cho distributed training. Spot GPU instances cho training (checkpoint frequently!). Consider cloud-specific AI chips: AWS Inferentia, Google TPU.
+            </div>
+            <div class="tip">
+                <strong>4. Auto Scaling — Scale Right, Not Just Scale Out:</strong> Target tracking policies (CPU 70%, request count). Step scaling cho predictable patterns. Scheduled scaling cho known traffic patterns (e.g., business hours). Predictive scaling dùng ML. Cool-down periods để tránh flapping. Scale IN cũng quan trọng — đừng để instance chạy idle.
+            </div>
+            <div class="tip">
+                <strong>5. Container Compute — ECS vs EKS vs Fargate:</strong> ECS: AWS-native, simpler. EKS: Kubernetes standard, portable. Fargate: serverless containers, no node management. ECS + Fargate cho simplicity. EKS + managed node groups cho control. Fargate cho teams không muốn manage nodes. Karpenter cho EKS auto-scaling tối ưu.
+            </div>
+            <div class="tip">
+                <strong>6. HPC — High Performance Computing:</strong> Placement groups (cluster) cho low-latency networking. EFA (Elastic Fabric Adapter) cho MPI workloads. FSx for Lustre cho high-throughput parallel storage. AWS ParallelCluster, Azure CycleCloud cho HPC cluster management. Spot Instances cho burst HPC — có thể tiết kiệm millions.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>💀 Chuyện Spot Instance Bị Terminate Giữa Training</h3>
+                <p>ML team chạy training job trên p3.16xlarge spot instance (8 x V100 GPUs, ~$7/hour spot vs $25/hour on-demand). Training dự kiến 48 giờ. Checkpoint mỗi 12 giờ "vì checkpoint tốn thời gian."</p>
+                <p>Giờ thứ 11: spot instance terminated. 11 giờ training mất trắng vì checkpoint cuối cùng là... chưa có. Re-run từ đầu. Giờ thứ 23: terminated AGAIN. Team chuyển sang on-demand, tốn gấp 3.5x nhưng ít nhất hoàn thành được.</p>
+                <div class="lesson">💡 Bài học: Spot cho training = PHẢI checkpoint frequently (mỗi 30-60 phút). Dùng Spot Instance interruption notice (2 phút) để save checkpoint emergency. Mix on-demand (1 instance guaranteed) + spot (additional capacity). Training frameworks hỗ trợ resume from checkpoint — USE IT.</div>
+            </div>
+            <div class="story">
+                <h3>🤦 Chuyện Chọn Sai Instance Type 6 Tháng</h3>
+                <p>Team chạy PostgreSQL trên c5.4xlarge (16 vCPUs, 32GB RAM) — compute-optimized. Database chạy chậm, queries timeout. Team scale up lên c5.9xlarge. Vẫn chậm. c5.18xlarge. Hơi khá hơn nhưng tốn $2,000/tháng.</p>
+                <p>Đại Sư vào analyze: CPU usage 15%, memory usage 95%. Database cần RAM cho buffer pool, không cần CPU. Chuyển sang r5.4xlarge (16 vCPUs, 128GB RAM): performance tăng 5x, chi phí giảm 30%. Problem solved trong 5 phút analysis.</p>
+                <div class="lesson">💡 Bài học: Monitor actual resource usage trước khi scale. CPU-bound workload → C series. Memory-bound → R series. Storage-bound → I series. Right instance family > bigger instance size. 5 phút analysis có thể tiết kiệm hàng nghìn đô la mỗi tháng.</div>
+            </div>
+            <div class="story">
+                <h3>🎮 Chuyện GPU Shortage Năm 2024</h3>
+                <p>Startup AI cần 64 A100 GPUs cho training. AWS: "p4d.24xlarge available in us-east-1... trong 4 tháng." Azure: "6 tháng wait list." GCP: "Contact sales." Startup có funding $5M và 12 tháng runway. 4-6 tháng chờ GPU = death sentence.</p>
+                <p>Đại Sư suggest: (1) Lambda Labs cloud — smaller provider nhưng có GPU inventory, (2) CoreWeave — GPU-specialized cloud, (3) Optimize model để cần ít GPU hơn, (4) Mixed precision training giảm memory, (5) Gradient checkpointing. Cuối cùng: 32 GPUs trên CoreWeave + optimization = same result với 50% less GPUs.</p>
+                <div class="lesson">💡 Bài học: GPU shortage là real. Đừng depend hoàn toàn vào Big 3 cho GPU. Smaller specialized providers (Lambda, CoreWeave, RunPod) thường có availability tốt hơn. Optimize model trước khi throw more GPUs. Reserved capacity cho long-term GPU needs.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake"><strong>1. Default instance type cho mọi workload:</strong> t3.medium cho mọi thứ — web server, database, batch job. Mỗi workload cần instance type khác nhau.</div>
+            <div class="mistake"><strong>2. Không dùng ARM/Graviton:</strong> 20-40% cheaper, better performance cho nhiều workloads. Test compatibility và migrate — ROI cao.</div>
+            <div class="mistake"><strong>3. Over-provisioning "cho an toàn":</strong> 80% instances trên cloud over-provisioned. Monitor và right-size continuously. Savings tiềm năng: 30-50%.</div>
+            <div class="mistake"><strong>4. Spot instance cho stateful workload:</strong> Database trên spot = data loss khi terminate. Spot chỉ cho stateless, checkpoint-able workloads.</div>
+            <div class="mistake"><strong>5. Quên turn off dev/test instances:</strong> Dev instances chạy 24/7 nhưng chỉ dùng 8h/ngày = 67% waste. Auto-stop scripts, scheduling, hoặc dùng burstable instances.</div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #85</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

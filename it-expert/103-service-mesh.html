@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lưới Dịch Vụ Đại Sư - Chuyên Gia Istio, Linkerd & Cilium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a1a 30%, #1a2a1a 60%, #0a3a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #22c55e; text-shadow: 0 0 20px #22c55e40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #22c55e; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #22c55e; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #22c55e; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #22c55e30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #22c55e; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #22c55e; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🕸️</span><h1>Lưới Dịch Vụ Đại Sư</h1><div class="title">Chuyên Gia Istio, Linkerd & Cilium</div><div class="quote">"Service mesh: thêm 1 layer complexity để giải quyết complexity. Đôi khi solution tệ hơn problem. Nhưng khi nó hoạt động, nó thật sự magical."</div></div>
+        <div class="badges">            <span class="badge">🕸️ Istio Expert</span>
+            <span class="badge">🔗 Linkerd Master</span>
+            <span class="badge">🐝 Cilium/eBPF</span>
+            <span class="badge">🔐 mTLS</span>
+            <span class="badge">🔀 Traffic Management</span>
+            <span class="badge">📊 Observability</span>
+            <span class="badge">🛡️ Security Policies</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư từng implement service-to-service security bằng tay: mỗi service cần TLS certificate, mỗi connection cần authentication, mỗi request cần authorization. 50 microservices × 50 connections = 2500 configurations. "There must be a better way," chàng ta than thở.</p><p>Istio ra đời: "Install service mesh, get mTLS, observability, and traffic management for free!" Chàng ta install Istio. Pod count double (sidecars). Memory usage +40%. "Free" có giá riêng của nó. Nhưng: mTLS everywhere, distributed tracing automatic, canary deployments simple. Trade-off đáng giá cho complex microservice architectures.</p><p>Rồi Cilium xuất hiện: eBPF-based, sidecar-less service mesh. Performance overhead minimal. "Best of both worlds," chàng ta nghĩ. Và đúng vậy — cho đến khi debug eBPF programs lúc 2 giờ sáng.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Sidecar vs Sidecarless:</strong> Sidecar (Istio, Linkerd): Envoy proxy per pod. Pros: transparent, well-understood. Cons: resource overhead, latency. Sidecarless (Cilium): eBPF in kernel. Pros: lower overhead, no extra containers. Cons: newer, kernel version requirements. Ambient mesh (Istio): per-node proxy instead of per-pod. Middle ground.</div>
+            <div class="tip"><strong>2. mTLS — Mutual TLS:</strong> Encrypt all service-to-service traffic. Mutual authentication: both sides verify identity. Automatic certificate rotation. Zero-code changes in applications. PERMISSIVE mode for migration (accept both TLS and plaintext). STRICT mode for production. Service identity based on SPIFFE.</div>
+            <div class="tip"><strong>3. Traffic Management:</strong> Canary deployments: route 5% traffic to new version. A/B testing: route by headers. Circuit breaking: stop sending to failing services. Retry policies: automatic retries with backoff. Timeout policies: prevent slow services from blocking others. Fault injection: test resilience.</div>
+            <div class="tip"><strong>4. Observability — Golden Signals:</strong> Latency: p50/p95/p99 per service pair. Traffic: requests per second. Errors: error rate per service. Saturation: resource utilization. Distributed tracing: automatic span injection. Service graph: visualize dependencies. Metrics exported to Prometheus/Grafana.</div>
+            <div class="tip"><strong>5. Choosing a Service Mesh:</strong> Istio: feature-rich, complex, large community. Linkerd: simple, lightweight, Rust data plane. Cilium: eBPF-based, sidecarless, fastest. Consul Connect: HashiCorp ecosystem integration. Question first: do you NEED a service mesh? Under 10 services → probably not.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>🕸️ Chuyện Istio Sidecar Double Pod Count</h3><p>500-pod cluster enable Istio. Pod count: 500 app + 500 Envoy sidecar = 1000 pods. Memory per sidecar: 100-200MB. Total sidecar memory: 50-100GB. Node count increase 40%. Cost increase: $4,000/tháng. DevOps team: 'We added observability nhưng now we can not afford it.'</p><p>Optimization: tune sidecar resource limits (reduce from 200MB to 80MB). Exclude non-critical services from mesh. Enable Istio ambient mode (per-node instead of per-pod). Result: overhead reduced 60%.</p><div class="lesson">💡 Bài học: Service mesh resource overhead is significant. Calculate overhead TRƯỚC deployment. Tune sidecar resources. Exclude services that don't need mesh. Consider sidecarless options (Cilium, Istio ambient). Start with subset of services, expand gradually.</div></div>
+            <div class="story"><h3>🔐 Chuyện mTLS Cứu Mạng Từ Insider Threat</h3><p>Network engineer compromise internal credentials. Attempt lateral movement trong Kubernetes cluster. Without mesh: service-to-service traffic plaintext, easy to intercept and replay. WITH mTLS: every connection requires valid SPIFFE identity certificate. Attacker cannot spoof service identity without compromising service account.</p><p>mTLS blocked: unauthorized service-to-service calls, traffic interception (encrypted), service impersonation. Security team detect anomalous connection attempts qua mesh telemetry.</p><div class="lesson">💡 Bài học: mTLS is THE reason to adopt service mesh for security-conscious organizations. Zero-trust network: don't trust internal network. Service identity > network identity. mTLS + authorization policies = defense in depth. Even without full mesh features, mTLS alone justifies adoption.</div></div>
+            <div class="story"><h3>🔀 Chuyện Canary Deployment Bắt Bug</h3><p>New version of payment service deployed as canary (5% traffic). Mesh dashboard shows: canary version error rate 15% vs stable 0.1%. Automatic rollback trigger. Zero customer impact. Without mesh: bug would hit 100% traffic, require manual detection and rollback.</p><p>Post-mortem: database schema change incompatible with new code. Caught by mesh-level error rate monitoring trước khi widespread impact.</p><div class="lesson">💡 Bài học: Canary deployments qua service mesh = safety net cho production deploys. Automatic rollback based on error rates. Traffic shifting gives confidence. Percentage-based rollout: 5% → 25% → 50% → 100%. Monitor golden signals at each step.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. Deploy mesh cho 5 microservices:</strong> Overkill. mTLS library hoặc simple mutual TLS sufficient. Mesh overhead ≠ justify cho small architectures.</div>
+            <div class="mistake"><strong>2. Enable all features at once:</strong> mTLS + traffic management + policies + tracing simultaneously. Start with mTLS, add features incrementally.</div>
+            <div class="mistake"><strong>3. Không tune sidecar resources:</strong> Default Envoy sidecar resources generous. Tune dựa trên actual traffic. Most sidecars need less than defaults.</div>
+            <div class="mistake"><strong>4. Ignore control plane HA:</strong> Istiod single instance = mesh SPOF. Multiple istiod replicas + PDB cho production.</div>
+            <div class="mistake"><strong>5. Debugging mesh issues:</strong> Problem in app or mesh? Bypass mesh (curl directly) to isolate. istioctl analyze cho configuration issues. Envoy access logs cho traffic debugging.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #103</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

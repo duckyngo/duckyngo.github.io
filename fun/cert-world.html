@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Certificate - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: lockPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes lockPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px transparent); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(59,130,246,0.4)); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* Intro Box */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .intro-box h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .analogy-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4), var(--accent5));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Card Grids */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .info-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .info-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .info-card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .info-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .info-card .card-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .info-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .info-card.dv::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .info-card.ov::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .info-card.ev::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .info-card.wildcard::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .info-card.san::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .info-card.selfsigned::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol / Detail Cards */
+  .detail-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .detail-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .detail-card:hover { border-color: var(--accent); }
+
+  .detail-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .detail-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .detail-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Flow Diagram */
+  .flow-box {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .flow-box .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Numbered Cards */
+  .numbered-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .numbered-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .numbered-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .numbered-card .card-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .numbered-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .numbered-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .analogy-grid { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .card-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .numbered-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Cert World</a>
+  <a href="#what">TLS/SSL?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#pki">PKI</a>
+  <a href="#types">Loại cert</a>
+  <a href="#acme">ACME</a>
+  <a href="#mtls">mTLS</a>
+  <a href="#hardening">Hardening</a>
+  <a href="#tools">Tools</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">&#x1F510;</div>
+  <h1>Thế Giới Certificate</h1>
+  <p class="subtitle">Từ mật mã bất đối xứng đến chuỗi tin cậy toàn cầu - Hành trình bảo mật mọi kết nối trên Internet. Mọi thứ bạn cần biết về TLS/SSL, PKI, và nghệ thuật xác thực danh tính số.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS TLS/SSL -->
+<section id="what">
+  <div class="intro-box">
+    <h2 class="section-title">TLS/SSL là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Transport Layer Security</strong> (TLS) - hậu duệ của SSL - là giao thức mã hóa bảo vệ dữ liệu khi truyền qua mạng. Mỗi khi bạn thấy biểu tượng ổ khóa trên trình duyệt, TLS đang làm việc âm thầm phía sau, mã hóa mọi byte giữa bạn và server.
+    </p>
+
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="icon">&#x1F4E8;</div>
+        <h3>Không có TLS</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Dữ liệu truyền dạng plaintext<br>Ai cũng đọc được: <strong style="color: var(--accent5);">password, cookie, mọi thứ</strong></p>
+      </div>
+      <div class="analogy-arrow">&#8594;</div>
+      <div class="analogy-box">
+        <div class="icon">&#x1F512;</div>
+        <h3>Có TLS</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Mã hóa end-to-end<br>Kẻ nghe lén chỉ thấy: <strong style="color: var(--accent3);">rác vô nghĩa</strong></p>
+      </div>
+    </div>
+
+    <p style="color: var(--text-dim); margin-top: 1.5rem; font-size: 1.05rem;">
+      Nhưng TLS không chỉ mã hóa. Nó còn làm ba việc cực kỳ quan trọng: <strong>xác thực danh tính</strong> (bạn đang nói chuyện với đúng server, không phải kẻ giả mạo), <strong>đảm bảo toàn vẹn</strong> (dữ liệu không bị sửa đổi giữa đường), và <strong>chống phát lại</strong> (replay attack). Certificate chính là "chứng minh thư" số mà server trình ra để chứng minh danh tính.
+    </p>
+
+    <div class="insight-box" style="margin-top: 1.5rem;">
+      <h4>Mật mã bất đối xứng - Phép màu toán học</h4>
+      <p>Trái tim của TLS là <strong>asymmetric cryptography</strong>. Tưởng tượng thế này: bạn có một chiếc hộp với hai chìa khóa - <strong>chìa công khai</strong> (public key) ai cũng có thể dùng để KHÓA hộp, nhưng chỉ <strong>chìa riêng tư</strong> (private key) mới MỞ được. Khi browser kết nối đến server, server đưa public key (trong certificate). Browser dùng nó để mã hóa một "bí mật chung" (session key) rồi gửi lại. Chỉ server với private key mới giải mã được. Từ đó, cả hai dùng session key (symmetric) để mã hóa nhanh hơn. Đây gọi là <strong>TLS handshake</strong> - diễn ra trong vài mili-giây nhưng đằng sau là hàng thập kỷ toán học.</p>
+    </div>
+  </div>
+
+  <!-- TLS Handshake Flow -->
+  <div class="flow-box">
+    <div class="flow-title">TLS 1.3 Handshake - Chuyện gì xảy ra trong 1-RTT?</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  Client (Browser)           Network              Server (nginx/apache)
+       |                        |                        |
+       |── ClientHello ────────────────────────────────>|
+       |   (TLS version, cipher suites,                  |
+       |    client random, key share)                    |
+       |                        |                        |
+       |<───────────────────────────── ServerHello ─────|
+       |                        |   (chosen cipher,      |
+       |                        |    server random,      |
+       |                        |    key share)          |
+       |<───────────────────── <span style="color:var(--accent);">Certificate</span> ────────────|  <span style="color:var(--accent4);">&#8592; Server chứng minh danh tính</span>
+       |<───────────────────── CertificateVerify ──────|  <span style="color:var(--accent4);">&#8592; Ký bằng private key</span>
+       |<───────────────────── Finished ───────────────|
+       |                        |                        |
+       |   <span style="color:var(--accent3);">Verify cert chain &#10003;</span>  |                        |
+       |   <span style="color:var(--accent3);">Derive session keys</span>   |                        |
+       |                        |                        |
+       |── Finished ───────────────────────────────────>|
+       |                        |                        |
+       |<═══════════ <span style="color:var(--accent3);">Encrypted Application Data</span> ═══════════>|  <span style="color:var(--accent4);">&#8592; Mã hóa hoàn toàn!</span>
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>TLS 1.3 vs TLS 1.2 - Tại sao quan trọng?</h4>
+    <p>TLS 1.3 (RFC 8446, 2018) là bước nhảy vọt: <strong>1-RTT handshake</strong> thay vì 2-RTT (nhanh hơn), loại bỏ hoàn toàn cipher suites yếu (RC4, 3DES, CBC mode), bắt buộc <strong>Perfect Forward Secrecy</strong> (ECDHE), và hỗ trợ <strong>0-RTT resumption</strong> cho kết nối lại. Nếu server bạn vẫn dùng TLS 1.0/1.1 - đó là lỗ hổng bảo mật nghiêm trọng, các trình duyệt hiện đại đã từ chối kết nối.</p>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian TLS/SSL</h2>
+  <p class="section-subtitle">30 năm phát triển - từ Netscape đến mã hóa toàn cầu, xen lẫn những vụ breach chấn động</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1994-1995</span>
+        <h3>SSL 1.0 &amp; 2.0 - Netscape khởi đầu</h3>
+        <p>Netscape phát minh SSL để bảo mật thương mại điện tử. SSL 1.0 không bao giờ được phát hành vì lỗi bảo mật nghiêm trọng. SSL 2.0 ra mắt năm 1995 nhưng nhanh chóng bị phát hiện nhiều lỗ hổng (DROWN attack sau này khai thác điều này).</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1996</span>
+        <h3>SSL 3.0 - Thiết kế lại từ đầu</h3>
+        <p>Paul Kocher cùng Netscape viết lại hoàn toàn. SSL 3.0 là nền tảng thực sự cho mọi thứ sau này. Tuy nhiên, năm 2014 POODLE attack sẽ khai tử nó hoàn toàn.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1999</span>
+        <h3>TLS 1.0 - IETF tiếp quản</h3>
+        <p>SSL đổi tên thành TLS khi IETF chuẩn hóa (RFC 2246). Về kỹ thuật gần giống SSL 3.0 nhưng không tương thích ngược. Đây là lý do mọi người vẫn gọi "SSL certificate" dù thực tế đang dùng TLS - thói quen từ thời Netscape.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2006-2008</span>
+        <h3>TLS 1.1 &amp; 1.2</h3>
+        <p>TLS 1.1 sửa lỗi CBC. TLS 1.2 (RFC 5246) mang đến AEAD cipher suites (AES-GCM), SHA-256, và khả năng negotiate algorithms linh hoạt hơn. TLS 1.2 trở thành chuẩn vàng trong hơn một thập kỷ.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2011</span>
+        <h3 style="color: var(--accent5);">DigiNotar - Sụp đổ niềm tin</h3>
+        <p>Hacker Iran xâm nhập CA DigiNotar, cấp certificate giả cho google.com. Hàng trăm ngàn người Iran bị MITM. DigiNotar phá sản. Sự kiện này thay đổi vĩnh viễn ngành PKI - Certificate Transparency ra đời từ đây.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2014</span>
+        <h3 style="color: var(--accent5);">Heartbleed - Trái tim rỉ máu</h3>
+        <p>Lỗi trong OpenSSL cho phép đọc bộ nhớ server - bao gồm cả <strong>private key</strong>. Ảnh hưởng 17% web server toàn cầu. CVSS 7.5. Hàng triệu certificate phải thu hồi và cấp lại. Sự kiện này cho thế giới thấy: một dòng code sai trong thư viện crypto có thể phá hủy bảo mật toàn cầu.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2015-2016</span>
+        <h3 style="color: var(--accent3);">Let's Encrypt - Cách mạng miễn phí</h3>
+        <p>ISRG ra mắt Let's Encrypt: certificate DV miễn phí, tự động, qua giao thức ACME. Từ thế giới mà cert SSL tốn $100-$300/năm, bỗng dưng miễn phí. HTTPS adoption nhảy từ 40% lên 90%+ trong vài năm. Đây là cuộc cách mạng lớn nhất trong lịch sử PKI.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2018</span>
+        <h3>TLS 1.3 - Tái thiết kế triệt để</h3>
+        <p>RFC 8446. Loại bỏ RSA key exchange (bắt buộc forward secrecy), giảm handshake xuống 1-RTT, hỗ trợ 0-RTT. Chỉ còn 5 cipher suites (thay vì hàng trăm). Chrome, Firefox bắt đầu cảnh báo HTTP. "HTTPS everywhere" trở thành hiện thực.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2021-nay</span>
+        <h3>Post-Quantum &amp; 90 ngày</h3>
+        <p>Google đề xuất giảm thời hạn cert xuống 90 ngày (thay vì 398). Certificate Transparency bắt buộc. Nghiên cứu post-quantum cryptography (ML-KEM, ML-DSA) để chống quantum computer. Ngành đang chuẩn bị cho kỷ nguyên mới.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PKI -->
+<section id="pki">
+  <h2 class="section-title" style="color: var(--accent2);">PKI - Chuỗi Tin Cậy Toàn Cầu</h2>
+  <p class="section-subtitle">Public Key Infrastructure - hệ thống phân cấp niềm tin đằng sau mọi kết nối HTTPS</p>
+
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Certificate Chain of Trust - Chuỗi xác thực</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer" style="border-color: var(--accent5); background: rgba(239,68,68,0.05);">
+        <div class="layer-icon">&#x1F3DB;</div>
+        <h4 style="color: var(--accent5);">Root CA</h4>
+        <p>Tự ký (self-signed)<br>Lưu offline, air-gapped<br>Thời hạn: 20-30 năm</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent4); background: rgba(245,158,11,0.05);">
+        <div class="layer-icon">&#x1F3E2;</div>
+        <h4 style="color: var(--accent4);">Intermediate CA</h4>
+        <p>Ký bởi Root CA<br>Thực sự cấp cert<br>Thời hạn: 5-10 năm</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.05);">
+        <div class="layer-icon">&#x1F4DC;</div>
+        <h4 style="color: var(--accent3);">Leaf Certificate</h4>
+        <p>Cert của website bạn<br>Ký bởi Intermediate<br>Thời hạn: 90-398 ngày</p>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-layer">
+        <div class="layer-icon">&#x1F310;</div>
+        <h4>Browser / OS</h4>
+        <p>Trust Store chứa<br>~150 Root CAs<br>Cập nhật qua update</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="color: var(--text-dim); font-size: 1.05rem; margin-bottom: 1.5rem;">
+    Khi browser nhận certificate từ server, nó không tin ngay. Nó đi ngược chuỗi: cert này do Intermediate CA nào ký? Intermediate đó do Root CA nào ký? Root CA đó có nằm trong trust store không? Nếu toàn bộ chuỗi hợp lệ, kết nối được thiết lập. Nếu bất kỳ mắt xích nào đứt - bạn thấy trang "Your connection is not private".
+  </p>
+
+  <div class="numbered-grid">
+    <div class="numbered-card">
+      <div class="card-num">1</div>
+      <h4>Root CA - Neo tin cậy tuyệt đối</h4>
+      <p>Root CA là gốc rễ của mọi niềm tin. Private key của Root CA được bảo vệ trong <strong>HSM (Hardware Security Module)</strong>, đặt trong phòng an ninh, air-gapped (không nối mạng). Một Root CA bị compromise = hàng triệu website mất bảo mật. Đó là lý do DigiNotar bị xóa khỏi trust store và phá sản chỉ sau vài tuần.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num">2</div>
+      <h4>Intermediate CA - Tuyến phòng thủ</h4>
+      <p>Root CA KHÔNG BAO GIỜ trực tiếp ký leaf certificate. Thay vào đó, nó ký cho Intermediate CA, và Intermediate mới ký cho website. Tại sao? Nếu Intermediate bị hack, chỉ cần thu hồi Intermediate - Root CA vẫn an toàn. Đây là nguyên tắc <strong>"defense in depth"</strong> trong PKI.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num">3</div>
+      <h4>Certificate Signing Request (CSR)</h4>
+      <p>Để xin certificate, bạn tạo CSR: file chứa public key và thông tin domain/tổ chức, ký bằng private key. CA nhận CSR, xác minh bạn sở hữu domain (qua DNS, HTTP, email), rồi ký và trả lại certificate. <strong>Private key KHÔNG BAO GIỜ rời khỏi server của bạn</strong> - đây là nguyên tắc vàng.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num">4</div>
+      <h4>Certificate Transparency (CT)</h4>
+      <p>Sau vụ DigiNotar, Google tạo ra CT: mọi certificate công khai PHẢI được ghi vào <strong>CT log</strong> (append-only, công khai). Bất kỳ ai cũng có thể giám sát log để phát hiện cert giả. Nếu cert không có SCT (Signed Certificate Timestamp), Chrome sẽ từ chối. Đây là hệ thống giám sát CA lớn nhất thế giới.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num">5</div>
+      <h4>Certificate Revocation - Thu hồi</h4>
+      <p>Khi private key bị lộ, cert phải bị thu hồi. Hai cơ chế: <strong>CRL</strong> (Certificate Revocation List - danh sách đen, to và chậm) và <strong>OCSP</strong> (Online Certificate Status Protocol - hỏi real-time). Thực tế? Cả hai đều có vấn đề. OCSP Stapling là giải pháp tốt nhất hiện tại.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num">6</div>
+      <h4>Trust Store - Ai quyết định tin ai?</h4>
+      <p>Mỗi OS/browser có trust store riêng: <strong>Apple</strong> (macOS/iOS), <strong>Microsoft</strong> (Windows), <strong>Mozilla</strong> (NSS, dùng bởi Firefox), <strong>Google</strong> (Chrome Root Store). Khoảng 150 Root CAs được tin cậy. Để trở thành Root CA, phải qua quá trình audit <strong>WebTrust/ETSI</strong> cực kỳ nghiêm ngặt, tốn hàng triệu USD.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATE TYPES -->
+<section id="types">
+  <h2 class="section-title" style="color: var(--accent3);">Các Loại Certificate</h2>
+  <p class="section-subtitle">Không phải cert nào cũng giống nhau - mỗi loại phục vụ mục đích khác nhau</p>
+
+  <div class="card-grid">
+    <!-- DV -->
+    <div class="info-card dv">
+      <div class="card-icon">&#x2705;</div>
+      <h3>DV - Domain Validated</h3>
+      <div class="card-type">Xác thực cơ bản</div>
+      <p>Chỉ xác minh bạn sở hữu domain (qua DNS record, HTTP file, hoặc email). Cấp trong vài phút. Hoàn toàn tự động. Đây là loại Let's Encrypt cung cấp. Đủ cho 95% website - blog, app, API. Không hiển thị tên tổ chức trong cert.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Phút</div><div class="label">Thời gian cấp</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Let's Encrypt</div></div>
+        <div class="stat"><div class="num">90%+</div><div class="label">Web sử dụng</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag good">Tự động</span>
+        <span class="tag">Domain only</span>
+        <span class="tag">Let's Encrypt</span>
+      </div>
+    </div>
+
+    <!-- OV -->
+    <div class="info-card ov">
+      <div class="card-icon">&#x1F3E2;</div>
+      <h3>OV - Organization Validated</h3>
+      <div class="card-type">Xác thực tổ chức</div>
+      <p>CA xác minh cả domain VÀ tổ chức đứng sau (kiểm tra giấy phép kinh doanh, điện thoại, địa chỉ). Mất 1-3 ngày. Tên tổ chức hiển thị trong certificate. Phù hợp cho doanh nghiệp muốn thể hiện tính hợp pháp. Tuy nhiên, người dùng thường không kiểm tra chi tiết cert.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1-3</div><div class="label">Ngày cấp</div></div>
+        <div class="stat"><div class="num">$50+</div><div class="label">Giá/năm</div></div>
+        <div class="stat"><div class="num">Org</div><div class="label">Xác thực</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Tổ chức</span>
+        <span class="tag warn">Thủ công</span>
+        <span class="tag">Business identity</span>
+      </div>
+    </div>
+
+    <!-- EV -->
+    <div class="info-card ev">
+      <div class="card-icon">&#x1F3C6;</div>
+      <h3>EV - Extended Validation</h3>
+      <div class="card-type">Xác thực mở rộng</div>
+      <p>Mức xác thực cao nhất: kiểm tra pháp lý, địa chỉ vật lý, quyền hoạt động, danh tính người yêu cầu. Từng hiển thị thanh địa chỉ xanh (green bar) - giờ đã bị Chrome/Firefox loại bỏ. Giá đắt ($100-$1000+/năm). Giá trị thực tế đang bị tranh cãi mạnh trong ngành.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1-2</div><div class="label">Tuần cấp</div></div>
+        <div class="stat"><div class="num">$$$</div><div class="label">Giá/năm</div></div>
+        <div class="stat"><div class="num">&#10007;</div><div class="label">Green bar</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Đắt</span>
+        <span class="tag warn">Green bar đã chết</span>
+        <span class="tag">Ngân hàng</span>
+        <span class="tag warn">Giá trị tranh cãi</span>
+      </div>
+    </div>
+
+    <!-- Wildcard -->
+    <div class="info-card wildcard">
+      <div class="card-icon">&#x2733;</div>
+      <h3>Wildcard Certificate</h3>
+      <div class="card-type">*.domain.com</div>
+      <p>Một cert bảo vệ tất cả subdomain cùng level: *.example.com bao phủ blog.example.com, api.example.com, v.v. Nhưng KHÔNG bao phủ sub-subdomain (a.b.example.com) hay domain gốc (example.com - cần thêm SAN). Tiện lợi nhưng rủi ro: lộ private key = MỌI subdomain bị ảnh hưởng.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">*</div><div class="label">Subdomain</div></div>
+        <div class="stat"><div class="num">1 level</div><div class="label">Giới hạn</div></div>
+        <div class="stat"><div class="num">1 cert</div><div class="label">Nhiều site</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tiện lợi</span>
+        <span class="tag warn">Blast radius lớn</span>
+        <span class="tag">1 level only</span>
+        <span class="tag good">Let's Encrypt hỗ trợ</span>
+      </div>
+    </div>
+
+    <!-- SAN -->
+    <div class="info-card san">
+      <div class="card-icon">&#x1F4CB;</div>
+      <h3>SAN - Multi-Domain</h3>
+      <div class="card-type">Subject Alternative Name</div>
+      <p>Một cert bảo vệ nhiều domain hoàn toàn khác nhau: example.com, example.org, myapp.io - tất cả trong một cert. SAN là trường trong X.509 liệt kê các tên thay thế. Thực tế, MỌI cert hiện đại đều dùng SAN (CN/Common Name đã deprecated). Let's Encrypt cho phép tối đa 100 SAN/cert.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">100</div><div class="label">Max domains</div></div>
+        <div class="stat"><div class="num">Multi</div><div class="label">Domain</div></div>
+        <div class="stat"><div class="num">X.509</div><div class="label">Extension</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Linh hoạt</span>
+        <span class="tag">Multi-domain</span>
+        <span class="tag good">Chuẩn hiện đại</span>
+      </div>
+    </div>
+
+    <!-- Self-Signed -->
+    <div class="info-card selfsigned">
+      <div class="card-icon">&#x1F6A7;</div>
+      <h3>Self-Signed Certificate</h3>
+      <div class="card-type">Tự ký - không CA</div>
+      <p>Bạn tự tạo và tự ký certificate, không qua CA nào. Browser sẽ cảnh báo đỏ lè vì không có ai xác nhận danh tính. Dùng cho: dev/test environment, nội bộ (nếu cài root cert vào trust store), hoặc khi bạn là CA của chính mình (private PKI). KHÔNG BAO GIỜ dùng cho production public-facing.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">0s</div><div class="label">Thời gian tạo</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">Giá</div></div>
+        <div class="stat"><div class="num">&#9888;</div><div class="label">Không tin cậy</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Browser cảnh báo</span>
+        <span class="tag warn">Dev/Test only</span>
+        <span class="tag">Private PKI</span>
+        <span class="tag good">Miễn phí</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>DV</th>
+          <th>OV</th>
+          <th>EV</th>
+          <th>Wildcard</th>
+          <th>Self-Signed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Xác minh</td>
+          <td>Domain</td>
+          <td>Domain + Org</td>
+          <td>Domain + Org + Legal</td>
+          <td>Theo loại (DV/OV)</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Thời gian cấp</td>
+          <td style="color: var(--accent3);">Phút</td>
+          <td>1-3 ngày</td>
+          <td style="color: var(--accent4);">1-2 tuần</td>
+          <td>Tùy loại</td>
+          <td style="color: var(--accent3);">Giây</td>
+        </tr>
+        <tr>
+          <td>Chi phí</td>
+          <td style="color: var(--accent3);">Free (LE)</td>
+          <td>$50-200/năm</td>
+          <td style="color: var(--accent5);">$100-1000+/năm</td>
+          <td>$50-500/năm</td>
+          <td style="color: var(--accent3);">Free</td>
+        </tr>
+        <tr>
+          <td>Phù hợp cho</td>
+          <td>Mọi website</td>
+          <td>Doanh nghiệp</td>
+          <td>Ngân hàng, fintech</td>
+          <td>Nhiều subdomain</td>
+          <td>Dev/Test/Internal</td>
+        </tr>
+        <tr>
+          <td>Mức bảo mật mã hóa</td>
+          <td style="color: var(--accent3);">Giống nhau</td>
+          <td style="color: var(--accent3);">Giống nhau</td>
+          <td style="color: var(--accent3);">Giống nhau</td>
+          <td style="color: var(--accent3);">Giống nhau</td>
+          <td style="color: var(--accent3);">Giống nhau</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box" style="margin-top: 1rem;">
+    <h4>Sự thật quan trọng</h4>
+    <p>Về mặt <strong>mã hóa</strong>, DV, OV, EV hoàn toàn giống nhau - cùng TLS, cùng cipher suite, cùng key strength. Sự khác biệt chỉ nằm ở <strong>mức xác thực danh tính</strong>. Một cert DV miễn phí từ Let's Encrypt bảo mật kết nối ĐÚNG BẰNG cert EV $1000. Đây là điều mà nhiều nhà cung cấp cert thương mại không muốn bạn biết.</p>
+  </div>
+</section>
+
+<!-- ACME & LET'S ENCRYPT -->
+<section id="acme">
+  <h2 class="section-title" style="color: var(--accent3);">ACME &amp; Let's Encrypt</h2>
+  <p class="section-subtitle">Giao thức tự động hóa certificate - cuộc cách mạng thay đổi Internet</p>
+
+  <div class="intro-box">
+    <h2 style="font-size: 1.4rem;">Let's Encrypt - Câu chuyện thay đổi thế giới</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      Trước 2015, muốn HTTPS phải mua cert ($50-$300/năm), tạo CSR thủ công, chờ CA xác minh, cài cert bằng tay, nhớ renew trước khi hết hạn. Kết quả? Chỉ ~40% website dùng HTTPS. <strong>Let's Encrypt</strong> (dự án của ISRG, được EFF, Mozilla, Cisco, Akamai hậu thuẫn) thay đổi tất cả: cert DV miễn phí, cấp tự động qua giao thức <strong>ACME</strong>, thời hạn 90 ngày (buộc tự động hóa). Tính đến 2024, Let's Encrypt đã cấp hơn <strong>4 tỷ certificate</strong>.
+    </p>
+  </div>
+
+  <h3 style="margin: 2rem 0 1rem; color: var(--text-dim);">ACME Protocol - Cách nó hoạt động</h3>
+
+  <div class="flow-box">
+    <div class="flow-title">ACME Challenge Flow - Chứng minh bạn sở hữu domain</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  Client (certbot/acme.sh)              Let's Encrypt Server
+       |                                        |
+       |── <span style="color:var(--accent);">Request Certificate</span> ────────────────>|
+       |   (cho domain: example.com)             |
+       |                                        |
+       |<──────────── <span style="color:var(--accent4);">Challenge</span> ─────────────────|
+       |   "Hãy chứng minh bạn sở hữu domain"   |
+       |                                        |
+       |   <span style="color:var(--accent3);">&#9632; HTTP-01:</span> Đặt file tại               |
+       |     /.well-known/acme-challenge/TOKEN   |
+       |   <span style="color:var(--accent3);">&#9632; DNS-01:</span> Tạo TXT record              |
+       |     _acme-challenge.example.com         |
+       |   <span style="color:var(--accent3);">&#9632; TLS-ALPN-01:</span> Trả cert đặc biệt      |
+       |     trên port 443                       |
+       |                                        |
+       |── <span style="color:var(--accent);">Challenge Completed</span> ────────────────>|
+       |                                        |
+       |   (LE server xác minh challenge)        |
+       |                                        |
+       |<──────────── <span style="color:var(--accent3);">Certificate Issued!</span> ────────|
+       |   (cert + chain, thời hạn 90 ngày)      |
+    </pre>
+  </div>
+
+  <div class="detail-map">
+    <div class="detail-card">
+      <h4><span class="status alive"></span> HTTP-01 Challenge</h4>
+      <p><strong>Phổ biến nhất.</strong> Certbot tạo file token tại http://domain/.well-known/acme-challenge/. LE server truy cập URL đó để xác minh. Đơn giản nhưng cần port 80 mở và DNS trỏ đúng. KHÔNG hỗ trợ wildcard cert.</p>
+      <div class="tag-row"><span class="tag good">Đơn giản</span><span class="tag">Port 80</span><span class="tag warn">Không wildcard</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> DNS-01 Challenge</h4>
+      <p><strong>Linh hoạt nhất.</strong> Tạo TXT record _acme-challenge.domain. Hỗ trợ wildcard! Không cần web server. Nhưng cần API access đến DNS provider (Cloudflare, Route53...). Delay do DNS propagation.</p>
+      <div class="tag-row"><span class="tag good">Wildcard</span><span class="tag good">Không cần web server</span><span class="tag warn">DNS API</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> TLS-ALPN-01 Challenge</h4>
+      <p><strong>Cho reverse proxy.</strong> Xác minh qua TLS handshake trên port 443. Không cần port 80. Ít phổ biến hơn nhưng hữu ích khi port 80 bị chặn. Caddy server dùng phương pháp này mặc định.</p>
+      <div class="tag-row"><span class="tag">Port 443</span><span class="tag">Reverse proxy</span><span class="tag">Caddy</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> Certbot</h4>
+      <p><strong>Client ACME chính thức.</strong> Viết bằng Python, plugin cho Apache/Nginx. Tự cài cert, tự config server, tự renew qua cron/systemd timer. Lệnh một dòng: <code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.8rem; color: var(--accent3);">certbot --nginx -d example.com</code></p>
+      <div class="tag-row"><span class="tag good">Official</span><span class="tag">Python</span><span class="tag good">Auto-config</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> acme.sh</h4>
+      <p><strong>Pure shell script.</strong> Không dependency, chạy trên mọi Unix. Hỗ trợ 150+ DNS providers. Nhẹ, linh hoạt, cực kỳ phổ biến trong homelab/self-hosted. Wildcard dễ dàng qua DNS-01. Cài đơn giản: curl + pipe.</p>
+      <div class="tag-row"><span class="tag good">Zero dependency</span><span class="tag good">150+ DNS</span><span class="tag">Shell script</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> Caddy Server</h4>
+      <p><strong>HTTPS tự động by default.</strong> Caddy tự xin cert, tự renew, tự cấu hình TLS - bạn chỉ cần khai báo domain. Zero-config HTTPS. Dùng TLS-ALPN-01 hoặc HTTP-01. Đây là tương lai của web server.</p>
+      <div class="tag-row"><span class="tag good">Zero-config TLS</span><span class="tag good">Auto-renew</span><span class="tag">Go</span></div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>90 ngày - Tại sao ngắn vậy?</h4>
+    <p>Let's Encrypt chọn thời hạn 90 ngày <strong>có chủ đích</strong>: buộc bạn tự động hóa (không thể renew thủ công mỗi 3 tháng mà không phát điên), giảm thiệt hại khi key bị lộ (key compromise chỉ ảnh hưởng tối đa 90 ngày), và khuyến khích hệ thống infra "sống" (nếu auto-renew fail = bạn biết có vấn đề). Google còn đề xuất giảm xuống <strong>47 ngày</strong> vào 2025-2026. Tự động hóa không còn là "nice to have" - nó là <strong>bắt buộc</strong>.</p>
+  </div>
+</section>
+
+<!-- mTLS -->
+<section id="mtls">
+  <h2 class="section-title" style="color: var(--accent4);">mTLS - Mutual TLS</h2>
+  <p class="section-subtitle">Khi cả hai phía đều phải chứng minh danh tính - zero trust trong thực tế</p>
+
+  <div class="intro-box">
+    <h2 style="font-size: 1.4rem;">TLS thông thường vs mTLS</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      Trong TLS thông thường, chỉ <strong>server</strong> chứng minh danh tính (trình certificate cho client). Client thì ẩn danh - server không biết client là ai (xác thực qua username/password ở tầng ứng dụng). Trong <strong>mTLS</strong>, CẢ HAI phía đều trình certificate: server chứng minh "tôi là server thật", client chứng minh "tôi là client được phép". Không có cert hợp lệ? Kết nối bị từ chối ngay ở tầng TLS, trước khi request HTTP nào được gửi.
+    </p>
+
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="icon">&#x1F4B3;</div>
+        <h3>TLS Thường</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Bạn kiểm tra CMND của ngân hàng<br>Ngân hàng KHÔNG kiểm tra CMND bạn<br><strong style="color: var(--accent4);">Một chiều</strong></p>
+      </div>
+      <div class="analogy-arrow">&#8594;</div>
+      <div class="analogy-box">
+        <div class="icon">&#x1F91D;</div>
+        <h3>mTLS</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Bạn kiểm tra CMND ngân hàng<br>Ngân hàng CŨNG kiểm tra CMND bạn<br><strong style="color: var(--accent3);">Hai chiều</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin: 2rem 0 1rem; color: var(--text-dim);">Ứng dụng thực tế của mTLS</h3>
+
+  <div class="detail-map">
+    <div class="detail-card">
+      <h4><span class="status alive"></span> Service Mesh (Istio, Linkerd)</h4>
+      <p>Trong Kubernetes, mTLS giữa các microservice là chuẩn. Istio/Linkerd tự động cấp cert cho mỗi pod, tự rotate, mọi traffic service-to-service đều mã hóa và xác thực. Zero trust networking.</p>
+      <div class="tag-row"><span class="tag good">Kubernetes</span><span class="tag">Auto cert</span><span class="tag good">Zero trust</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> API Gateway Authentication</h4>
+      <p>Thay vì API key (dễ lộ, khó rotate), dùng client certificate. Mỗi partner/service có cert riêng. Cert hết hạn = tự động mất quyền. Dễ audit, dễ revoke. Phổ biến trong fintech, healthcare.</p>
+      <div class="tag-row"><span class="tag good">Thay API key</span><span class="tag">Fintech</span><span class="tag good">Easy revoke</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> Database Connections</h4>
+      <p>PostgreSQL, MySQL, MongoDB đều hỗ trợ mTLS. Client phải có cert mới kết nối được database. Bảo mật hơn password, kết hợp cùng network policy tạo defense in depth. CockroachDB bắt buộc mTLS.</p>
+      <div class="tag-row"><span class="tag">PostgreSQL</span><span class="tag">MongoDB</span><span class="tag good">Defense in depth</span></div>
+    </div>
+
+    <div class="detail-card">
+      <h4><span class="status alive"></span> IoT &amp; Embedded</h4>
+      <p>Mỗi thiết bị IoT có cert riêng, được cấp khi sản xuất. Chỉ thiết bị có cert hợp lệ mới giao tiếp được với cloud. Thu hồi cert = vô hiệu hóa thiết bị từ xa. AWS IoT Core dùng mô hình này.</p>
+      <div class="tag-row"><span class="tag">Device identity</span><span class="tag">AWS IoT</span><span class="tag good">Remote revoke</span></div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Private CA cho mTLS</h4>
+    <p>mTLS thường dùng <strong>private CA</strong> (không phải Let's Encrypt hay CA công cộng). Bạn tự dựng CA nội bộ bằng <strong>step-ca</strong>, <strong>Vault PKI</strong>, hoặc <strong>CFSSL</strong>, tự cấp cert cho service/client. Lý do: kiểm soát hoàn toàn lifecycle, cấp cert nhanh (mili-giây), không phụ thuộc bên ngoài, và cert ngắn hạn (giờ thay vì tháng). Trong Kubernetes, cert-manager + step-ca là combo cực mạnh.</p>
+  </div>
+</section>
+
+<!-- HARDENING: Pinning, HSTS, OCSP -->
+<section id="hardening">
+  <h2 class="section-title" style="color: var(--accent);">Certificate Hardening</h2>
+  <p class="section-subtitle">Các kỹ thuật nâng cao bảo mật TLS - vượt xa "cài cert là xong"</p>
+
+  <div class="numbered-grid">
+    <div class="numbered-card">
+      <div class="card-num" style="background: var(--accent);">1</div>
+      <h4>HSTS - HTTP Strict Transport Security</h4>
+      <p>Header <code style="background: rgba(0,0,0,0.3); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.85rem; color: var(--accent3);">Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code> bảo browser: "LUÔN dùng HTTPS, KHÔNG BAO GIỜ quay lại HTTP, kể cả khi user gõ http://". Chống SSL stripping attack. Với <strong>preload</strong>, domain của bạn được hardcode vào Chrome/Firefox - ngay lần truy cập đầu tiên đã HTTPS. Nhưng cẩn thận: một khi preload, rất khó gỡ ra.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num" style="background: var(--accent5);">2</div>
+      <h4>Certificate Pinning - Con dao hai lưỡi</h4>
+      <p>Ghim (pin) public key hoặc cert cụ thể vào ứng dụng. Nếu server trả cert khác (dù hợp lệ) = từ chối kết nối. Chống MITM ngay cả khi attacker có cert giả từ CA bị hack. <strong>Nhưng cực kỳ nguy hiểm:</strong> pin sai hoặc quên cập nhật = app không kết nối được, thành tự DDoS. Chrome đã loại bỏ HPKP (HTTP Public Key Pinning). Giờ chỉ dùng trong mobile app (native pinning).</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num" style="background: var(--accent3);">3</div>
+      <h4>OCSP Stapling</h4>
+      <p>Thay vì client hỏi CA "cert này còn hiệu lực không?" (chậm, lộ browsing history), <strong>server tự hỏi CA</strong> rồi "ghim" (staple) câu trả lời đã ký vào TLS handshake. Client kiểm tra OCSP response ngay trong handshake, không cần kết nối thêm. Nhanh hơn, riêng tư hơn. Nginx: <code style="background: rgba(0,0,0,0.3); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.85rem; color: var(--accent3);">ssl_stapling on;</code></p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num" style="background: var(--accent4);">4</div>
+      <h4>CAA Record - DNS chống cấp cert giả</h4>
+      <p><strong>Certification Authority Authorization</strong>: DNS record chỉ định CA nào được phép cấp cert cho domain bạn. Ví dụ: <code style="background: rgba(0,0,0,0.3); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.85rem; color: var(--accent3);">example.com CAA 0 issue "letsencrypt.org"</code>. Nếu attacker cố xin cert từ CA khác, CA đó PHẢI kiểm tra CAA và từ chối. Đơn giản, miễn phí, nên dùng cho MỌI domain.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num" style="background: var(--accent2);">5</div>
+      <h4>CT Monitoring - Giám sát Certificate Transparency</h4>
+      <p>Đăng ký giám sát CT log cho domain bạn. Bất kỳ ai xin cert cho domain bạn (dù hợp lệ hay không), bạn đều nhận thông báo. Công cụ: <strong>crt.sh</strong> (tra cứu), <strong>certspotter</strong> (giám sát), <strong>Facebook CT monitor</strong>. Phát hiện sớm cert bất thường, subdomain takeover, hoặc shadow IT xin cert không qua phê duyệt.</p>
+    </div>
+
+    <div class="numbered-card">
+      <div class="card-num" style="background: var(--accent);">6</div>
+      <h4>DANE / TLSA - DNS-Based Authentication</h4>
+      <p>Dùng DNSSEC để publish cert/public key trong DNS (TLSA record). Browser/client xác minh cert qua DNS thay vì (hoặc bổ sung) CA system. Lý thuyết đẹp nhưng thực tế adoption thấp vì phụ thuộc DNSSEC. Phổ biến trong email (SMTP DANE) hơn web.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <h2 class="section-title" style="color: var(--accent2);">Công Cụ &amp; Private CA</h2>
+  <p class="section-subtitle">Bộ toolbox cần thiết cho mọi sysadmin/DevOps làm việc với certificate</p>
+
+  <div class="card-grid">
+    <div class="info-card dv">
+      <div class="card-icon">&#x1F527;</div>
+      <h3>OpenSSL</h3>
+      <div class="card-type">Swiss Army Knife of Crypto</div>
+      <p>Công cụ nền tảng có mặt trên mọi Linux/macOS. Tạo key, CSR, self-signed cert, kiểm tra cert, debug TLS connection, convert format (PEM/DER/PKCS12). Cú pháp phức tạp nhưng một khi thành thạo, không gì thay thế được. Mọi sysadmin PHẢI biết dùng openssl.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1998</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Linux</div><div class="label">Built-in</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Crypto tool</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Universal</span>
+        <span class="tag">CLI</span>
+        <span class="tag warn">Cú pháp phức tạp</span>
+        <span class="tag good">Mọi format</span>
+      </div>
+    </div>
+
+    <div class="info-card ov">
+      <div class="card-icon">&#x1F3EB;</div>
+      <h3>step-ca (Smallstep)</h3>
+      <div class="card-type">Private CA hiện đại</div>
+      <p>Dựng private CA chuyên nghiệp trong vài phút. Hỗ trợ ACME (Let's Encrypt protocol cho nội bộ!), mTLS, SSH certificates, short-lived certs (5 phút thay vì 1 năm). Tích hợp Kubernetes cert-manager. Đây là câu trả lời cho "làm sao quản lý cert nội bộ mà không phát điên".</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">ACME</div><div class="label">Protocol</div></div>
+        <div class="stat"><div class="num">5 min</div><div class="label">Cert lifetime</div></div>
+        <div class="stat"><div class="num">OSS</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Private ACME</span>
+        <span class="tag good">Short-lived certs</span>
+        <span class="tag">Kubernetes</span>
+        <span class="tag good">SSH certs</span>
+      </div>
+    </div>
+
+    <div class="info-card ev">
+      <div class="card-icon">&#x1F3E6;</div>
+      <h3>HashiCorp Vault PKI</h3>
+      <div class="card-type">Enterprise Secret Management</div>
+      <p>Vault không chỉ quản lý secrets mà còn là PKI engine hoàn chỉnh. Cấp cert qua API, tự rotate, tích hợp mọi thứ (Kubernetes, Terraform, Consul). Phù hợp enterprise lớn. Tuy nhiên, Vault bản thân nó cũng phức tạp để vận hành - "ai bảo vệ kẻ bảo vệ?".</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">API</div><div class="label">Cấp cert</div></div>
+        <div class="stat"><div class="num">PKI</div><div class="label">Engine</div></div>
+        <div class="stat"><div class="num">Enterprise</div><div class="label">Scale</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Secret management</span>
+        <span class="tag good">API-first</span>
+        <span class="tag warn">Phức tạp</span>
+        <span class="tag">Enterprise</span>
+      </div>
+    </div>
+
+    <div class="info-card wildcard">
+      <div class="card-icon">&#x1F4E6;</div>
+      <h3>cert-manager (K8s)</h3>
+      <div class="card-type">Kubernetes Native</div>
+      <p>Operator cho Kubernetes: khai báo Certificate resource trong YAML, cert-manager tự xin từ Let's Encrypt (hoặc step-ca, Vault), tự cài vào Secret, tự renew. GitOps-friendly. Nếu bạn chạy K8s, cert-manager là <strong>không thể thiếu</strong>.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">K8s</div><div class="label">Native</div></div>
+        <div class="stat"><div class="num">YAML</div><div class="label">Declarative</div></div>
+        <div class="stat"><div class="num">Auto</div><div class="label">Renew</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Kubernetes</span>
+        <span class="tag good">GitOps</span>
+        <span class="tag">Let's Encrypt</span>
+        <span class="tag">Vault/step-ca</span>
+      </div>
+    </div>
+
+    <div class="info-card san">
+      <div class="card-icon">&#x1F50D;</div>
+      <h3>mkcert</h3>
+      <div class="card-type">Dev Environment</div>
+      <p>Tạo locally-trusted certificate cho development. Một lệnh: <code style="background: rgba(0,0,0,0.3); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.8rem; color: var(--accent3);">mkcert localhost 127.0.0.1 ::1</code>. Tự cài root CA vào system trust store. HTTPS trên localhost không còn cảnh báo đỏ. Đơn giản, hiệu quả, đúng mục đích. KHÔNG dùng cho production.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1 cmd</div><div class="label">Setup</div></div>
+        <div class="stat"><div class="num">Dev</div><div class="label">Mục đích</div></div>
+        <div class="stat"><div class="num">Local</div><div class="label">Trust</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Dev friendly</span>
+        <span class="tag">localhost</span>
+        <span class="tag warn">Không production</span>
+      </div>
+    </div>
+
+    <div class="info-card selfsigned">
+      <div class="card-icon">&#x1F578;</div>
+      <h3>crt.sh / CT Search</h3>
+      <div class="card-type">Certificate Transparency</div>
+      <p>Tìm kiếm MỌI certificate đã cấp cho domain bất kỳ qua CT log. Truy cập <strong>crt.sh</strong>, nhập domain, thấy toàn bộ cert (hiện tại và lịch sử). Dùng để: recon (tìm subdomain), giám sát cert bất thường, audit compliance. Pentester yêu thích tool này.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Free</div><div class="label">Giá</div></div>
+        <div class="stat"><div class="num">Web</div><div class="label">Interface</div></div>
+        <div class="stat"><div class="num">CT</div><div class="label">Log search</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag">Recon</span>
+        <span class="tag">Subdomain discovery</span>
+        <span class="tag">Audit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">8 Hiểu Nhầm Chết Người Về Certificate</h2>
+  <p class="section-subtitle">Những điều "ai cũng tưởng đúng" nhưng thực ra sai hoàn toàn</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #1</span>
+      <h4>"HTTPS = website an toàn"</h4>
+      <p>HTTPS chỉ mã hóa kết nối giữa bạn và server. Website vẫn có thể là lừa đảo, có malware, hoặc bị hack. Phishing site dùng HTTPS rất phổ biến (cert DV miễn phí mà). HTTPS bảo đảm "bạn đang nói chuyện AN TOÀN với kẻ lừa đảo" - không hơn không kém.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>HTTPS bảo đảm <strong>tính bí mật và toàn vẹn của kết nối</strong>. Nội dung website an toàn hay không là chuyện hoàn toàn khác. Ổ khóa xanh KHÔNG có nghĩa là "website này đáng tin".</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #2</span>
+      <h4>"Cert EV an toàn hơn cert DV"</h4>
+      <p>Về mặt mã hóa, EV và DV dùng cùng TLS protocol, cùng cipher suite, cùng key strength. Không có bit nào "mã hóa mạnh hơn" trong cert EV. Chrome đã xóa green bar vì nghiên cứu cho thấy người dùng không hề để ý hay hiểu nó.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>EV chỉ xác thực <strong>danh tính tổ chức</strong> kỹ hơn. Về bảo mật mã hóa, <strong>hoàn toàn giống DV</strong>. Tiền mua EV cert nên dùng để cải thiện security thực sự (WAF, pentest, monitoring).</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #3</span>
+      <h4>"SSL và TLS là hai thứ khác nhau"</h4>
+      <p>Mọi người nói "SSL certificate" nhưng thực tế không ai dùng SSL nữa (SSL 3.0 deprecated từ 2015). Tất cả đều đang dùng TLS (1.2 hoặc 1.3). "SSL" chỉ là tên gọi thói quen từ thời Netscape, giống cách mọi người gọi "xe Honda" cho mọi loại xe máy.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>SSL đã chết. <strong>TLS là chuẩn duy nhất hiện tại.</strong> Khi ai nói "SSL certificate", họ thực ra đang nói TLS certificate. Thuật ngữ chính xác nhưng không ai sửa vì đã quá quen.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #4</span>
+      <h4>"Self-signed cert không an toàn"</h4>
+      <p>Self-signed cert mã hóa ĐÚNG BẰNG cert từ CA. Vấn đề duy nhất là thiếu <strong>xác thực danh tính</strong> từ bên thứ ba - browser không biết bạn là ai. Nhưng trong môi trường nội bộ (bạn kiểm soát cả client và server), self-signed hoàn toàn OK nếu cài root cert đúng cách.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Self-signed cert <strong>mã hóa hoàn hảo</strong>. Thiếu identity verification thôi. Cho nội bộ/dev: dùng <strong>private CA</strong> (step-ca, mkcert) thay vì self-signed thuần - đỡ cảnh báo mà vẫn kiểm soát được.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #5</span>
+      <h4>"Cert hết hạn = website bị hack"</h4>
+      <p>Cert hết hạn chỉ có nghĩa là cert không còn được tin cậy (browser cảnh báo). Website vẫn chạy, server vẫn OK, không ai hack gì cả. Nhưng user sẽ thấy trang lỗi đáng sợ và bỏ đi. Cert hết hạn là vấn đề <strong>vận hành</strong>, không phải vấn đề bảo mật trực tiếp.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Cert hết hạn = <strong>mất trust, không mất security</strong>. Nhưng hậu quả kinh doanh rất lớn (user không vào được, SEO giảm). Tự động hóa renew là cách duy nhất đáng tin. Nhiều vụ outage lớn (Equifax, Microsoft Teams) chỉ vì quên renew cert.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #6</span>
+      <h4>"Private key trong cert"</h4>
+      <p>Certificate KHÔNG CHỨA private key. Cert chỉ chứa public key, thông tin domain, chữ ký của CA. Private key là file riêng biệt, PHẢI giữ bí mật tuyệt đối. Nếu ai đó nói "gửi cert kèm private key qua email" - đó là thảm họa bảo mật.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Certificate = <strong>public key + metadata + chữ ký CA</strong>. Private key là file riêng, không bao giờ share, không bao giờ rời server (trừ backup encrypted). File <code>.pem</code> / <code>.crt</code> an toàn để chia sẻ. File <code>.key</code> thì <strong>TUYỆT ĐỐI KHÔNG</strong>.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #7</span>
+      <h4>"Cài cert là xong, set and forget"</h4>
+      <p>Certificate có thời hạn (90-398 ngày). Private key có thể bị lộ. CA có thể bị hack. Cipher suite cũ cần disable. TLS version cần cập nhật. CAA record cần thiết lập. HSTS cần bật. Cert monitoring cần chạy. TLS là <strong>quy trình liên tục</strong>, không phải sự kiện một lần.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Vòng đời cert: <strong>cấp &#8594; giám sát &#8594; renew &#8594; rotate &#8594; revoke</strong>. Tự động hóa TOÀN BỘ quy trình này. Dùng cert-manager, certbot timer, hoặc Caddy. Manual renewal là tự đào mồ chôn mình.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #8</span>
+      <h4>"Wildcard cert tiện lợi nhất, dùng cho mọi thứ"</h4>
+      <p>Wildcard (*.example.com) dùng chung private key cho MỌI subdomain. Lộ key = TẤT CẢ subdomain bị compromise. Không thể dùng Certificate Transparency hiệu quả. Khó phân biệt service nào đang dùng cert nào. Blast radius cực lớn.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Dùng <strong>cert riêng cho mỗi service</strong> khi có thể (Let's Encrypt miễn phí mà). Wildcard chỉ dùng khi có quá nhiều subdomain động hoặc không kiểm soát DNS tốt. Nguyên tắc: <strong>blast radius nhỏ nhất có thể</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Certificate Cheat Sheet</h2>
+  <p class="section-subtitle">Những lệnh và công cụ cần nhớ khi làm việc với TLS/SSL</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>OpenSSL - Tạo Key &amp; CSR</h4>
+      <code># Tạo private key RSA 2048
+openssl genrsa -out server.key 2048
+
+# Tạo private key ECDSA (nhanh hơn)
+openssl ecparam -genkey -name prime256v1 \
+  -out server.key
+
+# Tạo CSR
+openssl req -new -key server.key \
+  -out server.csr \
+  -subj "/CN=example.com"
+
+# Tạo self-signed cert (dev)
+openssl req -x509 -newkey rsa:2048 \
+  -keyout key.pem -out cert.pem \
+  -days 365 -nodes \
+  -subj "/CN=localhost"</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>OpenSSL - Kiểm tra cert</h4>
+      <code># Xem nội dung certificate
+openssl x509 -in cert.pem -text -noout
+
+# Xem cert của website
+openssl s_client -connect \
+  example.com:443 -servername example.com
+
+# Kiểm tra hạn cert
+openssl x509 -in cert.pem \
+  -noout -dates
+
+# Kiểm tra cert chain
+openssl s_client -connect \
+  example.com:443 -showcerts
+
+# Verify cert với CA
+openssl verify -CAfile ca.pem cert.pem</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>OpenSSL - Convert format</h4>
+      <code># PEM to DER
+openssl x509 -in cert.pem \
+  -outform der -out cert.der
+
+# PEM to PKCS12 (cho Windows/Java)
+openssl pkcs12 -export \
+  -out cert.pfx \
+  -inkey key.pem -in cert.pem
+
+# PKCS12 to PEM
+openssl pkcs12 -in cert.pfx \
+  -out all.pem -nodes
+
+# Kiểm tra key match cert
+openssl x509 -noout -modulus \
+  -in cert.pem | md5sum
+openssl rsa -noout -modulus \
+  -in key.pem | md5sum</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Certbot - Let's Encrypt</h4>
+      <code># Xin cert cho Nginx
+sudo certbot --nginx -d example.com
+
+# Xin cert standalone (port 80)
+sudo certbot certonly --standalone \
+  -d example.com
+
+# Xin wildcard (DNS challenge)
+sudo certbot certonly --manual \
+  --preferred-challenges dns \
+  -d "*.example.com"
+
+# Renew tất cả cert
+sudo certbot renew
+
+# Test renew (dry run)
+sudo certbot renew --dry-run</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>acme.sh - Wildcard + DNS</h4>
+      <code># Cài đặt
+curl https://get.acme.sh | sh
+
+# Xin cert qua Cloudflare DNS
+export CF_Token="your-api-token"
+acme.sh --issue -d example.com \
+  -d "*.example.com" \
+  --dns dns_cf
+
+# Cài cert vào Nginx
+acme.sh --install-cert -d example.com \
+  --key-file /etc/nginx/ssl/key.pem \
+  --fullchain-file /etc/nginx/ssl/cert.pem \
+  --reloadcmd "systemctl reload nginx"
+
+# List certs
+acme.sh --list</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>step-ca - Private CA</h4>
+      <code># Khởi tạo CA
+step ca init --name "My CA" \
+  --provisioner admin \
+  --dns localhost \
+  --address :8443
+
+# Chạy CA server
+step-ca $(step path)/config/ca.json
+
+# Xin cert từ private CA
+step ca certificate \
+  svc.internal cert.pem key.pem
+
+# Bootstrap client trust
+step ca bootstrap \
+  --ca-url https://ca.internal:8443 \
+  --fingerprint abc123...</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug TLS Connection</h4>
+      <code># Test TLS với chi tiết
+openssl s_client -connect host:443 \
+  -servername host -tlsextdebug
+
+# Kiểm tra TLS version hỗ trợ
+nmap --script ssl-enum-ciphers \
+  -p 443 example.com
+
+# Test với curl verbose
+curl -vI https://example.com 2>&1 \
+  | grep -E "SSL|TLS|subject|expire"
+
+# SSL Labs grade (web)
+# https://www.ssllabs.com/ssltest/
+
+# testssl.sh (offline)
+./testssl.sh example.com:443</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Nginx TLS Best Practice</h4>
+      <code>ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:
+  ECDHE-RSA-AES128-GCM-SHA256:
+  ECDHE-ECDSA-AES256-GCM-SHA384:
+  ECDHE-RSA-AES256-GCM-SHA384;
+ssl_prefer_server_ciphers off;
+
+ssl_certificate /path/to/fullchain.pem;
+ssl_certificate_key /path/to/privkey.pem;
+
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+
+ssl_stapling on;
+ssl_stapling_verify on;
+
+add_header Strict-Transport-Security
+  "max-age=63072000" always;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Security Checklist</h4>
+      <code>[ ] TLS 1.2+ only (disable 1.0/1.1)
+[ ] ECDHE cipher suites (PFS)
+[ ] HSTS header (max-age >= 1 year)
+[ ] CAA DNS record
+[ ] OCSP stapling enabled
+[ ] Certificate auto-renewal
+[ ] CT monitoring for domains
+[ ] Private key permissions (600)
+[ ] Redirect HTTP to HTTPS
+[ ] Disable SSLv3, RC4, 3DES, CBC
+[ ] Test grade A+ on SSL Labs
+[ ] Monitor cert expiry (Prometheus)</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Lời khuyên cuối cùng</h4>
+    <p>Thế giới certificate đang ở bước ngoặt thú vị nhất. Let's Encrypt đã dân chủ hóa HTTPS, thời hạn cert đang ngắn lại (47 ngày sắp tới), <strong>post-quantum cryptography</strong> đang đến (ML-KEM, ML-DSA sẽ thay thế RSA/ECDSA), và certificate ngắn hạn (giờ thay vì tháng) đang trở thành chuẩn trong microservices. Người giỏi certificate không chỉ biết cài cert - họ hiểu <strong>cryptography, PKI architecture, automation, và threat model</strong>. Mỗi ổ khóa xanh trên trình duyệt là kết quả của 30 năm phát triển, hàng ngàn RFC, và niềm tin toàn cầu vào hệ thống PKI. Hãy bảo vệ niềm tin đó.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Certificate World Visualization | Built for engineers who want to truly understand TLS/SSL &amp; PKI</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">TLS 1.3 RFC 8446 | X.509 RFC 5280 | ACME RFC 8555 | "The best encryption is the one that's always on."</p>
+</footer>
+
+<script>
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.info-card, .myth-card, .numbered-card, .detail-card, .cheat-card, .timeline-content').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('nav a:not(.brand)');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>

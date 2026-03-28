@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Thần Thánh - Chuyên Gia Linux | Người Sống Trong Terminal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a0a 30%, #0a2a0a 60%, #1a3a0a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #22c55e; text-shadow: 0 0 20px #22c55e40; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #22c55e; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #22c55e; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+        .section h2 { color: #22c55e; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #22c55e30; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #22c55e; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #22c55e; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } .section { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="emoji">🐧</span>
+            <h1>Linux Thần Thánh</h1>
+            <div class="title">Chuyên Gia Linux | Người Sống Trong Terminal</div>
+            <div class="quote">"Trong Linux, mọi thứ đều là file. Kể cả niềm vui của bạn — nó nằm ở /dev/null."</div>
+        </div>
+        <div class="badges">
+            <span class="badge">🐧 Kernel Tuning</span>
+            <span class="badge">📦 Package Management</span>
+            <span class="badge">⚙️ systemd Master</span>
+            <span class="badge">🔧 Shell Scripting</span>
+            <span class="badge">🗂️ Filesystem Expert</span>
+            <span class="badge">🔐 SELinux/AppArmor</span>
+            <span class="badge">📊 Performance</span>
+            <span class="badge">🐳 Container Runtime</span>
+        </div>
+        <div class="section">
+            <h2>📚 Thân Thế &amp; Lai Lịch</h2>
+            <p>Linux Thần Thánh sinh ra trong một gia đình Windows. Ngày đầu tiên cài Ubuntu, chàng ta mất 3 giờ để cài driver Wi-Fi — bằng cách compile kernel module từ source. Bố chàng ta hỏi: "Sao không dùng Windows cho dễ?" Chàng ta đáp: "Vì Linux là TỰ DO, bố!"</p><p>10 năm sau, chàng ta đã thử hết mọi distro: Ubuntu, Fedora, Arch, Gentoo, Slackware, và thậm chí cả LFS (Linux From Scratch — 3 tuần compile). Chàng ta có thể live trong terminal mà không cần GUI suốt 6 tháng. Desktop environment? "Terminal với tmux là đủ rồi."</p><p>Bây giờ chàng ta quản lý 5,000 Linux servers, viết Ansible playbooks trong giấc ngủ, và vẫn tranh luận về systemd vs init mỗi tối thứ Sáu trên Reddit.</p>
+        </div>
+        <div class="section">
+            <h2>📜 Bí Kíp</h2>
+            <div class="tip">
+                <strong>1. Distro Selection — Chọn Đúng Từ Đầu:</strong> RHEL/CentOS Stream/Rocky/Alma cho enterprise (10 năm support). Ubuntu LTS cho cloud-native (5 năm support). Debian cho stability. Arch cho bleeding edge (chỉ dev/personal). Alpine cho containers (5MB base image). ĐỪNG dùng bleeding-edge distro cho production.
+            </div>
+            <div class="tip">
+                <strong>2. Kernel Tuning — Hiểu Nhưng Đừng Lạm Dụng:</strong> vm.swappiness: giảm cho database servers (10), default 60. net.core.somaxconn: tăng cho high-connection servers (65535). fs.file-max: tăng cho servers handle nhiều files. NHƯNG: đừng copy-paste sysctl settings từ StackOverflow — hiểu trước khi tune. Default kernel settings tốt cho 90% workloads.
+            </div>
+            <div class="tip">
+                <strong>3. systemd — Yêu Hay Ghét, Đều Phải Dùng:</strong> Unit files cho service management. journalctl cho log analysis. systemd-analyze cho boot performance. Timer units thay thế cron. Socket activation cho on-demand services. Resource control (CPUQuota, MemoryMax) cho service isolation. Đừng tranh luận systemd vs init nữa — systemd thắng rồi.
+            </div>
+            <div class="tip">
+                <strong>4. Package Management — Giữ Sạch Hệ Thống:</strong> RHEL: dnf, RPM. Ubuntu: apt, dpkg. Pin package versions cho production. KHÔNG mix repositories. Unattended-upgrades cho security patches (cẩn thận test trước). Đừng curl | bash install scripts trên production — package manager hoặc build from source.
+            </div>
+            <div class="tip">
+                <strong>5. Filesystem — Chọn Đúng Tool:</strong> ext4: default, reliable, proven. XFS: large files, parallel I/O, good for databases. Btrfs: snapshots, compression, checksums. ZFS: ultimate data integrity (nhưng memory-hungry). tmpfs cho /tmp. noatime mount option cho performance. Regular fsck cho health checks.
+            </div>
+            <div class="tip">
+                <strong>6. Security Hardening:</strong> Disable root SSH login. SSH key-only authentication. fail2ban cho brute force protection. SELinux/AppArmor enabled (ĐỪNG disable vì 'nó gây lỗi' — fix policy thay vì disable). Firewall (iptables/nftables/firewalld) enabled. Automatic security updates. Audit logging enabled.
+            </div>
+            <div class="tip">
+                <strong>7. Automation — Đừng Làm Gì Hai Lần:</strong> Shell scripts cho simple automation. Ansible cho configuration management. Cloud-init cho instance initialization. Infrastructure as Code cho reproducibility. Nếu bạn SSH vào server để thay đổi config manually, bạn đang làm sai.
+            </div>
+        </div>
+        <div class="section">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+            <div class="story">
+                <h3>💀 Chuyện rm -rf / Kinh Hoàng</h3>
+                <p>Junior admin chạy script cleanup: rm -rf $DIR/. Variable $DIR chưa được set → expand thành rm -rf /. Script chạy với root privileges. Trong 30 giây, hệ thống bắt đầu chết: commands not found, services crash, kernel panic.</p><p>May mắn: đây là staging server. Không may: staging server cũng chứa test data quan trọng, 2 tuần work mất trắng. Từ đó, team thêm set -euo pipefail vào mọi script, và thêm check: if [ -z "$DIR" ]; then echo 'DIR not set'; exit 1; fi</p>
+                <div class="lesson">💡 Bài học: LUÔN dùng set -euo pipefail trong bash scripts. Validate variables trước khi dùng. rm -rf với variable? Thêm safety check. Backup trước khi cleanup. Và nhớ: --preserve-root là default trong modern GNU rm, nhưng đừng rely vào nó.</div>
+            </div>
+            <div class="story">
+                <h3>🔥 Chuyện Kernel Panic Lúc 2 Giờ Sáng</h3>
+                <p>Production server kernel panic sau kernel update. Auto-reboot → kernel panic lại. Loop. 500K users không access được service. Team SSH vào: không được — server boot vào kernel panic loop. Phải console access qua IPMI, boot vào old kernel từ GRUB menu.</p><p>Root cause: kernel update incompatible với custom driver (GPU passthrough driver). Lesson: ĐỪNG auto-update kernel trên production. Test kernel update trên staging với đúng hardware/driver configuration trước. Pin kernel version, manual update schedule.</p>
+                <div class="lesson">💡 Bài học: Kernel updates cần testing cẩn thận, đặc biệt với custom drivers. Pin kernel version trên production. GRUB menu giữ 2-3 kernel cũ cho rollback. Test trên staging với identical hardware config. IPMI/iLO/iDRAC access là must-have cho bare metal.</div>
+            </div>
+            <div class="story">
+                <h3>⚔️ Chuyện systemd vs init Debate</h3>
+                <p>Team meeting biến thành flame war khi senior engineer đề xuất chuyển từ init scripts sang systemd. 'systemd is bloated!' 'systemd violates Unix philosophy!' Debate kéo dài 3 giờ, không ai viết code. Manager cuối cùng quyết định: 'Dùng systemd vì mọi major distro đều mặc định nó. Meeting adjourned.'</p><p>3 tháng sau, init advocate thừa nhận: 'Systemd timer units hay hơn cron, và journalctl actually useful.' Nhưng chàng ta vẫn grumble mỗi khi PID 1 bị đề cập.</p>
+                <div class="lesson">💡 Bài học: Kỹ thuật debate là healthy nhưng phải có deadline. Adopt what the ecosystem supports. Systemd là standard — learn nó thay vì fight nó. Focus năng lượng vào solving real problems, không phải ideology wars.</div>
+            </div>
+        </div>
+        <div class="section">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+            <div class="mistake">
+                <strong>1. Disable SELinux thay vì fix policy:</strong> SELinux 'causes issues' → disable → security hole. Debug với audit2why, tạo custom policy. Permissive mode để test trước khi enforce.
+            </div>
+            <div class="mistake">
+                <strong>2. Run everything as root:</strong> Convenience ≠ security. Least privilege: dedicated service accounts, sudo cho specific commands, không phải sudo su -.
+            </div>
+            <div class="mistake">
+                <strong>3. Không monitor disk space:</strong> / full → system crash. /var/log full → services can't write logs → silent failures. Monitor và alert ở 80%.
+            </div>
+            <div class="mistake">
+                <strong>4. Copy config từ internet không hiểu:</strong> StackOverflow sysctl.conf cho MySQL server applied lên web server. Different workloads cần different tuning. Understand trước khi apply.
+            </div>
+            <div class="mistake">
+                <strong>5. Không test backup restore:</strong> Backup chạy hàng đêm, 2 năm không ai test restore. Khi cần: backup files corrupted. TEST RESTORE REGULARLY.
+            </div>
+            <div class="mistake">
+                <strong>6. Ignore system logs:</strong> /var/log/syslog, journalctl đầy warnings mà không ai đọc. Centralized logging + alerting cho error patterns. Logs là early warning system.
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 IT-AI-Infra Expert Series | File #89</p>
+            <p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p>
+        </div>
+    </div>
+</body>
+</html>

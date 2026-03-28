@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đường Ống ML Tổng Quản - ML Pipeline Expert</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #1a0a3e 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(121,134,203,0.12) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .header-emoji { font-size: 80px; display: block; margin-bottom: 15px; position: relative; z-index: 1; }
+        .header h1 { font-size: 2.4em; color: #9fa8da; position: relative; z-index: 1; text-shadow: 0 0 30px rgba(159,168,218,0.3); }
+        .header .title { font-size: 1.2em; color: #c5cae9; margin-top: 5px; position: relative; z-index: 1; }
+        .header .quote { font-style: italic; color: #ffcc80; margin-top: 15px; font-size: 1.1em; position: relative; z-index: 1; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3), 0 0 30px rgba(121,134,203,0.1); }
+        .card h2 { color: #9fa8da; margin-bottom: 20px; font-size: 1.6em; }
+        .card h3 { color: #80cbc4; margin: 15px 0 10px; }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; position: relative; z-index: 1; }
+        .badge { background: linear-gradient(135deg, rgba(121,134,203,0.3), rgba(90,100,160,0.2)); border: 1px solid rgba(159,168,218,0.3); padding: 8px 18px; border-radius: 25px; font-size: 0.9em; color: #c5cae9; transition: all 0.3s ease; cursor: default; }
+        .badge:hover { background: linear-gradient(135deg, rgba(121,134,203,0.5), rgba(90,100,160,0.4)); transform: scale(1.08); box-shadow: 0 0 15px rgba(121,134,203,0.3); }
+        .tip-number { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #5c6bc0, #9fa8da); border-radius: 50%; color: white; font-weight: bold; font-size: 0.85em; margin-right: 10px; flex-shrink: 0; }
+        .tip { display: flex; align-items: flex-start; margin-bottom: 18px; }
+        .tip-content { flex: 1; }
+        .story { background: rgba(255,255,255,0.03); border-left: 3px solid #5c6bc0; padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0; }
+        .story-title { color: #ffcc80; font-weight: bold; margin-bottom: 8px; }
+        .lesson { background: rgba(255,200,50,0.08); border: 1px solid rgba(255,200,50,0.2); padding: 12px 18px; border-radius: 10px; margin-top: 10px; color: #ffcc80; }
+        .mistake { background: rgba(255,80,80,0.08); border-left: 3px solid #ff5252; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff8a80; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        code { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: #80cbc4; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8em; } .container { padding: 10px; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-emoji">🔧</span>
+            <h1>Đường Ống ML Tổng Quản</h1>
+            <div class="title">Kubeflow, MLflow, Vertex AI, SageMaker Expert</div>
+            <div class="quote">"ML pipeline giống hệ thống ống nước — khi chạy tốt không ai nhớ, khi vỡ thì ngập cả nhà lúc 3 giờ sáng."</div>
+            <div class="badge-container">
+                <span class="badge">🔄 Kubeflow</span>
+                <span class="badge">📊 MLflow</span>
+                <span class="badge">☁️ Vertex AI</span>
+                <span class="badge">🟠 SageMaker</span>
+                <span class="badge">📦 Model Registry</span>
+                <span class="badge">🔁 Reproducibility</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📚 Thân Thế & Lai Lịch</h2>
+            <p>Đường Ống ML Tổng Quản tên thật là <strong>Ống Dẫn Đức</strong>, kỹ sư DevOps chuyển sang MLOps. "Tôi từng deploy web apps — đơn giản, stateless, 12-factor. Rồi tôi gặp ML: stateful, GPU-dependent, non-deterministic. Tôi muốn quay lại deploy web apps."</p>
+            <p>Anh là người setup ML pipeline đầu tiên cho công ty — "lúc đó chưa có MLflow, chưa có Kubeflow. Tôi dùng cron jobs + bash scripts + prayer." 3 năm sau, anh migrate lên Kubeflow: "Từ spaghetti scripts sang proper pipeline. Giống nâng cấp từ xe đạp lên ô tô — nhanh hơn nhưng maintenance cũng nhiều hơn."</p>
+        </div>
+
+        <div class="card">
+            <h2>📜 Bí Kíp Pipeline</h2>
+
+            <div class="tip">
+                <span class="tip-number">1</span>
+                <div class="tip-content">
+                    <h3>Chọn ML Platform phù hợp</h3>
+                    <p><strong>MLflow</strong>: lightweight, open-source, tốt cho experiment tracking + model registry. Start here. <strong>Kubeflow</strong>: full platform trên K8s, tốt cho team lớn, complex pipelines. Steep learning curve. <strong>Vertex AI</strong> (GCP): managed, tốt nếu đã dùng GCP. <strong>SageMaker</strong> (AWS): mature, nhiều features, tốt nếu đã dùng AWS. Rule: team < 5 → MLflow. Team 5-20 + K8s → Kubeflow. Enterprise + cloud commitment → Vertex/SageMaker.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">2</span>
+                <div class="tip-content">
+                    <h3>Reproducibility — Tái tạo kết quả</h3>
+                    <p>5 pillars: (1) <strong>Code</strong>: Git commit hash. (2) <strong>Data</strong>: data version (DVC, Delta Lake). (3) <strong>Environment</strong>: Docker image hash. (4) <strong>Config</strong>: hyperparameters logged (MLflow, W&B). (5) <strong>Random seeds</strong>: set everywhere. MLflow log: <code>mlflow.log_param()</code>, <code>mlflow.log_metric()</code>, <code>mlflow.log_artifact()</code>. Mỗi experiment phải reproducible — "nếu không tái tạo được, đó là magic, không phải science."</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">3</span>
+                <div class="tip-content">
+                    <h3>Model Registry — Quản lý model lifecycle</h3>
+                    <p>MLflow Model Registry: stage models qua None → Staging → Production → Archived. Mỗi model version: linked to experiment run, có metrics, có artifacts. <strong>Model card</strong>: document model purpose, limitations, performance, bias. CI/CD for ML: khi model mới push → auto test → compare vs production model → promote nếu tốt hơn. Never deploy model mà không có rollback plan.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">4</span>
+                <div class="tip-content">
+                    <h3>Pipeline Design Patterns</h3>
+                    <p><strong>DAG-based</strong>: mỗi step là node, dependencies = edges. Idempotent steps: re-run safe. Caching: skip steps nếu input unchanged. <strong>Feature pipeline</strong>: data ingestion → cleaning → feature engineering → store. <strong>Training pipeline</strong>: load features → train → evaluate → register. <strong>Inference pipeline</strong>: load model → preprocess → predict → postprocess. Separate concerns: data engineer owns feature pipeline, ML engineer owns training, MLOps owns serving.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-number">5</span>
+                <div class="tip-content">
+                    <h3>Data Versioning — DVC và alternatives</h3>
+                    <p><strong>DVC</strong>: Git for data. Track large files, create data pipelines, version datasets. Store data in S3/GCS, track hashes in Git. <strong>Delta Lake</strong>: versioned data lake, time travel, ACID transactions. <strong>LakeFS</strong>: Git-like for data lakes. Minimum: version training data + code + config cho mọi experiment. "Nhưng tôi đã dùng data nào train model v1.3?" → Nếu không trả lời được → chưa đủ versioning.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <div class="story-title">🔄 Chuyện 1: Unreproducible training results</div>
+                <p>Data scientist: "Model v2 tốt hơn v1 10%!" Sếp: "Tuyệt, deploy!" 1 tuần sau, retrain với cùng code: performance giảm 5%. Tại sao? (1) Random seed khác, (2) Data thay đổi (new records added), (3) Library version update (PyTorch patch), (4) GPU khác (V100 vs A100 → floating point differences).</p>
+                <p>Anh Ống Dẫn setup: Docker image pinned, data versioned (DVC), seeds logged, hardware specified. Từ đó: mọi experiment reproducible within 0.1%.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Reproducibility cần đầu tư upfront nhưng tiết kiệm vô số giờ debug. Pin EVERYTHING: code (git), data (DVC), environment (Docker), config (MLflow), seeds. "Works on my machine" là câu nói tệ nhất trong ML.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">⏰ Chuyện 2: Pipeline breaks at 3am</div>
+                <p>Training pipeline chạy hàng đêm: data refresh → retrain → evaluate → auto-deploy nếu metrics tốt hơn. Một đêm: data source thay đổi schema (thêm column). Pipeline crash ở preprocessing step. Auto-retry 3 lần. 3 lần fail. PagerDuty alert lúc 3:17 AM.</p>
+                <p>Anh Ống Dẫn thức dậy, fix schema, pipeline chạy lại. Hôm sau: thêm schema validation step, data quality checks, và graceful degradation (nếu retrain fail, giữ model cũ).</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> ML pipelines cần defensive programming: (1) Schema validation cho data inputs, (2) Data quality checks (missing values, distributions), (3) Graceful degradation (keep old model if new one fails), (4) Alerting with context (không chỉ "failed" mà "failed because schema changed"). Production ML = production engineering.</div>
+            </div>
+
+            <div class="story">
+                <div class="story-title">📦 Chuyện 3: Model registry cứu mạng</div>
+                <p>Deploy model v5, production metrics giảm 20%. Panic. Nhờ model registry, rollback về v4 trong 5 phút. Investigate v5: data drift — training data không representative cho current traffic.</p>
+                <p>Nếu không có model registry: "v5 overwrite v4, code đã merge, không ai nhớ config v4 là gì." Disaster recovery time: 5 phút vs 5 ngày.</p>
+                <div class="lesson">💡 <strong>Bài học:</strong> Model registry là insurance policy. Mỗi model version: linked to code, data, config, metrics. Rollback plan cho mọi deployment. A/B testing hoặc canary deployment cho model releases. Never yolo-deploy model mới lên 100% traffic.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Những Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <strong>❌ Jupyter notebook làm production pipeline:</strong> Notebooks tốt cho exploration, tệ cho production. Convert sang .py scripts + proper pipeline.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không version data:</strong> Code versioned, model versioned, data... "ở đâu đó trên S3." Không reproducible.
+            </div>
+            <div class="mistake">
+                <strong>❌ Auto-deploy mà không có guardrails:</strong> Model mới auto-deploy → metrics crash → no rollback. Cần evaluation gate + canary deployment.
+            </div>
+            <div class="mistake">
+                <strong>❌ Over-engineer pipeline từ đầu:</strong> Team 2 người mà setup Kubeflow cluster → 3 tháng chỉ để maintain infra. Start với MLflow + scripts.
+            </div>
+            <div class="mistake">
+                <strong>❌ Không monitor model in production:</strong> Deploy xong rồi quên. Data drift, concept drift → model degrade dần mà không biết.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🔧 Đường Ống ML Tổng Quản — "Pipeline tốt là pipeline bạn quên nó tồn tại — cho đến khi nó cứu bạn."</p>
+            <p>Section 3: AI & Machine Learning · Expert #68</p>
+        </div>
+    </div>
+</body>
+</html>

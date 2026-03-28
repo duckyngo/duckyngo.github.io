@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 04 — Vue Đại Hiệp | Vue.js 3 Expert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --vue-green: #42b883;
+            --vue-dark-green: #35495e;
+            --vue-light-green: #5edba6;
+            --vue-mint: #a8f0d4;
+            --vue-navy: #2c3e50;
+            --vue-teal: #1a9e6f;
+            --bg-dark: #0a1f15;
+            --card-bg: rgba(240, 255, 248, 0.95);
+            --text-dark: #1a3a2a;
+            --text-light: #e6fff2;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #0a1f15 0%, #0d2a1c 25%, #0a1f15 50%, #061410 100%);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(66, 184, 131, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(53, 73, 94, 0.06) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(94, 219, 166, 0.04) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(2%, -1%) scale(1.02); }
+            66% { transform: translate(-1%, 2%) scale(0.98); }
+        }
+
+        /* Floating Vue logos */
+        .floating-vue {
+            position: fixed;
+            font-size: 1.6rem;
+            opacity: 0.08;
+            animation: floatUp 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+            color: var(--vue-green);
+            font-weight: 900;
+        }
+
+        .floating-vue:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 22s; }
+        .floating-vue:nth-child(2) { left: 15%; animation-delay: 4s; animation-duration: 18s; }
+        .floating-vue:nth-child(3) { left: 25%; animation-delay: 2s; animation-duration: 25s; }
+        .floating-vue:nth-child(4) { left: 40%; animation-delay: 6s; animation-duration: 20s; }
+        .floating-vue:nth-child(5) { left: 55%; animation-delay: 1s; animation-duration: 23s; }
+        .floating-vue:nth-child(6) { left: 70%; animation-delay: 5s; animation-duration: 19s; }
+        .floating-vue:nth-child(7) { left: 85%; animation-delay: 3s; animation-duration: 21s; }
+        .floating-vue:nth-child(8) { left: 92%; animation-delay: 7s; animation-duration: 24s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.08; }
+            90% { opacity: 0.08; }
+            100% { transform: translateY(-100vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        /* === MAIN CONTAINER === */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* === HERO HEADER === */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem;
+            box-shadow: 0 0 60px rgba(66, 184, 131, 0.4), 0 0 120px rgba(66, 184, 131, 0.15);
+            animation: avatarGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes avatarGlow {
+            0% { box-shadow: 0 0 60px rgba(66, 184, 131, 0.4), 0 0 120px rgba(66, 184, 131, 0.15); }
+            100% { box-shadow: 0 0 80px rgba(66, 184, 131, 0.6), 0 0 160px rgba(66, 184, 131, 0.25); }
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 184px;
+            height: 184px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--vue-green);
+            border-right-color: var(--vue-light-green);
+            animation: spinRing 4s linear infinite;
+        }
+
+        .avatar-ring-2 {
+            position: absolute;
+            top: -22px;
+            left: -22px;
+            width: 204px;
+            height: 204px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-bottom-color: var(--vue-mint);
+            border-left-color: var(--vue-teal);
+            animation: spinRing 6s linear infinite reverse;
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-light-green), var(--vue-mint));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: none;
+            animation: titleShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--vue-mint);
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .hero-tagline {
+            font-size: 1rem;
+            color: rgba(168, 240, 212, 0.6);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: rgba(66, 184, 131, 0.15);
+            color: var(--vue-mint);
+            border: 1px solid rgba(66, 184, 131, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        /* === SECTION STYLES === */
+        .section {
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+        .section:nth-child(6) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-teal));
+            box-shadow: 0 4px 20px rgba(66, 184, 131, 0.3);
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--vue-light-green);
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: rgba(168, 240, 212, 0.5);
+            font-weight: 400;
+        }
+
+        /* === CARDS === */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(66, 184, 131, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vue-green), var(--vue-light-green), var(--vue-teal));
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+        }
+
+        .card p {
+            line-height: 1.8;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        /* === BACKSTORY === */
+        .backstory-text {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--text-dark);
+        }
+
+        .backstory-text .highlight {
+            color: var(--vue-teal);
+            font-weight: 700;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-card {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.08), rgba(53, 73, 94, 0.05));
+            border: 1px solid rgba(66, 184, 131, 0.2);
+            border-radius: 14px;
+            padding: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.15), rgba(53, 73, 94, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .skill-card-title {
+            font-weight: 700;
+            color: var(--vue-teal);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .skill-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        /* === INSIGHTS (BI KIP) === */
+        .insight-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--vue-green);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .insight-item:hover {
+            border-left-color: var(--vue-light-green);
+            transform: translateX(6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .insight-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--vue-green), var(--vue-teal));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 0.85rem;
+            box-shadow: 0 3px 12px rgba(66, 184, 131, 0.4);
+        }
+
+        .insight-title {
+            font-weight: 700;
+            color: var(--vue-dark-green);
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .insight-desc {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .insight-code {
+            background: var(--vue-dark-green);
+            color: var(--vue-mint);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        /* === STORIES === */
+        .story-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(66, 184, 131, 0.12);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vue-green), transparent);
+        }
+
+        .story-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+
+        .story-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--vue-dark-green);
+            margin-bottom: 0.8rem;
+        }
+
+        .story-text {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: var(--text-dark);
+        }
+
+        .story-moral {
+            margin-top: 1rem;
+            padding: 0.8rem 1.2rem;
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.1), rgba(26, 158, 111, 0.08));
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--vue-teal);
+            font-size: 0.9rem;
+            border-left: 3px solid var(--vue-green);
+        }
+
+        /* === MISTAKES === */
+        .mistake-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .mistake-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(66, 184, 131, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .mistake-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .mistake-icon {
+            font-size: 2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .mistake-title {
+            font-weight: 700;
+            color: #c0392b;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mistake-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            opacity: 0.9;
+        }
+
+        .mistake-fix {
+            margin-top: 0.8rem;
+            padding: 0.5rem 0.8rem;
+            background: rgba(66, 184, 131, 0.1);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--vue-teal);
+            font-weight: 600;
+        }
+
+        /* === PBX RELEVANCE === */
+        .pbx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .pbx-card {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.06), rgba(53, 73, 94, 0.04));
+            border: 1px solid rgba(66, 184, 131, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .pbx-card:hover {
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.12), rgba(53, 73, 94, 0.08));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .pbx-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .pbx-card-title {
+            font-weight: 700;
+            color: var(--vue-teal);
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pbx-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(66, 184, 131, 0.15);
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: rgba(168, 240, 212, 0.4);
+        }
+
+        .footer-vue {
+            font-size: 1.2rem;
+            color: var(--vue-green);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+            .hero-subtitle { font-size: 1.1rem; }
+            .container { padding: 1rem 1rem 3rem; }
+            .hero { padding: 2.5rem 1rem; }
+            .avatar { width: 120px; height: 120px; font-size: 3.5rem; }
+            .avatar-ring { width: 144px; height: 144px; top: -12px; left: -12px; }
+            .avatar-ring-2 { width: 164px; height: 164px; top: -22px; left: -22px; }
+            .section-title { font-size: 1.4rem; }
+            .card { padding: 1.5rem; }
+            .skill-grid { grid-template-columns: 1fr; }
+            .mistake-grid { grid-template-columns: 1fr; }
+            .pbx-grid { grid-template-columns: 1fr; }
+            .badge-row { gap: 0.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.8rem; }
+            .section-header { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ANIMATED BACKGROUND -->
+    <div class="bg-animation"></div>
+    <div class="floating-vue">V</div>
+    <div class="floating-vue">&lt;/&gt;</div>
+    <div class="floating-vue">ref()</div>
+    <div class="floating-vue">V</div>
+    <div class="floating-vue">.vue</div>
+    <div class="floating-vue">V</div>
+    <div class="floating-vue">setup()</div>
+    <div class="floating-vue">V</div>
+
+    <div class="container">
+
+        <!-- ==================== HERO ==================== -->
+        <header class="hero">
+            <div class="avatar-container">
+                <div class="avatar-ring-2"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar">&#9889;</div>
+            </div>
+            <h1 class="hero-title">Vue Đại Hiệp</h1>
+            <p class="hero-subtitle">Agent 04 &mdash; Đại Sứ Composition API &amp; Reactivity</p>
+            <p class="hero-tagline">
+                "Một ref() đúng chỗ bằng mười dòng code Options API. Tin ta đi, ta đã từ trận chiến Options API đi lên rồi."
+            </p>
+            <div class="badge-row">
+                <span class="badge">&#9889; Vue 3.5</span>
+                <span class="badge">&#128218; Composition API</span>
+                <span class="badge">&#127795; Pinia</span>
+                <span class="badge">&#128739; Vue Router</span>
+                <span class="badge">&#128311; TypeScript</span>
+                <span class="badge">&#128200; DevExtreme</span>
+            </div>
+        </header>
+
+        <!-- ==================== BACKSTORY ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128214;</div>
+                <div>
+                    <h2 class="section-title">Thân Thế &amp; Lai Lịch</h2>
+                    <span class="section-subtitle">Câu chuyện của kẻ luyện võ Vue từ thuở sơ khai</span>
+                </div>
+            </div>
+            <div class="card">
+                <p class="backstory-text">
+                    Ngày xưa ngày xưa, ở một vùng đất xa xôi gọi là <span class="highlight">JavaScript Kingdom</span>,
+                    có một chàng thiếu niên tên là <span class="highlight">Vue Đại Hiệp</span>. Chàng lớn lên trong thời kỳ
+                    jQuery thống trị thiên hạ &mdash; khi mà việc thao tác DOM bằng tay là chuyện thường ngày ở huyện.
+                    <br><br>
+                    Một ngày nọ, chàng tình cờ gặp được <span class="highlight">Evan You</span> &mdash; vị đại sứ sáng tạo ra Vue.js.
+                    Evan truyền cho chàng bí kíp <span class="highlight">Reactivity System</span>, dạy chàng cách dùng
+                    <span class="highlight">ref()</span> và <span class="highlight">reactive()</span> để biến đổi dữ liệu mà UI tự động cập nhật
+                    như có phép thuật.
+                    <br><br>
+                    Từ đó, Vue Đại Hiệp lang thang khắp giang hồ, từ <span class="highlight">Options API</span> chuyển sang
+                    <span class="highlight">Composition API</span>, từ <span class="highlight">Vuex</span> chuyển sang
+                    <span class="highlight">Pinia</span>, luyện thành <span class="highlight">computed()</span>,
+                    <span class="highlight">watch()</span>, <span class="highlight">watchEffect()</span>,
+                    và nắm vững tất cả <span class="highlight">lifecycle hooks</span> từ onMounted đến onUnmounted.
+                    Chàng còn kết bạn với <span class="highlight">Vue Router</span> để đi khắp các trang, và học cách
+                    phối hợp với <span class="highlight">TypeScript</span> để code thêm vững chắc.
+                </p>
+            </div>
+
+            <div class="skill-grid">
+                <div class="skill-card">
+                    <div class="skill-card-title">&#9889; Composition API</div>
+                    <div class="skill-card-desc">Master setup(), ref(), reactive(), composables. Gom logic như gom đồ ăn vào hộp &mdash; gọn gàng, sạch sẽ, tái sử dụng được.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128161; Reactivity System</div>
+                    <div class="skill-card-desc">Hiểu rõ Proxy, dependency tracking, effect scheduling. Biết được khi nào Vue "theo dõi" bạn và khi nào nó "bỏ qua" bạn.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128200; Computed &amp; Watch</div>
+                    <div class="skill-card-desc">computed() cho giá trị phái sinh, watch() cho side effects. Biết khi nào dùng cái nào như biết khi nào ăn cơm, khi nào ăn phở.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#127795; Pinia Store</div>
+                    <div class="skill-card-desc">Quản lý state toàn cục với Pinia. Actions, getters, $subscribe &mdash; mọi thứ đều trong tầm tay. Vuex đã là quá khứ.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128739; Vue Router</div>
+                    <div class="skill-card-desc">Navigation guards, lazy loading, dynamic routes, nested routes. Điều hướng trang web như GPS định vị cuộc đời.</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-title">&#128311; TypeScript</div>
+                    <div class="skill-card-desc">defineProps&lt;T&gt;(), defineEmits&lt;T&gt;(), generic components. TypeScript là áo giáp bảo vệ code khỏi lỗi type lúc runtime.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== INSIGHTS (BI KIP) ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128220;</div>
+                <div>
+                    <h2 class="section-title">Bí Kíp Vue.js</h2>
+                    <span class="section-subtitle">Những điều ta học được sau bao nhiêu lần "deploy xong mới phát hiện bug"</span>
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">1</div>
+                <div class="insight-title">ref() vs reactive() &mdash; Chọn sai là khổ cả đời</div>
+                <div class="insight-desc">
+                    <strong>ref()</strong> cho primitive values (string, number, boolean) và khi cần .value để truy cập.
+                    <strong>reactive()</strong> cho object/array nhưng KHÔNG BAO GIỜ destructure trực tiếp, vì sẽ mất reactivity.
+                    Mẹo: cứ dùng ref() cho mọi thứ, an toàn hơn nhiều. reactive() chỉ dùng khi bạn thực sự hiểu mình đang làm gì.
+                </div>
+                <div class="insight-code">
+// SAI - mất reactivity khi destructure<br>
+const state = reactive({ count: 0 })<br>
+const { count } = state // count không reactive nữa!<br><br>
+// ĐÚNG - dùng ref() hoặc toRefs()<br>
+const count = ref(0) // luôn reactive<br>
+const { count } = toRefs(state) // vẫn reactive
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">2</div>
+                <div class="insight-title">Composables &mdash; Vũ khí bí mật của Composition API</div>
+                <div class="insight-desc">
+                    Đừng tạo component khổng lồ với 500 dòng code trong setup(). Hãy tách logic ra thành các composable function
+                    (useXxx). Đây là lý do Composition API tồn tại &mdash; để bạn có thể tái sử dụng logic giữa các component
+                    mà không cần mixins (cái thứ độc hại đó).
+                </div>
+                <div class="insight-code">
+// composables/useCallStatus.ts<br>
+export function useCallStatus() {<br>
+&nbsp;&nbsp;const isOnCall = ref(false)<br>
+&nbsp;&nbsp;const duration = ref(0)<br>
+&nbsp;&nbsp;const startCall = () => { isOnCall.value = true }<br>
+&nbsp;&nbsp;return { isOnCall, duration, startCall }<br>
+}
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">3</div>
+                <div class="insight-title">watchEffect() vs watch() &mdash; Hai anh em khác tính</div>
+                <div class="insight-desc">
+                    <strong>watchEffect()</strong> tự động theo dõi mọi dependency bên trong và chạy ngay lập tức.
+                    <strong>watch()</strong> chỉ theo dõi những gì bạn chỉ định và cho bạn giá trị cũ + mới.
+                    Mẹo: watchEffect() cho "tôi muốn làm gì đó khi bất kỳ dependency nào thay đổi".
+                    watch() cho "tôi muốn biết cụ thể cái gì thay đổi và giá trị trước là bao nhiêu".
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">4</div>
+                <div class="insight-title">Template Refs + nextTick() &mdash; Đợi DOM sẵn sàng</div>
+                <div class="insight-desc">
+                    Khi bạn thay đổi reactive data, DOM không cập nhật ngay lập tức. Vue "gom" các thay đổi lại và cập nhật một lần.
+                    Nếu bạn cần truy cập DOM ngay sau khi thay đổi data, hãy dùng <strong>nextTick()</strong>.
+                    Đây là sai lầm kinh điển của người mới: thay đổi data rồi đọc DOM ngay &mdash; và tự hỏi tại sao nó vẫn là giá trị cũ.
+                </div>
+                <div class="insight-code">
+const message = ref('Xin chào')<br>
+message.value = 'Tạm biệt'<br><br>
+// SAI: DOM chưa cập nhật<br>
+console.log(el.textContent) // vẫn là "Xin chào"<br><br>
+// ĐÚNG: đợi nextTick<br>
+await nextTick()<br>
+console.log(el.textContent) // "Tạm biệt"
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">5</div>
+                <div class="insight-title">provide/inject &mdash; Chống Prop Drilling</div>
+                <div class="insight-desc">
+                    Khi bạn truyền props qua 5-6 tầng component, code sẽ trở nên như cái cây Giáng sinh &mdash; đẹp nhưng rối.
+                    <strong>provide/inject</strong> cho phép component ông truyền thẳng data cho component cháu mà không cần qua trung gian.
+                    Nhưng nhớ: đừng lạm dụng, vì debug sẽ khó hơn khi bạn không biết data đến từ đâu.
+                </div>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-number">6</div>
+                <div class="insight-title">defineModel() &mdash; Vượt cửa Vue 3.4+</div>
+                <div class="insight-desc">
+                    Trước Vue 3.4, two-way binding cho component tự làm là cực hình: defineProps + defineEmits + computed get/set.
+                    Giờ chỉ cần <strong>defineModel()</strong> là xong. Một dòng thay ba mươi dòng.
+                    Đây là minh chứng rằng Vue luôn tiến hóa để dev bớt khổ.
+                </div>
+                <div class="insight-code">
+// Trước Vue 3.4 - dài dòng dòng<br>
+const props = defineProps(['modelValue'])<br>
+const emit = defineEmits(['update:modelValue'])<br>
+const value = computed({<br>
+&nbsp;&nbsp;get: () => props.modelValue,<br>
+&nbsp;&nbsp;set: (v) => emit('update:modelValue', v)<br>
+})<br><br>
+// Vue 3.4+ - gọn như thơ<br>
+const value = defineModel&lt;string&gt;()
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FUN STORIES ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128214;</div>
+                <div>
+                    <h2 class="section-title">Chuyện Kể Bên Bếp Lửa</h2>
+                    <span class="section-subtitle">Ông nội Vue kể chuyện cho con cháu nghe</span>
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#128163;</span>
+                <h3 class="story-title">Cái Bẫy Reactivity &mdash; Hay Cách Ông Mất 3 Ngày Debug</h3>
+                <p class="story-text">
+                    Ngày xưa, ông có một cái object lớn như cái nhà, ông bỏ nó vào <code>reactive()</code> đẹp đẽ lắm.
+                    Rồi một ngày, ông cần truyền một phần của nó cho component con. Ông vui vẻ destructure:
+                    <code>const { name, age } = userState</code>.
+                    <br><br>
+                    Ông thay đổi <code>name</code>, nhưng UI cứ như tường &mdash; không nhúc nhích. Ông tưởng Vue bị lỗi.
+                    Ông đọc lại docs. Ông hỏi Stack Overflow. Ông thức đến 3 giờ sáng.
+                    <br><br>
+                    Hóa ra, khi destructure reactive object, các giá trị primitive bị "tách rời" khỏi Proxy và mất hết reactivity.
+                    Ông phải dùng <code>toRefs()</code> hoặc <code>storeToRefs()</code> với Pinia store.
+                    Từ đó, ông không bao giờ destructure reactive object nữa. Ông bảo con cháu: <strong>"Đừng bao giờ xắt nhỏ reactivity ra!"</strong>
+                </p>
+                <div class="story-moral">
+                    &#128161; Bài học: Destructure reactive object = mất reactivity. Dùng toRefs() hoặc cứ truy cập qua object gốc.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#9876;</span>
+                <h3 class="story-title">Cuộc Chiến v-if vs v-show &mdash; Ai Mới Là Võ Lâm Minh Chủ?</h3>
+                <p class="story-text">
+                    Ở một dự án ngày xưa, team ông có hai phe: phe <code>v-if</code> và phe <code>v-show</code>.
+                    Phe v-if nói: "Tôi tiết kiệm DOM node, tôi là vương!" Phe v-show đáp: "Tôi toggle nhanh hơn, tôi mới là vương!"
+                    <br><br>
+                    Họ tranh luận 2 tiếng trong cuộc họp. PM ngồi đó không hiểu gì, chỉ biết là deadline sắp đến.
+                    <br><br>
+                    Cuối cùng ông phải đứng dậy phân xử: <strong>v-if</strong> dùng khi condition ít thay đổi (vì nó destroy/recreate DOM).
+                    <strong>v-show</strong> dùng khi toggle thường xuyên (vì nó chỉ thay đổi CSS display).
+                    Trong PBX project, cái call panel toggle liên tục thì dùng v-show. Cái admin settings hiếm khi mở thì dùng v-if.
+                    <br><br>
+                    Từ đó hai phe hòa bình. Nhưng ông vẫn thấy họ liếc nhau về <code>v-if</code> với <code>v-for</code> trên cùng element...
+                    đó lại là chuyện khác.
+                </p>
+                <div class="story-moral">
+                    &#128161; Bài học: v-if cho render có điều kiện (lazy), v-show cho toggle thường xuyên. Và ĐỪNG BAO GIỜ dùng v-if với v-for trên cùng element!
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#127875;</span>
+                <h3 class="story-title">Ác Mộng Prop Drilling &mdash; Khi Props Đi Qua 7 Tầng Địa Ngục</h3>
+                <p class="story-text">
+                    Ông còn nhớ cái dự án đầu tiên dùng Vue. Ông có một cái theme color cần truyền từ App.vue xuống
+                    đến một cái button nhỏ xíu nằm sâu tận 7 tầng component.
+                    <br><br>
+                    Ông truyền props: App &rarr; Layout &rarr; Sidebar &rarr; Menu &rarr; MenuItem &rarr; SubMenu &rarr; Button.
+                    Mỗi component phải khai báo <code>defineProps</code> rồi truyền tiếp xuống. Code dài như sông Hàn.
+                    <br><br>
+                    Một ngày, PM nói: "Đổi tên prop từ 'themeColor' thành 'primaryColor' nhé."
+                    Ông phải sửa 7 file. Ông muốn khóc.
+                    <br><br>
+                    Rồi ông học được <code>provide/inject</code>. Ông provide ở App.vue, inject ở Button &mdash; xong.
+                    Sau này có Pinia, mọi thứ còn dễ hơn nữa. Ông đặt theme vào store, component nào cần thì lấy.
+                    <strong>Đời ông không bao giờ drilling nữa.</strong>
+                </p>
+                <div class="story-moral">
+                    &#128161; Bài học: Quá 2-3 tầng props thì nên dùng provide/inject hoặc Pinia store. Prop drilling là đường dẫn ngắn nhất đến burnout.
+                </div>
+            </div>
+
+            <div class="story-card">
+                <span class="story-emoji">&#128123;</span>
+                <h3 class="story-title">Ma onUnmounted &mdash; Khi Memory Leak Âm Thầm Ăn Mừng</h3>
+                <p class="story-text">
+                    Có một lần, ông làm tính năng realtime cho PBX &mdash; lắng nghe SIP events qua WebSocket.
+                    Ông đăng ký event listener trong <code>onMounted()</code>, rồi... quên mất <code>onUnmounted()</code>.
+                    <br><br>
+                    Mỗi lần user navigate đi rồi quay lại, một listener mới được tạo ra mà cái cũ không bị hủy.
+                    Sau 30 phút, tab browser ăn 2GB RAM. User gọi điện bảo: "Sao máy tính tui nóng như lò nướng vậy?"
+                    <br><br>
+                    Từ đó ông có quy tắc bất thành văn: <strong>"Có onMounted thì phải có onUnmounted.
+                    addEventListener thì removeEventListener. Subscribe thì unsubscribe. Như âm với dương, có vay có trả."</strong>
+                </p>
+                <div class="story-moral">
+                    &#128161; Bài học: LUÔN dọn dẹp trong onUnmounted(). setInterval, addEventListener, WebSocket subscription &mdash; tất cả phải được hủy khi component bị destroy.
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== COMMON MISTAKES ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128683;</div>
+                <div>
+                    <h2 class="section-title">Những Lỗi Kinh Điển</h2>
+                    <span class="section-subtitle">Những "hố" mà ai cũng phải rơi xuống ít nhất một lần</span>
+                </div>
+            </div>
+
+            <div class="mistake-grid">
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128165;</div>
+                    <div class="mistake-title">Quên .value với ref()</div>
+                    <div class="mistake-desc">
+                        Trong script setup, ref() cần .value để đọc/ghi. Trong template thì không cần.
+                        Số lượng lần dev viết <code>count++</code> thay vì <code>count.value++</code>
+                        rồi tự hỏi "tại sao nó không tăng?" nhiều không đếm xuể.
+                    </div>
+                    <div class="mistake-fix">&#9989; Mẹo: bật ESLint + Vue plugin, nó sẽ nhắc bạn ngay.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128561;</div>
+                    <div class="mistake-title">Thay đổi prop trực tiếp</div>
+                    <div class="mistake-desc">
+                        Props là ONE-WAY data flow. Thay đổi prop trực tiếp sẽ bị Vue cảnh báo và gây ra bug khó debug.
+                        Đừng làm cha nó làm, đừng sửa hàng xóm.
+                    </div>
+                    <div class="mistake-fix">&#9989; Dùng emit event lên parent hoặc dùng defineModel() cho two-way binding.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128293;</div>
+                    <div class="mistake-title">v-for không có :key</div>
+                    <div class="mistake-desc">
+                        Không dùng :key hoặc dùng index làm key. Vue sẽ không biết element nào thay đổi,
+                        dẫn đến render sai và bug "ma" xuất hiện khi sort/filter list.
+                    </div>
+                    <div class="mistake-fix">&#9989; Luôn dùng unique ID làm key. KHÔNG BAO GIỜ dùng index nếu list có thể thay đổi.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128064;</div>
+                    <div class="mistake-title">Gọi API trong computed()</div>
+                    <div class="mistake-desc">
+                        computed() là synchronous và được cache. Gọi async API trong computed là hành động phạm pháp.
+                        Nó sẽ chạy nhiều lần không kiểm soát và không bao giờ return đúng.
+                    </div>
+                    <div class="mistake-fix">&#9989; Gọi API trong onMounted() hoặc watch(), lưu kết quả vào ref().</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#128680;</div>
+                    <div class="mistake-title">Deep watch mà không cần thiết</div>
+                    <div class="mistake-desc">
+                        <code>watch(obj, cb, { deep: true })</code> trên object lớn sẽ làm Vue phải duyệt toàn bộ object
+                        mỗi khi có bất kỳ thay đổi nào. Performance chết như con hổ bị cảm.
+                    </div>
+                    <div class="mistake-fix">&#9989; Chỉ watch property cụ thể: watch(() => obj.value.name, cb). Chính xác và nhanh hơn.</div>
+                </div>
+
+                <div class="mistake-card">
+                    <div class="mistake-icon">&#129327;</div>
+                    <div class="mistake-title">Component khổng lồ 1000+ dòng</div>
+                    <div class="mistake-desc">
+                        Nhồi hết mọi thứ vào một component duy nhất. Template 300 dòng, script 500 dòng, style 200 dòng.
+                        Đời mà maintain code này bắt đầu từ khi bạn không nhớ mình viết gì.
+                    </div>
+                    <div class="mistake-fix">&#9989; Tách thành composables + child components. Mỗi component nên dưới 200 dòng.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PBX RELEVANCE ==================== -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128222;</div>
+                <div>
+                    <h2 class="section-title">Vue.js Trong Dự Án PBX</h2>
+                    <span class="section-subtitle">Cách Vue 3.5 trở thành xương sống của giao diện PBX</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="backstory-text">
+                    Toàn bộ giao diện người dùng của hệ thống PBX được xây dựng trên <span class="highlight">Vue 3.5</span>
+                    với <span class="highlight">Composition API</span> và <span class="highlight">TypeScript</span>.
+                    Đây là một hệ thống quản lý tổng đài điện thoại doanh nghiệp, nơi mà mỗi giây đều quan trọng &mdash;
+                    từ việc hiển thị trạng thái cuộc gọi realtime, quản lý hàng đợi, đến giao diện agent xử lý cuộc gọi.
+                </p>
+            </div>
+
+            <div class="pbx-grid">
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128222;</div>
+                    <div class="pbx-card-title">Giao Diện Cuộc Gọi Realtime</div>
+                    <div class="pbx-card-desc">
+                        Vue reactivity system là nền tảng để hiển thị trạng thái cuộc gọi (ringing, connected, on-hold)
+                        theo thời gian thực. ref() và computed() giúp UI cập nhật tức thì khi SIP events thay đổi.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#127795;</div>
+                    <div class="pbx-card-title">Pinia Quản Lý State</div>
+                    <div class="pbx-card-desc">
+                        Trạng thái agent (available, busy, away), danh sách cuộc gọi, cấu hình hệ thống &mdash;
+                        tất cả được quản lý tập trung trong Pinia stores. storeToRefs() đảm bảo reactivity khi
+                        destructure store data.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128739;</div>
+                    <div class="pbx-card-title">Vue Router &amp; Guards</div>
+                    <div class="pbx-card-desc">
+                        Điều hướng giữa các trang: Dashboard, Call History, Agent Management, Settings.
+                        Navigation guards kiểm tra quyền truy cập và trạng thái đăng nhập trước khi cho phép vào trang.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128200;</div>
+                    <div class="pbx-card-title">DevExtreme Components</div>
+                    <div class="pbx-card-desc">
+                        Bảng dữ liệu, biểu đồ thống kê, form nhập liệu &mdash; DevExtreme cung cấp UI components sẵn có.
+                        Vue 3 wrapper giúp tích hợp mượt mà với Composition API và reactive data binding.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128268;</div>
+                    <div class="pbx-card-title">Composables Cho Logic Nghiệp Vụ</div>
+                    <div class="pbx-card-desc">
+                        useCallManager(), useAgentStatus(), useWebSocket() &mdash; logic nghiệp vụ được đóng gói
+                        trong composables, tái sử dụng across components. Clean code, dễ test, dễ maintain.
+                    </div>
+                </div>
+
+                <div class="pbx-card">
+                    <div class="pbx-card-icon">&#128311;</div>
+                    <div class="pbx-card-title">TypeScript An Toàn</div>
+                    <div class="pbx-card-desc">
+                        Mọi component, mọi composable, mọi store đều có type definitions.
+                        defineProps&lt;T&gt;() và defineEmits&lt;T&gt;() đảm bảo rằng data flow giữa các component
+                        luôn đúng kiểu, bắt lỗi ngay lúc compile thay vì lúc production.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FOOTER ==================== -->
+        <footer class="footer">
+            <div class="footer-vue">&#9889; Vue Đại Hiệp &mdash; Agent 04</div>
+            <p class="footer-text">
+                "Code Vue không khó, khó là khi bạn quên .value" &mdash; PBX Agent Profiles
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

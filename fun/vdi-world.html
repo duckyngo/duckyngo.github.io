@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới VDI - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.3); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is VDI */
+  .vdi-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .vdi-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .vdi-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.vmware::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.citrix::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.microsoft::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.proxmox::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.guacamole::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Protocol Map */
+  .protocol-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .protocol-card:hover { border-color: var(--accent); }
+
+  .protocol-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .protocol-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .protocol-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* VDI Types Grid */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .type-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .type-card .type-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .type-card h4 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .type-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Topology */
+  .topology-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .topo-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .topo-card h4 { color: var(--accent); margin-bottom: 1rem; }
+
+  .topo-visual {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .topo-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Mindset / Homelab grid */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .mindset-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .mindset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .mindset-card .mindset-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .mindset-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .mindset-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Flow Diagram */
+  .flow-container {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .flow-container .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .vdi-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .topology-container { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .type-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">VDI World</a>
+  <a href="#what">VDI là gì?</a>
+  <a href="#history">Lịch sử</a>
+  <a href="#types">Phân loại</a>
+  <a href="#protocols">Protocols</a>
+  <a href="#vendors">Ông lớn</a>
+  <a href="#architecture">Kiến trúc</a>
+  <a href="#opensource">Open Source</a>
+  <a href="#performance">Hiệu năng</a>
+  <a href="#homelab">Homelab</a>
+  <a href="#myths">Hiểu nhầm</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-icon">🖥️</div>
+  <h1>Thế Giới VDI</h1>
+  <p class="subtitle">Từ mainframe terminal đến Desktop-as-a-Service - Hành trình 60 năm của desktop ảo hóa. Mọi thứ bạn cần biết về Virtual Desktop Infrastructure, từ kiến trúc đến triển khai trong homelab.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS VDI -->
+<section id="what">
+  <div class="vdi-what">
+    <h2 class="section-title">VDI là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Virtual Desktop Infrastructure</strong> - Nôm na là đặt "máy tính" của bạn lên server ở data center, rồi bạn chỉ cần một màn hình mỏng (thin client) để kết nối vào. Desktop chạy trên server, hình ảnh được stream về thiết bị của bạn. Bạn thấy Windows, click chuột, gõ phím - nhưng mọi thứ xử lý ở xa.
+    </p>
+
+    <div class="vdi-analogy">
+      <div class="analogy-box">
+        <div class="icon">💻</div>
+        <h3>PC Truyền thống</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Mỗi người 1 PC vật lý<br>OS + App + Data tại chỗ<br>Quản lý: <strong style="color: var(--accent5);">Cực khó scale</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">☁️</div>
+        <h3>VDI Desktop</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Desktop chạy trên server<br>Truy cập từ mọi nơi, mọi thiết bị<br>Quản lý: <strong style="color: var(--accent3);">Tập trung, dễ scale</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>VDI không chỉ là "remote desktop". Nó là một <strong>kiến trúc hoàn chỉnh</strong> bao gồm: hypervisor chạy VM, connection broker điều phối kết nối, profile management giữ dữ liệu người dùng, display protocol truyền hình ảnh, và thin client ở đầu cuối. Hãy nghĩ VDI như một <strong>"nhà máy sản xuất desktop theo yêu cầu"</strong> - mỗi user login vào, hệ thống tạo (hoặc gán) một desktop riêng cho họ trong vài giây.</p>
+    </div>
+
+    <h3 style="color: var(--accent2); margin: 2rem 0 1rem;">VDI vs DaaS - Hai con đường, một đích đến</h3>
+    <div class="vdi-analogy">
+      <div class="analogy-box">
+        <div class="icon">🏗️</div>
+        <h3>VDI (On-Premise)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Bạn sở hữu server, storage, network<br>Bạn quản lý hypervisor, broker, VM<br>Chi phí: <strong style="color: var(--accent4);">CapEx lớn, OpEx thấp</strong><br>Control: <strong style="color: var(--accent3);">Toàn quyền</strong></p>
+      </div>
+      <div class="analogy-arrow">⚡</div>
+      <div class="analogy-box">
+        <div class="icon">☁️</div>
+        <h3>DaaS (Cloud)</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Provider (Azure, AWS) sở hữu hạ tầng<br>Bạn chỉ quản lý user và app<br>Chi phí: <strong style="color: var(--accent4);">OpEx theo tháng</strong><br>Control: <strong style="color: var(--accent5);">Hạn chế</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Khi nào chọn VDI, khi nào chọn DaaS?</h4>
+      <p><strong>VDI on-premise</strong> phù hợp khi bạn đã có hạ tầng server mạnh, cần kiểm soát dữ liệu tuyệt đối (ngân hàng, quân đội), hoặc có đội ngũ IT chuyên nghiệp. <strong>DaaS</strong> phù hợp cho startup, công ty remote-first, hoặc khi cần scale nhanh mà không muốn đầu tư hardware. Nhiều doanh nghiệp chọn mô hình <strong>hybrid</strong> - VDI cho nhân viên cố định, DaaS cho contractor và remote worker.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian VDI</h2>
+  <p class="section-subtitle">60 năm phát triển - từ mainframe terminal đến cloud desktop</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1960s-1970s</span>
+        <h3>Kỷ nguyên Mainframe Terminal</h3>
+        <p>IBM mainframe với hàng trăm "dumb terminal" kết nối vào. Người dùng không có máy tính riêng - chỉ có màn hình xanh lá và bàn phím. Mọi xử lý diễn ra trên mainframe trung tâm. Đây chính là ông tổ của VDI - ý tưởng "tập trung hóa computing" đã có từ 60 năm trước.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1980s-1990s</span>
+        <h3>PC Revolution phá vỡ tập trung hóa</h3>
+        <p>IBM PC ra đời, mỗi người có máy tính riêng. IT mất kiểm soát - mỗi PC là một hòn đảo riêng biệt với phần mềm, virus, và vấn đề riêng. Chi phí quản lý PC phân tán bắt đầu trở thành ác mộng cho doanh nghiệp lớn. Gartner ước tính TCO mỗi PC = $8,000-$13,000/năm.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1995-2003</span>
+        <h3>Citrix MetaFrame & Terminal Services</h3>
+        <p>Citrix mang ý tưởng mainframe trở lại với ICA protocol. Microsoft tích hợp Terminal Services vào Windows Server. Nhiều user chia sẻ MỘT Windows session trên server (RDSH). Thin client xuất hiện - nhỏ gọn, tiết kiệm điện, dễ quản lý. Nhưng đây là session-based, chưa phải true VDI.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2007-2012</span>
+        <h3>VMware View - True VDI ra đời</h3>
+        <p>VMware tung ra VMware View (sau đổi tên thành Horizon). Mỗi user có MỘT VM Windows riêng - không chia sẻ. Connection broker quản lý pool VM. PCoIP protocol cho trải nghiệm mượt. Citrix phản công bằng XenDesktop. Cuộc chiến VDI bắt đầu. Nhưng chi phí storage KHỔNG LỒ vì mỗi VM = 1 ổ đĩa riêng.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2013-2018</span>
+        <h3>Linked Clone, vGPU & Hyper-Convergence</h3>
+        <p>VMware Instant Clone và Citrix MCS giải quyết bài toán storage - hàng trăm VM chia sẻ một base image. NVIDIA GRID (sau là vGPU) mang GPU vào VDI - designer, CAD engineer cuối cùng có thể dùng VDI. Nutanix, vSAN đơn giản hóa hạ tầng. VDI bắt đầu thực sự khả thi cho enterprise.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2019-2026</span>
+        <h3>COVID, DaaS & Cloud Desktop</h3>
+        <p>COVID-19 = VDI bùng nổ. Hàng triệu nhân viên cần làm việc từ nhà NGAY LẬP TỨC. Microsoft tung Azure Virtual Desktop (AVD). Amazon ra WorkSpaces. Windows 365 = cloud PC thuê theo tháng. Broadcom mua VMware gây xáo trộn. Open-source VDI (Proxmox + Guacamole) lên ngôi trong cộng đồng homelab.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VDI TYPES -->
+<section id="types">
+  <h2 class="section-title" style="color: var(--accent2);">Phân Loại VDI</h2>
+  <p class="section-subtitle">Persistent vs Non-persistent, Clone types, và khi nào dùng loại nào</p>
+
+  <div class="type-grid">
+    <div class="type-card">
+      <div class="type-icon">📌</div>
+      <h4>Persistent Desktop</h4>
+      <p>Mỗi user có MỘT VM cố định, giống hệt PC cá nhân. Restart vẫn giữ mọi thay đổi - app đã cài, file trên desktop, wallpaper tùy chỉnh. Dễ hiểu cho user nhưng <strong>tốn storage</strong> và <strong>khó patching</strong> vì mỗi VM là unique.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1:1</div><div class="label">User:VM</div></div>
+        <div class="stat"><div class="num">50GB+</div><div class="label">Per VM</div></div>
+        <div class="stat"><div class="num">Cao</div><div class="label">Storage</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">User quen thuộc</span>
+        <span class="tag warn">Tốn storage</span>
+        <span class="tag hot">Khó scale</span>
+        <span class="tag">Developer, Designer</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">🔄</div>
+      <h4>Non-Persistent Desktop</h4>
+      <p>VM được tạo mới (hoặc reset) mỗi lần login. User logout = VM bị xóa hoặc revert. Mọi customization nằm trong <strong>user profile</strong> (FSLogix, UPM) tách riêng. Tiết kiệm storage CỰC KỲ, patching đơn giản - chỉ cần update base image.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">N:Pool</div><div class="label">User:VM</div></div>
+        <div class="stat"><div class="num">~1GB</div><div class="label">Delta/VM</div></div>
+        <div class="stat"><div class="num">Thấp</div><div class="label">Storage</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tiết kiệm</span>
+        <span class="tag good">Dễ patch</span>
+        <span class="tag warn">Cần profile mgmt</span>
+        <span class="tag">Task worker, Call center</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">🔗</div>
+      <h4>Pooled Desktop</h4>
+      <p>Một nhóm VM sẵn sàng, user login được gán VM ngẫu nhiên từ pool. Hôm nay bạn dùng VM-05, mai có thể là VM-12. Kết hợp với non-persistent = hiệu quả nhất. Pool size có thể <strong>nhỏ hơn tổng user</strong> nếu không ai online cùng lúc.</p>
+      <div class="tag-row">
+        <span class="tag good">Linh hoạt</span>
+        <span class="tag good">Over-commit được</span>
+        <span class="tag">Shift worker lý tưởng</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">🎯</div>
+      <h4>Dedicated Desktop</h4>
+      <p>VM được gán cố định cho một user cụ thể. Có thể là persistent (giữ state) hoặc non-persistent (reset nhưng luôn cùng VM). Phù hợp khi user cần <strong>GPU riêng</strong>, <strong>software license gắn MAC</strong>, hoặc compliance yêu cầu.</p>
+      <div class="tag-row">
+        <span class="tag">1:1 mapping</span>
+        <span class="tag warn">Không over-commit</span>
+        <span class="tag">Power user</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">📦</div>
+      <h4>Full Clone</h4>
+      <p>Copy TOÀN BỘ ổ đĩa từ template sang VM mới. Mỗi VM hoàn toàn độc lập - xóa template cũng không ảnh hưởng. Nhưng 100 VM x 50GB = <strong>5TB storage</strong>. Chậm khi provision. Chỉ dùng khi cần independent VM thực sự (lab, testing).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">100%</div><div class="label">Copy size</div></div>
+        <div class="stat"><div class="num">Chậm</div><div class="label">Provision</div></div>
+        <div class="stat"><div class="num">Cao</div><div class="label">Độc lập</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Tốn storage</span>
+        <span class="tag good">Independent</span>
+        <span class="tag">Lab/Test</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">🔗</div>
+      <h4>Linked Clone</h4>
+      <p>VM chỉ lưu <strong>delta</strong> (sự khác biệt) so với base image. 100 VM chia sẻ 1 base image 50GB + mỗi VM chỉ thêm 2-5GB delta. Tiết kiệm KHỔNG LỒ. Nhược điểm: base image bị lỗi = TẤT CẢ VM ảnh hưởng. Delta lớn dần theo thời gian (recompose cần thiết).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">5-10%</div><div class="label">Storage</div></div>
+        <div class="stat"><div class="num">Nhanh</div><div class="label">Provision</div></div>
+        <div class="stat"><div class="num">Trung bình</div><div class="label">Độc lập</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tiết kiệm storage</span>
+        <span class="tag warn">Base dependency</span>
+        <span class="tag">Citrix MCS/PVS</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">⚡</div>
+      <h4>Instant Clone</h4>
+      <p>Công nghệ đỉnh cao của VMware. VM được <strong>fork từ running parent VM</strong> trong bộ nhớ - tạo mới trong <strong>vài giây</strong>. Copy-on-write cho cả RAM và disk. User logout = VM bị xóa, login lại = VM mới tinh. Hoàn hảo cho non-persistent VDI. Yêu cầu VMware Horizon.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">&lt;5s</div><div class="label">Provision</div></div>
+        <div class="stat"><div class="num">Minimal</div><div class="label">Storage</div></div>
+        <div class="stat"><div class="num">Tốt nhất</div><div class="label">Hiệu quả</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Cực nhanh</span>
+        <span class="tag good">Minimal storage</span>
+        <span class="tag">VMware only</span>
+        <span class="tag good">Non-persistent ideal</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>Full Clone</th>
+          <th>Linked Clone</th>
+          <th>Instant Clone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tốc độ tạo VM</td>
+          <td style="color: var(--accent5);">10-30 phút</td>
+          <td style="color: var(--accent4);">1-5 phút</td>
+          <td style="color: var(--accent3);">2-5 giây</td>
+        </tr>
+        <tr>
+          <td>Storage per VM</td>
+          <td style="color: var(--accent5);">40-60 GB</td>
+          <td style="color: var(--accent4);">5-15 GB</td>
+          <td style="color: var(--accent3);">1-3 GB</td>
+        </tr>
+        <tr>
+          <td>Độc lập với base</td>
+          <td style="color: var(--accent3);">Hoàn toàn</td>
+          <td style="color: var(--accent4);">Phụ thuộc</td>
+          <td style="color: var(--accent5);">Phụ thuộc cao</td>
+        </tr>
+        <tr>
+          <td>Persistent support</td>
+          <td style="color: var(--accent3);">Tốt nhất</td>
+          <td style="color: var(--accent4);">Khá tốt</td>
+          <td style="color: var(--accent5);">Không</td>
+        </tr>
+        <tr>
+          <td>Use case chính</td>
+          <td>Lab, Developer</td>
+          <td>Enterprise mixed</td>
+          <td>Task worker, Kiosk</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROTOCOLS -->
+<section id="protocols">
+  <h2 class="section-title" style="color: var(--accent3);">Protocols - Ngôn Ngữ Của VDI</h2>
+  <p class="section-subtitle">Display protocol quyết định trải nghiệm người dùng - mượt hay lag, sắc nét hay mờ nhòe</p>
+
+  <div class="protocol-map">
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> RDP (Remote Desktop Protocol)</h4>
+      <p><strong>Protocol phổ biến nhất thế giới.</strong> Microsoft tạo ra, tích hợp sẵn trong mọi Windows. Port 3389. Hỗ trợ audio, clipboard, printer, USB redirection. Phiên bản mới (10.x) có adaptive codec, UDP transport, AVC/H.264. Miễn phí nhưng chất lượng trung bình so với HDX/Blast.</p>
+      <div class="tag-row">
+        <span class="tag good">Miễn phí</span>
+        <span class="tag good">Mọi nơi có</span>
+        <span class="tag warn">Chất lượng TB</span>
+        <span class="tag">Port 3389</span>
+      </div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> HDX / ICA (Citrix)</h4>
+      <p><strong>Protocol premium của Citrix.</strong> ICA (Independent Computing Architecture) là nền tảng, HDX là thương hiệu marketing cho bộ công nghệ tối ưu. Adaptive transport (EDT - UDP), H.264/H.265 encoding, multi-stream ICA. Bandwidth optimization tốt nhất trong ngành. <strong>WAN performance vượt trội.</strong></p>
+      <div class="tag-row">
+        <span class="tag good">WAN tốt nhất</span>
+        <span class="tag">Citrix license</span>
+        <span class="tag good">Adaptive</span>
+        <span class="tag">EDT/UDP</span>
+      </div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Blast Extreme (VMware)</h4>
+      <p><strong>Protocol của VMware Horizon.</strong> Kế thừa PCoIP nhưng dựa trên H.264/HEVC. Chạy trên TCP hoặc UDP (BEAT transport). HTML5 client native - không cần cài app. Tích hợp sâu với vGPU. VMware đang push Blast thay thế hoàn toàn PCoIP.</p>
+      <div class="tag-row">
+        <span class="tag good">HTML5 native</span>
+        <span class="tag">VMware license</span>
+        <span class="tag good">vGPU tối ưu</span>
+        <span class="tag">H.264/HEVC</span>
+      </div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status legacy"></span> PCoIP (PC over IP)</h4>
+      <p><strong>Giao thức tiên phong cho VDI.</strong> Ban đầu của Teradici (nay thuộc HP), được VMware license. Nén pixel-level, zero-client hardware decoder. Chất lượng hình ảnh xuất sắc nhưng <strong>ngốn bandwidth</strong> hơn H.264-based protocols. Đang bị Blast Extreme thay thế dần.</p>
+      <div class="tag-row">
+        <span class="tag warn">Đang giảm</span>
+        <span class="tag">Pixel-perfect</span>
+        <span class="tag hot">Bandwidth cao</span>
+        <span class="tag">Zero client</span>
+      </div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> SPICE (Simple Protocol for Independent Computing Environments)</h4>
+      <p><strong>Open-source champion.</strong> Red Hat phát triển cho KVM/QEMU. Hỗ trợ: multiple monitors, audio, USB redirection, clipboard, file transfer. Client có trên Linux, Windows, macOS. Tích hợp sẵn trong <strong>Proxmox VE</strong>. Hoàn toàn miễn phí.</p>
+      <div class="tag-row">
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Proxmox native</span>
+        <span class="tag">Multi-monitor</span>
+        <span class="tag warn">LAN tối ưu</span>
+      </div>
+    </div>
+
+    <div class="protocol-card">
+      <h4><span class="status alive"></span> Apache Guacamole (Web Gateway)</h4>
+      <p><strong>Không phải protocol, mà là gateway.</strong> Chuyển đổi RDP/VNC/SSH thành HTML5 WebSocket stream. Truy cập desktop từ browser - KHÔNG cần cài client. Hoàn hảo cho remote access qua internet. Hỗ trợ MFA, session recording, group policy. Open-source 100%.</p>
+      <div class="tag-row">
+        <span class="tag good">Browser-only</span>
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Multi-protocol</span>
+        <span class="tag">HTML5/WebSocket</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Protocol Comparison Flow -->
+  <div class="flow-container">
+    <div class="flow-title">So sánh Protocol - Điều gì xảy ra khi bạn click chuột?</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  User Click chuột        Thin Client              Network              VDI Server
+       |                      |                       |                      |
+       |── Input event ──────>|                       |                      |
+       |                      |── Encode & Send ─────>|── Deliver ──────────>|
+       |                      |                       |                      |── Process input
+       |                      |                       |                      |── Update screen
+       |                      |                       |                      |── Encode pixels
+       |                      |                       |<── Send frame ───────|
+       |                      |<── Receive & Decode ──|                      |
+       |<── Display ──────────|                       |                      |
+       |                      |                       |                      |
+       |  <span style="color:var(--accent4);">Tổng thời gian: 20-150ms (tùy protocol & network)</span>               |
+       |                                                                     |
+       |  <span style="color:var(--accent3);">RDP:     ~50-80ms (LAN), ~100-200ms (WAN)</span>                       |
+       |  <span style="color:var(--accent);">Blast:   ~30-60ms (LAN), ~80-150ms (WAN)</span>                        |
+       |  <span style="color:var(--accent4);">HDX:     ~25-50ms (LAN), ~60-120ms (WAN)</span>                       |
+       |  <span style="color:var(--accent2);">SPICE:   ~20-40ms (LAN), ~100-200ms (WAN)</span>                      |
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: Protocol không phải tất cả</h4>
+    <p>Một protocol "tốt nhất" trên mạng tệ vẫn lag. Một protocol "trung bình" trên mạng tốt vẫn mượt. <strong>Network quality (latency, jitter, packet loss) quyết định 70% trải nghiệm VDI.</strong> Đừng mua license Citrix đắt tiền rồi chạy trên Wi-Fi yếu. Đầu tư vào network trước, protocol sau.</p>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors">
+  <h2 class="section-title" style="color: var(--accent2);">Các Ông Lớn VDI</h2>
+  <p class="section-subtitle">Mỗi vendor có triết lý riêng, thế mạnh riêng, và "cái bẫy" riêng</p>
+
+  <div class="vendor-grid">
+    <!-- VMware Horizon -->
+    <div class="vendor-card vmware">
+      <div class="vendor-logo">🔵</div>
+      <h3>VMware Horizon</h3>
+      <div class="vendor-type">Enterprise VDI / Broadcom</div>
+      <p>Từng là "vua VDI" với Instant Clone, App Volumes, Dynamic Environment Manager. Blast Extreme protocol hiệu năng cao. Tích hợp sâu với vSphere. Nhưng Broadcom mua VMware (2023) = tăng giá, đổi license, khách hàng hoang mang. Nhiều doanh nghiệp đang tìm đường thoát.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2007</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Enterprise VDI</div></div>
+        <div class="stat"><div class="num">$$$$</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Instant Clone</span>
+        <span class="tag">Blast Extreme</span>
+        <span class="tag hot">Broadcom Risk</span>
+        <span class="tag warn">Đắt hơn mỗi năm</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Cảnh báo Broadcom</h4>
+        <p>Sau khi Broadcom mua VMware, license chuyển sang subscription bundled. Nhiều khách hàng báo <strong>tăng giá 300-1000%</strong>. Nếu bạn đang dùng Horizon, hãy đánh giá lại TCO và có plan B (AVD, Citrix, hoặc open-source).</p>
+      </div>
+    </div>
+
+    <!-- Citrix -->
+    <div class="vendor-card citrix">
+      <div class="vendor-logo">🟠</div>
+      <h3>Citrix Virtual Apps & Desktops</h3>
+      <div class="vendor-type">Enterprise VDI & App Virtualization</div>
+      <p>Citrix là PIONEER - làm remote desktop từ 1995. HDX protocol được đánh giá cao nhất cho WAN. Virtual Apps (RDSH-based) cực kỳ hiệu quả cho task worker. MCS/PVS cho image management. Nay thuộc Cloud Software Group. Vẫn là lựa chọn #1 cho healthcare, finance.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1995</div><div class="label">Legacy</div></div>
+        <div class="stat"><div class="num">HDX</div><div class="label">Protocol</div></div>
+        <div class="stat"><div class="num">$$$$</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">HDX WAN tốt nhất</span>
+        <span class="tag good">Virtual Apps</span>
+        <span class="tag warn">Phức tạp</span>
+        <span class="tag hot">License đắt</span>
+      </div>
+    </div>
+
+    <!-- Microsoft AVD -->
+    <div class="vendor-card microsoft">
+      <div class="vendor-logo">🟢</div>
+      <h3>Microsoft AVD (Azure Virtual Desktop)</h3>
+      <div class="vendor-type">Cloud DaaS / Microsoft 365 Integration</div>
+      <p>Cloud VDI native trên Azure. Điểm đặc biệt: <strong>Windows 10/11 multi-session</strong> - nhiều user trên 1 VM Windows client (chỉ AVD có quyền). Tích hợp sẵn FSLogix, Entra ID, Intune. Windows 365 = fixed-price cloud PC cho SMB. Đang tăng trưởng cực nhanh nhờ M365 ecosystem.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2019</div><div class="label">Ra mắt</div></div>
+        <div class="stat"><div class="num">Multi-session</div><div class="label">Đặc quyền</div></div>
+        <div class="stat"><div class="num">$$-$$$</div><div class="label">Pay-per-use</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">M365 tích hợp</span>
+        <span class="tag good">Multi-session Win</span>
+        <span class="tag">Azure only</span>
+        <span class="tag warn">Cloud dependency</span>
+      </div>
+    </div>
+
+    <!-- Proxmox VDI -->
+    <div class="vendor-card proxmox">
+      <div class="vendor-logo">🟣</div>
+      <h3>Proxmox VE + SPICE</h3>
+      <div class="vendor-type">Open Source / Homelab & SMB</div>
+      <p>Proxmox VE không phải VDI solution chuyên dụng - nhưng với SPICE protocol tích hợp, nó có thể làm VDI cơ bản rất tốt. Tạo VM Windows/Linux, kết nối qua SPICE client hoặc noVNC. Kết hợp với Guacamole = web-based VDI hoàn chỉnh. Hoàn hảo cho homelab và SMB tiết kiệm.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+        <div class="stat"><div class="num">SPICE</div><div class="label">Protocol</div></div>
+        <div class="stat"><div class="num">KVM</div><div class="label">Hypervisor</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Free</span>
+        <span class="tag warn">Không có broker</span>
+        <span class="tag">Homelab ideal</span>
+      </div>
+    </div>
+
+    <!-- Apache Guacamole -->
+    <div class="vendor-card guacamole">
+      <div class="vendor-logo">🥑</div>
+      <h3>Apache Guacamole</h3>
+      <div class="vendor-type">Open Source / Web Gateway</div>
+      <p>Clientless remote desktop gateway. Truy cập RDP/VNC/SSH từ browser qua HTML5. Không cần cài gì trên máy client. Hỗ trợ MFA (TOTP, Duo), session recording, LDAP/AD integration. Chạy trên Docker cực dễ. Kết hợp Proxmox = VDI web-based miễn phí cho homelab.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+        <div class="stat"><div class="num">HTML5</div><div class="label">Client</div></div>
+        <div class="stat"><div class="num">Apache</div><div class="label">Foundation</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Browser-only</span>
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Docker ready</span>
+        <span class="tag">MFA support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>VMware Horizon</th>
+          <th>Citrix CVAD</th>
+          <th>Microsoft AVD</th>
+          <th>Proxmox+SPICE</th>
+          <th>Guacamole</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chi phí khởi điểm</td>
+          <td style="color: var(--accent5);">$200+/user/năm</td>
+          <td style="color: var(--accent5);">$250+/user/năm</td>
+          <td style="color: var(--accent4);">$5-50/user/tháng</td>
+          <td style="color: var(--accent3);">Free</td>
+          <td style="color: var(--accent3);">Free</td>
+        </tr>
+        <tr>
+          <td>Protocol chính</td>
+          <td>Blast Extreme</td>
+          <td>HDX/ICA</td>
+          <td>RDP (enhanced)</td>
+          <td>SPICE/noVNC</td>
+          <td>RDP/VNC proxy</td>
+        </tr>
+        <tr>
+          <td>Connection Broker</td>
+          <td style="color: var(--accent3);">Có (mạnh)</td>
+          <td style="color: var(--accent3);">Có (mạnh nhất)</td>
+          <td style="color: var(--accent3);">Có (Azure native)</td>
+          <td style="color: var(--accent5);">Không có</td>
+          <td style="color: var(--accent4);">Cơ bản</td>
+        </tr>
+        <tr>
+          <td>Instant/Linked Clone</td>
+          <td style="color: var(--accent3);">Instant Clone</td>
+          <td style="color: var(--accent3);">MCS/PVS</td>
+          <td style="color: var(--accent4);">Azure images</td>
+          <td style="color: var(--accent4);">Linked clone</td>
+          <td style="color: var(--accent5);">N/A</td>
+        </tr>
+        <tr>
+          <td>GPU virtualization</td>
+          <td style="color: var(--accent3);">vGPU native</td>
+          <td style="color: var(--accent3);">vGPU native</td>
+          <td style="color: var(--accent3);">NVv4/NCas</td>
+          <td style="color: var(--accent4);">Passthrough</td>
+          <td style="color: var(--accent5);">Phụ thuộc backend</td>
+        </tr>
+        <tr>
+          <td>Độ phù hợp homelab</td>
+          <td style="color: var(--accent5);">Rất khó</td>
+          <td style="color: var(--accent5);">Rất khó</td>
+          <td style="color: var(--accent4);">Cloud cost</td>
+          <td style="color: var(--accent3);">Tốt nhất</td>
+          <td style="color: var(--accent3);">Tốt nhất</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <h2 class="section-title" style="color: var(--accent4);">Kiến Trúc VDI</h2>
+  <p class="section-subtitle">Từ user click đến desktop hiện trên màn hình - mọi thành phần cần biết</p>
+
+  <div class="arch-container">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Luồng kết nối VDI từ user đến desktop</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">👤</div>
+        <h4>User / Client</h4>
+        <p>Thin client, PC, tablet<br>Web browser</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🔐</div>
+        <h4>Gateway / LB</h4>
+        <p>NetScaler, UAG<br>SSL offload, MFA</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">🧠</div>
+        <h4>Connection Broker</h4>
+        <p>Xác thực, gán desktop<br>Load balance, policy</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">🖥️</div>
+        <h4>Session Host / VM</h4>
+        <p>Windows/Linux desktop<br>GPU, vCPU, RAM</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer">
+        <div class="layer-icon">💾</div>
+        <h4>Storage / Profile</h4>
+        <p>FSLogix, UPM<br>User data, app state</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connection Broker deep dive -->
+  <h3 style="margin: 2rem 0 1rem; color: var(--text-dim);">Thành phần cốt lõi</h3>
+  <div class="type-grid">
+    <div class="type-card">
+      <div class="type-icon">🧠</div>
+      <h4>Connection Broker</h4>
+      <p><strong>Bộ não của VDI.</strong> Khi user login, broker xác thực (AD/LDAP), kiểm tra policy (user thuộc pool nào?), tìm VM sẵn sàng trong pool, gán user vào VM, và chuyển hướng client đến VM đó. Nếu broker chết = KHÔNG AI vào được VDI. Luôn cần HA (High Availability).</p>
+      <div class="tag-row">
+        <span class="tag hot">Single point of failure</span>
+        <span class="tag">HA bắt buộc</span>
+        <span class="tag">AD integration</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">👤</div>
+      <h4>User Profile Management</h4>
+      <p>Trong non-persistent VDI, VM bị reset mỗi lần logout. Nhưng user cần giữ settings, bookmarks, app data. <strong>FSLogix</strong> (Microsoft - miễn phí với M365) mount profile như VHD container. <strong>Citrix UPM</strong> sync profile qua file share. Không có profile management = user khóc mỗi lần login.</p>
+      <div class="tag-row">
+        <span class="tag good">FSLogix (Free w/ M365)</span>
+        <span class="tag">Citrix UPM</span>
+        <span class="tag">VMware DEM</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">🎮</div>
+      <h4>GPU Virtualization (vGPU)</h4>
+      <p>Chia sẻ 1 GPU vật lý cho nhiều VM. NVIDIA vGPU (trước là GRID) cho phép cắt GPU thành nhiều "slice" - mỗi VM có portion GPU riêng. Cần thiết cho: CAD, video editing, 3D rendering, thậm chí Windows UI acceleration. <strong>License NVIDIA vGPU riêng = thêm chi phí đáng kể.</strong></p>
+      <div class="tag-row">
+        <span class="tag">NVIDIA vGPU</span>
+        <span class="tag">AMD MxGPU</span>
+        <span class="tag warn">License riêng</span>
+        <span class="tag hot">Đắt</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">📦</div>
+      <h4>App Layering / Virtualization</h4>
+      <p>Tách application khỏi base OS image. <strong>App Volumes</strong> (VMware) mount app disk vào VM at login. <strong>MSIX App Attach</strong> (Microsoft) cho AVD. <strong>App-V</strong> (Microsoft) stream app. Lợi ích: 1 base image + nhiều app layer = quản lý đơn giản, patch nhanh, conflict giảm.</p>
+      <div class="tag-row">
+        <span class="tag">App Volumes</span>
+        <span class="tag">MSIX App Attach</span>
+        <span class="tag good">Giảm image sprawl</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture topology -->
+  <h3 style="margin: 2rem 0 1rem; color: var(--text-dim);">Mô hình triển khai VDI</h3>
+  <div class="topology-container">
+    <div class="topo-card">
+      <h4>On-Premise VDI</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="60" y="10" width="80" height="35" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          <text x="100" y="32" text-anchor="middle" fill="#3b82f6" font-size="10">VDI Cluster</text>
+          <rect x="25" y="55" width="50" height="25" rx="6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+          <text x="50" y="71" text-anchor="middle" fill="#8b5cf6" font-size="8">Broker</text>
+          <rect x="125" y="55" width="50" height="25" rx="6" fill="none" stroke="#8b5cf6" stroke-width="1.5"/>
+          <text x="150" y="71" text-anchor="middle" fill="#8b5cf6" font-size="8">Storage</text>
+          <circle cx="40" cy="130" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="134" text-anchor="middle" fill="#10b981" font-size="12">🖥️</text>
+          <circle cx="100" cy="135" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="139" text-anchor="middle" fill="#10b981" font-size="12">💻</text>
+          <circle cx="160" cy="130" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="134" text-anchor="middle" fill="#10b981" font-size="12">📱</text>
+          <line x1="50" y1="80" x2="42" y2="116" stroke="#334155" stroke-width="1.5"/>
+          <line x1="100" y1="45" x2="100" y2="121" stroke="#334155" stroke-width="1.5"/>
+          <line x1="150" y1="80" x2="158" y2="116" stroke="#334155" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <p>Toàn bộ hạ tầng tại chỗ. Full control, low latency. Chi phí CapEx cao. Phù hợp enterprise, ngân hàng, chính phủ.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Cloud DaaS</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <ellipse cx="100" cy="30" rx="60" ry="25" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="100" y="25" text-anchor="middle" fill="#8b5cf6" font-size="9">Azure / AWS / GCP</text>
+          <text x="100" y="40" text-anchor="middle" fill="#8b5cf6" font-size="10">☁️ DaaS</text>
+          <circle cx="40" cy="120" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="124" text-anchor="middle" fill="#10b981" font-size="12">🏠</text>
+          <circle cx="100" cy="130" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="134" text-anchor="middle" fill="#10b981" font-size="12">☕</text>
+          <circle cx="160" cy="120" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="124" text-anchor="middle" fill="#10b981" font-size="12">✈️</text>
+          <line x1="70" y1="53" x2="42" y2="106" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="100" y1="55" x2="100" y2="116" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="130" y1="53" x2="158" y2="106" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+        </svg>
+      </div>
+      <p>Desktop trên cloud. Truy cập từ nhà, quán cafe, sân bay. Zero hardware. Pay-per-use. Internet dependency.</p>
+    </div>
+
+    <div class="topo-card">
+      <h4>Hybrid VDI</h4>
+      <div class="topo-visual">
+        <svg width="200" height="160" viewBox="0 0 200 160">
+          <rect x="20" y="10" width="60" height="35" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          <text x="50" y="32" text-anchor="middle" fill="#3b82f6" font-size="9">On-Prem VDI</text>
+          <ellipse cx="150" cy="27" rx="40" ry="22" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="150" y="32" text-anchor="middle" fill="#8b5cf6" font-size="9">Cloud DaaS</text>
+          <line x1="80" y1="27" x2="110" y2="27" stroke="#f59e0b" stroke-width="2"/>
+          <text x="95" y="20" text-anchor="middle" fill="#f59e0b" font-size="10">⚡</text>
+          <circle cx="40" cy="120" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="40" y="124" text-anchor="middle" fill="#10b981" font-size="12">🏢</text>
+          <circle cx="100" cy="125" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="100" y="129" text-anchor="middle" fill="#10b981" font-size="12">🏠</text>
+          <circle cx="160" cy="120" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+          <text x="160" y="124" text-anchor="middle" fill="#10b981" font-size="12">📱</text>
+          <line x1="45" y1="45" x2="42" y2="106" stroke="#334155" stroke-width="1.5"/>
+          <line x1="100" y1="49" x2="100" y2="111" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="150" y1="49" x2="158" y2="106" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+        </svg>
+      </div>
+      <p>Nhân viên văn phòng dùng on-prem VDI (low latency). Remote worker dùng cloud DaaS. Cloud burst khi peak.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OPEN SOURCE VDI -->
+<section id="opensource">
+  <h2 class="section-title" style="color: var(--accent3);">Open-Source VDI</h2>
+  <p class="section-subtitle">Không phải lúc nào cũng cần VMware hay Citrix - open source đang mạnh hơn bao giờ hết</p>
+
+  <div class="vendor-grid">
+    <div class="vendor-card proxmox">
+      <div class="vendor-logo">🟣</div>
+      <h3>Proxmox VE + SPICE</h3>
+      <div class="vendor-type">Hypervisor + Native Protocol</div>
+      <p>Proxmox VE là hypervisor open-source dựa trên KVM/QEMU. SPICE protocol tích hợp sẵn, hỗ trợ: multi-monitor (lên đến 4), USB passthrough, audio, clipboard sharing. Với virt-viewer (SPICE client), trải nghiệm trên LAN gần như native. Hạn chế: không có connection broker tích hợp - mỗi user phải biết VM nào của mình.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">KVM</div><div class="label">Hypervisor</div></div>
+        <div class="stat"><div class="num">4</div><div class="label">Màn hình</div></div>
+        <div class="stat"><div class="num">AGPL</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Production-ready</span>
+        <span class="tag good">Cluster HA</span>
+        <span class="tag warn">Không có broker</span>
+        <span class="tag">LAN tốt nhất</span>
+      </div>
+    </div>
+
+    <div class="vendor-card guacamole">
+      <div class="vendor-logo">🥑</div>
+      <h3>Apache Guacamole</h3>
+      <div class="vendor-type">Web-Based Remote Desktop Gateway</div>
+      <p>Guacamole biến MỌI desktop thành web-accessible. Backend (guacd) kết nối đến RDP/VNC/SSH target, convert thành HTML5 canvas stream. Frontend chạy trên Tomcat. Docker deployment = 10 phút setup. Hỗ trợ: TOTP MFA, LDAP/AD, session recording, admin console. Kết hợp với Proxmox = VDI web-based hoàn chỉnh.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">HTML5</div><div class="label">Client</div></div>
+        <div class="stat"><div class="num">RDP/VNC/SSH</div><div class="label">Protocols</div></div>
+        <div class="stat"><div class="num">Apache 2.0</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Zero client install</span>
+        <span class="tag good">Docker easy</span>
+        <span class="tag good">MFA support</span>
+        <span class="tag">Session recording</span>
+      </div>
+    </div>
+
+    <div class="vendor-card" style="--card-accent: #06b6d4;">
+      <div class="vendor-logo">🦎</div>
+      <h3>Ravada VDI</h3>
+      <div class="vendor-type">Open Source VDI Manager</div>
+      <p>VDI manager chạy trên KVM. Có <strong>connection broker</strong> thực sự - user login qua web portal, được gán VM tự động. Hỗ trợ linked clone (tiết kiệm storage), non-persistent desktop, LDAP integration. Ít phổ biến hơn Guacamole nhưng gần concept VDI enterprise hơn. Web-based management console.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">KVM</div><div class="label">Backend</div></div>
+        <div class="stat"><div class="num">Perl</div><div class="label">Codebase</div></div>
+        <div class="stat"><div class="num">AGPL</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Có broker</span>
+        <span class="tag good">Linked clone</span>
+        <span class="tag warn">Cộng đồng nhỏ</span>
+        <span class="tag">LDAP/SSSD</span>
+      </div>
+    </div>
+
+    <div class="vendor-card" style="--card-accent: #f43f5e;">
+      <div class="vendor-logo">🔓</div>
+      <h3>OpenUDS</h3>
+      <div class="vendor-type">Enterprise Open Source VDI Broker</div>
+      <p>Connection broker mã nguồn mở hỗ trợ NHIỀU hypervisor: Proxmox, oVirt, VMware, Hyper-V, XenServer, OpenNebula. Có concept: Service Provider → Authenticator → Transport → OS Manager. Hỗ trợ: HTML5, RDP, SPICE, NX transport. <strong>Gần nhất với enterprise VDI broker trong thế giới open-source.</strong></p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">Multi-HV</div><div class="label">Support</div></div>
+        <div class="stat"><div class="num">Python</div><div class="label">Django</div></div>
+        <div class="stat"><div class="num">BSD</div><div class="label">License</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Multi-hypervisor</span>
+        <span class="tag good">Enterprise features</span>
+        <span class="tag">Proxmox support</span>
+        <span class="tag warn">Setup phức tạp</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Combo hoàn hảo cho Homelab VDI</h4>
+    <p><strong>Proxmox VE</strong> (hypervisor free) + <strong>Apache Guacamole</strong> (web gateway) + <strong>Windows VM với RDP</strong> = VDI web-based hoàn chỉnh, truy cập từ bất kỳ browser nào, chi phí $0 (ngoại trừ Windows license). Nâng cấp thêm: <strong>OpenUDS</strong> làm broker nếu cần quản lý pool VM tự động. Đây là stack mà hàng nghìn homelab đang chạy thành công.</p>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section id="performance">
+  <h2 class="section-title" style="color: var(--accent5);">Hiệu Năng VDI</h2>
+  <p class="section-subtitle">Network, thin client, GPU - ba trụ cột quyết định trải nghiệm VDI</p>
+
+  <div class="type-grid">
+    <div class="type-card">
+      <div class="type-icon">🌐</div>
+      <h4>Network Requirements</h4>
+      <p>VDI streaming giống xem video - nhưng interactive. <strong>Bandwidth tối thiểu:</strong> 250Kbps (task worker), 1-5Mbps (office), 10-25Mbps (GPU/multimedia). <strong>Latency:</strong> &lt;50ms (tốt), &lt;100ms (chấp nhận), &gt;150ms (đau). <strong>Packet loss:</strong> &lt;0.1% là lý tưởng, &gt;1% = không dùng được.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">&lt;50ms</div><div class="label">Latency mục tiêu</div></div>
+        <div class="stat"><div class="num">&lt;0.1%</div><div class="label">Packet loss</div></div>
+        <div class="stat"><div class="num">1-5Mbps</div><div class="label">BW/user office</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">Latency quan trọng nhất</span>
+        <span class="tag warn">QoS cần thiết</span>
+        <span class="tag">Wired &gt; WiFi</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">📺</div>
+      <h4>Thin Clients</h4>
+      <p>Thiết bị đầu cuối nhỏ gọn, tiêu thụ 5-15W (so với PC 200-500W). Chạy firmware/Linux minimal, chỉ chạy VDI client. <strong>IGEL:</strong> leader thị trường, OS quản lý tập trung. <strong>Dell Wyse:</strong> phổ biến enterprise. <strong>Raspberry Pi:</strong> ultra-budget thin client cho homelab. <strong>Zero client (PCoIP):</strong> không có OS, hardware decode only.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">5-15W</div><div class="label">Điện năng</div></div>
+        <div class="stat"><div class="num">7-10 năm</div><div class="label">Tuổi thọ</div></div>
+        <div class="stat"><div class="num">$100-400</div><div class="label">Giá</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Tiết kiệm điện</span>
+        <span class="tag good">Bền, ít hỏng</span>
+        <span class="tag">IGEL, Dell Wyse</span>
+        <span class="tag warn">Giới hạn đa năng</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">🎮</div>
+      <h4>GPU Passthrough vs vGPU</h4>
+      <p><strong>GPU Passthrough:</strong> gán TOÀN BỘ 1 GPU vật lý cho 1 VM. Hiệu năng 95-99% native. Nhưng 1 GPU = 1 user. Phù hợp homelab, power user. <strong>vGPU:</strong> 1 GPU chia cho nhiều VM (NVIDIA vGPU/MIG, AMD MxGPU). Hiệu năng 60-90% tùy profile. Cần license NVIDIA. Phù hợp enterprise VDI at scale.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">95-99%</div><div class="label">Passthrough perf</div></div>
+        <div class="stat"><div class="num">60-90%</div><div class="label">vGPU perf</div></div>
+        <div class="stat"><div class="num">$$$</div><div class="label">vGPU license</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Passthrough = Homelab</span>
+        <span class="tag">vGPU = Enterprise</span>
+        <span class="tag">NVIDIA GRID/vGPU</span>
+        <span class="tag warn">IOMMU required</span>
+      </div>
+    </div>
+
+    <div class="type-card">
+      <div class="type-icon">💾</div>
+      <h4>Storage cho VDI</h4>
+      <p>VDI Storage = <strong>boot storm</strong> mỗi sáng (hàng trăm VM boot cùng lúc). IOPS là vua, không phải throughput. <strong>NVMe SSD bắt buộc</strong> cho production. 1 VM office = ~10-20 IOPS steady, ~100+ IOPS peak (login, app launch). 100 VM = cần 5,000-10,000 IOPS tối thiểu. HDD KHÔNG dùng được cho VDI.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">NVMe</div><div class="label">Bắt buộc</div></div>
+        <div class="stat"><div class="num">10-20</div><div class="label">IOPS/VM steady</div></div>
+        <div class="stat"><div class="num">Boot storm</div><div class="label">Thách thức #1</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag hot">HDD = Không</span>
+        <span class="tag good">NVMe SSD</span>
+        <span class="tag">IOPS &gt; Throughput</span>
+        <span class="tag warn">Boot storm planning</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 1rem;">
+    <h4>Sizing rule of thumb cho VDI</h4>
+    <p>Mỗi office VDI desktop: <strong>2 vCPU, 4-8GB RAM, 50GB disk, 10-20 IOPS steady</strong>. Power user (developer): <strong>4-8 vCPU, 16-32GB RAM, 100GB disk, vGPU</strong>. Server host: nên over-commit CPU 5:1 max (vCPU:pCPU), KHÔNG over-commit RAM. Storage: NVMe pool với linked clone. Network: dedicated VLAN cho VDI traffic với QoS.</p>
+  </div>
+</section>
+
+<!-- VDI TRONG HOMELAB -->
+<section id="homelab">
+  <h2 class="section-title" style="color: var(--accent);">VDI Trong Homelab</h2>
+  <p class="section-subtitle">Xây dựng VDI riêng tại nhà - từ lab nhỏ đến hệ thống hoàn chỉnh</p>
+
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-num">1</div>
+      <h4>Proxmox-Based VDI Setup</h4>
+      <p>Cài Proxmox VE trên server (hoặc PC cũ). Tạo Windows 10/11 VM template với VirtIO driver + SPICE agent. Clone ra nhiều VM cho mỗi thành viên gia đình hoặc lab user. Kết nối qua <strong>virt-viewer</strong> (SPICE client) trên LAN. Trải nghiệm mượt, multi-monitor, clipboard sharing. Chi phí: $0 (ngoài hardware).</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">2</div>
+      <h4>Guacamole as Web Gateway</h4>
+      <p>Deploy Guacamole bằng Docker (docker-compose, 5 phút). Config RDP connection đến mỗi VM. Bây giờ mở browser, login Guacamole, click vào desktop - Windows hiện ngay trên trình duyệt. <strong>Expose qua reverse proxy (Nginx/Traefik) + SSL = truy cập desktop từ bất kỳ đâu trên thế giới.</strong> Thêm TOTP MFA cho bảo mật.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">3</div>
+      <h4>GPU Passthrough cho Gaming/Workstation</h4>
+      <p>Có GPU rời trong server? Enable IOMMU/VT-d trong BIOS, blacklist driver trên host, passthrough GPU vào VM Windows. Kết quả: VM Windows với GPU gần native - chơi game, render 3D, CAD. Kết hợp với <strong>Looking Glass</strong> hoặc <strong>Sunshine + Moonlight</strong> để stream game từ VM với latency cực thấp.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">4</div>
+      <h4>Linux Desktop VDI</h4>
+      <p>Không chỉ Windows. Proxmox + SPICE chạy <strong>Ubuntu/Fedora desktop</strong> rất mượt. Tạo template Linux, clone cho developer. SPICE trên Linux thậm chí tốt hơn Windows (driver native). Kết hợp với Guacamole qua VNC hoặc SSH cho remote access. Tiết kiệm hoàn toàn chi phí license OS.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">5</div>
+      <h4>Thin Client tự chế từ Raspberry Pi</h4>
+      <p>Raspberry Pi 4/5 + WTware hoặc Raspberry Pi OS + Remmina (RDP client) = thin client giá $50. Cắm vào màn hình, bàn phím, chuột - auto boot và kết nối đến VDI desktop. Triển khai 5 bàn làm việc chỉ với 5 Pi + 1 server Proxmox. Điện năng toàn hệ thống &lt; 100W.</p>
+    </div>
+
+    <div class="mindset-card">
+      <div class="mindset-num">6</div>
+      <h4>Backup & Snapshot Strategy</h4>
+      <p>VDI trong homelab có lợi thế lớn: <strong>snapshot trước mỗi thay đổi</strong>. Cài phần mềm lạ? Snapshot trước, cài thử, không ổn thì revert trong 5 giây. Proxmox Backup Server (PBS) cho automated backup hàng ngày. Template golden image = restore lại trạng thái sạch bất cứ lúc nào.</p>
+    </div>
+  </div>
+
+  <div class="flow-container" style="margin-top: 2rem;">
+    <div class="flow-title">Kiến trúc VDI Homelab điển hình</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                        INTERNET                                 │
+  └─────────────────────┬───────────────────────────────────────────┘
+                        │
+  ┌─────────────────────▼───────────────────────────────────────────┐
+  │  <span style="color:var(--accent5);">Reverse Proxy (Nginx/Traefik)</span>                                  │
+  │  SSL termination + domain routing                               │
+  └─────────────────────┬───────────────────────────────────────────┘
+                        │
+  ┌─────────────────────▼───────────────────────────────────────────┐
+  │  <span style="color:var(--accent3);">Apache Guacamole (Docker)</span>                                      │
+  │  guacamole + guacd + PostgreSQL                                 │
+  │  MFA (TOTP) + Session Recording                                 │
+  └─────────────┬───────────────┬───────────────┬───────────────────┘
+                │               │               │
+        ┌───────▼──────┐ ┌─────▼──────┐ ┌──────▼──────┐
+        │ <span style="color:var(--accent);">Win 11 VM</span>    │ │ <span style="color:var(--accent);">Win 10 VM</span>  │ │ <span style="color:var(--accent2);">Ubuntu VM</span>   │
+        │ (RDP 3389)   │ │ (RDP 3389) │ │ (VNC 5901)  │
+        │ 4 vCPU / 8GB │ │ 2 vCPU/4GB │ │ 2 vCPU/4GB  │
+        │ GPU Passthru  │ │ Office     │ │ Dev Desktop │
+        └──────────────┘ └────────────┘ └─────────────┘
+                │               │               │
+  ┌─────────────▼───────────────▼───────────────▼───────────────────┐
+  │  <span style="color:var(--accent4);">Proxmox VE Cluster (KVM/QEMU)</span>                                  │
+  │  NVMe Storage + SPICE + Backup (PBS)                            │
+  └─────────────────────────────────────────────────────────────────┘
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Lời khuyên cho người mới bắt đầu</h4>
+    <p>Đừng cố xây enterprise VDI trong homelab. Bắt đầu đơn giản: <strong>1 Proxmox node → 2-3 VM Windows/Linux → Guacamole trên Docker → kết nối qua browser</strong>. Chạy ổn rồi mới thêm GPU passthrough, thin client, OpenUDS broker. Homelab VDI không cần phức tạp để hữu ích - chỉ cần đủ để bạn truy cập desktop từ mọi nơi.</p>
+  </div>
+</section>
+
+<!-- MYTHS / MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">10 Hiểu Nhầm Chết Người Về VDI</h2>
+  <p class="section-subtitle">Những điều "ai cũng tưởng đúng" nhưng thực ra sai hoàn toàn</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #1</span>
+      <h4>"VDI tiết kiệm tiền hơn PC truyền thống"</h4>
+      <p>Đây là lầm tưởng PHỔ BIẾN NHẤT. Tính tổng: server + storage (NVMe!) + license VMware/Citrix + license Windows VDA + network upgrade + thin client + nhân sự chuyên môn. TCO của VDI thường BẰNG hoặc ĐẮT HƠN PC trong 3 năm đầu. VDI tiết kiệm ở operational efficiency, KHÔNG phải dollar-for-dollar.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VDI tiết kiệm <strong>chi phí quản lý</strong> (1 admin quản 1000 desktop), <strong>bảo mật</strong> (data không rời data center), và <strong>flexibility</strong> (work from anywhere). ROI nằm ở productivity, không phải hardware cost.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #2</span>
+      <h4>"VDI = Remote Desktop, giống nhau thôi"</h4>
+      <p>Remote Desktop (RDP vào PC ở văn phòng) = 1 máy vật lý, 1 user, kết nối trực tiếp. VDI = VM chạy trên hypervisor, quản lý bởi broker, có thể tạo/xóa/clone, pool management, profile management. RDSH (Terminal Server) = nhiều user share 1 Windows Server. Ba thứ hoàn toàn khác nhau.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p><strong>VDI</strong> = mỗi user có VM riêng trên server. <strong>RDSH</strong> = nhiều user share OS trên server. <strong>Remote Desktop</strong> = kết nối đến máy vật lý. Ba kiến trúc, ba use case, ba tradeoff khác nhau.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #3</span>
+      <h4>"Cứ mua server mạnh là VDI chạy mượt"</h4>
+      <p>Server 128 core + 1TB RAM nhưng storage dùng HDD = VDI LAG KINH KHỦNG. Boot storm buổi sáng (100 VM boot cùng lúc) giết HDD ngay. Hoặc server mạnh nhưng network 100Mbps shared = lag. VDI là bài toán CÂN BẰNG: CPU + RAM + Storage IOPS + Network + Protocol + Client.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p><strong>Storage IOPS</strong> và <strong>network latency</strong> thường là bottleneck, không phải CPU/RAM. NVMe SSD là bắt buộc. 10GbE cho backend. Sizing đúng TỪNG thành phần, không chỉ mua server "to nhất có thể".</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #4</span>
+      <h4>"VDI không cần GPU, đây chỉ là desktop office"</h4>
+      <p>Windows 10/11 sử dụng GPU cho desktop compositing (DWM), transparency, animation. Không có GPU = CPU phải render tất cả = lag UI, scroll giật, video stutter. Thậm chí Microsoft 365 giờ dùng GPU acceleration. Và đừng quên: Teams, Zoom video call trong VDI = CỰC KỲ ngốn resource nếu không có GPU.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VDI "office" vẫn cần <strong>ít nhất shared GPU</strong> hoặc software GPU (vSGA). Power user cần <strong>vGPU hoặc GPU passthrough</strong>. Video call trong VDI = cần multimedia offload hoặc GPU.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #5</span>
+      <h4>"Non-persistent VDI = mất hết dữ liệu"</h4>
+      <p>User nghe "VM bị xóa sau logout" và hoảng hốt. Nhưng non-persistent KHÔNG có nghĩa mất data. FSLogix/UPM giữ profile (settings, bookmarks, app data) trong container riêng. File lưu trên network drive hoặc OneDrive. App được cài qua App Volumes/MSIX Attach. Chỉ OS state bị reset.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Non-persistent = <strong>OS stateless</strong>, KHÔNG phải user stateless. Profile management + network storage + app layering = user không nhận ra sự khác biệt so với persistent desktop.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #6</span>
+      <h4>"VDI bảo mật hơn PC vì data ở server"</h4>
+      <p>Data ở server = bảo mật HƠN MỘT CHÚT (không mất laptop = không mất data). Nhưng VDI tạo ra ATTACK SURFACE mới: connection broker exposed, RDP port mở, credential relay, session hijacking, screenshot/keylogger trên client. Một VDI compromised = attacker trong network nội bộ.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VDI <strong>thay đổi attack vector</strong>, không loại bỏ nó. Cần: MFA, network segmentation, session timeout, disable clipboard/USB nếu cần, encrypt mọi thứ. VDI security = defense in depth, không phải "deploy xong là an toàn".</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #7</span>
+      <h4>"Thin client rẻ hơn PC nên VDI tiết kiệm client cost"</h4>
+      <p>Thin client IGEL = $400-800. Dell Wyse = $300-600. Refresh cycle: 7-10 năm (good). Nhưng PC office refurbished = $200-400, dùng 5 năm. Và PC có thể dual-purpose (offline khi VDI down). Thin client chỉ là "cục gạch" khi server sập. Savings ở client side không nhiều như vendor quảng cáo.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Thin client tiết kiệm ở <strong>điện năng</strong> (5W vs 200W x 8h x 365 ngày), <strong>quản lý</strong> (zero local OS patching), và <strong>tuổi thọ</strong> (10 năm). Nhưng không nhất thiết rẻ hơn PC khi tính purchase price.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #8</span>
+      <h4>"VDI hoạt động tốt qua Wi-Fi"</h4>
+      <p>Wi-Fi 2.4GHz shared với 50 thiết bị khác + microwave + Bluetooth = jitter, packet loss, latency spike. VDI cần stream liên tục, real-time. Mất 1 packet = frame bị lỗi. WiFi 6E/7 trên 6GHz band TỐT HƠN nhưng vẫn không bằng Ethernet. Enterprise VDI deployment = cáp Ethernet cho thin client, LUÔN LUÔN.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p><strong>Ethernet = gold standard</strong> cho VDI. WiFi chấp nhận cho: mobile user, meeting room, không phải primary workstation. Nếu phải dùng WiFi: WiFi 6 trở lên, 5/6GHz band, dedicated SSID, QoS for VDI traffic.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #9</span>
+      <h4>"VDI giải quyết vấn đề BYOD"</h4>
+      <p>VDI cho phép truy cập desktop từ thiết bị cá nhân - nhưng KHÔNG giải quyết: device đã jailbreak/root, keylogger trên client, screenshot, shoulder surfing, camera chụp màn hình. Data "ở server" nhưng hiển thị trên screen của thiết bị KHÔNG kiểm soát. BYOD + VDI vẫn cần MDM, MAM, conditional access.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VDI là MỘT PHẦN của chiến lược BYOD, không phải toàn bộ. Cần kết hợp: <strong>VDI + MFA + Conditional Access + DLP + Watermark</strong> để thực sự an toàn cho BYOD.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #10</span>
+      <h4>"Triển khai VDI dễ, giống setup VM thôi"</h4>
+      <p>Tạo 1 VM = dễ. Quản lý 500 VM với image management, profile management, app delivery, monitoring, capacity planning, DR, security hardening = PROJECT LỚN mất 3-6 tháng. Cần: virtualization admin + network admin + storage admin + security + end-user training. VDI là infrastructure project, không phải weekend project.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Enterprise VDI deployment = <strong>6-12 tháng</strong> từ planning đến production. Pilot (50 user) → Expand (200) → Full (1000+). Bắt đầu với non-persistent cho task worker trước, persistent cho power user sau. ĐỪNG big bang.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">VDI Cheat Sheet</h2>
+  <p class="section-subtitle">Lệnh, config, và công cụ cần nhớ cho VDI homelab</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>RDP Tối ưu - Windows Registry</h4>
+      <code>; Bật UDP transport (nhanh hơn TCP)
+HKLM\SOFTWARE\Policies\Microsoft\
+  Windows NT\Terminal Services
+  fClientDisableUDP = 0 (DWORD)
+
+; Bật RemoteFX (GPU acceleration)
+  fEnableRemoteFXAdvancedRemoteApp = 1
+
+; Giới hạn max resolution (tiết kiệm BW)
+  MaxMonitors = 2
+  MaxXResolution = 1920
+  MaxYResolution = 1080</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Guacamole Docker Compose</h4>
+      <code>version: '3'
+services:
+  guacd:
+    image: guacamole/guacd
+    restart: always
+  guacamole:
+    image: guacamole/guacamole
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRESQL_HOSTNAME: db
+      POSTGRESQL_DATABASE: guacamole
+      POSTGRESQL_USER: guac
+      POSTGRESQL_PASSWORD: secret
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: guacamole
+      POSTGRES_USER: guac
+      POSTGRES_PASSWORD: secret</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>SPICE Tối ưu trên Proxmox</h4>
+      <code># VM config (/etc/pve/qemu-server/ID.conf)
+vga: qxl
+machine: q35
+audio0: device=ich9-intel-hda,driver=spice
+
+# Tăng video RAM cho multi-monitor
+vga: qxl,memory=65536
+
+# Cài SPICE agent trong guest VM
+# Windows: spice-guest-tools (exe)
+# Linux: spice-vdagent
+
+# Kết nối SPICE client
+virt-viewer spice://proxmox:port</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>GPU Passthrough trên Proxmox</h4>
+      <code># 1. Enable IOMMU trong GRUB
+# /etc/default/grub:
+GRUB_CMDLINE_LINUX_DEFAULT="quiet \
+  intel_iommu=on iommu=pt"
+
+# 2. Load VFIO modules
+# /etc/modules:
+vfio
+vfio_iommu_type1
+vfio_pci
+vfio_virqfd
+
+# 3. Blacklist GPU driver
+# /etc/modprobe.d/blacklist.conf:
+blacklist nouveau
+blacklist nvidia
+
+# 4. Bind GPU to VFIO
+# /etc/modprobe.d/vfio.conf:
+options vfio-pci ids=10de:xxxx,10de:yyyy</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Network Diagnostics cho VDI</h4>
+      <code># Test latency đến VDI server
+ping -c 100 vdi-server-ip
+
+# Đo jitter (cần iperf3)
+iperf3 -c vdi-server -u -b 10M -t 30
+
+# Test RDP port
+nmap -p 3389 target-ip
+
+# Monitor bandwidth realtime
+iftop -i eth0
+
+# VDI sizing estimates:
+# Office: 250Kbps - 1Mbps/user
+# Multimedia: 5-15 Mbps/user
+# GPU/CAD: 15-50 Mbps/user</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>FSLogix Profile Container</h4>
+      <code># Registry cấu hình FSLogix
+HKLM\SOFTWARE\FSLogix\Profiles
+
+Enabled = 1 (DWORD)
+VHDLocations = \\fileserver\profiles
+SizeInMBs = 30000
+IsDynamic = 1
+VolumeType = VHDX
+
+# Exclude list (giảm size profile)
+# Redirections.xml:
+&lt;Excludes&gt;
+  &lt;Exclude Copy="0"&gt;
+    AppData\Local\Temp
+  &lt;/Exclude&gt;
+  &lt;Exclude Copy="0"&gt;
+    AppData\Local\Microsoft\Edge\Cache
+  &lt;/Exclude&gt;
+&lt;/Excludes&gt;</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Guacamole TOTP MFA Setup</h4>
+      <code># Thêm TOTP extension
+docker exec guacamole \
+  /opt/guacamole/bin/download-ext.sh \
+  totp
+
+# Hoặc tải manual:
+wget guacamole-auth-totp-x.x.x.tar.gz
+cp guacamole-auth-totp-*.jar \
+  /config/extensions/
+
+# Restart container
+docker restart guacamole
+
+# User login lần đầu → scan QR code
+# Dùng Google Authenticator / Authy</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>VDI Security Checklist</h4>
+      <code>[ ] MFA cho tất cả VDI access
+[ ] Network segmentation (VLAN riêng)
+[ ] Disable USB redirection (nếu ko cần)
+[ ] Disable clipboard (sensitive env)
+[ ] Session timeout (15-30 phút idle)
+[ ] NLA (Network Level Authentication)
+[ ] TLS cho mọi connection
+[ ] Firewall: chỉ allow VDI ports
+[ ] Monitor login failures (brute force)
+[ ] Regular patching base image
+[ ] Watermark trên VDI session
+[ ] Session recording (audit trail)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Proxmox Linked Clone CLI</h4>
+      <code># Tạo template từ VM 100
+qm template 100
+
+# Clone linked (nhanh, tiết kiệm)
+qm clone 100 201 --name vdi-user1 \
+  --full 0
+
+# Clone full (independent)
+qm clone 100 202 --name vdi-dev1 \
+  --full 1
+
+# Batch clone 10 VM
+for i in $(seq 201 210); do
+  qm clone 100 $i \
+    --name "vdi-user-$i" --full 0
+  qm set $i --memory 4096 --cores 2
+  qm start $i
+done</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Protocol Bandwidth Reference</h4>
+      <code>Protocol     | Office  | Multimedia
+─────────────┼─────────┼───────────
+RDP          | 0.5-2   | 5-15 Mbps
+Blast (TCP)  | 0.3-1.5 | 5-12 Mbps
+Blast (UDP)  | 0.2-1   | 3-10 Mbps
+HDX/ICA      | 0.2-0.8 | 3-8  Mbps
+PCoIP        | 0.5-2   | 8-20 Mbps
+SPICE        | 0.3-1.5 | 5-15 Mbps
+
+Latency thresholds:
+ &lt;30ms  = Tuyệt vời
+ 30-80ms = Tốt
+ 80-150ms = Chấp nhận
+ &gt;150ms = Kém (typing lag)</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Windows VDI Optimization</h4>
+      <code># Tắt services không cần trong VDI
+sc config "WSearch" start=disabled
+sc config "SysMain" start=disabled
+sc config "DiagTrack" start=disabled
+
+# Tắt visual effects
+SystemPropertiesPerformance.exe
+→ Adjust for best performance
+
+# Tắt Windows Update (dùng WSUS)
+# Tắt Cortana, OneDrive sync
+# Tắt Store, Xbox services
+# Dùng Microsoft VDI Optimization Tool:
+# github.com/The-Virtual-Desktop-Team/
+#   Virtual-Desktop-Optimization-Tool</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Sunshine + Moonlight (Game Stream)</h4>
+      <code># Trên VM Windows (có GPU passthrough):
+# Cài Sunshine (open-source)
+# github.com/LizardByte/Sunshine
+
+# Config: Settings → Video
+Resolution: 1920x1080
+FPS: 60 (hoặc 120)
+Bitrate: 20000 Kbps
+
+# Trên client (PC/Phone/TV):
+# Cài Moonlight
+# moonlight-stream.org
+
+# Pair: nhập PIN từ Sunshine
+# Kết nối → stream game từ VM
+# Latency: 10-30ms trên LAN</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Lời khuyên cuối cùng</h4>
+    <p>Thế giới VDI đang ở giai đoạn thú vị nhất. Broadcom gây xáo trộn thị trường VMware, Microsoft push mạnh AVD/Windows 365, và open-source (Proxmox + Guacamole) ngày càng mature. <strong>AI đang bắt đầu xâm nhập</strong> - Microsoft Copilot trong Windows 365, Citrix AI-powered analytics. Trong homelab, VDI mang lại sức mạnh khổng lồ: truy cập desktop từ mọi nơi, GPU sharing, snapshot instant, quản lý tập trung. Bắt đầu từ nhỏ, học từng layer, và nhớ rằng: <strong>VDI tốt nhất là VDI mà user không nhận ra họ đang dùng VDI.</strong></p>
+  </div>
+</section>
+
+<footer>
+  <p>VDI World Visualization | Built for engineers who want to truly understand virtual desktop infrastructure</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">SPICE Protocol | RDP/RFB | Apache Guacamole | Proxmox VE | "The best VDI is the one your users don't notice."</p>
+</footer>
+
+<script>
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.vendor-card, .myth-card, .mindset-card, .protocol-card, .topo-card, .cheat-card, .timeline-content, .type-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('nav a:not(.brand)');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>

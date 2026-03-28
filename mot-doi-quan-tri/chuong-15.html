@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 15: Đại chiến Tuxpan-Mexico — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#C0392B 0%,#E67E22 40%,var(--navy) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #C0392B;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .battle-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin:28px 0;}
+  .stat-card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);text-align:center;}
+  .stat-num{font-size:2rem;font-weight:900;color:#C0392B;}
+  .stat-label{font-size:0.78rem;color:#888;margin-top:4px;}
+  .story-box{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:16px;padding:32px;margin:32px 0;border:2px solid var(--gold);}
+  .story-box h3{color:var(--navy);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .story-box p{font-size:0.95rem;line-height:1.8;color:#444;}
+  .enemy-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0;}
+  .enemy-item{background:white;border-radius:10px;padding:18px;box-shadow:var(--shadow);border-left:4px solid #C0392B;display:flex;gap:12px;align-items:flex-start;}
+  .enemy-icon{font-size:1.5rem;flex-shrink:0;}
+  .enemy-text{font-size:0.85rem;color:#555;line-height:1.5;}
+  .enemy-text strong{color:var(--navy);display:block;margin-bottom:4px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,#C0392B,#E74C3C);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(255,255,255,0.05);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:white;font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--gold);font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-14.html" class="nav-btn">← Chương 14</a>
+    <a href="chuong-16.html" class="nav-btn">Chương 16 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">⚔️ Chương 15</div>
+  <span class="hero-emoji">🏴</span>
+  <h1>Đại Chiến <span>Tuxpan-Mexico</span></h1>
+  <p class="hero-sub">$300 triệu, Siemens, nội phản, và một bài học về sự kiên cường mà không trường lớp nào dạy được.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Đây là trận chiến đấu thầu lớn nhất và căng thẳng nhất trong sự nghiệp của GS. Phan Văn Trường. Không chỉ phải đối mặt với đối thủ khổng lồ là Siemens — ông còn phải chiến đấu với kẻ thù từ bên trong. Đây là câu chuyện về sự kiên trì, phán đoán, và bản lĩnh.
+  </div>
+
+  <div class="battle-stats">
+    <div class="stat-card">
+      <div class="stat-num">$300M</div>
+      <div class="stat-label">Giá trị hợp đồng</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--navy);">Siemens</div>
+      <div class="stat-label">Đối thủ chính</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:#E67E22;">Mexico</div>
+      <div class="stat-label">Địa bàn chiến đấu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--green);">Thắng</div>
+      <div class="stat-label">Kết quả cuối cùng</div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>📖 Trận Chiến Tuxpan — Tóm Tắt</h3>
+    <p>
+      Đây là dự án xây dựng cơ sở hạ tầng lớn ở Tuxpan, Mexico. Alsthom đối đầu với Siemens —
+      một trong những tập đoàn công nghiệp lớn nhất thế giới. Về nguồn lực, Siemens mạnh hơn.
+      Về quan hệ địa phương, cả hai đang bắt đầu từ số không.
+    </p>
+    <p style="margin-top:14px;">
+      Thách thức không chỉ đến từ bên ngoài. Bên trong đội của GS. Trường xuất hiện "nội phản" —
+      những người chơi trò chơi riêng, tiết lộ thông tin, hay cản trở quy trình. Đây là cuộc chiến
+      trên nhiều mặt trận cùng lúc, và mỗi quyết định đều có thể lật ngược tình thế.
+    </p>
+  </div>
+
+  <div class="cards-title">⚠️ Những Kẻ Thù Cần Vượt Qua</div>
+  <div class="enemy-list">
+    <div class="enemy-item">
+      <div class="enemy-icon">🏢</div>
+      <div class="enemy-text"><strong>Siemens</strong>Tập đoàn Đức với nguồn lực khổng lồ và mạng lưới quan hệ toàn cầu.</div>
+    </div>
+    <div class="enemy-item">
+      <div class="enemy-icon">🗡️</div>
+      <div class="enemy-text"><strong>Nội phản</strong>Người trong đội làm suy yếu nỗ lực chung vì lợi ích cá nhân.</div>
+    </div>
+    <div class="enemy-item">
+      <div class="enemy-icon">🌎</div>
+      <div class="enemy-text"><strong>Địa chính trị</strong>Quan hệ chính trị Mexico-Đức vs Mexico-Pháp đều ảnh hưởng đến quyết định.</div>
+    </div>
+    <div class="enemy-item">
+      <div class="enemy-icon">⏰</div>
+      <div class="enemy-text"><strong>Áp lực thời gian</strong>Deadline thầu không chờ đợi ai. Mỗi ngày trễ là cơ hội cho đối thủ.</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Những Bài Học Từ Tuxpan</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <div class="card-num">01</div>
+      <h3>Chiến lược không thể dự đoán</h3>
+      <p>Đối thủ lớn hơn không có nghĩa là không thể đánh bại. Tốc độ, sáng tạo, và hiểu biết địa phương có thể bù đắp cho sự chênh lệch nguồn lực.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🔍</div>
+      <div class="card-num">02</div>
+      <h3>Nhận ra nội phản sớm</h3>
+      <p>Kẻ thù nguy hiểm nhất không phải bên ngoài — mà là người bên trong không trung thành. Xây dựng lòng tin và nhận biết dấu hiệu sớm.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">💪</div>
+      <div class="card-num">03</div>
+      <h3>Kiên cường dưới áp lực</h3>
+      <p>Những trận chiến lớn nhất là bài kiểm tra tính cách. Ai không bỏ cuộc khi mọi thứ có vẻ tệ nhất thường là người chiến thắng.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">04</div>
+      <h3>Thắng trận này, học cả đời</h3>
+      <p>Kinh nghiệm từ Tuxpan là bài học về đàm phán, chính trị, lãnh đạo, và bản lĩnh — không có trường nào dạy được.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Có những trận chiến giúp bạn trưởng thành<br>nhanh hơn cả đời bình thường."</p>
+    <cite>— GS. Phan Văn Trường về trận Tuxpan</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Bài học về đối thủ lớn hơn:</strong> Siemens có nguồn lực lớn hơn — nhưng cũng chậm hơn, quan liêu hơn, và ít linh hoạt hơn. Đây là lợi thế của công ty nhỏ: tốc độ, sáng tạo, và khả năng thích nghi nhanh với bối cảnh địa phương.
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Bài học về nội phản:</strong> Nhận ra sớm, đối phó quyết đoán, nhưng đừng hoang mang toàn bộ đội ngũ. Giữ bình tĩnh, xử lý riêng, và tiếp tục tiến. Nỗi sợ hãi và nghi ngờ lan rộng còn nguy hiểm hơn chính kẻ phản bội.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Đối thủ lớn hơn về nguồn lực không nhất thiết là đối thủ mạnh hơn về chiến lược và thích nghi.</li>
+      <li>Nội phản nguy hiểm hơn đối thủ bên ngoài — nhận ra sớm và xử lý quyết đoán nhưng bình tĩnh.</li>
+      <li>Áp lực cực độ là môi trường học tập nhanh nhất — nếu bạn sống sót qua nó.</li>
+      <li>Hiểu biết địa phương (địa chính trị, văn hóa, quan hệ) là lợi thế cạnh tranh không thể mua được.</li>
+      <li>Những trận chiến khó khăn nhất tạo ra những bài học sâu sắc nhất trong hành trình lãnh đạo.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-14.html" class="bnav-btn">← Chương 14</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-16.html" class="bnav-btn next">Chương 16: Khởi nghiệp →</a>
+  </div>
+</div>
+
+</body>
+</html>

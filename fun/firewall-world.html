@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thế Giới Firewall - Deep Dive</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card-hover: #1a2332;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .shield-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: shieldPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes shieldPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(59,130,246,0)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 20px rgba(59,130,246,0.4)); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    animation: bounce 2s infinite;
+    color: var(--text-dim);
+    font-size: 1.5rem;
+    z-index: 1;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .section-subtitle {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  /* What is Firewall */
+  .fw-what {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border-radius: 24px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+  }
+
+  .fw-what h2 {
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .fw-analogy {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+
+  .analogy-box {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .analogy-box .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .analogy-box h3 { color: var(--accent); margin-bottom: 0.5rem; }
+
+  .analogy-arrow {
+    font-size: 2rem;
+    color: var(--accent2);
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  @keyframes pulseArrow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .timeline-item:nth-child(odd) { flex-direction: row; }
+  .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-content {
+    width: 45%;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(59,130,246,0.1);
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid var(--bg);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .timeline-content h3 { margin: 0.3rem 0; }
+  .timeline-content p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Vendor Cards */
+  .vendor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vendor-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vendor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .vendor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .vendor-card .vendor-logo { font-size: 2.5rem; margin-bottom: 1rem; }
+  .vendor-card h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .vendor-card .vendor-type { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
+  .vendor-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1rem; }
+
+  .vendor-card.opnsense::before { background: linear-gradient(90deg, #f97316, #f59e0b); }
+  .vendor-card.pfsense::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+  .vendor-card.iptables::before { background: linear-gradient(90deg, #10b981, #059669); }
+  .vendor-card.ufw::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+  .vendor-card.fortinet::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .vendor-card.paloalto::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+  .vendor-card.sophos::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(59,130,246,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+
+  .tag.warn { background: rgba(245,158,11,0.1); color: var(--accent4); border-color: rgba(245,158,11,0.2); }
+  .tag.good { background: rgba(16,185,129,0.1); color: var(--accent3); border-color: rgba(16,185,129,0.2); }
+  .tag.hot { background: rgba(239,68,68,0.1); color: var(--accent5); border-color: rgba(239,68,68,0.2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    border: 1px solid var(--border);
+  }
+
+  .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+  .stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Concept Cards */
+  .concept-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .concept-card:hover { border-color: var(--accent); }
+
+  .concept-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .concept-card .status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status.alive { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .status.legacy { background: var(--accent4); }
+  .status.dead { background: var(--accent5); }
+
+  .concept-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* Misconceptions */
+  .myth-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .myth-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .myth-card .myth-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .myth-label.wrong { background: rgba(239,68,68,0.15); color: var(--accent5); }
+  .myth-label.right { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .myth-card h4 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .myth-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .myth-card .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+  }
+
+  /* Architecture Diagram */
+  .arch-container {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 800px;
+    padding: 1rem 0;
+  }
+
+  .arch-layer {
+    background: rgba(59,130,246,0.05);
+    border: 2px dashed rgba(59,130,246,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 140px;
+    transition: all 0.3s;
+  }
+
+  .arch-layer:hover {
+    background: rgba(59,130,246,0.1);
+    border-color: var(--accent);
+  }
+
+  .arch-layer .layer-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-layer h4 { font-size: 0.9rem; color: var(--accent); }
+  .arch-layer p { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  .arch-arrow {
+    font-size: 1.5rem;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  /* Packet Flow */
+  .packet-flow {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .packet-flow .flow-title {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  /* IDS/IPS Cards */
+  .ids-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .ids-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .ids-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .ids-card .ids-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent5);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .ids-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .ids-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Zero Trust */
+  .zt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .zt-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .zt-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .zt-card .zt-num {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--accent2);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .zt-card h4 { font-size: 1.1rem; margin: 0.5rem 0; }
+  .zt-card p { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* Comparison Table */
+  .comparison-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .comparison-table th {
+    background: rgba(59,130,246,0.1);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .comparison-table td:first-child { font-weight: 600; color: var(--text); }
+
+  /* Insight Box */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.08));
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 16px 16px 0;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-box h4 { color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+  .insight-box p { color: var(--text-dim); }
+
+  /* Cheat Sheet */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .cheat-card h4 { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  .cheat-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent3);
+    margin-top: 0.5rem;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .cheat-card p { color: var(--text-dim); font-size: 0.85rem; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .fw-analogy { grid-template-columns: 1fr; }
+    .analogy-arrow { transform: rotate(90deg); }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; padding-left: 50px; }
+    .timeline-content { width: 100%; }
+    .timeline-dot { left: 20px; }
+    .arch-diagram { flex-direction: column; min-width: auto; }
+    .arch-arrow { transform: rotate(90deg); }
+    .vendor-grid { grid-template-columns: 1fr; }
+    .myth-grid { grid-template-columns: 1fr; }
+    .ids-grid { grid-template-columns: 1fr; }
+    .zt-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s;
+    flex-shrink: 0;
+  }
+
+  nav a:hover { color: var(--accent); }
+  nav .brand { color: var(--accent); font-weight: 700; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="brand">Firewall World</a>
+  <a href="#what">Firewall la gi?</a>
+  <a href="#history">Lich su</a>
+  <a href="#concepts">Concepts</a>
+  <a href="#vendors">Vendors</a>
+  <a href="#ids">IDS/IPS</a>
+  <a href="#zerotrust">Zero Trust</a>
+  <a href="#myths">Hieu nham</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="shield-icon">🛡️</div>
+  <h1>Thế Giới Firewall</h1>
+  <p class="subtitle">Từ packet filter thô sơ đến zero-trust architecture - Hành trình hơn 30 năm của bức tường lửa. Mọi thứ bạn cần biết để bảo vệ hạ tầng mạng, những hiểu nhầm chết người, và tư duy đúng khi xây dựng chiến lược bảo mật.</p>
+  <div class="scroll-hint">&#8964;</div>
+</div>
+
+<!-- WHAT IS FIREWALL -->
+<section id="what">
+  <div class="fw-what">
+    <h2 class="section-title">Firewall là gì thực sự?</h2>
+    <p style="color: var(--text-dim); margin-top: 1rem; font-size: 1.05rem;">
+      <strong>Firewall</strong> - Bức tường lửa. Cái tên bắt nguồn từ kiến trúc xây dựng: bức tường chịu lửa ngăn cách các phần của toà nhà, không cho đám cháy lan sang. Trong mạng máy tính, firewall là hệ thống kiểm soát lưu lượng giữa các vùng mạng - quyết định packet nào được đi qua, packet nào bị chặn lại.
+    </p>
+
+    <div class="fw-analogy">
+      <div class="analogy-box">
+        <div class="icon">🌐</div>
+        <h3>Không có Firewall</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Mọi traffic ra vào tự do<br>Hacker, malware, bot scan thoải mái<br>Rủi ro: <strong style="color: var(--accent5);">Cực kỳ cao</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🛡️</div>
+        <h3>Có Firewall</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Chỉ traffic hợp lệ được đi qua<br>Kiểm soát theo rule, zone, identity<br>Rủi ro: <strong style="color: var(--accent3);">Giảm đáng kể</strong></p>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>Insight quan trọng</h4>
+      <p>Firewall không chỉ là "chặn port". Nó là <strong>bộ não an ninh</strong> của hạ tầng mạng - quyết định ai được nói chuyện với ai, bằng giao thức gì, ở port nào, vào thời điểm nào. Hãy nghĩ nó như một <strong>"bảo vệ thông minh ở cổng toà nhà"</strong> - không chỉ kiểm tra thẻ ra vào, mà còn soi camera, kiểm tra hàng hoá, và ghi lại mọi lượt ra vào.</p>
+    </div>
+
+    <div class="arch-container">
+      <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Vị trí của Firewall trong hạ tầng mạng</h3>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="layer-icon">🌍</div>
+          <h4>Internet</h4>
+          <p>Vùng untrusted<br>Nguy hiểm</p>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-layer" style="border-color: var(--accent5); background: rgba(239,68,68,0.1);">
+          <div class="layer-icon">🛡️</div>
+          <h4>Firewall</h4>
+          <p>Inspect, Filter<br>NAT, VPN, IDS/IPS</p>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-layer">
+          <div class="layer-icon">🔶</div>
+          <h4>DMZ</h4>
+          <p>Web server, Mail<br>Semi-trusted</p>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.1);">
+          <div class="layer-icon">🏢</div>
+          <h4>LAN</h4>
+          <p>Mạng nội bộ<br>Trusted zone</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY / TIMELINE -->
+<section id="history">
+  <h2 class="section-title" style="color: var(--accent4);">Dòng Thời Gian Firewall</h2>
+  <p class="section-subtitle">Hơn 30 năm tiến hoá - từ lọc packet đơn giản đến zero-trust toàn diện</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1988-1992</span>
+        <h3>Thế hệ 1: Packet Filter</h3>
+        <p>Mọi thứ bắt đầu với bài báo của Jeff Mogul năm 1988. Firewall đầu tiên chỉ đơn giản nhìn vào header của mỗi packet: source IP, destination IP, port, protocol. Không hiểu "cuộc hội thoại" - mỗi packet được xét riêng rẽ. Đơn giản, nhanh, nhưng dễ bị lừa.</p>
+      </div>
+      <div class="timeline-dot"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1991-1994</span>
+        <h3>Thế hệ 1.5: Circuit-Level Gateway</h3>
+        <p>Hoạt động ở tầng session (Layer 5). Giám sát TCP handshake để xác nhận session hợp lệ. Không kiểm tra nội dung packet, chỉ đảm bảo kết nối TCP được thiết lập đúng quy trình. SOCKS proxy là ví dụ kinh điển.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1994-2004</span>
+        <h3>Thế hệ 2: Stateful Inspection</h3>
+        <p>Check Point phát minh stateful inspection. Bước ngoặt lớn: firewall giờ <strong>nhớ</strong> các kết nối đang diễn ra (state table). Nếu bạn gửi request ra ngoài, response được tự động cho phép vì firewall biết nó thuộc về cuộc hội thoại nào. Giải quyết vấn đề lớn nhất của packet filter.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent3);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">1995-2008</span>
+        <h3>Thế hệ 2.5: Application-Level Gateway</h3>
+        <p>Proxy firewall đi sâu vào tầng ứng dụng (Layer 7). Hiểu HTTP, FTP, SMTP. Có thể lọc URL, chặn virus trong email, block file types. Nhưng cực kỳ chậm vì phải inspect toàn bộ payload. Squid proxy, Microsoft ISA Server là đại diện.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent4);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2007-nay</span>
+        <h3>Thế hệ 3: Next-Generation Firewall (NGFW)</h3>
+        <p>Palo Alto Networks khai sinh khái niệm NGFW. Kết hợp tất cả: stateful inspection + deep packet inspection + application awareness + IDS/IPS + user identity + SSL decryption. Không chỉ biết "port 443" mà biết bạn đang dùng YouTube hay Facebook. Cuộc cách mạng thực sự.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent5);"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="timeline-year">2010-nay</span>
+        <h3>Thế hệ 4: Zero-Trust & SASE</h3>
+        <p>Google BeyondCorp (2014) đặt nền móng. Không còn tin tưởng bất kỳ ai - kể cả user bên trong mạng nội bộ. Mỗi request phải được xác thực, uỷ quyền. SASE (Secure Access Service Edge) đưa firewall lên cloud, bảo vệ mọi nơi người dùng truy cập. Zscaler, Cloudflare Zero Trust là đại diện.</p>
+      </div>
+      <div class="timeline-dot" style="background: var(--accent2);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="concepts">
+  <h2 class="section-title" style="color: var(--accent3);">Concepts - Ngôn Ngữ Của Firewall</h2>
+  <p class="section-subtitle">Hiểu các khái niệm cốt lõi là nền tảng để master bất kỳ firewall nào</p>
+
+  <div class="concept-map">
+    <div class="concept-card">
+      <h4><span class="status legacy"></span> iptables</h4>
+      <p><strong>Ông tổ firewall trên Linux.</strong> Giao diện userspace cho Netfilter framework trong kernel. Tồn tại từ Linux 2.4 (2001). Cú pháp dựa trên chain (INPUT, OUTPUT, FORWARD) và table (filter, nat, mangle, raw). Hàng triệu server vẫn đang dùng.</p>
+      <div class="tag-row"><span class="tag warn">Legacy nhưng vẫn phổ biến</span><span class="tag">Netfilter</span><span class="tag">Chain-based</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> nftables</h4>
+      <p><strong>Người kế thừa của iptables.</strong> Mặc định từ Debian 10, RHEL 8+. Cú pháp sạch hơn, hợp nhất iptables/ip6tables/arptables/ebtables thành một. Hỗ trợ sets, maps, concatenation. Hiệu năng tốt hơn với ruleset lớn.</p>
+      <div class="tag-row"><span class="tag good">Hiện đại</span><span class="tag good">Thay thế iptables</span><span class="tag">Unified syntax</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Chains & Tables</h4>
+      <p><strong>Tim mạch của Netfilter.</strong> Tables chứa chains, chains chứa rules. <strong>filter</strong> (chặn/cho phép), <strong>nat</strong> (đổi IP/port), <strong>mangle</strong> (sửa header), <strong>raw</strong> (bypass conntrack). Mỗi packet đi qua một chuỗi chains theo thứ tự xác định.</p>
+      <div class="tag-row"><span class="tag">filter</span><span class="tag">nat</span><span class="tag">mangle</span><span class="tag">raw</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Zones (Vùng mạng)</h4>
+      <p><strong>Phân vùng tin cậy.</strong> WAN (untrusted), LAN (trusted), DMZ (semi-trusted), Guest, IoT... Mỗi zone có security level khác nhau. Traffic giữa các zone phải qua firewall rules. OPNsense/pfSense dùng interface-based zones, Fortinet dùng zone-based.</p>
+      <div class="tag-row"><span class="tag hot">WAN</span><span class="tag good">LAN</span><span class="tag warn">DMZ</span><span class="tag">Guest</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Stateful Inspection</h4>
+      <p><strong>Thay đổi cuộc chơi.</strong> Firewall theo dõi trạng thái kết nối: NEW, ESTABLISHED, RELATED, INVALID. Packet thuộc kết nối đã thiết lập được cho phép tự động. Bảng conntrack lưu trữ state. Quan trọng nhất: tiết kiệm hàng nghìn rules thủ công.</p>
+      <div class="tag-row"><span class="tag good">NEW</span><span class="tag good">ESTABLISHED</span><span class="tag">RELATED</span><span class="tag hot">INVALID</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> NAT (Network Address Translation)</h4>
+      <p><strong>Phép biến hình của IP.</strong> SNAT/Masquerade (đổi source IP khi ra ngoài), DNAT/Port Forward (chuyển tiếp port vào trong). Là lý do IPv4 còn sống đến hôm nay. Mọi firewall đều làm NAT - và mọi vấn đề VoIP/P2P đều liên quan đến NAT.</p>
+      <div class="tag-row"><span class="tag">SNAT</span><span class="tag">DNAT</span><span class="tag">Masquerade</span><span class="tag warn">IPv4 hack</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> Deep Packet Inspection (DPI)</h4>
+      <p><strong>Đọc nội dung, không chỉ header.</strong> NGFW inspect payload để nhận diện ứng dụng (YouTube, BitTorrent, Zoom) bất kể port nào. Kết hợp SSL decryption để nhìn xuyên qua HTTPS. Cực kỳ powerful nhưng tốn tài nguyên và gây tranh cãi về quyền riêng tư.</p>
+      <div class="tag-row"><span class="tag good">App-aware</span><span class="tag warn">CPU-intensive</span><span class="tag hot">Privacy concerns</span></div>
+    </div>
+
+    <div class="concept-card">
+      <h4><span class="status alive"></span> VPN Integration</h4>
+      <p><strong>Đường hầm bảo mật.</strong> Hầu hết firewall tích hợp VPN server: IPsec (site-to-site), OpenVPN/WireGuard (remote access). Cho phép nhân viên ở nhà truy cập mạng nội bộ an toàn. WireGuard đang thay thế OpenVPN nhờ đơn giản và nhanh hơn đáng kể.</p>
+      <div class="tag-row"><span class="tag">IPsec</span><span class="tag good">WireGuard</span><span class="tag">OpenVPN</span><span class="tag">Site-to-Site</span></div>
+    </div>
+  </div>
+
+  <!-- Packet Flow Diagram -->
+  <div class="packet-flow">
+    <div class="flow-title">Hành trình của một Packet qua iptables/nftables</div>
+    <pre style="color: var(--text-dim); line-height: 1.9; font-size: 0.82rem;">
+  Packet đến Network Interface
+       |
+       v
+  ┌──────────┐
+  │ raw table │──── PREROUTING chain ──── Conntrack (theo dõi kết nối)
+  └──────────┘
+       |
+       v
+  ┌──────────┐
+  │ mangle   │──── PREROUTING chain ──── Sửa TOS/TTL nếu cần
+  └──────────┘
+       |
+       v
+  ┌──────────┐
+  │ nat table│──── PREROUTING chain ──── <span style="color:var(--accent4);">DNAT (Port Forward)</span>
+  └──────────┘
+       |
+       v
+  ┌─────────────────┐
+  │  Routing Decision│ ──── Packet dành cho máy này? Hay forward đi?
+  └─────────────────┘
+       |                          |
+    Cho máy này              Forward sang mạng khác
+       |                          |
+       v                          v
+  ┌──────────┐              ┌──────────┐
+  │ filter   │              │ filter   │
+  │ INPUT    │              │ FORWARD  │ ──── <span style="color:var(--accent5);">ACCEPT/DROP/REJECT</span>
+  └──────────┘              └──────────┘
+       |                          |
+       v                          v
+  Local Process              ┌──────────┐
+       |                     │ nat table│──── POSTROUTING ──── <span style="color:var(--accent3);">SNAT/Masquerade</span>
+       v                     └──────────┘
+  ┌──────────┐                    |
+  │ filter   │                    v
+  │ OUTPUT   │              Network Interface Out
+  └──────────┘
+       |
+       v
+  ┌──────────┐
+  │ nat      │──── POSTROUTING ──── <span style="color:var(--accent3);">SNAT</span>
+  └──────────┘
+       |
+       v
+  Network Interface Out
+    </pre>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: Thứ tự rules CỰC KỲ quan trọng</h4>
+    <p>Firewall rules được xét <strong>từ trên xuống dưới</strong> (first match wins trong iptables). Rule đầu tiên khớp sẽ quyết định số phận packet - các rule phía dưới bị bỏ qua. Sai thứ tự = lỗ hổng bảo mật hoặc block nhầm traffic hợp lệ. Luôn đặt rules cụ thể trước, rules chung sau. Rule cuối cùng luôn là <strong>DROP ALL</strong> (default deny).</p>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors">
+  <h2 class="section-title" style="color: var(--accent2);">Các Ông Lớn Firewall</h2>
+  <p class="section-subtitle">Mỗi giải pháp có triết lý riêng, thế mạnh riêng, và "cái bẫy" riêng</p>
+
+  <div class="vendor-grid">
+    <!-- OPNsense -->
+    <div class="vendor-card opnsense">
+      <div class="vendor-logo">🟠</div>
+      <h3>OPNsense</h3>
+      <div class="vendor-type">Open Source / FreeBSD-based</div>
+      <p>Fork từ pfSense năm 2015, được phát triển bởi Deciso (Hà Lan). Codebase sạch hơn, cập nhật thường xuyên hơn, giao diện MVC hiện đại. Tích hợp sẵn Suricata IDS/IPS, WireGuard, HAProxy, Zenarmor (DPI plugin). Cộng đồng đang tăng mạnh, nhiều người chuyển từ pfSense sang.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2015</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Free</div><div class="label">License</div></div>
+        <div class="stat"><div class="num">2 tuần</div><div class="label">Update cycle</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Open Source</span>
+        <span class="tag good">Weekly Updates</span>
+        <span class="tag">FreeBSD/pf</span>
+        <span class="tag">Suricata IDS</span>
+        <span class="tag good">Modern UI</span>
+      </div>
+      <div class="insight-box" style="margin-top: 1rem;">
+        <h4>Pro tip</h4>
+        <p>OPNsense là lựa chọn <strong>hàng đầu cho homelab</strong>. Chạy tốt trên VM Proxmox, hardware mini PC, hoặc Protectli box. Plugin ecosystem phong phú: Zenarmor (DPI), CrowdSec, Telegraf + Grafana cho monitoring.</p>
+      </div>
+    </div>
+
+    <!-- pfSense -->
+    <div class="vendor-card pfsense">
+      <div class="vendor-logo">🔵</div>
+      <h3>pfSense</h3>
+      <div class="vendor-type">Open Source / FreeBSD-based</div>
+      <p>Ra đời 2004, từng là vua open-source firewall. Dựa trên FreeBSD và pf (packet filter). Giao diện web quản trị quen thuộc. Tuy nhiên, Netgate (công ty đứng sau) ngày càng đóng cửa - chuyển sang pfSense Plus (closed source) và giới hạn Community Edition. Nhiều người đang rời đi.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2004</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Lịch sử</div></div>
+        <div class="stat"><div class="num">CE/Plus</div><div class="label">Versions</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag warn">Đang đóng cửa</span>
+        <span class="tag">FreeBSD/pf</span>
+        <span class="tag good">Mature</span>
+        <span class="tag">pfBlockerNG</span>
+        <span class="tag warn">CE vs Plus drama</span>
+      </div>
+    </div>
+
+    <!-- iptables/nftables -->
+    <div class="vendor-card iptables">
+      <div class="vendor-logo">🟢</div>
+      <h3>iptables / nftables</h3>
+      <div class="vendor-type">Linux Kernel / CLI-based</div>
+      <p>Không phải "sản phẩm" mà là <strong>nền tảng</strong> - Netfilter framework trong Linux kernel. iptables (2001) đang nhường chỗ cho nftables. Mọi firewall Linux (UFW, firewalld, Docker, Kubernetes NetworkPolicy) đều dựa trên Netfilter. Hiểu iptables/nftables = hiểu gốc rễ của Linux networking security.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2001</div><div class="label">iptables</div></div>
+        <div class="stat"><div class="num">2014</div><div class="label">nftables</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">Linux servers</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Foundation</span>
+        <span class="tag">CLI-only</span>
+        <span class="tag good">Everywhere</span>
+        <span class="tag warn">Steep learning curve</span>
+      </div>
+    </div>
+
+    <!-- UFW -->
+    <div class="vendor-card ufw">
+      <div class="vendor-logo">🟣</div>
+      <h3>UFW (Uncomplicated Firewall)</h3>
+      <div class="vendor-type">Linux / Frontend cho iptables</div>
+      <p>Ubuntu/Canonical tạo ra UFW để đơn giản hoá iptables cho người dùng thông thường. <code style="color: var(--accent3);">ufw allow 22</code> thay cho chuỗi iptables dài dòng. Hoàn hảo cho server đơn lẻ. Nhưng đừng nhầm: UFW chỉ là wrapper - bên dưới vẫn là iptables. Không phù hợp cho router/gateway phức tạp.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2008</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Ubuntu</div><div class="label">Default</div></div>
+        <div class="stat"><div class="num">Simple</div><div class="label">Cú pháp</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Đơn giản</span>
+        <span class="tag">iptables wrapper</span>
+        <span class="tag good">Beginner-friendly</span>
+        <span class="tag warn">Limited features</span>
+      </div>
+    </div>
+
+    <!-- Fortinet -->
+    <div class="vendor-card fortinet">
+      <div class="vendor-logo">🔴</div>
+      <h3>Fortinet (FortiGate)</h3>
+      <div class="vendor-type">Enterprise / ASIC-powered NGFW</div>
+      <p>Được Ken Xie sáng lập (cũng là người tạo NetScreen/Juniper). Bí mật vũ khí: <strong>ASIC tự thiết kế</strong> (FortiASIC) - xử lý security functions bằng hardware, không phải CPU. Kết quả: throughput khủng với giá hợp lý. FortiGate chiếm thị phần firewall lớn nhất thế giới. FortiOS, FortiGuard, Security Fabric tạo hệ sinh thái kín.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">#1</div><div class="label">Thị phần</div></div>
+        <div class="stat"><div class="num">ASIC</div><div class="label">Hardware</div></div>
+        <div class="stat"><div class="num">$$-$$$$</div><div class="label">Giá</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Performance</span>
+        <span class="tag">Custom ASIC</span>
+        <span class="tag hot">License fees</span>
+        <span class="tag good">SD-WAN tích hợp</span>
+      </div>
+    </div>
+
+    <!-- Palo Alto -->
+    <div class="vendor-card paloalto">
+      <div class="vendor-logo">🩷</div>
+      <h3>Palo Alto Networks</h3>
+      <div class="vendor-type">Enterprise / NGFW Pioneer</div>
+      <p>Nir Zuk (cựu Check Point) sáng lập năm 2005, khai sinh khái niệm NGFW. App-ID (nhận diện ứng dụng), User-ID (nhận diện người dùng), Content-ID (kiểm tra nội dung) - bộ ba thần thánh. Panorama cho quản lý tập trung. Giá RẤT đắt nhưng là "gold standard" của enterprise security.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">2005</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">NGFW</div><div class="label">Pioneer</div></div>
+        <div class="stat"><div class="num">$$$$$</div><div class="label">Giá</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">App-ID</span>
+        <span class="tag good">User-ID</span>
+        <span class="tag hot">Rất đắt</span>
+        <span class="tag">Zero Trust leader</span>
+      </div>
+    </div>
+
+    <!-- Sophos -->
+    <div class="vendor-card sophos">
+      <div class="vendor-logo">🔷</div>
+      <h3>Sophos XGS</h3>
+      <div class="vendor-type">SMB-Enterprise / Synchronized Security</div>
+      <p>Nổi bật với <strong>Synchronized Security</strong> - firewall "nói chuyện" với endpoint protection (Sophos Central). Khi endpoint phát hiện malware, firewall tự động cách ly thiết bị đó. XGS series có Xstream architecture với hardware acceleration. Giá hợp lý hơn Palo Alto/Fortinet cho SMB.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">UK</div><div class="label">Headquarter</div></div>
+        <div class="stat"><div class="num">Sync</div><div class="label">Security</div></div>
+        <div class="stat"><div class="num">$$-$$$</div><div class="label">Giá</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Synchronized Security</span>
+        <span class="tag">Xstream</span>
+        <span class="tag good">SMB-friendly</span>
+        <span class="tag">Central management</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comparison-wrap" style="margin-top: 3rem;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>OPNsense</th>
+          <th>pfSense</th>
+          <th>FortiGate</th>
+          <th>Palo Alto</th>
+          <th>Sophos XGS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chi phí khởi điểm</td>
+          <td style="color: var(--accent3);">Free</td>
+          <td style="color: var(--accent3);">Free (CE)</td>
+          <td style="color: var(--accent4);">$500+</td>
+          <td style="color: var(--accent5);">$3,000+</td>
+          <td style="color: var(--accent4);">$600+</td>
+        </tr>
+        <tr>
+          <td>IDS/IPS tích hợp</td>
+          <td style="color: var(--accent3);">Suricata</td>
+          <td>Snort/Suricata</td>
+          <td style="color: var(--accent3);">FortiGuard</td>
+          <td style="color: var(--accent3);">Threat Prevention</td>
+          <td style="color: var(--accent3);">Xstream</td>
+        </tr>
+        <tr>
+          <td>Throughput (NGFW)</td>
+          <td>Tuỳ hardware</td>
+          <td>Tuỳ hardware</td>
+          <td style="color: var(--accent3);">ASIC boost</td>
+          <td>Hardware-dependent</td>
+          <td>Xstream FPGA</td>
+        </tr>
+        <tr>
+          <td>VPN</td>
+          <td>WireGuard, OpenVPN, IPsec</td>
+          <td>OpenVPN, IPsec</td>
+          <td>IPsec, SSL VPN</td>
+          <td>GlobalProtect</td>
+          <td>IPsec, SSL VPN</td>
+        </tr>
+        <tr>
+          <td>Quản lý tập trung</td>
+          <td style="color: var(--accent4);">Hạn chế</td>
+          <td style="color: var(--accent4);">Hạn chế</td>
+          <td style="color: var(--accent3);">FortiManager</td>
+          <td style="color: var(--accent3);">Panorama</td>
+          <td style="color: var(--accent3);">Sophos Central</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>Homelab, SMB</td>
+          <td>Legacy installs</td>
+          <td>SMB-Enterprise</td>
+          <td>Enterprise, DC</td>
+          <td>SMB có endpoint</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- IDS/IPS -->
+<section id="ids">
+  <h2 class="section-title" style="color: var(--accent5);">IDS/IPS - Hệ Thống Phát Hiện & Ngăn Chặn Xâm Nhập</h2>
+  <p class="section-subtitle">Nếu firewall là bức tường, thì IDS/IPS là camera và bảo vệ tuần tra bên trong</p>
+
+  <div class="fw-what" style="margin-bottom: 2rem;">
+    <h3 style="color: var(--accent); margin-bottom: 1rem;">IDS vs IPS - Khác nhau thế nào?</h3>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      <strong>IDS (Intrusion Detection System)</strong> = Camera giám sát: phát hiện hành vi bất thường và <strong>báo động</strong>, nhưng không tự chặn. Giống camera an ninh quay được tên trộm nhưng không đuổi được.
+    </p>
+    <p style="color: var(--text-dim); font-size: 1.05rem; margin-top: 0.8rem;">
+      <strong>IPS (Intrusion Prevention System)</strong> = Bảo vệ có vũ trang: phát hiện VÀ <strong>tự động chặn</strong> traffic độc hại ngay lập tức. Giống bảo vệ vừa phát hiện tên trộm vừa khống chế luôn.
+    </p>
+
+    <div class="fw-analogy" style="margin-top: 2rem;">
+      <div class="analogy-box">
+        <div class="icon">📹</div>
+        <h3>IDS Mode</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Giám sát, ghi log, cảnh báo<br>Không can thiệp traffic<br>An toàn, <strong style="color: var(--accent4);">không ảnh hưởng mạng</strong></p>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-box">
+        <div class="icon">🚔</div>
+        <h3>IPS Mode</h3>
+        <p style="color: var(--text-dim); font-size: 0.9rem;">Phát hiện + chặn tự động<br>Inline với traffic flow<br>Hiệu quả, <strong style="color: var(--accent5);">có thể block nhầm</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ids-grid">
+    <div class="ids-card">
+      <div class="ids-num">1</div>
+      <h4>Suricata</h4>
+      <p>Được phát triển bởi OISF (Open Information Security Foundation). <strong>Multi-threaded</strong> - tận dụng được nhiều CPU cores, khác biệt lớn so với Snort. Hỗ trợ Lua scripting cho custom rules. Tích hợp sẵn trong OPNsense. Có thể chạy IDS/IPS mode và network security monitoring. Đọc được rules của Snort + rules riêng. Đang là lựa chọn số 1 cho open-source IDS/IPS.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">OISF</div><div class="label">Developer</div></div>
+        <div class="stat"><div class="num">Multi</div><div class="label">Threaded</div></div>
+        <div class="stat"><div class="num">#1</div><div class="label">Open Source</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Multi-threaded</span>
+        <span class="tag good">Lua scripting</span>
+        <span class="tag">OPNsense default</span>
+        <span class="tag">ET Open rules</span>
+      </div>
+    </div>
+
+    <div class="ids-card">
+      <div class="ids-num">2</div>
+      <h4>Snort</h4>
+      <p>Martin Roesch tạo ra năm 1998 - ông tổ của IDS open-source. Giờ thuộc Cisco (mua Sourcefire 2013). Snort 3 viết lại hoàn toàn, multi-threaded, nhưng community nhỏ hơn Suricata. Vẫn là nền tảng trong pfSense và nhiều sản phẩm Cisco. Ruleset khổng lồ, cả free và commercial (Snort Subscriber rules từ Talos).</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1998</div><div class="label">Ra đời</div></div>
+        <div class="stat"><div class="num">Cisco</div><div class="label">Owner</div></div>
+        <div class="stat"><div class="num">Snort 3</div><div class="label">Latest</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Ruleset khổng lồ</span>
+        <span class="tag">Cisco/Talos</span>
+        <span class="tag warn">Snort 2 single-thread</span>
+        <span class="tag">pfSense default</span>
+      </div>
+    </div>
+
+    <div class="ids-card">
+      <div class="ids-num">3</div>
+      <h4>Zeek (trước là Bro)</h4>
+      <p>KHÔNG phải IDS truyền thống. Zeek là <strong>network security monitor</strong> - không dùng signatures để phát hiện tấn công, mà <strong>ghi lại mọi thứ xảy ra trên mạng</strong> ở dạng structured logs. DNS queries, HTTP requests, SSL certificates, file hashes... tất cả. Kết hợp với ELK/Splunk để phân tích. Dùng trong SOC, threat hunting, forensics.</p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">1994</div><div class="label">Ra đời (Bro)</div></div>
+        <div class="stat"><div class="num">NSM</div><div class="label">Loại</div></div>
+        <div class="stat"><div class="num">Logs</div><div class="label">Output</div></div>
+      </div>
+      <div class="tag-row">
+        <span class="tag good">Network forensics</span>
+        <span class="tag">Structured logs</span>
+        <span class="tag good">Threat hunting</span>
+        <span class="tag warn">Không chặn traffic</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Insight: IDS/IPS không thay thế Firewall</h4>
+    <p>Firewall và IDS/IPS là hai lớp bảo vệ khác nhau. Firewall quyết định <strong>"ai được vào"</strong> (dựa trên IP, port, protocol). IDS/IPS kiểm tra <strong>"cái gì đang đi qua"</strong> (dựa trên patterns, signatures, anomalies). Bạn cần CẢ HAI. Chỉ có firewall = biết ai vào nhưng không biết họ mang theo gì. Chỉ có IDS/IPS = biết nội dung nhưng không kiểm soát được ai vào.</p>
+  </div>
+</section>
+
+<!-- ZERO TRUST -->
+<section id="zerotrust">
+  <h2 class="section-title" style="color: var(--accent2);">Zero-Trust Architecture</h2>
+  <p class="section-subtitle">"Never trust, always verify" - Không tin ai, kể cả user bên trong mạng</p>
+
+  <div class="fw-what" style="margin-bottom: 2rem;">
+    <h3 style="color: var(--accent2); margin-bottom: 1rem;">Tại sao Zero-Trust ra đời?</h3>
+    <p style="color: var(--text-dim); font-size: 1.05rem;">
+      Mô hình bảo mật truyền thống giống như lâu đài có hào nước: bên ngoài hào là nguy hiểm, bên trong hào là an toàn. Vấn đề? Khi kẻ xấu vượt qua hào (phishing, VPN bị hack, insider threat), chúng tự do di chuyển bên trong. <strong>Castle-and-moat đã chết.</strong>
+    </p>
+    <p style="color: var(--text-dim); font-size: 1.05rem; margin-top: 0.8rem;">
+      Zero-Trust nói: <strong>không có "bên trong" hay "bên ngoài"</strong>. Mỗi request, mỗi connection, mỗi user đều phải được xác thực và uỷ quyền - bất kể đang ở đâu. Google đã chứng minh với BeyondCorp (2014): 60,000+ nhân viên truy cập mọi thứ qua internet, không cần VPN.
+    </p>
+  </div>
+
+  <div class="zt-grid">
+    <div class="zt-card">
+      <div class="zt-num">1</div>
+      <h4>Verify Explicitly (Xác thực rõ ràng)</h4>
+      <p>Mọi access request phải được xác thực dựa trên tất cả data points: <strong>user identity, device health, location, time, behavior pattern</strong>. Không phải chỉ username/password. MFA là bắt buộc. Device certificate, compliance check (đã cập nhật patch? có antivirus?) cũng là yếu tố quyết định.</p>
+    </div>
+
+    <div class="zt-card">
+      <div class="zt-num">2</div>
+      <h4>Least Privilege (Đặc quyền tối thiểu)</h4>
+      <p>User chỉ được quyền truy cập <strong>đúng những gì cần thiết</strong>, không hơn. Admin không cần access production database 24/7 - chỉ khi có ticket. Developer không cần SSH vào mọi server. Just-In-Time (JIT) access: quyền được cấp tạm thời, tự thu hồi sau thời gian xác định.</p>
+    </div>
+
+    <div class="zt-card">
+      <div class="zt-num">3</div>
+      <h4>Assume Breach (Giả định đã bị xâm nhập)</h4>
+      <p>Luôn hoạt động như thể kẻ xấu <strong>đã ở bên trong mạng</strong>. Micro-segmentation: chia mạng thành các segment cực nhỏ, mỗi workload là một zone riêng. Lateral movement bị hạn chế tối đa. Encrypt mọi thứ - kể cả traffic nội bộ. Log và monitor mọi connection.</p>
+    </div>
+
+    <div class="zt-card">
+      <div class="zt-num">4</div>
+      <h4>Micro-Segmentation</h4>
+      <p>Thay vì một VLAN lớn cho cả office, chia thành: <strong>segment cho HR, segment cho Finance, segment cho Dev</strong>. Mỗi segment có firewall rules riêng. HR không thể truy cập Git server. Dev không thể truy cập payroll system. Ngay cả trong cùng segment, communication phải qua policy check.</p>
+    </div>
+
+    <div class="zt-card">
+      <div class="zt-num">5</div>
+      <h4>Identity-Centric Security</h4>
+      <p>Firewall truyền thống dựa trên <strong>IP address</strong>. Zero-Trust dựa trên <strong>identity</strong>. IP address thay đổi (DHCP, roaming, WFH), nhưng identity thì không. SSO + IdP (Okta, Azure AD, Keycloak) làm trung tâm. Mọi access decision gắn với người dùng cụ thể, không phải IP cụ thể.</p>
+    </div>
+
+    <div class="zt-card">
+      <div class="zt-num">6</div>
+      <h4>Continuous Validation</h4>
+      <p>Không phải xác thực một lần rồi xong. <strong>Liên tục đánh giá</strong> trong suốt session: nếu device bất ngờ ở quốc gia khác, nếu behavior bất thường (download 50GB data lúc 3 giờ sáng), nếu endpoint bị compromise - session bị terminate ngay lập tức. Adaptive authentication.</p>
+    </div>
+  </div>
+
+  <div class="arch-container" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-dim);">Zero-Trust Architecture Flow</h3>
+    <div class="arch-diagram">
+      <div class="arch-layer">
+        <div class="layer-icon">👤</div>
+        <h4>User + Device</h4>
+        <p>Identity, MFA<br>Device health check</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent2); background: rgba(139,92,246,0.1);">
+        <div class="layer-icon">🔐</div>
+        <h4>Policy Engine</h4>
+        <p>Evaluate context<br>Risk score, compliance</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent); background: rgba(59,130,246,0.1);">
+        <div class="layer-icon">🚪</div>
+        <h4>Policy Enforcement</h4>
+        <p>Allow/Deny/Step-up<br>Micro-segmentation</p>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-layer" style="border-color: var(--accent3); background: rgba(16,185,129,0.1);">
+        <div class="layer-icon">🎯</div>
+        <h4>Resource</h4>
+        <p>App, Data, Service<br>Encrypted connection</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <h4>Insight: Zero-Trust không phải sản phẩm</h4>
+    <p>Vendor nào bán cho bạn "zero-trust appliance" đều đang nói quá. Zero-Trust là <strong>kiến trúc, là tư duy, là hành trình</strong> - không phải một thiết bị hay phần mềm cụ thể. Nó đòi hỏi thay đổi từ: identity management, network segmentation, endpoint security, logging/monitoring, đến cả văn hoá tổ chức. Bắt đầu nhỏ: MFA everywhere, segment mạng quan trọng, least privilege cho admin accounts.</p>
+  </div>
+</section>
+
+<!-- MYTHS / MISCONCEPTIONS -->
+<section id="myths">
+  <h2 class="section-title" style="color: var(--accent5);">8 Hiểu Nhầm Chết Người Về Firewall</h2>
+  <p class="section-subtitle">Những điều "ai cũng tưởng đúng" nhưng có thể khiến hạ tầng của bạn bị xuyên thủng</p>
+
+  <div class="myth-grid">
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #1</span>
+      <h4>"Có firewall rồi thì an toàn"</h4>
+      <p>Firewall chỉ là MỘT lớp trong defense-in-depth. Nó không chặn được phishing email đã qua port 443 hợp lệ, không ngăn được insider threat, không detect được zero-day exploit trong traffic đã được allow. 95% data breaches có yếu tố human error - firewall không chữa được điều đó.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Firewall là <strong>lớp đầu tiên</strong>, không phải lớp duy nhất. Cần kết hợp: IDS/IPS, endpoint protection, security awareness training, patch management, backup, incident response plan.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #2</span>
+      <h4>"Firewall hardware tốt hơn software"</h4>
+      <p>FortiGate có ASIC nhanh hơn? Đúng, nhưng OPNsense trên hardware tốt cũng xử lý 10Gbps+ dễ dàng. Palo Alto chạy PAN-OS - vẫn là software trên hardware chuyên dụng. Mọi firewall đều là software xử lý packets. "Hardware firewall" chỉ là software firewall trên dedicated hardware.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Quan trọng là <strong>throughput, feature set, và khả năng quản lý</strong> - không phải hardware vs software. OPNsense trên mini PC $300 có thể đánh bại appliance $5,000 nếu yêu cầu phù hợp.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #3</span>
+      <h4>"Mở port = nguy hiểm, đóng hết port = an toàn"</h4>
+      <p>Nếu đóng hết port thì không ai truy cập được gì cả - kể cả bạn. Hơn nữa, 80% traffic hiện đại chạy trên port 443 (HTTPS). Chặn port vô nghĩa khi attacker tunnel mọi thứ qua HTTPS. Port chỉ là con số - quan trọng là <strong>cái gì chạy trên port đó</strong>.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Chiến lược đúng: <strong>Default deny + explicit allow</strong>. Mở đúng port cần thiết, cho đúng IP cần thiết. Kết hợp DPI để inspect nội dung. Port 443 mở nhưng phải biết bên trong là gì.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #4</span>
+      <h4>"Firewall rules cài xong rồi quên"</h4>
+      <p>Mạng thay đổi liên tục: server mới, service mới, người mới, threat mới. Rules được thêm vào nhưng ít khi bị xoá. Sau 2-3 năm, bạn có hàng trăm rules mà không ai hiểu tại sao chúng tồn tại. "Rule rot" là vấn đề thực sự - rules lỗi thời tạo ra lỗ hổng không ai biết.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p><strong>Review firewall rules định kỳ</strong> (ít nhất mỗi quý). Mỗi rule phải có documentation: ai tạo, tại sao, khi nào hết hạn. Hit count = 0 sau 90 ngày? Có lẽ nên xoá. Audit trail là bắt buộc.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #5</span>
+      <h4>"VPN = an toàn tuyệt đối"</h4>
+      <p>VPN mã hoá đường truyền, nhưng nếu endpoint bị compromise thì VPN trở thành <strong>đường cao tốc cho attacker vào mạng nội bộ</strong>. Split tunnel VPN còn nguy hiểm hơn: user vừa kết nối mạng công ty, vừa lướt web - malware có thể pivot qua máy user vào LAN. VPN không kiểm tra device health.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>VPN là <strong>transport encryption</strong>, không phải security solution hoàn chỉnh. Cần kết hợp: endpoint compliance check, MFA, network segmentation phía sau VPN, và logging mọi VPN activity. Zero-Trust đang dần thay thế VPN truyền thống.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #6</span>
+      <h4>"IDS/IPS bật lên là xong, để nó tự chạy"</h4>
+      <p>Bật Suricata/Snort với ruleset mặc định = hàng nghìn alerts mỗi ngày, 99% là false positives. Không ai đọc nổi. Alert fatigue khiến team bỏ qua cả alert thật. IPS mode với rules chưa tune = block nhầm traffic hợp lệ, user kêu "mạng chậm/không vào được web".</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>IDS/IPS cần <strong>tuning liên tục</strong>. Bắt đầu IDS mode, phân tích alerts, disable rules false positive, tạo suppress/threshold. Chỉ chuyển sang IPS mode sau khi đã tune kỹ. Kết hợp SIEM (Wazuh, ELK) để correlation và giảm noise.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #7</span>
+      <h4>"Mạng nội bộ không cần firewall rules"</h4>
+      <p>East-West traffic (giữa các server/VLAN nội bộ) chiếm 80% traffic doanh nghiệp. Ransomware lây lan bằng cách di chuyển ngang (lateral movement) trong mạng nội bộ. Nếu không có internal firewall rules, một máy bị nhiễm = toàn bộ mạng bị nhiễm trong vài phút.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p><strong>Micro-segmentation là bắt buộc.</strong> VLAN cho IoT, VLAN cho servers, VLAN cho users - với firewall rules giữa chúng. Server web không cần nói chuyện với máy in. Máy in không cần truy cập database server. Hạn chế tối đa lateral movement.</p>
+    </div>
+
+    <div class="myth-card">
+      <span class="myth-label wrong">Hiểu nhầm #8</span>
+      <h4>"Firewall đắt tiền = bảo mật tốt hơn"</h4>
+      <p>FortiGate $50K với rules mặc định, không ai monitor, firmware cũ 2 năm = bảo mật kém hơn OPNsense free được cấu hình đúng, cập nhật thường xuyên, có người theo dõi logs hàng ngày. Công cụ đắt tiền trong tay người không biết dùng thì cũng vô nghĩa.</p>
+      <div class="divider"></div>
+      <span class="myth-label right">Thực tế</span>
+      <p>Bảo mật tốt = <strong>configuration đúng + monitoring liên tục + incident response plan + con người có kỹ năng</strong>. Công cụ chỉ là enabler. Một sysadmin giỏi với iptables đánh bại một team không biết gì với Palo Alto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet">
+  <h2 class="section-title" style="color: var(--accent3);">Firewall Cheat Sheet</h2>
+  <p class="section-subtitle">Những lệnh và kỹ thuật cần nhớ - iptables và nftables</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h4>iptables - Xem rules hiện tại</h4>
+      <code>iptables -L -n -v           # List tất cả rules
+iptables -L -n -v --line    # Với số thứ tự
+iptables -t nat -L -n -v    # Xem NAT rules
+iptables -S                 # Xuất dạng commands
+iptables -Z                 # Reset counters</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>iptables - Cho phép/Chặn traffic</h4>
+      <code># Cho phép SSH từ IP cụ thể
+iptables -A INPUT -s 192.168.1.0/24 \
+  -p tcp --dport 22 -j ACCEPT
+
+# Chặn IP nghi ngờ
+iptables -A INPUT -s 1.2.3.4 -j DROP
+
+# Cho phép established connections
+iptables -A INPUT -m conntrack \
+  --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Default deny cuối cùng
+iptables -A INPUT -j DROP</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>iptables - NAT & Port Forward</h4>
+      <code># Masquerade (SNAT tự động)
+iptables -t nat -A POSTROUTING \
+  -o eth0 -j MASQUERADE
+
+# Port forward 80 vào web server
+iptables -t nat -A PREROUTING \
+  -p tcp --dport 80 \
+  -j DNAT --to 192.168.1.100:80
+
+# SNAT với IP cố định
+iptables -t nat -A POSTROUTING \
+  -o eth0 -j SNAT --to-source 1.2.3.4</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>iptables - Rate Limiting & Logging</h4>
+      <code># Giới hạn SSH connections (chống brute force)
+iptables -A INPUT -p tcp --dport 22 \
+  -m conntrack --ctstate NEW \
+  -m limit --limit 3/min \
+  --limit-burst 3 -j ACCEPT
+
+# Log dropped packets
+iptables -A INPUT -j LOG \
+  --log-prefix "IPT-DROP: " \
+  --log-level 4
+
+# Chặn ping flood
+iptables -A INPUT -p icmp \
+  -m limit --limit 1/s -j ACCEPT</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>nftables - Tạo table và chain</h4>
+      <code># Tạo table
+nft add table inet filter
+
+# Tạo chain INPUT
+nft add chain inet filter input \
+  { type filter hook input \
+    priority 0 \; policy drop \; }
+
+# Tạo chain FORWARD
+nft add chain inet filter forward \
+  { type filter hook forward \
+    priority 0 \; policy drop \; }
+
+# List tất cả
+nft list ruleset</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>nftables - Rules cơ bản</h4>
+      <code># Cho phép loopback
+nft add rule inet filter input \
+  iif lo accept
+
+# Cho phép established
+nft add rule inet filter input \
+  ct state established,related accept
+
+# Cho phép SSH
+nft add rule inet filter input \
+  tcp dport 22 accept
+
+# Cho phép từ subnet
+nft add rule inet filter input \
+  ip saddr 192.168.1.0/24 accept</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>nftables - Sets & Maps (sức mạnh mới)</h4>
+      <code># Tạo set chứa nhiều ports
+nft add set inet filter web_ports \
+  { type inet_service \; }
+nft add element inet filter web_ports \
+  { 80, 443, 8080 }
+
+# Dùng set trong rule
+nft add rule inet filter input \
+  tcp dport @web_ports accept
+
+# Named set cho blocked IPs
+nft add set inet filter blocked \
+  { type ipv4_addr \; }
+nft add element inet filter blocked \
+  { 1.2.3.4, 5.6.7.8 }
+nft add rule inet filter input \
+  ip saddr @blocked drop</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>nftables - NAT configuration</h4>
+      <code># Tạo NAT table
+nft add table ip nat
+nft add chain ip nat prerouting \
+  { type nat hook prerouting \
+    priority -100 \; }
+nft add chain ip nat postrouting \
+  { type nat hook postrouting \
+    priority 100 \; }
+
+# Masquerade
+nft add rule ip nat postrouting \
+  oifname "eth0" masquerade
+
+# Port forward
+nft add rule ip nat prerouting \
+  tcp dport 80 dnat to 192.168.1.100</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>UFW - Lệnh nhanh</h4>
+      <code>ufw enable                  # Bật firewall
+ufw status verbose          # Xem trạng thái
+ufw allow 22/tcp            # Mở SSH
+ufw allow from 192.168.1.0/24  # Cho subnet
+ufw deny 23                 # Chặn telnet
+ufw delete allow 22/tcp     # Xoá rule
+ufw reset                   # Reset tất cả
+ufw logging on              # Bật logging</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Debug & Troubleshoot</h4>
+      <code># Xem conntrack table (connections)
+conntrack -L
+conntrack -L -p tcp --dport 443
+
+# Capture packets
+tcpdump -i eth0 -nn port 443
+tcpdump -i any -nn host 192.168.1.1
+
+# Xem real-time packet flow
+watch -n1 'iptables -L -n -v'
+
+# Test connectivity
+nc -zv 192.168.1.100 80
+nmap -sT -p 80,443 target</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>OPNsense/pfSense CLI</h4>
+      <code># pfctl (pf firewall engine)
+pfctl -sr           # Show rules
+pfctl -ss           # Show state table
+pfctl -si           # Show info/counters
+pfctl -sa           # Show all
+
+# OPNsense specific
+configctl filter reload
+configctl firmware status
+
+# pfSense specific
+pfSsh.php playback enableallowallwan
+pfSsh.php playback disablereferercheck</code>
+    </div>
+
+    <div class="cheat-card">
+      <h4>Security Hardening Checklist</h4>
+      <code>[ ] Default deny policy (INPUT/FORWARD)
+[ ] Chỉ allow SSH từ management VLAN
+[ ] Rate limit cho SSH, HTTP
+[ ] Enable conntrack (stateful)
+[ ] Log dropped packets
+[ ] Disable IPv6 nếu không dùng
+[ ] NTP sync (logs cần time chính xác)
+[ ] Backup rules: iptables-save > backup
+[ ] Test rules trước khi apply
+[ ] Có cron job xoá rule test (tự cứu)</code>
+    </div>
+  </div>
+
+  <div class="insight-box" style="margin-top: 2rem;">
+    <h4>Mẹo sống còn khi làm việc với firewall từ xa</h4>
+    <p>LUÔN có cơ chế tự cứu khi thay đổi rules qua SSH. Cách kinh điển: <code style="color: var(--accent3);">at now + 5 minutes <<< 'iptables-restore < /root/rules.backup'</code> - nếu rule mới lock bạn ra ngoài, sau 5 phút rules cũ tự khôi phục. Không có trick này, một sai lầm nhỏ = bay ra khỏi server, phải ra datacenter hoặc dùng IPMI/console.</p>
+  </div>
+
+  <div class="insight-box" style="margin-top: 1rem;">
+    <h4>Lời khuyên cuối cùng</h4>
+    <p>Thế giới firewall đang thay đổi nhanh chóng. Perimeter-based security đang nhường chỗ cho identity-based, zero-trust. Cloud workloads cần security groups thay vì appliance vật lý. Container cần network policies thay vì iptables truyền thống. Nhưng <strong>nền tảng không thay đổi</strong>: hiểu TCP/IP, hiểu packet flow, hiểu stateful inspection, hiểu defense-in-depth. Người giỏi firewall không chỉ biết click GUI, mà hiểu <strong>điều gì xảy ra với mỗi packet ở mỗi bước</strong>. Đó mới là master.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Firewall World Visualization | Built for engineers who want to truly understand network security</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">Netfilter | nftables | pf | Zero Trust Architecture | "The best firewall is the one that's properly configured and actively monitored."</p>
+</footer>
+
+<script>
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.vendor-card, .myth-card, .ids-card, .zt-card, .concept-card, .cheat-card, .timeline-content').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('nav a:not(.brand)');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>

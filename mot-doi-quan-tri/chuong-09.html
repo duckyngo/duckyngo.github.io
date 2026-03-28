@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 9: Cột trụ trong đội — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#2C3E50 0%,var(--navy) 40%,var(--orange) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--navy);}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .pillar-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin:28px 0;}
+  .pillar{background:white;border-radius:16px;padding:28px;box-shadow:var(--shadow);border-top:5px solid var(--orange);}
+  .pillar:nth-child(2){border-top-color:var(--gold);}
+  .pillar:nth-child(3){border-top-color:var(--green);}
+  .pillar-icon{font-size:2.5rem;margin-bottom:12px;}
+  .pillar-name{font-size:1.2rem;font-weight:800;color:var(--navy);margin-bottom:6px;}
+  .pillar-role{font-size:0.8rem;color:var(--orange);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+  .pillar:nth-child(2) .pillar-role{color:var(--gold);}
+  .pillar:nth-child(3) .pillar-role{color:var(--green);}
+  .pillar-desc{font-size:0.88rem;color:#555;line-height:1.7;}
+  .pillar-skill{background:#F5F5F5;border-radius:8px;padding:8px 12px;margin-top:12px;font-size:0.82rem;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--navy),#2A5F8F);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(255,255,255,0.05);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:white;font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--gold);font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-08.html" class="nav-btn">← Chương 8</a>
+    <a href="chuong-10.html" class="nav-btn">Chương 10 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🏛️ Chương 9</div>
+  <span class="hero-emoji">⚡</span>
+  <h1>Cột Trụ <span>Trong Những Đội Của Tôi</span></h1>
+  <p class="hero-sub">Ba con người, ba siêu năng lực — và bí quyết của một lãnh đạo thông minh: luôn chọn người giỏi hơn mình.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Một lãnh đạo giỏi không cần là người giỏi nhất trong mọi thứ. Trái lại, lãnh đạo khôn ngoan biết nhận ra và thu hút những người giỏi hơn mình ở từng lĩnh vực cụ thể. GS. Phan Văn Trường giới thiệu ba "cột trụ" trong đội của ông — ba con người định nghĩa sự xuất sắc.
+  </div>
+
+  <div class="cards-title">🏛️ Ba Cột Trụ Huyền Thoại</div>
+  <div class="pillar-cards">
+    <div class="pillar">
+      <div class="pillar-icon">🧮</div>
+      <div class="pillar-name">Philippe</div>
+      <div class="pillar-role">Thiên tài tính giá</div>
+      <div class="pillar-desc">
+        Philippe có khả năng phân tích chi phí và định giá hợp đồng phức tạp mà không ai trong đội có thể sánh được.
+        Mỗi lần đấu thầu, Philippe là người đảm bảo công ty không thua lỗ và vẫn thắng thầu.
+      </div>
+      <div class="pillar-skill">💡 Kỹ năng hiếm: Financial modeling & pricing strategy</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">⚔️</div>
+      <div class="pillar-name">Julien</div>
+      <div class="pillar-role">Chiến binh đàm phán</div>
+      <div class="pillar-desc">
+        Julien kiên cường như đá trong mọi cuộc đàm phán. Không bao giờ nhượng bộ khi không cần thiết.
+        Biết đọc đối phương, biết im lặng đúng lúc, biết đẩy đúng điểm. Một tài năng đàm phán bẩm sinh.
+      </div>
+      <div class="pillar-skill" style="background:#FFF8E1;">💡 Kỹ năng hiếm: Negotiation & deal structuring</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">📚</div>
+      <div class="pillar-name">Durai</div>
+      <div class="pillar-role">Bộ nhớ sống của đội</div>
+      <div class="pillar-desc">
+        Durai biết mọi thứ — lịch sử hợp đồng, tên khách hàng, chi tiết kỹ thuật từ 10 năm trước.
+        Ông là thư viện sống của đội, người đảm bảo không có gì quan trọng bị quên lãng.
+      </div>
+      <div class="pillar-skill" style="background:#E8F5E9;">💡 Kỹ năng hiếm: Institutional knowledge & relationships</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Triết Lý Xây Dựng Đội Ngũ</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🙏</div>
+      <div class="card-num">01</div>
+      <h3>Khiêm tốn trí tuệ</h3>
+      <p>Lãnh đạo thật sự không ngại thừa nhận: "Người này giỏi hơn tôi trong lĩnh vực này." Đó là sức mạnh, không phải điểm yếu.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">02</div>
+      <h3>Đa dạng kỹ năng</h3>
+      <p>Đội ngũ mạnh cần các kỹ năng bổ sung cho nhau, không phải những người giống nhau. Sự đa dạng tạo ra sức mạnh tổng hợp.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🔗</div>
+      <div class="card-num">03</div>
+      <h3>Tín nhiệm và ủy quyền</h3>
+      <p>Khi bạn có đúng người, hãy tin tưởng và ủy quyền thật sự. Không micromanage. Không check-in từng giờ.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🌟</div>
+      <div class="card-num">04</div>
+      <h3>Lãnh đạo = Nhạc trưởng</h3>
+      <p>Không cần chơi tất cả nhạc cụ. Cần biết khi nào mỗi nhạc cụ cất tiếng, và làm sao để tổng thể hòa âm tốt nhất.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Tôi luôn chọn người giỏi hơn tôi<br>ở từng lĩnh vực cụ thể."</p>
+    <cite>— GS. Phan Văn Trường — bí quyết xây đội ngũ</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Nghịch lý lãnh đạo bất an:</strong> Nhiều lãnh đạo sợ tuyển người giỏi hơn mình vì sợ bị "lu mờ" hay mất vị trí. Nhưng thực tế là: lãnh đạo nào xây được đội ngũ xuất sắc hơn mình mới là người được đánh giá cao nhất trong dài hạn.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-text">
+      <strong>Nguyên tắc Steve Jobs:</strong> "It doesn't make sense to hire smart people and then tell them what to do; we hire smart people so they can tell us what to do." Đây là triết lý lãnh đạo đội ngũ cốt lõi — và GS. Phan Văn Trường thực hành điều này trong suốt 40 năm.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Luôn chọn người giỏi hơn mình ở từng lĩnh vực — đây là dấu hiệu của lãnh đạo trưởng thành và tự tin.</li>
+      <li>Ba loại tài năng không thể thiếu: chuyên gia phân tích, người đàm phán, và người giữ trí nhớ tổ chức.</li>
+      <li>Đội ngũ đa dạng kỹ năng tạo ra sức mạnh cộng hưởng mà một cá nhân xuất sắc không bao giờ có được.</li>
+      <li>Lãnh đạo giỏi là nhạc trưởng — biết kết hợp tài năng của từng người, không cần tự mình giỏi tất cả.</li>
+      <li>Tín nhiệm và ủy quyền thật sự — đây là cách giữ người tài và giải phóng tiềm năng của họ.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-08.html" class="bnav-btn">← Chương 8</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-10.html" class="bnav-btn next">Chương 10: Công dân toàn cầu →</a>
+  </div>
+</div>
+
+</body>
+</html>

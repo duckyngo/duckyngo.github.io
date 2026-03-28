@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 8: Vai Trò Lãnh Đạo — Quản Trị Dựa Vào Tri Thức</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --indigo: #312E81; --indigo-light: #4338CA; --indigo-pale: #EEF2FF;
+    --emerald: #059669; --emerald-light: #10B981; --emerald-pale: #ECFDF5;
+    --cyan: #0891B2; --cyan-light: #06B6D4; --cyan-pale: #ECFEFF;
+    --amber: #D97706; --amber-light: #F59E0B; --amber-pale: #FFFBEB;
+    --red: #DC2626; --red-pale: #FEF2F2;
+    --blue: #1D4ED8; --blue-pale: #EFF6FF;
+    --gray: #6B7280; --gray-light: #F9FAFB; --gray-border: #E5E7EB;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10); --shadow-hover: 0 8px 32px rgba(0,0,0,0.16);
+    --radius: 12px; --radius-lg: 20px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #F8FAFF; color: #1F2937; line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+
+  nav { background: var(--indigo); color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .nav-home { font-size: 0.85rem; opacity: 0.8; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
+  .nav-home:hover { opacity: 1; }
+  .nav-arrows { display: flex; gap: 10px; }
+  .nav-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 7px 16px; font-size: 0.85rem; color: white; transition: background 0.2s; white-space: nowrap; }
+  .nav-btn:hover { background: rgba(255,255,255,0.28); }
+
+  .hero { background: linear-gradient(135deg, #1E1B4B 0%, #1D4ED8 50%, #0891B2 100%); color: white; padding: 70px 24px 50px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 40% 30%, rgba(96,165,250,0.35) 0%, transparent 60%); }
+  .hero-inner { position: relative; max-width: 800px; margin: 0 auto; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; padding: 6px 20px; font-size: 0.82rem; margin-bottom: 20px; }
+  .hero-num { font-size: 5rem; font-weight: 900; opacity: 0.12; position: absolute; top: -10px; right: 40px; line-height: 1; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
+  .hero-desc { font-size: 1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+  .section-title { font-size: 1.4rem; font-weight: 800; color: var(--indigo); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--blue), var(--cyan)); border-radius: 99px; margin-bottom: 20px; width: 50px; }
+  .prose { color: #374151; font-size: 0.97rem; line-height: 1.8; margin-bottom: 16px; }
+
+  /* CANON TRANSFORMATION */
+  .transformation-box { background: white; border-radius: var(--radius-lg); padding: 36px; box-shadow: var(--shadow); margin: 28px 0; }
+  .transform-title { font-size: 1.1rem; font-weight: 800; color: var(--indigo); margin-bottom: 20px; text-align: center; }
+  .transform-timeline { display: flex; flex-direction: column; gap: 16px; }
+  .transform-item { display: flex; gap: 16px; align-items: flex-start; }
+  .transform-year { background: var(--indigo); color: white; border-radius: 8px; padding: 6px 14px; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; white-space: nowrap; }
+  .transform-content { flex: 1; }
+  .transform-title-text { font-weight: 700; font-size: 0.92rem; color: var(--indigo); margin-bottom: 4px; }
+  .transform-desc { font-size: 0.85rem; color: #4B5563; line-height: 1.5; }
+  .transform-arrow { text-align: center; font-size: 1.5rem; color: var(--emerald); font-weight: 900; }
+
+  /* STATS */
+  .canon-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 24px 0; }
+  .stat-item { background: white; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); text-align: center; border-top: 3px solid; }
+  .stat-item:nth-child(1) { border-color: var(--red); }
+  .stat-item:nth-child(2) { border-color: var(--emerald); }
+  .stat-item:nth-child(3) { border-color: var(--cyan); }
+  .stat-item:nth-child(4) { border-color: var(--indigo); }
+  .stat-num { font-size: 1.6rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px; }
+  .stat-item:nth-child(1) .stat-num { color: var(--red); }
+  .stat-item:nth-child(2) .stat-num { color: var(--emerald); }
+  .stat-item:nth-child(3) .stat-num { color: var(--cyan); }
+  .stat-item:nth-child(4) .stat-num { color: var(--indigo); }
+  .stat-lbl { font-size: 0.8rem; color: var(--gray); }
+
+  /* CELL PRODUCTION */
+  .cell-box { background: linear-gradient(135deg, var(--blue-pale), #DBEAFE); border: 2px solid var(--blue); border-radius: var(--radius-lg); padding: 28px 32px; margin: 24px 0; }
+  .cell-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--blue); margin-bottom: 8px; }
+  .cell-title { font-size: 1.1rem; font-weight: 800; color: #1E3A8A; margin-bottom: 12px; }
+  .cell-body { font-size: 0.93rem; color: #1E40AF; line-height: 1.75; }
+  .cell-metrics { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .cell-metric { background: white; border-radius: 8px; padding: 10px 16px; font-size: 0.83rem; color: var(--blue); font-weight: 600; border: 1px solid var(--blue); }
+
+  /* CMOS STORY */
+  .cmos-box { background: linear-gradient(135deg, var(--emerald-pale), #D1FAE5); border: 2px solid var(--emerald); border-radius: var(--radius-lg); padding: 28px 32px; margin: 24px 0; }
+  .cmos-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--emerald); margin-bottom: 8px; }
+  .cmos-title { font-size: 1.1rem; font-weight: 800; color: #064E3B; margin-bottom: 12px; }
+  .cmos-body { font-size: 0.93rem; color: #065F46; line-height: 1.75; }
+
+  /* TOYOTA PRIUS */
+  .prius-box { background: linear-gradient(135deg, var(--amber-pale), #FDE68A); border: 2px solid var(--amber); border-radius: var(--radius-lg); padding: 28px 32px; margin: 24px 0; }
+  .prius-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--amber); margin-bottom: 8px; }
+  .prius-title { font-size: 1.1rem; font-weight: 800; color: #78350F; margin-bottom: 12px; }
+  .prius-body { font-size: 0.93rem; color: #92400E; line-height: 1.75; }
+
+  .quote-box { background: linear-gradient(135deg, var(--blue-pale), #DBEAFE); border: 1px solid #93C5FD; border-radius: var(--radius-lg); padding: 28px 32px; margin: 28px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 5rem; color: var(--blue); position: absolute; top: -12px; left: 18px; line-height: 1; opacity: 0.25; font-family: Georgia, serif; }
+  .quote-box p { font-size: 1.05rem; font-style: italic; color: #1E3A8A; font-weight: 500; line-height: 1.7; padding-left: 10px; }
+  .quote-box cite { display: block; margin-top: 8px; font-size: 0.85rem; color: var(--blue); font-style: normal; font-weight: 600; padding-left: 10px; }
+
+  .callout { border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; border-left: 4px solid; }
+  .callout-indigo { background: var(--indigo-pale); border-color: var(--indigo); }
+  .callout-amber { background: var(--amber-pale); border-color: var(--amber); }
+  .callout-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .callout-indigo .callout-title { color: var(--indigo); }
+  .callout-amber .callout-title { color: #92400E; }
+  .callout p { font-size: 0.93rem; }
+
+  .lesson-box { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border: 1px solid #6EE7B7; border-radius: var(--radius-lg); padding: 28px 32px; margin-top: 40px; }
+  .lesson-title { font-size: 1.1rem; font-weight: 800; color: var(--emerald); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 6px 0 6px 28px; position: relative; font-size: 0.93rem; color: #064E3B; }
+  .lesson-list li::before { content: '✓'; position: absolute; left: 0; color: var(--emerald); font-weight: 800; }
+
+  .bottom-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--gray-border); flex-wrap: wrap; gap: 12px; }
+  .btn-nav { display: inline-flex; align-items: center; gap: 8px; background: var(--indigo); color: white; border-radius: var(--radius); padding: 12px 22px; font-weight: 600; font-size: 0.9rem; transition: background 0.2s, transform 0.2s; }
+  .btn-nav:hover { background: var(--indigo-light); transform: translateY(-2px); }
+  .btn-nav.secondary { background: white; color: var(--indigo); border: 2px solid var(--indigo); }
+  .btn-nav.secondary:hover { background: var(--indigo-pale); }
+
+  @media (max-width: 640px) { .container { padding: 28px 16px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-home">🏠 Trang Chủ</a>
+  <div class="nav-arrows">
+    <a href="chuong-07.html" class="nav-btn">← Chương 7</a>
+    <a href="chuong-09.html" class="nav-btn">Chương 9 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-num">8</div>
+    <div class="hero-badge">🚀 Chương 8</div>
+    <h1>Vai Trò Lãnh Đạo</h1>
+    <p class="hero-desc">Canon & Toyota Prius: CEO phronesis và lãnh đạo phân bổ — khi nhà lãnh đạo trở thành người kiến tạo điều kiện thay vì người ra lệnh</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <p class="prose">Chương này tổng hợp lý thuyết Phronesis từ chương 3 vào thực tiễn lãnh đạo tổ chức lớn. Hai case study Canon và Toyota Prius cho thấy: <strong>nhà lãnh đạo phronesis không phải là "siêu nhân" đơn độc — họ là kiến trúc sư của môi trường nơi trí tuệ tập thể phát huy</strong>.</p>
+
+  <!-- CANON CEO -->
+  <div class="divider"></div>
+  <h2 class="section-title">📷 Case Study: Canon — CEO Fujio Mitarai Và Cuộc Lột Xác</h2>
+
+  <div class="transformation-box">
+    <div class="transform-title">📊 Hành Trình Chuyển Đổi Canon (1995–2007)</div>
+    <div class="transform-timeline">
+      <div class="transform-item">
+        <div class="transform-year">1995</div>
+        <div class="transform-content">
+          <div class="transform-title-text">🔴 Điểm Xuất Phát: Khủng Hoảng Nợ</div>
+          <div class="transform-desc">Canon gánh 840 tỷ yên nợ, lợi nhuận sụt giảm, tinh thần nhân viên thấp. Cấu trúc tổ chức cồng kềnh, phân tán, thiếu chiến lược rõ ràng.</div>
+        </div>
+      </div>
+      <div class="transform-arrow">↓ Fujio Mitarai nhận chức CEO, áp dụng triết lý phronesis</div>
+      <div class="transform-item">
+        <div class="transform-year">2007</div>
+        <div class="transform-content">
+          <div class="transform-title-text">🟢 Kết Quả: Kỳ Tích Tài Chính & Tri Thức</div>
+          <div class="transform-desc">Tỷ lệ nợ giảm xuống 0.6%, dòng tiền tự do đạt 3.9 tỷ USD, nhân viên tái sinh sáng tạo. Canon trở thành công ty dẫn đầu công nghệ toàn cầu.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="canon-stats">
+    <div class="stat-item">
+      <div class="stat-num">840 tỷ¥</div>
+      <div class="stat-lbl">Nợ ban đầu năm 1995</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">0.6%</div>
+      <div class="stat-lbl">Tỷ lệ nợ năm 2007</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$3.9B</div>
+      <div class="stat-lbl">Dòng tiền tự do năm 2007</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">20→4</div>
+      <div class="stat-lbl">Ngày sản xuất máy ảnh giảm từ 20 xuống 4</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Tìm điều tốt nhất cho toàn bộ công ty, không chỉ cho bộ phận của bạn. Đó là tiêu chí duy nhất để ra quyết định khi bạn không chắc chắn. Nếu mọi người đều làm vậy, chúng ta sẽ luôn đi đúng hướng."</p>
+    <cite>— Fujio Mitarai, CEO Canon (triết lý quản trị cốt lõi)</cite>
+  </div>
+
+  <!-- CELL PRODUCTION -->
+  <div class="cell-box">
+    <div class="cell-label">🏭 Đổi Mới Sản Xuất — Canon Cell Production System</div>
+    <div class="cell-title">Ý Tưởng Từ Tuyến Đầu Thay Đổi Toàn Bộ Nhà Máy</div>
+    <div class="cell-body">
+      <p style="margin-bottom:12px;">Dây chuyền lắp ráp kiểu cũ đòi hỏi 870.000 m² diện tích và 20 ngày để hoàn thành một máy ảnh. Nhân viên tuyến đầu — không phải kỹ sư nghiên cứu — đề xuất chuyển sang hệ thống "cell production": một nhóm nhỏ 5-10 người làm toàn bộ một sản phẩm từ đầu đến cuối.</p>
+      <p>Mitarai không phải người phát minh ra ý tưởng này. Nhưng ông là người <strong>lắng nghe, tin tưởng và tạo điều kiện</strong> để ý tưởng được thực hiện dù ban đầu nhiều quản lý cấp trung hoài nghi.</p>
+    </div>
+    <div class="cell-metrics">
+      <div class="cell-metric">✂️ 870.000 m² diện tích được giải phóng</div>
+      <div class="cell-metric">⏱️ 20 ngày → 4 ngày sản xuất</div>
+      <div class="cell-metric">👥 Ý tưởng từ công nhân tuyến đầu</div>
+      <div class="cell-metric">💪 Chất lượng tăng cao hơn</div>
+    </div>
+  </div>
+
+  <!-- CMOS STORY -->
+  <div class="cmos-box">
+    <div class="cmos-label">💡 Câu Chuyện Kỳ Diệu — Bộ Phận Đóng Cửa Tạo Ra CMOS</div>
+    <div class="cmos-title">Kỹ Sư Máy Tính Bị "Khai Tử" → Tạo Ra Công Nghệ Cốt Lõi Ngày Nay</div>
+    <div class="cmos-body">
+      <p style="margin-bottom:12px;">Vào đầu thập niên 1990, Canon có bộ phận phát triển máy tính con người bị quyết định đóng cửa vì thua kém thị trường. Thay vì sa thải nhóm kỹ sư tài năng này, <strong>Mitarai quyết định cho họ tự do khám phá lĩnh vực mới</strong>.</p>
+      <p style="margin-bottom:12px;">Nhóm kỹ sư đó — với nền tảng máy tính và cảm biến — đã chuyển sang nghiên cứu công nghệ cảm biến hình ảnh CMOS. Lúc đó không ai ở Canon nghĩ đây sẽ là tương lai.</p>
+      <p>Ngày nay, công nghệ CMOS của Canon là <strong>lõi cạnh tranh cốt lõi</strong> của toàn bộ mảng camera — từ DSLR, mirrorless đến camera y tế. Đây là minh chứng rõ nhất của "lãnh đạo phronesis": không khai thác người tài, mà tạo không gian cho họ vượt ra ngoài hộp.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-indigo">
+    <div class="callout-title">🔑 Triết Lý Lãnh Đạo Của Mitarai</div>
+    <p>Mitarai không điều hành bằng micromanagement. Ông đặt ra nguyên tắc rõ ràng: <strong>"Tìm điều tốt nhất cho toàn công ty"</strong> — và tin tưởng mỗi người tự ra quyết định dựa trên nguyên tắc đó. Đây là Phronesis phân bổ: CEO định hướng giá trị, tất cả mọi người áp dụng Phronesis trong phạm vi của mình.</p>
+  </div>
+
+  <!-- TOYOTA PRIUS -->
+  <div class="divider"></div>
+  <h2 class="section-title">🚗 Case Study: Toyota Prius — Lãnh Đạo Phân Bổ Tạo Ra Lịch Sử</h2>
+
+  <div class="prius-box">
+    <div class="prius-label">⚡ Toyota Motor Company — Dự Án Prius</div>
+    <div class="prius-title">Xe Hybrid Đầu Tiên Thế Giới: Được Dẫn Dắt Bởi Quản Lý Cấp Trung</div>
+    <div class="prius-body">
+      <p style="margin-bottom:12px;">Toyota Prius — chiếc xe hybrid đầu tiên ra thị trường đại trà (1997) — không phải sáng kiến của CEO hay ban giám đốc. Nó là kết quả của <strong>lãnh đạo phân bổ</strong>: một nhóm quản lý cấp trung với tầm nhìn và Phronesis đủ mạnh để dẫn dắt dự án vượt qua mọi trở ngại kỹ thuật và tổ chức.</p>
+      <p style="margin-bottom:12px;">Thách thức kỹ thuật của Prius là "bất khả thi" theo tiêu chuẩn thời đó. Kết hợp động cơ đốt trong và động cơ điện đòi hỏi hàng nghìn sự đổi mới nhỏ đồng thời. Không một cá nhân nào có thể nắm hết tri thức cần thiết.</p>
+      <p>Thay vào đó, Phronesis được phân bổ: kỹ sư hệ thống điện, kỹ sư pin, kỹ sư phần mềm, kỹ sư cơ khí — mỗi người mang Phronesis của lĩnh vực mình vào Ba chung của dự án, và cùng nhau giải quyết từng mâu thuẫn.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-title">💡 Phronesis Phân Bổ Trong Hành Động</div>
+    <p>Toyota Prius là bằng chứng sống động nhất cho lý thuyết "distributed leadership" và "distributed phronesis" của Nonaka. Không cần "thiên tài đơn độc" — cần <strong>một hệ thống nơi mỗi người mang Phronesis của mình vào đóng góp cho mục tiêu chung</strong>. Ba của dự án Prius là nơi hàng nghìn đôi mắt và hàng nghìn quyết định phronesis cùng hướng về một tầm nhìn.</p>
+  </div>
+
+  <!-- LESSON BOX -->
+  <div class="lesson-box">
+    <div class="lesson-title">🌱 Bài Học Rút Ra Từ Chương 8</div>
+    <ul class="lesson-list">
+      <li>CEO phronesis không phải siêu nhân — họ là kiến trúc sư của môi trường nơi trí tuệ tập thể phát huy</li>
+      <li>Nguyên tắc đơn giản ("tốt nhất cho toàn công ty") mạnh hơn hàng trăm KPI phức tạp</li>
+      <li>Ý tưởng cách mạng thường đến từ người làm việc trực tiếp với vấn đề — không phải từ tháp ngà</li>
+      <li>Lãnh đạo phân bổ (distributed leadership) là điều kiện cần cho đổi mới ở quy mô lớn</li>
+      <li>Cho nhân viên tài năng không gian tự do — kể cả khi bộ phận đóng cửa — tạo ra kỳ tích CMOS</li>
+    </ul>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="chuong-07.html" class="btn-nav secondary">← Chương 7</a>
+    <a href="index.html" class="btn-nav secondary">🏠 Mục Lục</a>
+    <a href="chuong-09.html" class="btn-nav">Chương 9: Kết Luận →</a>
+  </div>
+
+</div>
+</body>
+</html>

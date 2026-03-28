@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 5: Bản Đồ Kịch Sĩ – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #6B21A8 0%, #8B5CF6 50%, #7C3AED 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: var(--purple-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .stakeholder-map {
+    background: white; border-radius: 16px; padding: 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin: 24px 0;
+  }
+  .stakeholder-map h3 { color: var(--purple); font-size: 1.05rem; margin-bottom: 20px; }
+  .stakeholder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .sh-item {
+    border-radius: 12px; padding: 16px; text-align: center;
+    border: 2px solid transparent;
+  }
+  .sh-item.primary { background: #F5F3FF; border-color: var(--purple-light); }
+  .sh-item.secondary { background: #F0FDFA; border-color: var(--teal-light); }
+  .sh-item.hidden { background: #FFF1F2; border-color: var(--rose-light); }
+  .sh-emoji { font-size: 2rem; margin-bottom: 8px; }
+  .sh-name { font-weight: 700; font-size: 0.9rem; color: var(--gray-800); }
+  .sh-role { font-size: 0.8rem; color: #6B7280; margin-top: 4px; }
+  .warning-badge {
+    display: inline-block; background: var(--rose); color: white;
+    border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700;
+    margin-top: 4px;
+  }
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .takeaway-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid var(--purple); transition: transform 0.2s; }
+  .takeaway-card:hover { transform: translateY(-2px); }
+  .takeaway-card:nth-child(2) { border-left-color: var(--teal); }
+  .takeaway-card:nth-child(3) { border-left-color: var(--rose); }
+  .takeaway-card:nth-child(4) { border-left-color: var(--amber); }
+  .takeaway-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .takeaway-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .takeaway-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .story-box { background: linear-gradient(135deg, #FFF1F2, #FFE4E6); border: 1px solid #FECDD3; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .story-box h3 { color: var(--rose); font-size: 1.05rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .story-box p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 8px; }
+  .quote-box { background: linear-gradient(135deg, #F5F3FF, #EDE9FE); border-left: 5px solid var(--purple); border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: var(--purple-light); opacity: 0.15; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: var(--purple-dark); font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--teal); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-rose { background: #FFF1F2; border: 1px solid #FECDD3; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-rose .callout-body strong { color: var(--rose); }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #C4B5FD; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">🗺️ Chương 5</div>
+  <div class="hero-emoji">🎪</div>
+  <h1>Bản Đồ Kịch Sĩ</h1>
+  <div class="subtitle">Mỗi cuộc thương thuyết là một sân khấu – hãy biết tất cả diễn viên, kể cả người đứng trong bóng tối</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🎭 Sân Khấu Thương Thuyết</div>
+
+  <div class="stakeholder-map">
+    <h3>🗺️ Bản Đồ Các Nhân Vật Có Ảnh Hưởng</h3>
+    <div class="stakeholder-grid">
+      <div class="sh-item primary">
+        <div class="sh-emoji">👔</div>
+        <div class="sh-name">Người Ra Quyết Định</div>
+        <div class="sh-role">Chính thức, có thẩm quyền ký</div>
+      </div>
+      <div class="sh-item primary">
+        <div class="sh-emoji">💼</div>
+        <div class="sh-name">Đại Biểu Đàm Phán</div>
+        <div class="sh-role">Người trực tiếp ngồi bàn</div>
+      </div>
+      <div class="sh-item secondary">
+        <div class="sh-emoji">🏦</div>
+        <div class="sh-name">Ngân Hàng</div>
+        <div class="sh-role">Tài trợ, thường ở hậu trường</div>
+      </div>
+      <div class="sh-item secondary">
+        <div class="sh-emoji">⚖️</div>
+        <div class="sh-name">Luật Sư</div>
+        <div class="sh-role">Tư vấn pháp lý cho cả hai phe</div>
+      </div>
+      <div class="sh-item secondary">
+        <div class="sh-emoji">🤝</div>
+        <div class="sh-name">Người Trung Gian</div>
+        <div class="sh-role">Môi giới, kết nối hai bên</div>
+      </div>
+      <div class="sh-item hidden">
+        <div class="sh-emoji">👤</div>
+        <div class="sh-name">Nhân Vật Ẩn</div>
+        <div class="sh-role">Không thấy nhưng có ảnh hưởng lớn</div>
+        <div class="warning-badge">⚠️ NGUY HIỂM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">⚠️ Nguy Hiểm: Nhân Vật Nhỏ Nhưng Quyết Định</div>
+
+  <div class="takeaway-grid">
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🔍</div>
+      <div class="takeaway-title">Rà soát tỉ mỉ</div>
+      <div class="takeaway-text">Phải liệt kê <em>tất cả</em> nhân vật có ảnh hưởng đến quyết định cuối cùng. Bỏ sót một người nhỏ có thể khiến dự án đổ vỡ hoàn toàn.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🌐</div>
+      <div class="takeaway-title">Mạng lưới quan hệ</div>
+      <div class="takeaway-text">Trong nhiều nền văn hóa, mối quan hệ gia đình, bạn bè, phe phái chính trị ảnh hưởng quyết định hơn cả năng lực hay giá cả.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🎭</div>
+      <div class="takeaway-title">Người không ngồi bàn</div>
+      <div class="takeaway-text">Người thực sự quyết định đôi khi không có mặt trong phòng đàm phán. Tìm hiểu ai thực sự có tiếng nói quan trọng phía sau hậu trường.</div>
+    </div>
+    <div class="takeaway-card">
+      <div class="takeaway-icon">🤫</div>
+      <div class="takeaway-title">Ảnh hưởng âm thầm</div>
+      <div class="takeaway-text">Thư ký, trợ lý, người phiên dịch – những người "không quan trọng" này đôi khi chuyển thông điệp, lọc thông tin, ảnh hưởng trực tiếp đến kết quả.</div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>📖 Câu Chuyện "Con Của Trời" Ở Bắc Phi</h3>
+    <p>Trong một cuộc đàm phán dự án lớn tại Bắc Phi, tác giả phát hiện ra rằng người thực sự nắm quyền quyết định không phải vị bộ trưởng ngồi đối diện, mà là một nhân vật không ai ngờ tới – được coi như "con của Trời" trong văn hóa địa phương, người này có ảnh hưởng tinh thần và chính trị vượt trên mọi chức vụ chính thức.</p>
+    <p>Bài học: trong những nền văn hóa có hệ thống tôn ti phức tạp, đừng bao giờ giả định cơ cấu quyền lực giống như phương Tây. Hãy nghiên cứu văn hóa địa phương sâu sắc trước khi vào bàn.</p>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Hễ có cỗ là có người. Hễ có người là chúng ta phải rà soát tỉ mỉ các mối liên hệ. Quên một nhân vật nhỏ là có thể hỏng cả dự án."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Cạm bẫy thường gặp</strong>
+      <p>Nhiều đoàn tập trung toàn bộ vào người chức vụ cao nhất, bỏ qua những người "nhỏ hơn". Nhưng chính những người này đôi khi là người thuyết phục sếp, cản trở hoặc thúc đẩy quyết định.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">🔍</div>
+    <div class="callout-body">
+      <strong>Cách xây dựng bản đồ kịch sĩ</strong>
+      <p>Trước mỗi cuộc đàm phán quan trọng: vẽ sơ đồ tổ chức đối tác, tìm hiểu mối quan hệ không chính thức, xác định ai là "người gác cổng" và ai là "người ảnh hưởng" thực sự.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Chiến thuật: Tiếp cận nhiều tầng</strong>
+      <p>Xây dựng quan hệ ở nhiều cấp độ khác nhau trong tổ chức đối tác. Không chỉ tiếp xúc với "sếp to" mà còn phải biết cấp trung gian và những người vận hành thực tế.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 5</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Lập "bản đồ kịch sĩ" đầy đủ trước mỗi cuộc đàm phán – không bỏ sót bất kỳ nhân vật nào có ảnh hưởng.</li>
+      <li><span class="lesson-num">2</span>Quên một nhân vật nhỏ = hỏng cả dự án – câu này là sự thật, không phải phóng đại.</li>
+      <li><span class="lesson-num">3</span>Người thực sự quyết định đôi khi không ngồi trong phòng họp – hãy tìm hiểu ai ở "hậu trường".</li>
+      <li><span class="lesson-num">4</span>Mỗi nền văn hóa có cơ cấu quyền lực khác nhau – đừng áp đặt mô hình phương Tây lên mọi tình huống.</li>
+      <li><span class="lesson-num">5</span>Xây dựng quan hệ ở nhiều tầng tổ chức, không chỉ tập trung vào đỉnh tháp.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-04.html" class="nav-btn nav-btn-prev">← Chương 4</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-06.html" class="nav-btn nav-btn-next">Chương 6 →</a>
+  </div>
+
+</div>
+</body>
+</html>

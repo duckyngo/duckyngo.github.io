@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 14: Trong Rừng Sâu – Một Đời Thương Thuyết</title>
+<style>
+  :root {
+    --purple: #6B21A8; --purple-light: #9333EA; --purple-dark: #4C1D95;
+    --teal: #0F766E; --teal-light: #14B8A6;
+    --rose: #E11D48; --rose-light: #FB7185;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-700: #374151; --gray-800: #1F2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.8; }
+  .hero {
+    background: linear-gradient(135deg, #065F46 0%, #047857 50%, #059669 100%);
+    color: white; padding: 70px 20px; text-align: center;
+  }
+  .chapter-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 6px 20px; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  .hero-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .content { max-width: 860px; margin: 0 auto; padding: 40px 20px; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #065F46; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .two-faces { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .face-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .face-card.shiny { border-top: 4px solid var(--amber); }
+  .face-card.dark { border-top: 4px solid #374151; }
+  .face-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+  .face-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; }
+  .face-card.shiny .face-title { color: #B45309; }
+  .face-card.dark .face-title { color: #374151; }
+  .face-text { font-size: 0.9rem; color: #6B7280; }
+  .survival-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 20px 0; }
+  .survival-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid #047857; transition: transform 0.2s; }
+  .survival-card:hover { transform: translateY(-2px); }
+  .survival-card:nth-child(2) { border-left-color: var(--purple); }
+  .survival-card:nth-child(3) { border-left-color: var(--amber); }
+  .survival-card:nth-child(4) { border-left-color: var(--rose); }
+  .survival-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .survival-title { font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+  .survival-text { font-size: 0.9rem; color: #6B7280; line-height: 1.6; }
+  .airplane-stories { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border: 1px solid #BFDBFE; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .airplane-stories h3 { color: #1E40AF; font-size: 1.05rem; margin-bottom: 16px; }
+  .plane-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .plane-item:last-child { border-bottom: none; }
+  .plane-num { background: #1E40AF; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; margin-top: 4px; }
+  .plane-text { font-size: 0.95rem; color: var(--gray-700); }
+  .quote-box { background: linear-gradient(135deg, #ECFDF5, #F0FDF4); border-left: 5px solid #047857; border-radius: 12px; padding: 28px 32px; margin: 32px 0; position: relative; }
+  .quote-box::before { content: '"'; font-size: 6rem; color: #6EE7B7; opacity: 0.3; position: absolute; top: -10px; left: 16px; font-family: Georgia, serif; line-height: 1; }
+  .quote-text { font-size: 1.15rem; color: #065F46; font-style: italic; font-weight: 600; line-height: 1.6; position: relative; z-index: 1; }
+  .quote-author { margin-top: 12px; color: var(--purple); font-weight: 600; font-size: 0.9rem; }
+  .callout { border-radius: 12px; padding: 20px 24px; margin: 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .callout-purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+  .callout-teal { background: #F0FDFA; border: 1px solid #99F6E4; }
+  .callout-amber { background: #FFFBEB; border: 1px solid #FDE68A; }
+  .callout-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .callout-body strong { display: block; margin-bottom: 4px; }
+  .callout-purple .callout-body strong { color: var(--purple-dark); }
+  .callout-teal .callout-body strong { color: var(--teal); }
+  .callout-amber .callout-body strong { color: #92400E; }
+  .callout-body p { font-size: 0.95rem; color: var(--gray-700); }
+  .lesson-section { background: linear-gradient(135deg, #022c22, #1E1B4B); border-radius: 16px; padding: 32px; margin: 32px 0; color: white; }
+  .lesson-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: #6EE7B7; }
+  .lesson-list { list-style: none; }
+  .lesson-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+  .lesson-list li:last-child { border-bottom: none; }
+  .lesson-num { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-top: 40px; flex-wrap: wrap; gap: 12px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+  .nav-btn-prev { background: var(--gray-100); color: var(--gray-700); }
+  .nav-btn-prev:hover { background: #E5E7EB; }
+  .nav-btn-home { background: linear-gradient(135deg, var(--purple), var(--purple-light)); color: white; }
+  .nav-btn-home:hover { opacity: 0.9; }
+  .nav-btn-next { background: linear-gradient(135deg, var(--teal), var(--teal-light)); color: white; }
+  .nav-btn-next:hover { opacity: 0.9; }
+  @media (max-width: 600px) { .two-faces { grid-template-columns: 1fr; } .nav-bar { justify-content: center; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="chapter-badge">🌿 Chương 14</div>
+  <div class="hero-emoji">🌲</div>
+  <h1>Trong Rừng Sâu Của Thương Thuyết</h1>
+  <div class="subtitle">Mặt hào nhoáng và mặt trái thật sự – thế giới thương thuyết quốc tế không phải lúc nào cũng đẹp</div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">🎭 Hai Mặt Của Thế Giới Thương Thuyết</div>
+
+  <div class="two-faces">
+    <div class="face-card shiny">
+      <div class="face-emoji">✨</div>
+      <div class="face-title">Mặt Hào Nhoáng</div>
+      <div class="face-text">Khách sạn 5 sao, phòng họp sang trọng, bộ vest đắt tiền, thông dịch viên lịch sự, hợp đồng nhiều triệu đô. Đây là hình ảnh người ngoài nhìn vào.</div>
+    </div>
+    <div class="face-card dark">
+      <div class="face-emoji">🌑</div>
+      <div class="face-title">Mặt Trái Thật Sự</div>
+      <div class="face-text">Tham nhũng, đe dọa, lừa đảo, rủi ro an toàn, áp lực tâm lý cực độ. Đây là những thứ sách giáo khoa không bao giờ kể, nhưng thực tế không thể né tránh.</div>
+    </div>
+  </div>
+
+  <div class="section-title">✈️ Ba Lần Thoát Nạn Máy Bay</div>
+
+  <div class="airplane-stories">
+    <h3>✈️ Khi Thương Thuyết Đe Dọa Tính Mạng</h3>
+    <div class="plane-item">
+      <div class="plane-num">1</div>
+      <div class="plane-text">Thoát nạn lần đầu: máy bay gặp sự cố kỹ thuật nghiêm trọng khi đang bay qua khu vực xung đột. Quyết định thay đổi lịch trình vào phút chót đã cứu sống ông.</div>
+    </div>
+    <div class="plane-item">
+      <div class="plane-num">2</div>
+      <div class="plane-text">Thoát nạn lần hai: chuyến bay đến một quốc gia đang có đảo chính. Tin tình báo từ đối tác địa phương cảnh báo kịp thời giúp tránh đi vào vùng nguy hiểm.</div>
+    </div>
+    <div class="plane-item">
+      <div class="plane-num">3</div>
+      <div class="plane-text">Thoát nạn lần ba: một chuyến bay bị hủy vào phút chót vì lý do kỹ thuật. Chiếc máy bay đó sau đó gặp tai nạn. Đôi khi may mắn cũng là một phần của hành trình.</div>
+    </div>
+  </div>
+
+  <div class="section-title">🛡️ Kỹ Năng Sinh Tồn Trong "Rừng Sâu"</div>
+
+  <div class="survival-grid">
+    <div class="survival-card">
+      <div class="survival-icon">🎯</div>
+      <div class="survival-title">Đi thẳng, nói rõ</div>
+      <div class="survival-text">Trong những tình huống nguy hiểm, sự thẳng thắn và rõ ràng bảo vệ bạn tốt hơn mọi mánh khóe. Người trung thực thường được tôn trọng hơn người mập mờ.</div>
+    </div>
+    <div class="survival-card">
+      <div class="survival-icon">🔍</div>
+      <div class="survival-title">Nhận biết tình huống nguy hiểm</div>
+      <div class="survival-text">Học cách đọc dấu hiệu cảnh báo sớm: tiền quá dễ, lời hứa quá tốt, áp lực quyết định nhanh – đây là những báo hiệu đỏ cần chú ý.</div>
+    </div>
+    <div class="survival-card">
+      <div class="survival-icon">🚪</div>
+      <div class="survival-title">Biết cách rút lui</div>
+      <div class="survival-text">Đôi khi bước đi khôn ngoan nhất là bước ra khỏi cuộc chơi. Rút lui khéo léo khi nhận ra tình huống sai không phải thất bại – đó là thắng lợi.</div>
+    </div>
+    <div class="survival-card">
+      <div class="survival-icon">🌐</div>
+      <div class="survival-title">Mạng lưới hỗ trợ</div>
+      <div class="survival-text">Có người đáng tin cậy ở mọi nơi bạn hoạt động. Mạng lưới quan hệ không chỉ giúp kinh doanh – còn là lưới an toàn khi gặp khủng hoảng.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <div class="quote-text">
+      "Đi thẳng, nói rõ là thượng sách. Trong thế giới thương thuyết quốc tế đầy phức tạp, người trung thực và thẳng thắn thường tồn tại lâu hơn người khôn vặt."
+    </div>
+    <div class="quote-author">— GS. Phan Văn Trường</div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <strong>Vấn đề tham nhũng – Không thể né tránh</strong>
+      <p>Tại nhiều quốc gia, tham nhũng là một phần của "luật chơi" không chính thức. Tác giả không ủng hộ tham nhũng, nhưng nhắc đến thực tế này để người đọc chuẩn bị tinh thần và có chiến lược đối phó đúng đắn.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <strong>Nguyên tắc an toàn khi làm việc ở vùng rủi ro</strong>
+      <p>① Luôn có kế hoạch thoát hiểm ② Chia sẻ lịch trình với người đáng tin cậy ③ Có số điện khẩn cấp của đại sứ quán ④ Không mang quá nhiều tiền mặt ⑤ Tin vào trực giác khi cảm thấy có điều gì không ổn.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-icon">🎯</div>
+    <div class="callout-body">
+      <strong>Ý chí sắt thép + Tâm hồn mềm mại</strong>
+      <p>Người thương thuyết giỏi trong môi trường khó khăn phải có ý chí kiên cường như thép – nhưng đồng thời giữ được sự nhân văn, không bị môi trường độc hại "ăn mòn" phẩm giá.</p>
+    </div>
+  </div>
+
+  <div class="lesson-section">
+    <h3>🎯 Bài Học Rút Ra – Chương 14</h3>
+    <ul class="lesson-list">
+      <li><span class="lesson-num">1</span>Thế giới thương thuyết có hai mặt: mặt hào nhoáng bên ngoài và những rủi ro thực sự bên trong.</li>
+      <li><span class="lesson-num">2</span>Đi thẳng nói rõ là chiến lược bền vững nhất – người trung thực thường tồn tại lâu hơn trong dài hạn.</li>
+      <li><span class="lesson-num">3</span>Biết cách rút lui khi tình huống sai – đây là kỹ năng quan trọng không kém kỹ năng tiến công.</li>
+      <li><span class="lesson-num">4</span>Xây dựng mạng lưới hỗ trợ đáng tin cậy ở mọi thị trường bạn hoạt động – không chỉ để kinh doanh.</li>
+      <li><span class="lesson-num">5</span>Giữ phẩm giá và đạo đức ngay cả trong môi trường không lành mạnh – đây là điều phân biệt người thương thuyết thực sự tầm cỡ.</li>
+    </ul>
+  </div>
+
+  <div class="nav-bar">
+    <a href="chuong-13.html" class="nav-btn nav-btn-prev">← Chương 13</a>
+    <a href="index.html" class="nav-btn nav-btn-home">🏠 Trang Chủ</a>
+    <a href="chuong-15.html" class="nav-btn nav-btn-next">Chương 15 →</a>
+  </div>
+
+</div>
+</body>
+</html>

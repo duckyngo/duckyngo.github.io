@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 21: Kế thừa — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,var(--gold) 0%,var(--orange) 40%,var(--navy) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--gold);}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .case-studies{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0;}
+  .case-card{background:white;border-radius:16px;padding:28px;box-shadow:var(--shadow);}
+  .case-card.bouygues{border-top:5px solid var(--navy);}
+  .case-card.rothschild{border-top:5px solid var(--gold);}
+  .case-flag{font-size:1.5rem;margin-bottom:8px;}
+  .case-name{font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:4px;}
+  .case-years{font-size:0.78rem;color:var(--orange);font-weight:600;margin-bottom:12px;}
+  .case-card.rothschild .case-years{color:var(--gold);}
+  .case-desc{font-size:0.88rem;color:#555;line-height:1.7;}
+  .case-lesson{background:#F5F5F5;border-radius:8px;padding:10px 12px;margin-top:14px;font-size:0.82rem;font-weight:600;color:var(--navy);display:flex;align-items:flex-start;gap:8px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.warning{background:#FFF3E0;border-left:5px solid var(--orange);}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.case-studies{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-20.html" class="nav-btn">← Chương 20</a>
+    <a href="chuong-cuoi.html" class="nav-btn">Chương Cuối →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">👑 Chương 21</div>
+  <span class="hero-emoji">🌳</span>
+  <h1><span>Kế Thừa</span></h1>
+  <p class="hero-sub">Từ Francis Bouygues chọn con trai út đến Rothschild 200 năm — nghệ thuật trao quyền là bài kiểm tra cuối cùng của lãnh đạo.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Kế thừa lãnh đạo — succession planning — là một trong những thách thức khó nhất và thường bị bỏ qua nhất trong quản trị doanh nghiệp. GS. Phan Văn Trường phân tích hai trường hợp huyền thoại và rút ra những bài học về nghệ thuật trao quyền cho thế hệ tiếp theo.
+  </div>
+
+  <div class="cards-title">🏛️ Hai Huyền Thoại Kế Thừa</div>
+  <div class="case-studies">
+    <div class="case-card bouygues">
+      <div class="case-flag">🇫🇷</div>
+      <div class="case-name">Tập đoàn Bouygues</div>
+      <div class="case-years">Francis Bouygues → Martin Bouygues</div>
+      <div class="case-desc">
+        Francis Bouygues — nhà sáng lập vĩ đại — quyết định chọn con trai <em>út</em> Martin thay vì
+        con cả. Lý do không phải tuổi tác hay thứ tự ưu tiên thông thường, mà vì Francis nhìn thấy
+        ở Martin tố chất lãnh đạo và tầm nhìn chiến lược phù hợp nhất với tương lai của tập đoàn.
+      </div>
+      <div class="case-lesson">💡 Bài học: Kế thừa cần chọn người phù hợp nhất, không phải người thứ nhất hay người ai cũng ngờ.</div>
+    </div>
+    <div class="case-card rothschild">
+      <div class="case-flag">🌍</div>
+      <div class="case-name">Gia tộc Rothschild</div>
+      <div class="case-years">200 năm — 5 thế hệ liên tục</div>
+      <div class="case-desc">
+        Từ thế kỷ 18, gia tộc Rothschild xây dựng đế chế tài chính trải qua 5 thế hệ.
+        Bí quyết không chỉ là tiền bạc — mà là hệ thống giá trị, triết lý gia đình, và quy trình
+        kế thừa được thiết kế và thực hành trong nhiều thế hệ.
+      </div>
+      <div class="case-lesson">💡 Bài học: Kế thừa thành công cần được chuẩn bị trong nhiều thập kỷ, không phải vài năm trước khi rút lui.</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Nguyên Tắc Kế Thừa Lãnh Đạo</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">⏳</div>
+      <div class="card-num">01</div>
+      <h3>Chuẩn bị từ sớm</h3>
+      <p>Kế thừa tốt nhất bắt đầu 10-15 năm trước khi cần. Không phải 6 tháng hay 1 năm — đó là quá muộn để tạo ra lãnh đạo thật sự.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">02</div>
+      <h3>Chọn người phù hợp nhất</h3>
+      <p>Không phải người thâm niên nhất, không phải người được yêu thích nhất, không phải con trai cả — mà là người có DNA phù hợp với tương lai của tổ chức.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">03</div>
+      <h3>Truyền triết lý, không chỉ kỹ năng</h3>
+      <p>Rothschild không chỉ truyền lại tài sản và quan hệ — họ truyền lại triết lý kinh doanh, giá trị gia đình, và tư duy dài hạn.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🕊️</div>
+      <div class="card-num">04</div>
+      <h3>Biết lúc nào buông tay</h3>
+      <p>Lãnh đạo vĩ đại nhất không phải người nắm quyền lâu nhất — mà là người biết khi nào cần trao quyền và làm điều đó đúng thời điểm.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Control your own destiny or someone else will."</p>
+    <cite>— Jack Welch (được GS. Phan Văn Trường trích dẫn về tầm quan trọng của succession planning chủ động)</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Nghịch lý của kế thừa:</strong> Lãnh đạo vĩ đại thường không muốn nói về kế thừa — vì nó gợi nhớ đến sự kết thúc của vai trò họ yêu thích. Nhưng chính việc tránh né này thường dẫn đến những cuộc tranh giành quyền lực tàn phá tổ chức sau khi họ rời đi.
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text">
+      <strong>Bài học cho doanh nghiệp Việt Nam:</strong> Nhiều công ty gia đình Việt đang đối mặt với thách thức kế thừa thế hệ thứ hai, thứ ba. Kinh nghiệm từ Bouygues và Rothschild là tài liệu tham khảo quý giá cho quá trình này.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Kế thừa lãnh đạo cần được lên kế hoạch 10-15 năm trước, không phải vài tháng trước khi rút lui.</li>
+      <li>Chọn người phù hợp nhất với tương lai, không phải người thâm niên nhất hay được yêu thích nhất.</li>
+      <li>Truyền triết lý và giá trị — không chỉ kỹ năng, quan hệ, hay tài sản.</li>
+      <li>Biết lúc nào buông tay là bài kiểm tra phẩm cách quan trọng nhất của lãnh đạo.</li>
+      <li>"Control your own destiny" — chủ động trong kế thừa trước khi bị buộc phải làm.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-20.html" class="bnav-btn">← Chương 20</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-cuoi.html" class="bnav-btn next">Chương Cuối: Một ngàn lý do lạc quan →</a>
+  </div>
+</div>
+
+</body>
+</html>

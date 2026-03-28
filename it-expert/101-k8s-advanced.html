@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Cao Cấp Đại Sư - Chuyên Gia Helm, Kustomize & Operators</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #0a1a0a 30%, #0a2a1a 60%, #1a3a2a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .header .emoji { font-size: 80px; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 2.2em; color: #10b981; text-shadow: 0 0 20px #10b98140; }
+        .header .title { font-size: 1.1em; color: #aaa; margin: 5px 0; }
+        .header .quote { font-style: italic; color: #888; margin-top: 15px; font-size: 0.95em; border-left: 3px solid #10b981; padding-left: 15px; display: inline-block; text-align: left; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 25px 0; }
+        .badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 25px; font-size: 0.85em; color: #10b981; transition: all 0.3s; }
+        .badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); padding: 30px; margin-bottom: 25px; }
+        .section h2 { color: #10b981; font-size: 1.5em; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #10b98130; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 4px solid #10b981; padding: 15px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .tip strong { color: #10b981; }
+        .story { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .story h3 { color: #f0c040; margin-bottom: 10px; }
+        .story .lesson { background: rgba(255,200,0,0.08); border-left: 4px solid #f0c040; padding: 10px 15px; margin-top: 12px; border-radius: 0 8px 8px 0; color: #f0c040; }
+        .mistake { background: rgba(255,50,50,0.08); border-left: 4px solid #ff6b6b; padding: 12px 18px; margin: 10px 0; border-radius: 0 10px 10px 0; }
+        .mistake strong { color: #ff6b6b; }
+        .footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 30px; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.6em; } .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><span class="emoji">🎯</span><h1>Kubernetes Cao Cấp Đại Sư</h1><div class="title">Chuyên Gia Helm, Kustomize & Operators</div><div class="quote">"Helm chart giống recipe: follow instructions thì OK, customize quá đà thì nổ bếp. Và đừng quên đọc values.yaml trước khi install."</div></div>
+        <div class="badges">            <span class="badge">🎯 Helm Master</span>
+            <span class="badge">📐 Kustomize Pro</span>
+            <span class="badge">🤖 Operators</span>
+            <span class="badge">📋 CRDs</span>
+            <span class="badge">🔧 Templating</span>
+            <span class="badge">📦 Chart Museum</span>
+            <span class="badge">🔄 Release Management</span></div>
+        <div class="section"><h2>📚 Thân Thế &amp; Lai Lịch</h2><p>Đại Sư bắt đầu với raw YAML — hàng nghìn dòng copy-paste giữa environments. Rồi chàng ta gặp Helm: "Template YAML? Values per environment? Dependency management? Take my money!" Chàng ta viết Helm charts cho mọi thứ, thậm chí chart cho... deploying other charts.</p><p>Khi Kustomize xuất hiện (built vào kubectl), chàng ta có dilemma: Helm hay Kustomize? Câu trả lời sau 5 năm: CẢ HAI. Helm cho third-party packages, Kustomize cho internal applications. "Đừng dogmatic," chàng ta nói.</p><p>Rồi Operators: custom controllers mở rộng Kubernetes API. CRDs cho custom resources. Operator pattern cho complex stateful applications. "Kubernetes cho phép bạn extend nó theo cách bạn muốn — đó là sức mạnh và cũng là nỗi đau," chàng ta thở dài khi debug operator thứ 50.</p></div>
+        <div class="section"><h2>📜 Bí Kíp</h2>            <div class="tip"><strong>1. Helm — Package Manager for K8s:</strong> helm install/upgrade/rollback cho release management. values.yaml cho configuration. Chart dependencies cho modular architecture. Helm hooks cho pre/post install/upgrade. Chart testing (helm test). Chart repositories cho distribution. Tip: helm template cho dry-run rendering — review YAML trước apply.</div>
+            <div class="tip"><strong>2. Kustomize — Overlay-Based Customization:</strong> base/ + overlays/dev + overlays/prod. Patches cho targeted changes. ConfigMap/Secret generators. Namespace transformations. Strategic merge patches vs JSON patches. Built vào kubectl (kubectl apply -k). Tốt cho: internal apps, simple environment differences. No templating language to learn.</div>
+            <div class="tip"><strong>3. Operators — Extend Kubernetes:</strong> Custom Resource Definitions (CRDs) define new resource types. Controller watches CRDs, reconciles desired vs actual state. Operator SDK (Go, Ansible, Helm) cho development. Operator Hub cho community operators. Use cases: database management (PostgreSQL Operator), certificate management (cert-manager), backup management.</div>
+            <div class="tip"><strong>4. Helm Chart Best Practices:</strong> Use semantic versioning cho charts. values.yaml documented với comments. README cho usage instructions. Chart.yaml với dependencies pinned. templates/_helpers.tpl cho reusable template functions. Lint: helm lint trước publish. Test: helm test sau install.</div>
+            <div class="tip"><strong>5. CRD Design:</strong> Validation schema trong CRD spec. Status subresource cho controller updates. Versioning (v1alpha1 → v1beta1 → v1). Conversion webhooks cho version migration. Finalizers cho cleanup logic. Printer columns cho kubectl get output. Đừng over-design — start simple, iterate.</div></div>
+        <div class="section"><h2>📖 Chuyện Kể Đêm Khuya</h2>            <div class="story"><h3>📦 Chuyện Helm Upgrade Phá Hủy PVC</h3><p>helm upgrade release-name chart/ với change trong StatefulSet volume claim template. Helm delete và recreate StatefulSet — PVCs bị orphaned. New PVCs created empty. Database data: gone. 4 giờ downtime. DBA khóc.</p><p>Root cause: Helm re-creates StatefulSet khi volumeClaimTemplate changes. PVCs preserved nhưng detached. Fix: backup data trước upgrade. KHÔNG thay đổi volumeClaimTemplate trên existing StatefulSets. Manual migration nếu cần change storage.</p><div class="lesson">💡 Bài học: StatefulSet volumeClaimTemplates IMMUTABLE sau creation. Helm upgrade có thể recreate StatefulSet = data loss risk. ALWAYS backup stateful data trước Helm upgrades. Test upgrades trên staging. Review helm diff trước production upgrade.</div></div>
+            <div class="story"><h3>🔄 Chuyện Operator Infinite Reconciliation</h3><p>Custom operator cho database management. Bug trong reconciliation logic: update status → trigger watch → reconcile → update status → trigger watch... Infinite loop. API server flooded with requests. etcd storage growing. Other controllers slow down. Cluster-wide impact.</p><p>Fix: add generation tracking (skip reconcile if generation unchanged). Rate limiting trong controller. Resource version comparison. Proper status update logic.</p><div class="lesson">💡 Bài học: Operator reconciliation loops là common bug. Track resource generation/version. Rate limit reconciliation. Test operator under load. Watch for API server throttling. controller-runtime library handles many edge cases — use it.</div></div>
+            <div class="story"><h3>📋 Chuyện Helm Values Override War</h3><p>Team A set values.yaml trong git. Team B override qua helm upgrade --set. CI/CD pipeline dùng values file. Manual override via --set takes precedence → CI/CD và git out of sync. 'Why is production different from what git says?' — vì ai đó helm upgrade --set 3 tháng trước.</p><div class="lesson">💡 Bài học: NEVER use helm upgrade --set cho production. All values trong version-controlled values files. GitOps (ArgoCD) cho source of truth. helm get values cho current values. Audit Helm releases regularly cho drift.</div></div></div>
+        <div class="section"><h2>⚠️ Những Sai Lầm Kinh Điển</h2>            <div class="mistake"><strong>1. helm install without reviewing values:</strong> Default values có thể expose services publicly, use weak passwords. ALWAYS review values.yaml. helm show values chart/ trước install.</div>
+            <div class="mistake"><strong>2. Not version-pinning chart dependencies:</strong> Chart.yaml: dependency version '^1.0.0' → pulls 1.9.0 → breaking changes. Pin exact versions.</div>
+            <div class="mistake"><strong>3. CRDs không có validation:</strong> Invalid CRD resources accepted → controller crash. Schema validation bắt buộc cho production CRDs.</div>
+            <div class="mistake"><strong>4. Too many Helm releases:</strong> helm list returns 500 releases. Cleanup old releases. Release history limit (--history-max).</div>
+            <div class="mistake"><strong>5. Operator without RBAC:</strong> Operator with cluster-admin = security risk. Minimum required RBAC for operator service account.</div></div>
+        <div class="footer"><p>© 2026 IT-AI-Infra Expert Series | File #101</p><p>Được tạo với 💻 và ☕ bởi một người yêu công nghệ</p></div>
+    </div>
+</body>
+</html>

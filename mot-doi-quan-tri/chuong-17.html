@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 17: Xây dựng chiến lược — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,#2D6A4F 50%,var(--gold) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid var(--green);}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .four-axes{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:28px 0;}
+  .axis-card{background:white;border-radius:14px;padding:24px;box-shadow:var(--shadow);}
+  .axis-card:nth-child(1){border-top:5px solid var(--orange);}
+  .axis-card:nth-child(2){border-top:5px solid var(--gold);}
+  .axis-card:nth-child(3){border-top:5px solid var(--green);}
+  .axis-card:nth-child(4){border-top:5px solid #8E44AD;}
+  .axis-icon{font-size:2rem;margin-bottom:10px;}
+  .axis-name{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:8px;}
+  .axis-desc{font-size:0.85rem;color:#666;line-height:1.6;}
+  .legends-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0;}
+  .legend-card{background:white;border-radius:14px;padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  .legend-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold);}
+  .legend-year{font-size:0.75rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  .legend-name{font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:6px;}
+  .legend-country{font-size:0.8rem;color:#888;margin-bottom:12px;}
+  .legend-desc{font-size:0.85rem;color:#555;line-height:1.6;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--navy),#2A5F8F);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(255,255,255,0.05);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:white;font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--gold);font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.four-axes,.legends-section{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-16.html" class="nav-btn">← Chương 16</a>
+    <a href="chuong-18.html" class="nav-btn">Chương 18 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">🗺️ Chương 17</div>
+  <span class="hero-emoji">🏯</span>
+  <h1>Xây Dựng <span>Chiến Lược</span></h1>
+  <p class="hero-sub">Từ Hōshi Ryokan (718 SCN) đến Beretta (1526) — những doanh nghiệp trường tồn có một điểm chung: chiến lược là triết lý sống, không phải kế hoạch 5 năm.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Nhiều công ty lầm tưởng chiến lược là bản kế hoạch dày 200 trang hay tầm nhìn 5 năm. GS. Phan Văn Trường chỉ ra rằng chiến lược thật sự là triết lý sống của doanh nghiệp — thứ định hướng mọi quyết định, mọi ngày, không cần nhìn vào bản kế hoạch.
+  </div>
+
+  <div class="cards-title">🧭 4 Trục Chiến Lược Cốt Lõi</div>
+  <div class="four-axes">
+    <div class="axis-card">
+      <div class="axis-icon">🌿</div>
+      <div class="axis-name">1. Đa dạng hóa</div>
+      <div class="axis-desc">Mở rộng sang lĩnh vực mới để giảm rủi ro tập trung và tạo ra nguồn doanh thu đa dạng.</div>
+    </div>
+    <div class="axis-card">
+      <div class="axis-icon">🌍</div>
+      <div class="axis-name">2. Quốc tế hóa</div>
+      <div class="axis-desc">Vươn ra thị trường toàn cầu — không chỉ tăng doanh thu mà còn học hỏi từ những thị trường tiên tiến.</div>
+    </div>
+    <div class="axis-card">
+      <div class="axis-icon">🤝</div>
+      <div class="axis-name">3. Sáp nhập & Mua lại</div>
+      <div class="axis-desc">M&A như công cụ chiến lược — mua năng lực, công nghệ, hay thị trường nhanh hơn tự xây dựng.</div>
+    </div>
+    <div class="axis-card">
+      <div class="axis-icon">💡</div>
+      <div class="axis-name">4. Đổi mới liên tục</div>
+      <div class="axis-desc">Đổi mới không phải sự kiện một lần — là thói quen, là văn hóa, là DNA của tổ chức.</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🏛️ Huyền Thoại Trường Tồn</div>
+  <div class="legends-section">
+    <div class="legend-card">
+      <div class="legend-year">⛩️ Từ năm 718 SCN</div>
+      <div class="legend-name">Hōshi Ryokan</div>
+      <div class="legend-country">🇯🇵 Nhật Bản</div>
+      <div class="legend-desc">Khách sạn gia đình lâu đời nhất thế giới, đã hoạt động hơn 1.300 năm với 46 thế hệ liên tiếp. Bí quyết: giữ nguyên giá trị cốt lõi, thích nghi với thời đại.</div>
+    </div>
+    <div class="legend-card">
+      <div class="legend-year">🔫 Từ năm 1526</div>
+      <div class="legend-name">Fabbrica d'Armi Pietro Beretta</div>
+      <div class="legend-country">🇮🇹 Ý</div>
+      <div class="legend-desc">Nhà sản xuất vũ khí lâu đời nhất thế giới còn hoạt động, qua gần 500 năm. Bí quyết: chuyên môn hóa sâu, chất lượng nhất quán, và không bao giờ đánh mất danh tính thương hiệu.</div>
+    </div>
+  </div>
+
+  <div class="cards-title">🔑 Nguyên Tắc Chiến Lược Trường Tồn</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">01</div>
+      <h3>Biết mình là ai</h3>
+      <p>Doanh nghiệp trường tồn biết rõ họ là ai, họ làm gì, và quan trọng hơn — họ không làm gì. Ranh giới rõ ràng tạo ra sức mạnh tập trung.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">⚖️</div>
+      <div class="card-num">02</div>
+      <h3>Cân bằng truyền thống và đổi mới</h3>
+      <p>Giữ lõi, thay đổi vỏ. Giá trị cốt lõi và phương pháp tiếp cận là bất biến — nhưng cách thực hiện luôn cần đổi mới.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">👨‍👩‍👧‍👦</div>
+      <div class="card-num">03</div>
+      <h3>Nghĩ đến thế hệ sau</h3>
+      <p>Quyết định chiến lược không chỉ cho quý tới hay năm tới — mà phải đặt câu hỏi: con cái chúng ta sẽ tự hào về điều này không?</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🌱</div>
+      <div class="card-num">04</div>
+      <h3>Chiến lược như triết lý</h3>
+      <p>Chiến lược giỏi nhất là thứ mọi người trong công ty hiểu và sống theo — không cần nhìn vào tài liệu 200 trang.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Chiến lược không phải là kế hoạch 5 năm.<br>Chiến lược là triết lý sống của doanh nghiệp."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Bài học từ Hōshi và Beretta:</strong> Cả hai tồn tại qua chiến tranh, khủng hoảng, đổi mới công nghệ, và thay đổi xã hội. Bí quyết chung: có triết lý rõ ràng, biết mình là ai, và không bao giờ hi sinh giá trị cốt lõi để theo đuổi lợi nhuận ngắn hạn.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌱</div>
+    <div class="callout-text">
+      <strong>Doanh nghiệp Việt Nam và tư duy trường tồn:</strong> Nhiều công ty Việt đang tăng trưởng nhanh nhưng ít nghĩ đến tính trường tồn. Câu hỏi cần đặt ra: 50 năm nữa, công ty này sẽ còn tồn tại không? Và vì lý do gì?
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>4 trục chiến lược: đa dạng hóa, quốc tế hóa, sáp nhập, và đổi mới liên tục.</li>
+      <li>Hōshi Ryokan (718) và Beretta (1526) chứng minh: triết lý rõ ràng và giá trị cốt lõi mạnh là nền tảng của trường tồn.</li>
+      <li>Chiến lược phải đủ đơn giản để mọi người trong công ty hiểu và sống theo.</li>
+      <li>Cân bằng truyền thống và đổi mới: giữ lõi bất biến, thay đổi cách tiếp cận.</li>
+      <li>Nghĩ đến thế hệ tiếp theo — chiến lược tốt nhất là thứ con cháu sẽ tự hào kế thừa.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-16.html" class="bnav-btn">← Chương 16</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-18.html" class="bnav-btn next">Chương 18: Khai phóng sáng tạo →</a>
+  </div>
+</div>
+
+</body>
+</html>

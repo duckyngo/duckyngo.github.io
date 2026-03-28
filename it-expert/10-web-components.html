@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vi Mô Kiến Trúc Sư - Bậc Thầy Web Components & Micro-frontend</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 25%, #0d1b3e 50%, #1a0a2e 75%, #0a0a1a 100%); color: #e0e0e0; min-height: 100vh; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(99,102,241,0.15)); border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); margin-bottom: 40px; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 50%); animation: pulse 4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+        .hero-emoji { font-size: 80px; display: block; margin-bottom: 16px; position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .hero h1 { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, #a855f7, #818cf8, #d8b4fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+        .hero .subtitle { font-size: 1.2em; color: #d8b4fe; margin-top: 8px; position: relative; z-index: 1; }
+        .hero .quote { font-style: italic; color: #94a3b8; margin-top: 16px; font-size: 1em; position: relative; z-index: 1; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0; }
+        .skill-tag { background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(99,102,241,0.15)); border: 1px solid rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 50px; font-size: 0.9em; color: #d8b4fe; backdrop-filter: blur(10px); transition: all 0.3s ease; animation: fadeInUp 0.5s ease-out backwards; }
+        .skill-tag:nth-child(1) { animation-delay: 0.1s; } .skill-tag:nth-child(2) { animation-delay: 0.15s; } .skill-tag:nth-child(3) { animation-delay: 0.2s; } .skill-tag:nth-child(4) { animation-delay: 0.25s; } .skill-tag:nth-child(5) { animation-delay: 0.3s; } .skill-tag:nth-child(6) { animation-delay: 0.35s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); padding: 36px; margin-bottom: 30px; transition: all 0.3s ease; }
+        .card:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
+        .card h2 { font-size: 1.6em; margin-bottom: 20px; color: #d8b4fe; display: flex; align-items: center; gap: 10px; }
+        .tip { background: rgba(255,255,255,0.02); border-left: 3px solid #a855f7; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; }
+        .tip h3 { color: #d8b4fe; font-size: 1.1em; margin-bottom: 8px; } .tip p { color: #cbd5e1; }
+        .story { background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .story h3 { color: #818cf8; font-size: 1.15em; margin-bottom: 12px; } .story p { color: #cbd5e1; margin-bottom: 10px; }
+        .story .lesson { background: rgba(250,204,21,0.08); border: 1px solid rgba(250,204,21,0.15); border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #fde68a; font-weight: 500; }
+        .mistake { background: rgba(239,68,68,0.06); border-left: 3px solid #f87171; padding: 14px 20px; margin: 12px 0; border-radius: 0 10px 10px 0; }
+        .mistake h3 { color: #fca5a5; font-size: 1em; margin-bottom: 6px; } .mistake p { color: #d1d5db; font-size: 0.95em; }
+        .footer { text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.9em; }
+        .footer .author { color: #d8b4fe; font-weight: 600; }
+        code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 6px; font-size: 0.9em; color: #d8b4fe; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.8em; } .card { padding: 24px; } .container { padding: 12px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-emoji">🧩</span>
+            <h1>Vi Mô Kiến Trúc Sư</h1>
+            <p class="subtitle">Trương Vi Mô — Bậc Thầy Web Components & Micro-frontend</p>
+            <p class="quote">"Chia để trị — nhưng chia sai thì chỉ có trị loạn."</p>
+        </div>
+        <div class="skill-tags">
+            <span class="skill-tag">Shadow DOM</span>
+            <span class="skill-tag">Custom Elements</span>
+            <span class="skill-tag">Micro-frontends</span>
+            <span class="skill-tag">Module Federation</span>
+            <span class="skill-tag">Web Components</span>
+            <span class="skill-tag">Lit</span>
+        </div>
+        <div class="card">
+            <h2><span class="icon">📜</span> Thân Thế & Lai Lịch</h2>
+            <p>Trương Vi Mô lớn lên trong một công ty lớn nơi mà 15 teams cùng contribute vào một monolithic frontend. Mỗi lần deploy là một cuộc phiêu lưu: Team A merge code → break Team B's feature → rollback → Team C đang chờ deploy → deadlock.
+
+Ông mơ về một thế giới nơi mỗi team có thể deploy độc lập, dùng framework riêng, không ai block ai. Ông khám phá Web Components và Micro-frontends — rồi phát hiện rằng independence đi kèm với complexity. Style leaking, shared state, routing conflicts, performance overhead.
+
+Sau nhiều năm thử nghiệm, ông ngộ ra: 'Micro-frontend không phải giải pháp kỹ thuật — nó là giải pháp tổ chức. Nếu team bạn nhỏ, bạn không cần nó.'</p>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🗝️</span> Bí Kíp</h2>
+
+            <div class="tip">
+                <h3>Bí Kíp #1: Shadow DOM — Encapsulation thực sự</h3>
+                <p>Shadow DOM tạo isolated DOM tree: CSS bên trong không leak ra ngoài, CSS bên ngoài không affect bên trong. <code>element.attachShadow({mode: 'open'})</code>. Slots cho content projection: <code>&lt;slot name='header'&gt;</code>. Cẩn thận: Shadow DOM KHÔNG inheritable cho tất cả CSS properties — font-family, color inherit qua shadow boundary, nhưng class selectors không. Styling Shadow DOM từ bên ngoài: CSS custom properties (CSS variables) penetrate shadow boundary, <code>::part()</code> selector cho exposed parts.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #2: Custom Elements — HTML tags của riêng bạn</h3>
+                <p><code>customElements.define('my-button', MyButton)</code> — tạo HTML tag tái sử dụng. Lifecycle: <code>connectedCallback</code> (attached to DOM), <code>disconnectedCallback</code> (removed), <code>attributeChangedCallback</code> (attribute updated). Phải có hyphen trong tên (my-button, not mybutton). Framework-agnostic: Custom Elements hoạt động trong React, Vue, Angular, vanilla. Lit library giúp viết Custom Elements dễ dàng hơn với declarative templates và reactive properties.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #3: Micro-frontend Patterns</h3>
+                <p>1) Build-time integration: shared component library, npm packages. Simplest nhưng coupled deploy. 2) Server-side integration: SSI, ESI, server compose HTML fragments. 3) Runtime integration: Module Federation (Webpack 5), import maps, iframe (old school). 4) Edge-side integration: edge workers compose at CDN level. Chọn based on: team autonomy needs, performance budget, complexity tolerance. Rule: nếu < 3 teams, bạn KHÔNG cần micro-frontends.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #4: Module Federation — Webpack 5's Game Changer</h3>
+                <p>Module Federation cho phép nhiều Webpack builds share code at runtime. Host app load remote modules từ separate deployments. Shared dependencies (React, lodash) loaded một lần. Versioning: host và remote có thể dùng different versions, Federation auto-resolve. Vite Federation plugin cho Vite ecosystem. Cẩn thận: shared singleton (React) phải cùng version, khác version = cryptic runtime errors.</p>
+            </div>
+            <div class="tip">
+                <h3>Bí Kíp #5: Khi nào KHÔNG cần Micro-frontends</h3>
+                <p>Micro-frontends thêm complexity: separate builds, deployment coordination, shared state management, consistent UX across teams. Chi phí justify khi: > 5 teams cùng code frontend, deploy frequency cần independent, teams cần technology freedom. KHÔNG justify khi: team nhỏ (< 10 devs), single product team, startup đang tìm product-market fit. Monolith with good architecture > premature micro-frontends.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">🌙</span> Chuyện Kể Đêm Khuya</h2>
+
+            <div class="story">
+                <h3>📖 Chuyện 1: Style Leaking — Khi CSS Không Biết Ranh Giới</h3>
+                <p>3 teams, 3 micro-frontends trên cùng trang. Team A dùng global CSS class <code>.button</code> → màu xanh. Team B cũng có <code>.button</code> → màu đỏ. Khi cả hai mount cùng page: buttons có khi xanh, có khi đỏ, phụ thuộc vào CSS load order. Monday deployment: Team A deploy trước → tất cả buttons xanh. Wednesday: Team B deploy → buttons random xanh đỏ.
+
+Fix đầu tiên: CSS Modules (class name hashing). Fix tốt hơn: Shadow DOM encapsulation. Fix tốt nhất: Design System shared — cả 3 teams dùng cùng button component từ shared library, không tự viết.</p>
+                <div class="lesson">💡 Bài học: CSS isolation là BẮT BUỘC trong micro-frontend. Options: CSS Modules, Shadow DOM, CSS-in-JS scoping, Tailwind prefix. Tốt nhất: shared Design System Library — consistent UI + no duplication + single source of truth cho styles.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 2: Micro-frontend Chaos — Frankenstein App</h3>
+                <p>Công ty 'hiện đại hóa' bằng micro-frontends. Team A dùng React 18, Team B dùng Vue 3, Team C dùng Angular 15. Mỗi team tự do chọn tech stack — sounds great on paper.
+
+Reality: page load 3 frameworks → 2MB+ JavaScript runtime overhead. Shared header/footer phải render trong cả 3 frameworks → 3 implementations → 3 lần maintain. User experience inconsistent: React team dùng Material UI, Vue team dùng Vuetify, Angular team dùng PrimeNG. App trông như Frankenstein — mỗi section một style.
+
+Lesson learned: 'Technology freedom' != 'Technology anarchy'. Team tạo Architecture Decision Records (ADRs): max 2 frameworks, shared Design System bắt buộc, performance budget per micro-frontend.</p>
+                <div class="lesson">💡 Bài học: Technology freedom trong micro-frontend cần guardrails. Shared: Design System, auth module, analytics, performance budget. Independent: business logic, deployment, internal architecture. Limit framework diversity — mỗi framework thêm = bundle size tăng + DX complexity tăng.</div>
+            </div>
+            <div class="story">
+                <h3>📖 Chuyện 3: Module Federation Version Hell</h3>
+                <p>Host app dùng React 18.2. Remote micro-frontend vô tình upgrade lên React 18.3 (minor version). Module Federation share React as singleton. Deploy remote → host app crash: 'Invalid hook call. Hooks can only be called inside of the body of a function component.' Nguyên nhân: 2 instances React co-exist khi version mismatch.
+
+Debug mất 8 giờ vì error message misleading (looks like a hook error, actually a dependency resolution error). Fix: pin shared dependency versions, add CI check cho version compatibility trước khi deploy remote.</p>
+                <div class="lesson">💡 Bài học: Shared dependencies trong Module Federation PHẢI version-controlled nghiêm ngặt. Pin versions, automated compatibility checks trong CI, semver ranges cần test kỹ. Singleton dependencies (React, Vue) KHÔNG được có version mismatch — crash guaranteed.</div>
+            </div>
+        </div>
+        <div class="card">
+            <h2><span class="icon">💀</span> Sai Lầm Kinh Điển</h2>
+
+            <div class="mistake">
+                <h3>❌ Sai Lầm #1: Micro-frontend cho team 3 người</h3>
+                <p>3 devs không cần infrastructure overhead của micro-frontends. Monolith with good folder structure, lazy loading, và CI/CD đã đủ. Micro-frontend là organizational pattern, không phải technical flex.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #2: Quên shared dependencies gây duplicate</h3>
+                <p>React loaded 3 lần từ 3 micro-frontends = 3 x 40KB = 120KB wasted. Configure shared dependencies properly — chỉ load một lần, share across all micro-frontends.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #3: iframe cho micro-frontend</h3>
+                <p>iframe hoạt động cho isolation nhưng: không share routing, không responsive layout, SEO nightmare, performance overhead, accessibility broken. Dùng trong last resort, không phải default choice.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #4: Custom Elements không progressive enhance</h3>
+                <p>Web Components mà không hoạt động khi JavaScript disabled = bad. Implement fallback content inside custom element tags. Graceful degradation for critical functionality.</p>
+            </div>
+            <div class="mistake">
+                <h3>❌ Sai Lầm #5: Over-engineering shared state</h3>
+                <p>Micro-frontends communicate qua: Custom Events (simple), shared state library (medium), event bus (complex). Đừng dùng Redux store shared giữa micro-frontends — coupling cao, independence mất. Prefer loose coupling: events + contracts.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Biên soạn bởi <span class="author">Trương Vi Mô</span> — Vi Mô Kiến Trúc Sư</p>
+            <p>🧩 "Chia để trị — nhưng chia sai thì chỉ có trị loạn."</p>
+        </div>
+    </div>
+</body>
+</html>

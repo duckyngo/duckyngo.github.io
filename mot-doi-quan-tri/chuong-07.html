@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chương 7: Gia nhập và chia tay — Một Đời Quản Trị</title>
+<style>
+  :root{--orange:#FF6B35;--navy:#1A3A5C;--gold:#F7C948;--green:#2D6A4F;--shadow:0 4px 20px rgba(0,0,0,0.1);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#2C2C2C;background:#FAFAFA;}
+  .top-nav{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .nav-home{color:var(--gold);text-decoration:none;font-weight:700;font-size:0.9rem;}
+  .nav-links{display:flex;gap:10px;}
+  .nav-btn{background:rgba(255,255,255,0.1);color:white;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;transition:background 0.2s;}
+  .nav-btn:hover{background:var(--orange);}
+  .hero{background:linear-gradient(135deg,#1ABC9C 0%,var(--navy) 50%,var(--orange) 100%);color:white;padding:70px 24px 80px;text-align:center;}
+  .chapter-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);padding:8px 20px;border-radius:30px;font-size:0.85rem;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);}
+  .hero-emoji{font-size:4rem;margin-bottom:16px;display:block;}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.2;margin-bottom:12px;}
+  .hero h1 span{color:var(--gold);}
+  .hero-sub{font-size:1.1rem;opacity:0.8;max-width:600px;margin:0 auto;}
+  .content{max-width:860px;margin:0 auto;padding:50px 24px;}
+  .intro-text{font-size:1.1rem;line-height:1.8;color:#444;background:white;padding:30px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:40px;border-left:5px solid #1ABC9C;}
+  .cards-title{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .two-moments{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:28px 0;}
+  .moment-card{border-radius:16px;padding:32px;box-shadow:var(--shadow);}
+  .moment-card.join{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-top:5px solid var(--green);}
+  .moment-card.leave{background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-top:5px solid var(--orange);}
+  .moment-card h3{font-size:1.1rem;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .moment-card.join h3{color:var(--green);}
+  .moment-card.leave h3{color:var(--orange);}
+  .moment-card ul{list-style:none;}
+  .moment-card li{font-size:0.88rem;color:#555;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);display:flex;gap:8px;}
+  .moment-card li:last-child{border-bottom:none;}
+  .moment-card li::before{content:'✓';color:var(--green);font-weight:700;}
+  .moment-card.leave li::before{content:'✓';color:var(--orange);}
+  .story-box{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-radius:16px;padding:32px;margin:32px 0;border:2px solid var(--gold);}
+  .story-box h3{color:var(--navy);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .story-box p{font-size:0.95rem;line-height:1.8;color:#444;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:40px;}
+  .card{background:white;border-radius:12px;padding:24px;box-shadow:var(--shadow);transition:transform 0.2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-icon{font-size:2rem;margin-bottom:12px;}
+  .card-num{display:inline-block;background:var(--orange);color:white;font-size:0.75rem;font-weight:800;padding:3px 10px;border-radius:10px;margin-bottom:10px;}
+  .card.gold .card-num{background:var(--gold);color:var(--navy);}
+  .card.green .card-num{background:var(--green);}
+  .card.navy .card-num{background:var(--navy);}
+  .card h3{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .card p{font-size:0.88rem;color:#666;line-height:1.6;}
+  .quote-box{background:linear-gradient(135deg,var(--gold),#F0A500);border-radius:16px;padding:36px;margin:40px 0;position:relative;overflow:hidden;}
+  .quote-box::before{content:'"';position:absolute;top:-10px;left:16px;font-size:8rem;color:rgba(0,0,0,0.08);font-family:Georgia,serif;line-height:1;}
+  .quote-box p{font-size:clamp(1rem,2vw,1.25rem);font-style:italic;color:var(--navy);font-weight:600;line-height:1.7;position:relative;z-index:1;}
+  .quote-box cite{display:block;margin-top:12px;font-size:0.9rem;color:var(--navy);opacity:0.7;font-style:normal;font-weight:500;}
+  .callout{border-radius:12px;padding:24px;margin:24px 0;display:flex;gap:16px;align-items:flex-start;}
+  .callout.info{background:#E3F2FD;border-left:5px solid #2196F3;}
+  .callout.success{background:#E8F5E9;border-left:5px solid var(--green);}
+  .callout-icon{font-size:1.5rem;flex-shrink:0;}
+  .callout-text{font-size:0.95rem;line-height:1.7;color:#333;}
+  .callout-text strong{color:var(--navy);}
+  .lesson-box{background:var(--navy);color:white;border-radius:16px;padding:36px;margin:40px 0;}
+  .lesson-box h3{color:var(--gold);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .lesson-list{list-style:none;}
+  .lesson-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.95rem;line-height:1.6;display:flex;gap:10px;}
+  .lesson-list li:last-child{border-bottom:none;}
+  .lesson-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+  .bottom-nav{background:#F5F5F5;padding:30px 24px;margin-top:60px;}
+  .bottom-nav-inner{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .bnav-btn{background:white;border:2px solid var(--navy);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:30px;font-weight:700;font-size:0.9rem;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+  .bnav-btn:hover{background:var(--navy);color:white;}
+  .bnav-btn.next{background:var(--orange);border-color:var(--orange);color:white;}
+  .bnav-btn.next:hover{background:#E55A25;}
+  @media(max-width:600px){.two-moments{grid-template-columns:1fr;} .bottom-nav-inner{justify-content:center;}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-home">📚 Một Đời Quản Trị</a>
+  <div class="nav-links">
+    <a href="chuong-06.html" class="nav-btn">← Chương 6</a>
+    <a href="chuong-08.html" class="nav-btn">Chương 8 →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="chapter-badge">👋 Chương 7</div>
+  <span class="hero-emoji">🚪</span>
+  <h1>Gia Nhập <span>và Chia Tay</span></h1>
+  <p class="hero-sub">Hai khoảnh khắc này định hình toàn bộ trải nghiệm của một con người trong tổ chức — và hầu hết công ty làm cả hai rất tệ.</p>
+</section>
+
+<div class="content">
+
+  <div class="intro-text">
+    Có hai thời điểm quan trọng nhất trong hành trình của một nhân viên: khi họ bước vào và khi họ bước ra. GS. Phan Văn Trường khẳng định rằng onboarding và offboarding không chỉ là quy trình HR — chúng là sự thể hiện trực tiếp văn hóa và phẩm giá của tổ chức.
+  </div>
+
+  <div class="cards-title">🔄 Hai Khoảnh Khắc Định Mệnh</div>
+  <div class="two-moments">
+    <div class="moment-card join">
+      <h3>🌱 Gia Nhập (Onboarding)</h3>
+      <ul>
+        <li>Chào đón đúng nghĩa — không phải thủ tục</li>
+        <li>Giới thiệu văn hóa, không chỉ quy trình</li>
+        <li>Người mentor đồng hành thực sự</li>
+        <li>Ấn tượng đầu tiên định hình mọi thứ</li>
+        <li>Trao niềm tin từ ngày đầu tiên</li>
+      </ul>
+    </div>
+    <div class="moment-card leave">
+      <h3>🍂 Chia Tay (Offboarding)</h3>
+      <ul>
+        <li>Cảm ơn chân thành, không phải xã giao</li>
+        <li>Exit interview thật sự — không phải formalit</li>
+        <li>Giúp họ rời đi trong tự hào và phẩm giá</li>
+        <li>Giữ mối quan hệ tốt — alumni network</li>
+        <li>Họ sẽ là đại sứ thương hiệu của bạn</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <h3>📖 Câu Chuyện: Ba Người Giúp Việc</h3>
+    <p>
+      GS. Phan Văn Trường kể về ba người giúp việc trong gia đình ông qua nhiều năm. Điều đặc biệt không
+      phải là họ làm việc tốt — mà là cách gia đình ông đối xử với họ khi họ ra đi. Mỗi người khi rời đi
+      đều được đối xử như người thân: được cảm ơn tử tế, được hỗ trợ tìm việc mới, được giữ liên lạc.
+      Không phải vì đó là quy trình. Mà vì đó là <em>phẩm cách</em>.
+    </p>
+    <p style="margin-top:14px;">
+      Bài học này mang theo vào doanh nghiệp: những người ra đi khỏi công ty bạn đang nói gì về bạn
+      với thế giới bên ngoài?
+    </p>
+  </div>
+
+  <div class="cards-title">🔑 Những Điểm Cốt Lõi</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-num">01</div>
+      <h3>Ấn tượng đầu tiên khó xóa</h3>
+      <p>90 ngày đầu tiên quyết định một nhân viên sẽ gắn bó hay rời bỏ. Đầu tư vào onboarding là đầu tư vào retention.</p>
+    </div>
+    <div class="card gold">
+      <div class="card-icon">💔</div>
+      <div class="card-num">02</div>
+      <h3>Chia tay tệ = Marketing xấu</h3>
+      <p>Mỗi người ra đi không hài lòng sẽ kể cho ít nhất 10 người nghe. Đây là marketing tiêu cực miễn phí bạn không muốn có.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🤝</div>
+      <div class="card-num">03</div>
+      <h3>Alumni network — tài sản vô giá</h3>
+      <p>Những người rời đi trong tốt đẹp sẽ trở thành đại sứ thương hiệu, nguồn referral, và đối tác tương lai.</p>
+    </div>
+    <div class="card navy">
+      <div class="card-icon">🪞</div>
+      <div class="card-num">04</div>
+      <h3>Phẩm giá của tổ chức</h3>
+      <p>Cách bạn đối xử với người rời đi phản ánh chính xác nhất văn hóa thật sự của tổ chức bạn.</p>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Cách bạn đối xử với người ra đi<br>nói lên nhiều hơn cách bạn đối xử với người đến."</p>
+    <cite>— GS. Phan Văn Trường</cite>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text">
+      <strong>Thực tế đáng buồn ở nhiều công ty:</strong> Onboarding được thiết kế cẩn thận. Nhưng khi nhân viên quyết định nghỉ, tự nhiên họ bị đối xử lạnh lùng, bị cắt quyền truy cập ngay lập tức, không ai cảm ơn. Đây là sự thất bại văn hóa nghiêm trọng.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-text">
+      <strong>Thực hành tốt nhất:</strong> Tổ chức buổi goodbye đúng nghĩa, gửi email cảm ơn từ lãnh đạo, giúp họ kết nối với công ty mới nếu có thể, và giữ liên lạc qua alumni network. Chi phí gần như bằng không, lợi ích cực kỳ lớn.
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <h3>📌 Bài Học Rút Ra</h3>
+    <ul class="lesson-list">
+      <li>Onboarding và offboarding là hai khoảnh khắc quan trọng nhất — đầu tư xứng đáng vào cả hai.</li>
+      <li>90 ngày đầu tiên quyết định gắn kết dài hạn — thiết kế trải nghiệm gia nhập có chủ đích.</li>
+      <li>Chia tay tốt đẹp tạo ra alumni network, đại sứ thương hiệu, và nguồn referral quý giá.</li>
+      <li>Câu chuyện "ba người giúp việc" nhắc nhở: phẩm cách không phân biệt vị trí hay vai trò.</li>
+      <li>Cách một tổ chức đối xử với người rời đi phản ánh chính xác văn hóa thật sự của họ.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="chuong-06.html" class="bnav-btn">← Chương 6</a>
+    <a href="index.html" class="bnav-btn">🏠 Mục Lục</a>
+    <a href="chuong-08.html" class="bnav-btn next">Chương 8: Tìm kiếm nhân tài →</a>
+  </div>
+</div>
+
+</body>
+</html>
